@@ -1,6 +1,6 @@
 {
 	"appname": "WeirBuyer",
-	"scope": "CategoryAdmin ProductAdmin ProductAssignmentAdmin FullAccess",
+	"scope": "CategoryAdmin ProductAdmin ProductAssignmentAdmin FullAccess DevCenterImpersonate",
 	"clientid": "0CEE8276-C669-4D48-BBBB-3A1C082D140D",
 	"buyerid": "weir",
 	"environment": "prod",

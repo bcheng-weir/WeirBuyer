@@ -113,6 +113,9 @@ function LoginController($state, $stateParams, $exceptionHandler, OrderCloud, Lo
                 $state.go('home');
             })
             .catch(function(ex) {
+                if(ex.data.error == "Username not found or password incorrect") {
+                    ex.data.error = "We are not able to recognise the email or password entered. Please check and re-enter.";
+                }
                 $exceptionHandler(ex);
             });
     };

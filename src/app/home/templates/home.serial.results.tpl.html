@@ -1,0 +1,33 @@
+<article>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Showing results for serial numbers;</h2>
+            <table class="table table-bordered oc-table-responsive weir-results-table">
+                <thead>
+                    <tr>
+                        <th>Serial Number</th>
+                        <th>Model Number</th>
+                        <th>Description of Item</th>
+                        <th class="button-th"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="result in serialResults.serialNumberResults | searchresults:true">
+                        <td class="text-danger">{{result.Number | serialnumber}}</td>
+                        <td>{{result.Detail.Name}}</td>
+                        <td>{{result.Detail.Description}}</td>
+                        <td class="button-td"><button class="btn btn-warning" ui-sref="home.serial.detail({number: result.Number, searchNumbers: serialResults.searchNumbers})">View Details</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p ng-if="(serialResults.serialNumberResults | searchresults:false).length">
+                <i>No results found for; <span ng-repeat="result in serialResults.serialNumberResults | searchresults:false">{{result.Number | serialnumber}}<span ng-show="!$last">, </span></span></i>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>
+                <button class="btn btn-primary">Search Again</button>
+            </h2>
+        </div>
+    </div>
+</article>

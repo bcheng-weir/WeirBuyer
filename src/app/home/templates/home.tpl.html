@@ -1,13 +1,10 @@
-<article id="COMPONENT_Home">
-    <div class="container">
-        <header class="jumbotron">
-            <h1 ng-bind="application.name"></h1>
-            <p>Home page (landing page) for the application</p>
-        </header>
-	<section>
-		This should be replaced with the page from the POC. For the
-		old styles home page, please see the
-		<a href="" ui-sref="styles">Styles Examples</a>.
-	</section>
-    </div>
+<article id="COMPONENT_Home" class="container-fluid">
+	<ul class="nav nav-tabs nav-justified" ng-if="['home.serial', 'home.part', 'home.quickquote'].indexOf(application.$state.current.name) > -1">
+		<li role="presentation" ui-sref-active="active" ui-sref="home.serial"><a href="#">Search by Serial Number</a></li>
+		<!-- <li role="presentation" ui-sref-active="active" ui-sref="home.part"><a href="#">Search by Part Number</a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="home.quickquote"><a href="#">Quick Quote</a></li> -->
+	</ul>
+	<div ui-view></div>
 </article>
+
+

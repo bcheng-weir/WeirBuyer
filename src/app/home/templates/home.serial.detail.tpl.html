@@ -1,0 +1,93 @@
+<article>
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Showing results for serial number; <span class="text-danger">{{serialDetail.serialNumber.xp.SN | serialnumber}}</span></h2>
+        </div>
+        <div class="col-md-4">
+            <h2 class="pull-right">
+                <button class="btn btn-default" ui-sref="home.serial">Search Again</button>
+                <button class="btn btn-primary" ng-if="serialDetail.searchNumbers" ui-sref="home.serial.results({numbers: serialDetail.searchNumbers})">Return to Results</button>
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Valve type and description copy</h3>
+            <figure>
+                <img ng-if="serialDetail.serialNumber.xp.image" ng-src="{{serialDetail.serialNumber.xp.image.URL}}" />
+                <div ng-if="!serialDetail.serialNumber.xp.image" class="serial-image">
+                    <span>General Arrangement drawing of Valve Type</span>
+                </div>
+            </figure>
+        </div>
+        <div class="col-md-6">
+            <h3>Specification for serial number; <span class="text-danger">{{serialDetail.serialNumber.xp.SN | serialnumber}}</span></h3>
+            <table class="table table-bordered oc-table-responsive weir-specs-table">
+                <tbody>
+                    <tr>
+                        <td>Customer</td>
+                        <td>{{serialDetail.serialNumber.xp.Customer}}</td>
+                    </tr>
+                    <tr>
+                        <td>S/N</td>
+                        <td>{{serialDetail.serialNumber.xp.SN}}</td>
+                    </tr>
+                    <tr>
+                        <td>Model</td>
+                        <td>{{serialDetail.serialNumber.xp.Model}}</td>
+                    </tr>
+                    <tr>
+                        <td>Set Pressure</td>
+                        <td>{{serialDetail.serialNumber.xp.SetPressure}}</td>
+                    </tr>
+                    <tr>
+                        <td>Temperature</td>
+                        <td>{{serialDetail.serialNumber.xp.Temperature}} C&deg</td>
+                    </tr>
+                    <tr>
+                        <td>Back Pressure</td>
+                        <td>{{serialDetail.serialNumber.xp.BackPressure}}</td>
+                    </tr>
+                    <tr>
+                        <td>Inlet</td>
+                        <td>{{serialDetail.serialNumber.xp.Inlet}}</td>
+                    </tr>
+                    <tr>
+                        <td>Outlet</td>
+                        <td>{{serialDetail.serialNumber.xp.Outlet}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>BOM for serial number; <span class="text-danger">{{serialDetail.serialNumber.xp.SN | serialnumber}}</span></h3>
+            <table class="table table-bordered oc-table-responsive weir-results-table">
+                <thead>
+                <tr>
+                    <th>Part Number</th>
+                    <th>Description of part</th>
+                    <th>Recommended Replacement</th>
+                    <th>Lead Time/Availability</th>
+                    <th>Price Per Item</th>
+                    <th>Quantity</th>
+                    <th class="button-th"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="part in serialDetail.serialNumber.Parts">
+                    <td class="text-danger">{{part.Detail.ID}}</td>
+                    <td>{{part.Detail.Name}}</td>
+                    <td>{{part.Detail.xp.RecommendedReplacement}}</td>
+                    <td>{{part.Detail.xp.LeadTime}}</td>
+                    <td>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</td>
+                    <td><input type="number" class="form-control" ng-model="part.Quantity" /></td>
+                    <td class="button-td"><button class="btn btn-warning" ng-click="serialDetail.addPartToQuote(part)">Add to Quote</button></td>
+                </tr>
+                </tbody>
+            </table>
+            <p><i>Lead time for all orders will be based on the longest lead time from the list of spares requested</i></p>
+        </div>
+    </div>
+</article>

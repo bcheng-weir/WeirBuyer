@@ -1,8 +1,8 @@
 <article id="COMPONENT_Home" class="container-fluid">
 	<ul class="nav nav-tabs nav-justified" ng-if="['home.serial', 'home.part', 'home.quickquote'].indexOf(application.$state.current.name) > -1">
-		<li role="presentation" ui-sref-active="active" ui-sref="home.serial"><a href="#">Search by Serial Number</a></li>
-		<!-- <li role="presentation" ui-sref-active="active" ui-sref="home.part"><a href="#">Search by Part Number</a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="home.quickquote"><a href="#">Quick Quote</a></li> -->
+		<li role="presentation" ui-sref-active="active" ui-sref="home.serial"><a href="#" ng-bind-html='home.labels.SerialSearch'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="home.part"><a href="#" ng-bind-html='home.labels.PartSearch'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="home.tag"><a href="#" ng-bind-html='home.labels.TagSearch'></a></li>
 	</ul>
 	<div ui-view></div>
 </article>

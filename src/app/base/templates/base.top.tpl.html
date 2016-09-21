@@ -8,14 +8,25 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="" ui-sref="home">{{application.name}}</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="BASE_TOP_COLLAPSE">
             <ul class="nav navbar-nav navbar-right">
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-                    <a href="#" uib-dropdown-toggle role="button"><i class="fa fa-user"></i> Account <span class="caret"></span></a>
+                    <a href="#" uib-dropdown-toggle role="button">Your quotes <span class="caret"></span></a>
+                    <ul uib-dropdown-menu>
+                        <li>TBD</li>
+                    </ul>
+                </li>
+                <li uib-dropdown ng-if="!base.currentUser.Anonymous">
+                    <a href="#" uib-dropdown-toggle role="button">Your orders <span class="caret"></span></a>
+                    <ul uib-dropdown-menu>
+                        <li>TBD</li>
+                    </ul>
+                </li>
+                <li uib-dropdown ng-if="!base.currentUser.Anonymous">
+		<a href="#" uib-dropdown-toggle role="button"><!--<i class="fa fa-user"></i>--> Your Account <span class="caret"></span></a>
                     <ul uib-dropdown-menu>
                         <li class="dropdown-header">{{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</li>
                         <li><a href="" ui-sref="account">Account</a></li>
@@ -33,3 +44,29 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+<div style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 0.5em;">
+	<a href="" ui-sref="home.serial">
+		<img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
+	</a>
+</div>
+<div class="panel panel-default" >
+	<div class="panel-body clearfix">
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a href="#">About Batley</a>
+			</li>
+			<li>
+				<a href="#">About Blakeborough</a>
+			</li>
+			<li>
+				<a href="#">About Hopkinsons</a>
+			</li>
+			<li>
+				<a href="#">Quick Quote </a>
+			</li>
+			<li>
+			<a href="#" ui-sref="home.serial">Search<i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
+			</li>
+		</ul>
+	</div>
+</div>

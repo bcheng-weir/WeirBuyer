@@ -1,32 +1,35 @@
 <article>
     <div class="row">
         <div class="col-md-8">
-            <h2>Showing results for serial numbers;</h2>
+		<b>
+		<p ng-bind-html='serialResults.labels.Customer'> TBD</p>
+		<p ng-bind-html='serialResults.labels.ResultsHeader'></p>
+		</b>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
                     <tr>
-                        <th>Serial Number</th>
-                        <th>Model Number</th>
-                        <th>Description of Item</th>
+			    <th ng-bind-html='serialResults.labels.SerialNumber'></th>
+			    <th ng-bind-html='serialResults.labels.TagNumber'></th>
+			    <th ng-bind-html='serialResults.labels.ValveDesc'></th>
                         <th class="button-th"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="result in serialResults.serialNumberResults | searchresults:true">
-                        <td class="text-danger">{{result.Number | serialnumber}}</td>
-                        <td>{{result.Detail.Name}}</td>
-                        <td>{{result.Detail.Description}}</td>
-                        <td class="button-td"><button class="btn btn-warning" ui-sref="home.serial.detail({number: result.Number, searchNumbers: serialResults.searchNumbers})">View Details</button></td>
+                        <td class="text-danger">{{result.Detail.Name}}</td>
+                        <td>{{result.Detail.xp.TagNumber}}</td>
+			<td ng-bind-html='result.Detail.Description'></td>
+			<td class="button-td"><button class="btn btn-warning" ui-sref="home.serial.detail({number: result.Number, searchNumbers: serialResults.searchNumbers})" ng-bind-html='serialResults.labels.ViewDetails'></button></td>
                     </tr>
                 </tbody>
             </table>
             <p ng-if="(serialResults.serialNumberResults | searchresults:false).length">
-                <i>No results found for; <span ng-repeat="result in serialResults.serialNumberResults | searchresults:false">{{result.Number | serialnumber}}<span ng-show="!$last">, </span></span></i>
+	    <i><span ng-bind-html='serialResults.labels.NoResultsMsg'></span> <span ng-repeat="result in serialResults.serialNumberResults | searchresults:false">{{result.Number | serialnumber}}<span ng-show="!$last">, </span></span></i>
             </p>
         </div>
         <div class="col-md-4">
             <h2>
-                <button class="btn btn-primary">Search Again</button>
+		    <button class="btn btn-primary" ng-bind-html='serialResults.labels.SearchAgain'></button>
             </h2>
         </div>
     </div>

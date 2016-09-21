@@ -42,7 +42,7 @@ function SetBuyerID(OrderCloud, buyerid) {
 
 function Routing($urlRouterProvider, $urlMatcherFactoryProvider, $locationProvider) {
     $urlMatcherFactoryProvider.strictMode(false);
-    $urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/home/serial');
     $locationProvider.html5Mode(true);
 }
 

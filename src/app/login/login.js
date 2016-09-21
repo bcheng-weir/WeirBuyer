@@ -110,7 +110,7 @@ function LoginController($state, $stateParams, $exceptionHandler, OrderCloud, Lo
                 vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : angular.noop();
                 OrderCloud.BuyerID.Set(buyerid);
                 OrderCloud.Auth.SetToken(data['access_token']);
-                $state.go('home');
+                $state.go('home.serial');
             })
             .catch(function(ex) {
                 if(ex.data.error == "Username not found or password incorrect") {

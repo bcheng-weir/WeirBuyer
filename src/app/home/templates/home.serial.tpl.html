@@ -3,20 +3,21 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group has-feedback" ng-repeat="number in serial.serialNumbers track by $index">
-                    <label ng-if="$index == 0">Enter Serial Number<span ng-if="serial.serialNumbers.length > 1">s</span></label>
+			<label ng-if="$index == 0" ng-bind-html='serial.labels.EnterSerial'><span ng-if="serial.serialNumbers.length > 1">s</span></label>
                     <div ng-class="{'input-group': $index > 0}">
                         <input type="text" class="form-control" ng-model="serial.serialNumbers[$index]" uib-typeahead="serial.ID as (home.formatSerialNumber(serial.ID) + ' - ' + serial.Description) for serial in home.serialNumberList | filter:$viewValue" />
                         <span class="input-group-addon" ng-if="$index > 0" ng-click="serial.removeSerialNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                     <span class="fa fa-minus text-danger form-control-feedback" ng-if="$index > 0" ng-click="serial.removeSerialNumber($index)"></span>
                 </div>
-                <button type="button" class="btn btn-link" ng-click="serial.addSerialNumber()">Add More Serial Numbers  <i class="fa fa-plus"></i></button>
+		<button type="button" class="btn btn-link" ng-click="serial.addSerialNumber()" ng-bind-html='serial.labels.AddMore'><i class="fa fa-plus"></i></button>
                 <div class="pull-right">
-                    <button type="button" class="btn btn-default" ng-show="serial.showClearSearch()" ng-click="serial.clearSearch()">Clear Search</button>
-                    <button type="submit" class="btn btn-primary">Search</button>
+			<button type="button" class="btn btn-default" ng-show="serial.showClearSearch()" ng-click="serial.clearSearch()" ng-bind-html='serial.labels.ClearSearch'></button>
+			<button type="submit" class="btn btn-primary" ng-bind-html='serial.labels.Search'></button>
                 </div>
             </div>
             <div class="col-md-6 text-center">
+		    <a href="#" target="_blank" ng-bind-html='serial.labels.WhereToFind'></a>
                 <figure>
                     <img class="number-directions" src="assets/images/serialnumberdirections.png" />
                 </figure>

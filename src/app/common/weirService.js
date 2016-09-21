@@ -9,8 +9,13 @@ function WeirService( $q, OrderCloud, CurrentOrder ) {
         PartNumbers: partNumbers,
         AddPartToQuote: addPartToQuote,
         AddPartsToQuote: addPartsToQuote,
-        QuickQuote: quickQuote
+        QuickQuote: quickQuote,
+	Locale: getLocale
     };
+
+    function getLocale() {
+	    return "en_US";
+    }
 
     function serialNumber(serialNumber) {
         var deferred = $q.defer();
@@ -21,8 +26,10 @@ function WeirService( $q, OrderCloud, CurrentOrder ) {
 		if (matches.Items.length == 1) {
                        	result = matches.Items[0];
                 	getParts(result.ID);
+		} else if (matches.Items.length == 0) {
+			throw { message: "No matches found for serial number " + serialNumber};
 		} else {
-			deferred.reject("Data error: Serial number " + serialNumber + " is not unique");
+			throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
 		}
             })
             .catch(function(ex) {

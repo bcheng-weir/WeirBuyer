@@ -2,13 +2,14 @@
     <div class="row">
         <div class="col-md-8">
 		<b>
-		<p ng-bind-html='serialResults.labels.Customer'> TBD</p>
+			<p ng-if='!serialResults.MultipleCustomers'><span ng-bind-html='serialResults.labels.Customer'></span>; {{serialResults.Customer}}</p>
 		<p ng-bind-html='serialResults.labels.ResultsHeader'></p>
 		</b>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
                     <tr>
 			    <th ng-bind-html='serialResults.labels.SerialNumber'></th>
+			    <th ng-if='serialResults.MultipleCustomers' ng-bind-html='serialResults.labels.Customer'></th>
 			    <th ng-bind-html='serialResults.labels.TagNumber'></th>
 			    <th ng-bind-html='serialResults.labels.ValveDesc'></th>
                         <th class="button-th"></th>
@@ -17,6 +18,7 @@
                 <tbody>
                     <tr ng-repeat="result in serialResults.serialNumberResults | searchresults:true">
                         <td class="text-danger">{{result.Detail.Name}}</td>
+                        <td ng-if='serialResults.MultipleCustomers'>{{result.Detail.xp.Customer}}</td>
                         <td>{{result.Detail.xp.TagNumber}}</td>
 			<td ng-bind-html='result.Detail.Description'></td>
 			<td class="button-td"><button class="btn btn-warning" ui-sref="home.serial.detail({number: result.Number, searchNumbers: serialResults.searchNumbers})" ng-bind-html='serialResults.labels.ViewDetails'></button></td>
@@ -29,7 +31,7 @@
         </div>
         <div class="col-md-4">
             <h2>
-		    <button class="btn btn-primary" ng-bind-html='serialResults.labels.SearchAgain'></button>
+		    <button class="btn btn-primary" ui-sref="home.serial" ng-bind-html='serialResults.labels.SearchAgain'></button>
             </h2>
         </div>
     </div>

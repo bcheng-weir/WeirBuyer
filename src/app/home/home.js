@@ -162,6 +162,23 @@ function SerialResultsController(WeirService, $stateParams, SerialNumberResults,
 	var vm = this;
 	vm.serialNumberResults = SerialNumberResults;
 	vm.searchNumbers = $stateParams.numbers;
+
+	var multiCust = false;
+	var cust = "";
+	for(var i=0; i< SerialNumberResults.length; i++) {
+		var tmp = SerialNumberResults[i].Detail;
+		if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
+			if (cust != "") {
+				multiCust = true;
+				break;
+			} else {
+				cust = tmp.xp.Customer;
+			}
+		}
+	}
+	vm.MultipleCustomers = multiCust;
+	vm.Customer = cust;
+
 	var labels = {
 		en: {
 			Customer: "Customer",

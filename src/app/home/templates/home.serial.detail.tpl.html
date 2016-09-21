@@ -3,7 +3,7 @@
         <div class="col-md-8">
 		<p><b><span ng-bind-html='serialDetail.labels.ResultsHeader'></span><span class="text-danger">{{serialDetail.serialNumber.Name}}</span></b></p>
 		<p><b><span ng-bind-html='serialDetail.labels.Tag'></span><span class="text-danger">{{serialDetail.serialNumber.xp.TagNumber}}</span></b></p>
-		<p><b><span ng-bind-html='serialDetail.labels.Customer'></span><span class="text-danger">TBD</span></b></p>
+		<p><b><span ng-bind-html='serialDetail.labels.Customer'></span><span class="text-danger">{{serialDetail.serialNumber.xp.Customer}}</span></b></p>
 			<p><b><span ng-bind-html='serialDetail.labels.ManufDate'></span><span class="text-danger">{{serialDetail.serialNumber.xp.ManufactureDate}}</span></b></p>
         </div>
         <div class="col-md-4">

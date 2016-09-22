@@ -10,11 +10,16 @@ function WeirService( $q, OrderCloud, CurrentOrder ) {
         AddPartToQuote: addPartToQuote,
         AddPartsToQuote: addPartsToQuote,
         QuickQuote: quickQuote,
-	Locale: getLocale
+	Locale: getLocale,
+	LocaleResources: selectLocaleResources
     };
 
     function getLocale() {
-	    return "en_US";
+	    return "en_US".substr(0,2);
+    }
+    function selectLocaleResources(resource) {
+	    var tmp = resource[getLocale()];
+	    return (tmp) ? tmp : resource["en"];
     }
 
     function serialNumber(serialNumber) {
@@ -87,33 +92,100 @@ function WeirService( $q, OrderCloud, CurrentOrder ) {
     }
 
     function partNumbers(partNumbers) {
+
+        var results = {
+		Parts: [],
+		Customer: ""
+	};
+	var categories = [];
+        var queue = [];
+	var q2 = [];
+	var q3 = [];
         var deferred = $q.defer();
 
-        var results = [];
-        var queue = [];
-        angular.forEach(partNumbers, function(number) {
-            queue.push((function() {
-                var d = $q.defer();
+  	getParts(partNumbers);
+        $q.all(queue)
+	    .then(function() {
+	        getValvesForParts(results);
+	        $q.all(q2)
+		     .then(function() {
+	                 getCustomerForValves(categories);
+	                 $q.all(q3)
+			     .then(function() {
+	                         deferred.resolve(results);
+	                     });
+	              });
+                })
+		    .catch (function(ex) {
+			deferred.resolve(results);
+		     });
+	return deferred.promise;
 
-                OrderCloud.Me.GetProduct(number)
-                    .then(function(product) {
-                        results.push({Number: number, Detail: product});
-                        d.resolve();
-                    })
-                    .catch(function(ex) {
-                        results.push({Number: number, Detail: null});
-                        d.resolve();
-                    });
+	function getParts(partNumbers) {
+            angular.forEach(partNumbers, function(number) {
+	        if (number) {
+                    queue.push((function() {
+                        var d = $q.defer();
+    
+                        OrderCloud.Me.ListProducts(null, 1, 50, null, null, {"Name": number})
+                            .then(function(products) {
+			        angular.forEach(products.Items, function(product) {
+			           var result = {Number: number, Detail: product};
+                                   results.Parts.push(result);
+			        });
+                                d.resolve();
+                            })
+                            .catch(function(ex) {
+                                results.Parts.push({Number: number, Detail: null});
+                                d.resolve();
+                            });
+                        return d.promise;
+                    })());
+	        }
+            });
+	}
 
-                return d.promise;
-            })());
-        });
+	function getValvesForParts(results) {
+	    angular.forEach(results.Parts, function(result) {
+		    q2.push((function() {
+		        var d2 = $q.defer();
+		        var part = result.Detail;
+		        OrderCloud.Categories.ListProductAssignments(null, part.ID, 1, 50)
+		            .then(function(valveIds) {
+			         angular.forEach(valveIds.Items, function(entry) {
+				     if (categories.indexOf(entry) < 0) categories.push(entry);
+			         });
+			         d2.resolve();
+			    })
+		        .catch (function(ex) {
+			        d2.resolve();
+		        });
+			return d2.promise;
+		    })());
+	    });
+	}
 
-        $q.all(queue).then(function() {
-            deferred.resolve(results);
-        });
-
-        return deferred.promise;
+	function getCustomerForValves(valves) {
+	    var def3 = $q.defer();
+	    angular.forEach(valves, function(entry) {
+		q3.push((function() {
+		    var d3 = $q.defer();
+		    OrderCloud.Categories.Get(entry.CategoryID)
+		         .then(function(item) {
+			     if (!results.Customer) {
+				  results.Customer = item.xp.Customer;
+			     } else if (results.Customer != item.xp.Customer) {
+				results.Customer = "*";
+			     }
+			     d3.resolve();
+		          })
+			  .catch(function(ex) {
+			      d3.resolve();
+			   });
+			   return d3.promise;
+		        })());
+	    });
+	}
     }
 
     function addPartToQuote(part) {

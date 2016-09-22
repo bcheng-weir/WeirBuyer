@@ -5,6 +5,7 @@ angular.module('orderCloud')
 	.controller( 'SerialResultsCtrl', SerialResultsController )
 	.controller( 'SerialDetailCtrl', SerialDetailController )
 	.controller( 'PartCtrl', PartController )
+	.controller( 'PartResultsCtrl', PartResultsController )
 ;
 
 function HomeConfig($stateProvider) {
@@ -49,7 +50,7 @@ function HomeConfig($stateProvider) {
 		})
 		.state( 'home.serial.detail', {
 			url: '/:number?:searchNumbers',
-			templateUrl: 'home/templates/home.serial.detail.tpl.html',
+		templateUrl: 'home/templates/home.serial.detail.tpl.html',
 			controller: 'SerialDetailCtrl',
 			controllerAs: 'serialDetail',
 			resolve: {
@@ -63,6 +64,17 @@ function HomeConfig($stateProvider) {
 			templateUrl: 'home/templates/home.part.tpl.html',
 			controller: 'PartCtrl',
 			controllerAs: 'part'
+		})
+		.state( 'home.part.results', {
+			url: '/search?numbers',
+			templateUrl: 'home/templates/home.part.results.tpl.html',
+			controller: 'PartResultsCtrl',
+			controllerAs: 'partResults',
+			resolve: {
+				PartNumberResults: function( $stateParams, WeirService) {
+					return WeirService.PartNumbers($stateParams.numbers.split(','));
+				}
+			}
 		})
 	;
 }
@@ -89,14 +101,7 @@ function HomeController(WeirService, SerialNumbers, PartNumbers, $sce) {
 			TagSearch: $sce.trustAsHtml("Recherche par num&eacute;ro de tag")
 		}
 	};
-	switch (WeirService.Locale()) {
-		case 'fr':
-			vm.labels = labels.fr;
-			break;
-		default:
-			vm.labels = labels.en;
-			break;
-	}
+	vm.labels = WeirService.LocaleResources(labels);
 }
 
 function SerialController(WeirService, $state, $sce /*, NewsArticles */ ) {
@@ -119,14 +124,7 @@ function SerialController(WeirService, $state, $sce /*, NewsArticles */ ) {
 			Search: "Chercher"
 		}
 	};
-	switch (WeirService.Locale()) {
-		case 'fr':
-			vm.labels = labels.fr;
-			break;
-		default:
-			vm.labels = labels.en;
-			break;
-	}
+	vm.labels = WeirService.LocaleResources(labels);
 
 	vm.serialNumbers = [null];
 
@@ -207,14 +205,7 @@ function SerialResultsController(WeirService, $stateParams, SerialNumberResults,
 			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
 		}
 	};
-	switch (WeirService.Locale()) {
-		case 'fr':
-			vm.labels = labels.fr;
-			break;
-		default:
-			vm.labels = labels.en;
-			break;
-	}
+	vm.labels = WeirService.LocaleResources(labels);
 }
 
 function SerialDetailController( $stateParams, $rootScope, $sce, WeirService, SerialNumberDetail ) {
@@ -294,16 +285,8 @@ function SerialDetailController( $stateParams, $rootScope, $sce, WeirService, Se
 			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la proposition")
 		}
 	};
-	switch (WeirService.Locale()) {
-		case 'fr':
-			vm.labels = labels.fr;
-			vm.headers = headers.fr;
-			break;
-		default:
-			vm.labels = labels.en;
-			vm.headers = headers.en;
-			break;
-	}
+	vm.labels = WeirService.LocaleResources(labels);
+	vm.headers = WeirService.LocaleResources(headers);
 
 	// vm.addPartToQuote = function(part) {
 		// WeirService.AddPartToQuote(part)
@@ -347,6 +330,7 @@ function PartController( $state, $sce, WeirService ) {
 		en: {
 			WhereToFind: "where to find your part number",
 			EnterPart: "Enter part number",
+			EnterParts: "Enter part numbers",
 			AddMore: "Add more part numbers   +",
 			ClearSearch: "Clear search",
 			Search: "Search"
@@ -354,18 +338,60 @@ function PartController( $state, $sce, WeirService ) {
 		fr: {
 			WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de pi&eacute;ce"),
 			EnterPart: $sce.trustAsHtml("Entrez le num$eacute;ro de la pi&eacute;ce"),
+			EnterParts: $sce.trustAsHtml("Entrez le num$eacute;ro de la pi&eacute;ce"),
 			AddMore: $sce.trustAsHtml("Ajouter plus de num&eacute;ros de pi&eacute;ce   +"),
 			
 			ClearSearch: $sce.trustAsHtml("Effacer la recherche"),
 			Search: "Chercher"
 		}
 	};
-	switch (WeirService.Locale()) {
-		case 'fr':
-			vm.labels = labels.fr;
-			break;
-		default:
-			vm.labels = labels.en;
-			break;
-	}
+	vm.labels = WeirService.LocaleResources(labels);
 }
+
+function PartResultsController( $rootScope, $sce, WeirService, PartNumberResults ) {
+	var vm = this;
+	vm.partNumberResults = PartNumberResults;
+	vm.Customer = PartNumberResults.Customer;
+	vm.MultipleCustomers = (vm.Customer == "*");
+
+	var labels = {
+		en: {
+			Customer: "Customer",
+			ResultsHeader: "Showing results for part numbers;",
+			SearchAgain: "Search again",
+			PartNum: "Part number",
+			PartDesc: "Description of part",
+			ReplSched: "Recommended replacement",
+			LeadTime: "Lead time",
+			Price: "Price per item or set",
+			Qty: "Quantity",
+			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
+			AddToQuote: "Add to Quote"
+		},
+		fr: {
+			Customer: "Client",
+			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de pi&eacute;ce"),
+			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
+			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence"),
+			PartDesc: $sce.trustAsHtml("Description de la partie"),
+			PartQty: $sce.trustAsHtml("Quantit&eacute; de partie"),
+			ReplSched: $sce.trustAsHtml("Remplacement recommand&eacute;e"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de mise en &oelig;uvre"),
+			Price: $sce.trustAsHtml("Prix par article ou ensemble"),
+			Qty: $sce.trustAsHtml("Quantit&eacute;"),
+			LeadTimeNotice: $sce.trustAsHtml("D&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le plus long d&eacute;lai de la liste des pi&eacute;ces de rechange demand&eacute;es"),
+			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la proposition")
+				
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
+
+//	vm.addPartToQuote = function(part) {
+//		WeirService.AddPartToQuote(part)
+//				.then(function(data) {
+//					$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
+//					part.Quantity = null;
+//				});
+//	};
+}
+

@@ -4,6 +4,7 @@ angular.module('orderCloud')
 	.controller('SerialCtrl', SerialController)
 	.controller( 'SerialResultsCtrl', SerialResultsController )
 	.controller( 'SerialDetailCtrl', SerialDetailController )
+	.controller( 'PartCtrl', PartController )
 ;
 
 function HomeConfig($stateProvider) {
@@ -57,7 +58,12 @@ function HomeConfig($stateProvider) {
 				}
 			}
 		})
-
+		.state( 'home.part', {
+			url: '/part',
+			templateUrl: 'home/templates/home.part.tpl.html',
+			controller: 'PartCtrl',
+			controllerAs: 'part'
+		})
 	;
 }
 
@@ -215,7 +221,9 @@ function SerialDetailController( $stateParams, $rootScope, $sce, WeirService, Se
 	var vm = this;
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
-
+        vm.PartQuantity = function(partId) {
+		return SerialNumberDetail.xp.Parts[partId];
+	};
 	var labels = {
 		en: {
 			ResultsHeader: "Showing results for serial number; ",
@@ -304,4 +312,60 @@ function SerialDetailController( $stateParams, $rootScope, $sce, WeirService, Se
 					// part.Quantity = null;
 				// });
 	// };
+}
+
+function PartController( $state, $sce, WeirService ) {
+	var vm = this;
+
+	vm.partNumbers = [null];
+
+	vm.addPartNumber = function() {
+		vm.partNumbers.push(null);
+	};
+
+	vm.removePartNumber = function(index) {
+		vm.partNumbers.splice(index, 1);
+	};
+
+	vm.searchPartNumbers = function() {
+		$state.go('home.part.results', {numbers: vm.partNumbers.join(',')});
+	};
+
+	vm.clearSearch = function() {
+		vm.partNumbers = [null];
+	};
+
+	vm.showClearSearch = function() {
+		var count = 0;
+		angular.forEach(vm.partNumbers, function(number) {
+			if (number) count++;
+		});
+		return count > 0;
+	};
+
+	var labels = {
+		en: {
+			WhereToFind: "where to find your part number",
+			EnterPart: "Enter part number",
+			AddMore: "Add more part numbers   +",
+			ClearSearch: "Clear search",
+			Search: "Search"
+		},
+		fr: {
+			WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de pi&eacute;ce"),
+			EnterPart: $sce.trustAsHtml("Entrez le num$eacute;ro de la pi&eacute;ce"),
+			AddMore: $sce.trustAsHtml("Ajouter plus de num&eacute;ros de pi&eacute;ce   +"),
+			
+			ClearSearch: $sce.trustAsHtml("Effacer la recherche"),
+			Search: "Chercher"
+		}
+	};
+	switch (WeirService.Locale()) {
+		case 'fr':
+			vm.labels = labels.fr;
+			break;
+		default:
+			vm.labels = labels.en;
+			break;
+	}
 }

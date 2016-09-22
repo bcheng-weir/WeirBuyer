@@ -114,7 +114,7 @@
                 <tr ng-repeat="part in serialDetail.serialNumber.Parts">
                     <td class="text-danger">{{part.Detail.Name}}</td>
                     <td>{{part.Detail.Description}}</td>
-                    <td>TBD</td>
+		    <td>{{serialDetail.PartQuantity(part.Detail.ID)}}</td>
                     <td>{{part.Detail.xp.ReplacementSchedule}}</td>
                     <td>{{part.Detail.xp.LeadTime}}</td>
 		    <td ng-switch on="part.Detail.StandardPriceSchedule.xp.Currency">

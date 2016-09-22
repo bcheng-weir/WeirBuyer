@@ -2,7 +2,7 @@ angular.module( 'orderCloud' )
     .factory( 'WeirService', WeirService )
 ;
 
-function WeirService( $q, OrderCloud, CurrentOrder ) {
+function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
     var service = {
         SerialNumber: serialNumber,
         SerialNumbers: serialNumbers,
@@ -14,7 +14,21 @@ function WeirService( $q, OrderCloud, CurrentOrder ) {
     };
 
     function getLocale() {
-	    return "en_US";
+        var localeOfUser = $cookieStore.get('language');
+        if(localeOfUser == null || localeOfUser == false){
+            //set the expiration date of the cookie.
+            var now = new Date();
+            var exp = new Date(now.getFullYear(), now.getMonth()+6, now.getDate());
+            //getting the language of the user's browser
+            localeOfUser = navigator.language;
+            localeOfUser = localeOfUser.substr(0,2);
+            //setting the cookie.
+            $cookieStore.put('language', localeOfUser, {
+                expires: exp
+            });
+
+        }
+	    return localeOfUser;
     }
 
     function serialNumber(serialNumber) {

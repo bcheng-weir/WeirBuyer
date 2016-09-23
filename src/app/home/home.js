@@ -171,7 +171,7 @@ function SerialResultsController(WeirService, $stateParams, SerialNumberResults,
 	var cust = "";
 	for(var i=0; i< SerialNumberResults.length; i++) {
 		var tmp = SerialNumberResults[i].Detail;
-		if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
+		if (tmp && (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust))) {
 			if (cust != "") {
 				multiCust = true;
 				break;
@@ -331,7 +331,7 @@ function PartController( $state, $sce, WeirService ) {
 			WhereToFind: "where to find your part number",
 			EnterPart: "Enter part number",
 			EnterParts: "Enter part numbers",
-			AddMore: "Add more part numbers   +",
+			AddMore: "Add more part numbers   ",
 			ClearSearch: "Clear search",
 			Search: "Search"
 		},
@@ -339,7 +339,7 @@ function PartController( $state, $sce, WeirService ) {
 			WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de pi&eacute;ce"),
 			EnterPart: $sce.trustAsHtml("Entrez le num$eacute;ro de la pi&eacute;ce"),
 			EnterParts: $sce.trustAsHtml("Entrez le num$eacute;ro de la pi&eacute;ce"),
-			AddMore: $sce.trustAsHtml("Ajouter plus de num&eacute;ros de pi&eacute;ce   +"),
+			AddMore: $sce.trustAsHtml("Ajouter plus de num&eacute;ros de pi&eacute;ce   "),
 			
 			ClearSearch: $sce.trustAsHtml("Effacer la recherche"),
 			Search: "Chercher"

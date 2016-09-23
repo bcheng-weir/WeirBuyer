@@ -5,11 +5,11 @@
                 <div class="form-group has-feedback" ng-repeat="number in part.partNumbers track by $index">
                     <label ng-if="$index == 0 && part.partNumbers.length <= 1" ng-bind-html='part.labels.EnterPart'></label>
 		    <label ng-if="$index == 0 && part.partNumbers.length > 1" ng-bind-html='part.labels.EnterParts'></label>
-                    <div ng-class="{'input-group': $index > 0}">
+                    <div class="input-group col-md-12">
                         <input type="text" class="form-control" ng-model="part.partNumbers[$index]" uib-typeahead="part.Name for part in home.partNumberList | filter:$viewValue" />
-                        <span class="input-group-addon" ng-if="$index > 0" ng-click="part.removePartNumber($index)"><i class="fa fa-minus text-danger"></i></span>
+                        <span class="input-group-addon" ng-if="part.partNumbers.length > 1" ng-click="part.removePartNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
-                    <span class="fa fa-minus text-danger form-control-feedback" ng-if="$index > 0" ng-click="part.removePartNumber($index)"></span>
+		    <span class="fa fa-minus text-danger form-control-feedback" ng-if="part.partNumbers.length > 1" ng-click="part.removePartNumber($index)"></span>
                 </div>
 		<button type="button" class="btn btn-link" ng-click="part.addPartNumber()"><span ng-bind-html='part.labels.AddMore'></span><i class="fa fa-plus"></i></button>
                 <div class="pull-right">

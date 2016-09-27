@@ -37,7 +37,12 @@
 			    <span ng-switch-when="USD">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'$'}}</span>
 			    <span ng-switch-default>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span>
 		    </td>
-                    <td><input type="number" class="form-control" ng-model="part.Quantity" /></td>
+                    <td>
+			    <form class="form-group">
+			    <input type="number" class="form-control" ng-model="part.Quantity" ng-min="0"
+				    ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber"  />
+		    </form>
+	    	</td>
                     <td class="button-td"><button class="btn btn-warning" ng-click="partResults.addPartToQuote(part)" ng-bind-html='partResults.labels.AddToQuote'></button></td>
                 </tr>
                 </tbody>

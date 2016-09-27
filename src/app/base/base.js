@@ -107,7 +107,7 @@ function BaseConfig($stateProvider, $injector) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($rootScope, $ocMedia, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, base) {
+function BaseController($rootScope, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
@@ -116,16 +116,33 @@ function BaseController($rootScope, $ocMedia, Underscore, snapRemote, defaultErr
     vm.organizationItems = ComponentList.buyerSpecific;
     vm.registrationAvailable = Underscore.filter(vm.organizationItems, function(item) { return item.StateRef == 'registration' }).length;
 
-    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
-        errorMessages['customPassword'] = 'Password must be at least eight characters long and include at least one letter and one number';
-        //regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
-        errorMessages['positiveInteger'] = 'Please enter a positive integer';
-        //regex positiveInteger = ^[0-9]*[1-9][0-9]*$
-        errorMessages['ID_Name'] = 'Only Alphanumeric characters, hyphens and underscores are allowed';
-        //regex ID_Name = ([A-Za-z0-9\-\_]+)
-        errorMessages['confirmpassword'] = 'Your passwords do not match';
-        errorMessages['noSpecialChars'] = 'Only Alphanumeric characters are allowed';
-    });
+    if (WeirService.Locale() == "fr") {
+            defaultErrorMessageResolver.setI18nFileRootPath('/bower_components/angular-auto-validate/dist/lang');
+	    defaultErrorMessageResolver.setCulture('fr-FR');
+	    defaultErrorMessageResolver.getErrorMessages('fr-FR').then(function (errorMessages) {
+		errorMessages['customPassword'] = $sce.trustAsHtml("Mot de passe doit comporter au moins huit caract$eacute;res et inclure au moins une lettre et un chiffre");
+		//regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
+		errorMessages['positiveInteger'] = $sce.trustAsHtml("S\'il vous pla$icirc;t entrer un entier positif");
+		//regex positiveInteger = ^[0-9]*[1-9][0-9]*$
+		errorMessages['ID_Name'] = $sce.trustAsHtml("Seuls les caract&eacute;res alphanum&eacute;riques, des traits d'union et de soulignement sont autoris&eacute;s");
+		//regex ID_Name = ([A-Za-z0-9\-\_]+)
+		errorMessages['confirmpassword'] = 'Vos mots de passe ne correspondent pas';
+		errorMessages['noSpecialChars'] = $sce.trustAsHtml("Seuls les caract$eacute;res alphanum$eacute;riques sont autoris$eacute;s'");
+		errorMessages['wholenumber'] = $sce.trustAsHtml("S'il vous pla&icirc;t entrer un nombre entier");
+	    });
+    } else {
+	    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+		errorMessages['customPassword'] = 'Password must be at least eight characters long and include at least one letter and one number';
+		//regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
+		errorMessages['positiveInteger'] = 'Please enter a positive integer';
+		//regex positiveInteger = ^[0-9]*[1-9][0-9]*$
+		errorMessages['ID_Name'] = 'Only Alphanumeric characters, hyphens and underscores are allowed';
+		//regex ID_Name = ([A-Za-z0-9\-\_]+)
+		errorMessages['confirmpassword'] = 'Your passwords do not match';
+		errorMessages['noSpecialChars'] = 'Only Alphanumeric characters are allowed';
+		errorMessages['wholenumber'] = 'Please enter a whole number';
+	    });
+    }
 
     vm.snapOptions = {
         disable: (!base.left && base.right) ? 'left' : ((base.left && !base.right) ? 'right' : 'none')

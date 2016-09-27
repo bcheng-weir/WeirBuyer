@@ -14,9 +14,9 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <figure>
-                <img ng-if="serialDetail.serialNumber.xp.image" ng-src="{{serialDetail.serialNumber.xp.image.URL}}" />
+                <img ng-if="serialDetail.serialNumber.xp.image" ng-src="{{serialDetail.serialNumber.xp.image.URL}}" style="height: 18em; margin-top: 2em;" />
                 <div ng-if="!serialDetail.serialNumber.xp.image" class="serial-image">
                     <span>General Arrangement drawing of Valve Type</span>
                 </div>
@@ -118,10 +118,16 @@
                     <td>{{part.Detail.xp.ReplacementSchedule}}</td>
                     <td>{{part.Detail.xp.LeadTime}}</td>
 		    <td ng-switch on="part.Detail.StandardPriceSchedule.xp.Currency">
-			    <span ng-switch-when="USD">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'$'}}</span>
-			    <span ng-switch-default>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span>
+			    <span ng-switch-when="USD">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'USD '}}</span>
+			    <span ng-switch-default>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'GBP '}}</span>
+			    <!-- <span ng-switch-default>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span> -->
 		    </td>
-                    <td><input type="number" class="form-control" ng-model="part.Quantity" /></td>
+		    <td>
+			    <form class="form-group">
+				    <input type="number" class="form-control" ng-model="part.Quantity" ng-min="0"
+				    ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" />
+			    </form>
+		    </td>
                     <td class="button-td"><button class="btn btn-warning" ng-click="serialDetail.addPartToQuote(part)" ng-bind-html='serialDetail.headers.AddToQuote'></button></td>
                 </tr>
                 </tbody>

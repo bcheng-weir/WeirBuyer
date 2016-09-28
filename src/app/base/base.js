@@ -128,9 +128,10 @@ function BaseController($rootScope, $ocMedia, $sce, Underscore, snapRemote, defa
             break;
     }
     if (WeirService.Locale() == "fr") {
-            defaultErrorMessageResolver.setI18nFileRootPath('/bower_components/angular-auto-validate/dist/lang');
-	    defaultErrorMessageResolver.setCulture('fr-FR');
-	    defaultErrorMessageResolver.getErrorMessages('fr-FR').then(function (errorMessages) {
+            // defaultErrorMessageResolver.setI18nFileRootPath('/bower_components/angular-auto-validate/dist/lang');
+	    // defaultErrorMessageResolver.setCulture('fr-FR');
+	    // defaultErrorMessageResolver.getErrorMessages('fr-FR').then(function (errorMessages) {
+	    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
 		errorMessages['customPassword'] = $sce.trustAsHtml("Mot de passe doit comporter au moins huit caract$eacute;res et inclure au moins une lettre et un chiffre");
 		//regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
 		errorMessages['positiveInteger'] = $sce.trustAsHtml("S\'il vous pla$icirc;t entrer un entier positif");

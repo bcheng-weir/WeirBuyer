@@ -1,0 +1,21 @@
+  <nav class="navbar navbar-fixed-bottom" ng-controller="footerCtrl">
+        <div class="container-fluid" style="background-color: #d5d9dc;">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header" ng-show="footer.navlabels.language == true">
+                <a class="navbar-brand" style="color: #546270;" ui-sref="terms-of-use">{{footer.navlabels.termsTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="cookie-policy">{{footer.navlabels.cookieTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="privacy-statement">{{footer.navlabels.privacyTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="contact-us">{{footer.navlabels.contactTitle}}</a>
+            </div>
+            <div class="navbar-header" ng-show="footer.navlabels.language == false">
+                <a class="navbar-brand" style="color: #546270;" ui-sref="terms-of-use">{{footer.navlabels.termsTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="cookie-policy">{{footer.navlabels.cookieTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="privacy-statement">{{footer.navlabels.privacyTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="contact-us">{{footer.navlabels.contactTitle}}</a>
+            </div>
+        </div>
+        <div>
+            Copyright Statement
+        </div>
+    </nav>
+

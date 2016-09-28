@@ -91,7 +91,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
     }
 }
 
-function LoginController($state, $stateParams, $exceptionHandler, OrderCloud, LoginService, TokenRefresh, buyerid) {
+function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, OrderCloud, LoginService, WeirService, TokenRefresh, buyerid) {
     var vm = this;
     vm.credentials = {
         Username: null,
@@ -103,7 +103,45 @@ function LoginController($state, $stateParams, $exceptionHandler, OrderCloud, Lo
         vm.form = form;
     };
     vm.rememberStatus = false;
-
+    var labels = {
+        en: {
+            LoginLabel: "Login",
+            UsernameLabel: "Username",
+            PasswordLabel: "Password",
+            BackToLoginLabel: "Back to Login",
+            ForgotPasswordLabel: "Forgot Password",
+            NewPasswordLabel: "New Password",
+            ConfirmPasswordLabel: "Confirm Password",
+            ResetPasswordMessage: "Your password has been reset.",
+            ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
+            ResetPasswordLabel: "Reset Password",
+            SubmitLabel: "Submit"
+        },
+        fr: {
+            LoginLabel: "S'identifier",
+            UsernameLabel: "Nom d'utilisateur",
+            PasswordLabel: "Mot de passe",
+            BackToLoginLabel: "Retour connexion",
+            ForgotPasswordLabel: "Mot de passe oublié",
+            NewPasswordLabel: "Nouveau mot de passe",
+            ConfirmPasswordLabel: "Confirmez le mot de passe",
+            ResetPasswordMessage: "Votre mot de passe a été réinitialisé.",
+            ForgotMessageLabel: "Mot de passe oublié email a été envoyé. S'il vous plaît vérifier votre e-mail afin de réinitialiser votre mot de passe.",
+            ResetPasswordLabel: "Réinitialiser le mot de passe",
+            SubmitLabel: "Soumettre"
+        }
+    };
+    var navlabels = WeirService.navBarLabels();
+    switch (WeirService.Locale()) {
+        case 'fr':
+            vm.labels = labels.fr;
+            vm.navlabels = navlabels.fr;
+            break;
+        default:
+            vm.labels = labels.en;
+            vm.navlabels = navlabels.en;
+            break;
+    }
     vm.submit = function() {
         OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
@@ -119,7 +157,14 @@ function LoginController($state, $stateParams, $exceptionHandler, OrderCloud, Lo
                 $exceptionHandler(ex);
             });
     };
-
+    vm.setCookie = function (lang) {
+        var now = new Date();
+        var exp = new Date(now.getFullYear(), now.getMonth()+6, now.getDate());
+        $cookieStore.put('language', lang, {
+            expires: exp
+        });
+        window.location.reload();
+    };
     vm.forgotPassword = function() {
         LoginService.SendVerificationCode(vm.credentials.Email)
             .then(function() {

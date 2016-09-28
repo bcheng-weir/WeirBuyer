@@ -10,7 +10,8 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
         AddPartToQuote: addPartToQuote,
         AddPartsToQuote: addPartsToQuote,
         QuickQuote: quickQuote,
-	Locale: getLocale
+	    Locale: getLocale,
+        navBarLabels: navlabels
     };
 
     function getLocale() {
@@ -29,6 +30,25 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
 
         }
 	    return localeOfUser;
+    }
+    function navlabels(){
+        var navLabels = {
+            en: {
+                privacyTitle: "Privacy Statement",
+                cookieTitle: "Cookie Policy",
+                termsTitle: "Terms of Use",
+                contactTitle: "Contact",
+                language: true
+            },
+            fr: {
+                privacyTitle: "Déclaration de confidentialité",
+                cookieTitle: "Politique de Cookie",
+                termsTitle: "Conditions d'utilisation",
+                contactTitle: "Contact",
+                language: false
+            }
+        };
+        return navLabels;
     }
 
     function serialNumber(serialNumber) {

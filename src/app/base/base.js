@@ -107,7 +107,7 @@ function BaseConfig($stateProvider, $injector) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($rootScope, $ocMedia, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, base) {
+function BaseController($rootScope, $ocMedia, Underscore, WeirService, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, base) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
@@ -126,7 +126,16 @@ function BaseController($rootScope, $ocMedia, Underscore, snapRemote, defaultErr
         errorMessages['confirmpassword'] = 'Your passwords do not match';
         errorMessages['noSpecialChars'] = 'Only Alphanumeric characters are allowed';
     });
-
+    var vm = this;
+    var navlabels = WeirService.navBarLabels();
+    switch (WeirService.Locale()) {
+        case 'fr':
+            vm.navlabels = navlabels.fr;
+            break;
+        default:
+            vm.navlabels = navlabels.en;
+            break;
+    }
     vm.snapOptions = {
         disable: (!base.left && base.right) ? 'left' : ((base.left && !base.right) ? 'right' : 'none')
     };
@@ -151,6 +160,7 @@ function BaseController($rootScope, $ocMedia, Underscore, snapRemote, defaultErr
         _initDrawers(n);
     });
 }
+
 
 function occomponents() {
     return function(components) {

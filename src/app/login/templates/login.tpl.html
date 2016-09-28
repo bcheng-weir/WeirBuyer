@@ -1,13 +1,15 @@
 <main id="COMPONENT_Login" ng-switch="login.form">
+    <div class="languageBar"><a ng-click="login.setCookie('en')">English</a> | <a ng-click="login.setCookie('fr')">Francais</a> </div>
+    <div class="centered">
     <div class="panel panel-default" ng-switch-when="login">
         <form class="panel-body" name="LoginForm" ng-submit="login.submit()" >
-            <h1 class="text-center">Login</h1>
+            <h1 class="text-center">{{login.labels.LoginLabel}}</h1>
             <div class="form-group">
-                <label for="Username">Email</label>
+                <label for="Username">{{login.labels.UsernameLabel}}</label>
                 <input type="text" class="form-control" id="Username" ng-model="login.credentials.Username" ng-required="true" />
             </div>
             <div class="form-group">
-                <label for="Password">Password</label>
+                <label for="Password">{{login.labels.PasswordLabel}}</label>
                 <input type="password" class="form-control" id="Password" ng-model="login.credentials.Password" ng-required="true" />
             </div>
             <div class="form-group">
@@ -16,50 +18,74 @@
                     Remember Me
                 </label>
             </div>
-            <button id="submit_login" type="submit" class="btn btn-primary" ng-disabled="LoginForm.$invalid">Submit</button>
-            <a id="forgot_password" class="btn btn-link" ng-click="login.setForm('forgot')">Forgot Password?</a> <!--TODO: should this be functional in the Seed Project?-->
+            <button id="submit_login" type="submit" class="btn btn-primary" ng-disabled="LoginForm.$invalid">{{login.labels.SubmitLabel}}</button>
+            <a id="forgot_password" class="btn btn-link" ng-click="login.setForm('forgot')">{{login.labels.ForgotPasswordLabel}}</a> <!--TODO: should this be functional in the Seed Project?-->
         </form>
     </div>
     <div class="panel panel-default" ng-switch-when="forgot">
         <form class="panel-body" name="ForgotPasswordForm" ng-submit="login.forgotPassword()">
-            <h1 class="text-center">Forgot Password</h1>
+            <h1 class="text-center">{{login.labels.SubmitLabel}}</h1>
             <div class="form-group">
-                <label for="Email">Email</label>
+                <label for="Email">{{login.label.UsernameLabel}}</label>
                 <input type="text" class="form-control" id="Email" ng-model="login.credentials.Email" ng-required="true" />
             </div>
-            <button type="submit" id="email_submit" class="btn btn-primary" ng-disabled="ForgotPasswordForm.$invalid">Submit</button>
-            <a id="back_to_login" class="btn btn-link" ng-click="login.setForm('login')">Back to Login</a>
+            <button type="submit" id="email_submit" class="btn btn-primary" ng-disabled="ForgotPasswordForm.$invalid">{{login.labels.SubmitLabel}}</button>
+            <a id="back_to_login" class="btn btn-link" ng-click="login.setForm('login')">{{login.labels.BackToLoginLabel}}</a>
         </form>
     </div>
     <div class="panel panel-default" ng-switch-when="reset">
         <form class="panel-body" name="ResetPasswordForm" ng-submit="login.resetPassword()" >
-            <h1 class="text-center">Reset Password</h1>
+            <h1 class="text-center">{{login.labels.ForgotPasswordLabel}}</h1>
             <div class="form-group">
-                <label for="ResetUsername">Email</label>
+                <label for="ResetUsername">{{login.labels.UsernameLabel}}</label>
                 <input type="text" class="form-control" id="ResetUsername" ng-model="login.credentials.ResetUsername" ng-required="true" />
             </div>
             <div class="form-group">
-                <label for="NewPassword">New Password</label>
+                <label for="NewPassword">{{login.labels.NewPasswordLabel}}</label>
                 <input type="password" class="form-control" id="NewPassword" ng-model="login.credentials.NewPassword" ng-required="true" />
             </div>
             <div class="form-group">
-                <label for="ConfirmPassword">Confirm Password</label>
+                <label for="ConfirmPassword">{{login.labels.ConfirmPasswordLabel}}</label>
                 <input type="password" class="form-control" id="ConfirmPassword" ng-model="login.credentials.ConfirmPassword" ng-required="true" />
             </div>
-            <button type="submit" id="reset_submit" class="btn btn-primary" ng-disabled="ResetPasswordForm.$invalid || login.credentials.NewPassword != login.credentials.ConfirmPassword">Submit</button>
+            <button type="submit" id="reset_submit" class="btn btn-primary" ng-disabled="ResetPasswordForm.$invalid || login.credentials.NewPassword != login.credentials.ConfirmPassword">{{login.labels.SubmitLabel}}</button>
         </form>
     </div>
     <div class="panel panel-default" ng-switch-when="verificationCodeSuccess">
         <form class="panel-body" name="VerificationCodeSuccessForm">
-            <h1 class="text-center">Forgot Password</h1>
-            <div class="alert alert-info" id="forgot_message">Forgot Password email has been sent. Please check your email in order to reset your password.</div>
+            <h1 class="text-center">{{login.labels.ForgotPasswordLabel}}</h1>
+            <div class="alert alert-info" id="forgot_message">{{login.labels.ForgotMessageLabel}}</div>
         </form>
     </div>
     <div class="panel panel-default" ng-switch-when="resetSuccess">
         <form class="panel-body" name="ResetSuccessForm">
-            <h1 class="text-center">Reset Password</h1>
-            <div class="alert alert-info">Your password has been reset.</div>
-            <a class="btn btn-link" id="back_to_login2" ng-click="login.setForm('login')">Back to Login</a>
+            <h1 class="text-center">{{login.labels.ResetPasswordLabel}}</h1>
+            <div class="alert alert-info">{{login.labels.ResetPasswordMessage}}</div>
+            <a class="btn btn-link" id="back_to_login2" ng-click="login.setForm('login')">{{login.labels.BackToLoginLabel}}</a>
         </form>
     </div>
+
+
+    </div>
+
+    <nav class="navbar navbar-fixed-bottom" ng-controller="LoginCtrl">
+        <div class="container-fluid" style="background-color: #d5d9dc;">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header" ng-show="login.navlabels.language == true">
+                <a class="navbar-brand" style="color: #546270;" ui-sref="terms-of-use">{{login.navlabels.termsTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="cookie-policy">{{login.navlabels.cookieTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="privacy-statement">{{login.navlabels.privacyTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="contact-us">{{login.navlabels.contactTitle}}</a>
+            </div>
+            <div class="navbar-header" ng-show="login.navlabels.language == false">
+                <a class="navbar-brand" style="color: #546270;" ui-sref="terms-of-use">{{login.navlabels.termsTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="cookie-policy">{{login.navlabels.cookieTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="privacy-statement">{{login.navlabels.privacyTitle}}</a>
+                <a class="navbar-brand" style="color: #546270;" ui-sref="contact-us">{{login.navlabels.contactTitle}}</a>
+            </div>
+        </div>
+        <div>
+            Copyright Statement
+        </div>
+    </nav>
 </main>

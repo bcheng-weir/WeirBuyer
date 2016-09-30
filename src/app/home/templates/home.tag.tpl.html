@@ -1,0 +1,20 @@
+<ui-view>
+    <form name="tag_form" ng-submit="tag.searchTags()" class="panel home-panel">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group has-feedback" ng-repeat="number in tag.tags track by $index">
+			<label ng-if="$index == 0" ng-bind-html='tag.labels.EnterTag'><span ng-if="tag.tags.length > 1"></span></label>
+                    <div class="input-group col-md-12">
+                        <input type="text" class="form-control" ng-model="tag.tags[$index]" typeahead-min-length="3" uib-typeahead="tag.xp.TagNumber as (tag.xp.TagNumber + ' - ' + tag.Description) for tag in home.serialNumberList | tagPreSearch:$viewValue" />
+                        <span class="input-group-addon" ng-if="tag.tags.length > 1" ng-click="tag.removeTag($index)"><i class="fa fa-minus text-danger"></i></span>
+                    </div>
+                </div>
+		<button type="button" class="btn btn-link" ng-click="tag.addTag()" ng-bind-html='tag.labels.AddMore'><i class="fa fa-plus"></i></button>
+                <div class="pull-right">
+			<button type="button" class="btn btn-default" ng-show="tag.showClearSearch()" ng-click="tag.clearSearch()" ng-bind-html='tag.labels.ClearSearch'></button>
+			<button type="submit" class="btn btn-primary" ng-bind-html='tag.labels.Search'></button>
+                </div>
+            </div>
+        </div>
+    </form>
+</ui-view>

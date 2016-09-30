@@ -7,6 +7,8 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
         SerialNumber: serialNumber,
         SerialNumbers: serialNumbers,
         PartNumbers: partNumbers,
+        TagNumber: tagNumber,
+        TagNumbers: tagNumbers,
         AddPartToQuote: addPartToQuote,
         AddPartsToQuote: addPartsToQuote,
         QuickQuote: quickQuote,
@@ -64,7 +66,7 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
             .then(function(matches) {
 		if (matches.Items.length == 1) {
                        	result = matches.Items[0];
-                	getParts(result.ID);
+                	getParts(result.ID, deferred, result);
 		} else if (matches.Items.length == 0) {
 			throw { message: "No matches found for serial number " + serialNumber};
 		} else {
@@ -75,20 +77,41 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
                	deferred.reject(ex);
             });
 
-        function getParts(catId) {
-            OrderCloud.Me.ListProducts(null, 1, 100, null, null, null, catId)
-                .then(function(products) {
-                    result.Parts = [];
-                    angular.forEach(products.Items, function(product) {
-                        result.Parts.push({Number: product.ID, Detail: product});
-                    });
-                    deferred.resolve(result);
-                })
-                .catch(function(ex) {
-                    deferred.reject(ex);
-                })
-        }
         return deferred.promise;
+    }
+    function tagNumber(tagNumber) {
+        var deferred = $q.defer();
+        var result;
+
+        OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber})
+            .then(function(matches) {
+		if (matches.Items.length == 1) {
+                       	result = matches.Items[0];
+                	getParts(result.ID, deferred, result);
+		} else if (matches.Items.length == 0) {
+			throw { message: "No matches found for tag number " + tagNumber};
+		} else {
+			throw { message: "Data error: Tag number " + tagNumber + " is not unique"};
+		}
+            })
+            .catch(function(ex) {
+               	deferred.reject(ex);
+            });
+
+        return deferred.promise;
+    }
+    function getParts(catId, deferred, result) {
+        OrderCloud.Me.ListProducts(null, 1, 100, null, null, null, catId)
+            .then(function(products) {
+                result.Parts = [];
+                angular.forEach(products.Items, function(product) {
+                    result.Parts.push({Number: product.ID, Detail: product});
+                });
+                deferred.resolve(result);
+            })
+            .catch(function(ex) {
+                deferred.reject(ex);
+            })
     }
 
     function serialNumbers(serialNumbers) {
@@ -101,6 +124,39 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
             	queue.push((function() {
                 	var d = $q.defer();
                 	OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number})
+                    	.then(function(matches) {
+				if (matches.Items.length == 1) {
+                        		results.push({Number: number, Detail: matches.Items[0]});
+				} else {
+                                	results.push({Number: number, Detail: null});
+				}
+                        	d.resolve();
+                    	})
+                    	.catch(function(ex) {
+                        	results.push({Number: number, Detail: null});
+                        	d.resolve();
+                    	});
+
+                	return d.promise;
+            	})());
+	    }
+        });
+
+        $q.all(queue).then(function() {
+            deferred.resolve(results);
+        });
+        return deferred.promise;
+    }
+    function tagNumbers(tagNumbers) {
+        var deferred = $q.defer();
+
+        var results = [];
+        var queue = [];
+        angular.forEach(tagNumbers, function(number) {
+            if (number) {
+            	queue.push((function() {
+                	var d = $q.defer();
+                	OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": number})
                     	.then(function(matches) {
 				if (matches.Items.length == 1) {
                         		results.push({Number: number, Detail: matches.Items[0]});

@@ -6,6 +6,9 @@ angular.module('orderCloud')
 	.controller( 'SerialDetailCtrl', SerialDetailController )
 	.controller( 'PartCtrl', PartController )
 	.controller( 'PartResultsCtrl', PartResultsController )
+	.controller( 'TagCtrl', TagController)
+	.controller( 'TagResultsCtrl', TagResultsController )
+	.controller( 'TagDetailCtrl', TagDetailController )
 ;
 
 function HomeConfig($stateProvider) {
@@ -50,7 +53,7 @@ function HomeConfig($stateProvider) {
 		})
 		.state( 'home.serial.detail', {
 			url: '/:number?:searchNumbers',
-		templateUrl: 'home/templates/home.serial.detail.tpl.html',
+		        templateUrl: 'home/templates/home.serial.detail.tpl.html',
 			controller: 'SerialDetailCtrl',
 			controllerAs: 'serialDetail',
 			resolve: {
@@ -73,6 +76,34 @@ function HomeConfig($stateProvider) {
 			resolve: {
 				PartNumberResults: function( $stateParams, WeirService) {
 					return WeirService.PartNumbers($stateParams.numbers.split(','));
+				}
+			}
+		})
+		.state( 'home.tag', {
+			url: '/tag',
+			templateUrl: 'home/templates/home.tag.tpl.html',
+			controller: 'TagCtrl',
+			controllerAs: 'tag'
+		})
+		.state( 'home.tag.results', {
+			url: '/search?numbers',
+			templateUrl: 'home/templates/home.tag.results.tpl.html',
+			controller: 'TagResultsCtrl',
+			controllerAs: 'tagResults',
+			resolve: {
+				TagNumberResults: function( $stateParams, WeirService ) {
+					return WeirService.TagNumbers($stateParams.numbers.split(','));
+				}
+			}
+		})
+		.state( 'home.tag.detail', {
+			url: '/:number?:searchNumbers',
+		        templateUrl: 'home/templates/home.tag.detail.tpl.html',
+			controller: 'TagDetailCtrl',
+			controllerAs: 'tagDetail',
+			resolve: {
+				TagNumberDetail: function( $stateParams, WeirService ) {
+					return WeirService.TagNumber($stateParams.number);
 				}
 			}
 		})
@@ -393,5 +424,194 @@ function PartResultsController( $rootScope, $sce, WeirService, PartNumberResults
 //					part.Quantity = null;
 //				});
 //	};
+}
+
+function TagController(WeirService, $state, $sce) {
+	var vm = this;
+	
+	var labels = {
+		en: {
+			// WhereToFind: "where to find your serial number",
+			EnterTag: "Enter Tag number",
+			AddMore: "Add more tag numbers   +",
+			ClearSearch: "Clear Search",
+			Search: "Search"
+		},
+		fr: {
+			// WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
+			EnterTag: $sce.trustAsHtml("FR: Enter Tag number"),
+			AddMore: $sce.trustAsHtml("FR: Add more tag numbers   +"),
+			ClearSearch: $sce.trustAsHtml("Effacer la recherche"),
+			Search: "Chercher"
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
+
+	vm.tags = [null];
+
+	vm.addTag = function() {
+		vm.tags.push(null);
+	};
+
+	vm.removeTag = function(index) {
+		vm.tags.splice(index, 1);
+	};
+
+	vm.searchTags = function() {
+		if (vm.tags.length == 1) {
+			$state.go('home.tag.detail', {number: vm.tags[0]});
+		}
+		else {
+			$state.go('home.tag.results', {numbers: vm.tags.join(',')});
+		}
+	};
+
+	vm.clearSearch = function() {
+		vm.tags = [null];
+	};
+
+	vm.showClearSearch = function() {
+		var count = 0;
+		angular.forEach(vm.tags, function(number) {
+			if (number) count++;
+		});
+		return count > 0;
+	};
+}
+
+
+function TagResultsController(WeirService, $stateParams, TagNumberResults, $sce ) {
+	var vm = this;
+	vm.tagNumberResults = TagNumberResults;
+	vm.searchNumbers = $stateParams.numbers;
+
+	var multiCust = false;
+	var cust = "";
+	for(var i=0; i< TagNumberResults.length; i++) {
+		var tmp = TagNumberResults[i].Detail;
+		if (tmp && (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust))) {
+			if (cust != "") {
+				multiCust = true;
+				break;
+			} else {
+				cust = tmp.xp.Customer;
+			}
+		}
+	}
+	vm.MultipleCustomers = multiCust;
+	vm.Customer = cust;
+
+	var labels = {
+		en: {
+			Customer: "Customer",
+			ResultsHeader: "Showing results for tag numbers;",
+			SerialNumber: "Serial Number",
+			TagNumber: "Tag number (if available)",
+			ValveDesc: "Valve description",
+			NoResultsMsg: "No results found for;",
+			SearchAgain: "Search again",
+			ViewDetails: "View details"
+		},
+		fr: {
+			Customer: "Client",
+			ResultsHeader: $sce.trustAsHtml("FR: Showing results for tag numbers"),
+			SerialNumber: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
+			TagNumber: $sce.trustAsHtml("Num&eacute;ro de tag (si disponible)"),
+			ValveDesc: "Description de soupape",
+			NoResultsMsg: $sce.trustAsHtml("Aucun r&eacute;sultat pour;"),
+			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
+			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
+}
+
+function TagDetailController( $stateParams, $rootScope, $sce, WeirService, TagNumberDetail ) {
+	var vm = this;
+	vm.tagNumber = TagNumberDetail;
+	vm.searchNumbers = $stateParams.searchNumbers;
+        vm.PartQuantity = function(partId) {
+		return TagNumberDetail.xp.Parts[partId];
+	};
+	var labels = {
+		en: {
+			ResultsHeader: "Showing results for tag number; ",
+			Tag: "Tag number (if available); ",
+			Customer: "Customer; ",
+			ManufDate: "Date of valve manufacture; ",
+			SearchAgain: "Search Again",
+			BackToResults: "Return to Results",
+			SpecHeader: "Specification",
+			SerialNum: "Serial number",
+			ValveDesc: "Valve description",
+			ValveQty: "Valve quantity",
+			Size: "Size",
+			ValveType: "Valve type",
+			ValveForm: "Valve form",
+			BodyRating: "Body rating",
+			Pressure: "Pressure",
+			BackPressure: "Back Pressure",
+			Temp: "Temperature",
+			Inlet: "In",
+			Outlet: "Out"
+		},
+		fr: {
+			ResultsHeader: $sce.trustAsHtml("FR: Showing results for tag number "),
+			Tag: $sce.trustAsHtml("Num&eacute;ro d'identification (si disponible); "),
+			Customer: $sce.trustAsHtml("Client; "),
+			ManufDate: $sce.trustAsHtml("La date de fabrication de la valve; "),
+			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
+			BackToResults: $sce.trustAsHtml("Retour aux r&eacute;sultats"),
+			SpecHeader: $sce.trustAsHtml("Sp&eacute;cification"),
+			SerialNum: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
+			ValveDesc: $sce.trustAsHtml("Description de la vanne"),
+			ValveQty: $sce.trustAsHtml("La quantit&eacute; de vanne"),
+			Size: $sce.trustAsHtml("Taille"),
+			ValveType: $sce.trustAsHtml("Type de vanne"),
+			ValveForm: $sce.trustAsHtml("Sous forme de Valve"),
+			BodyRating: $sce.trustAsHtml("Note du corps"),
+			Pressure: $sce.trustAsHtml("Pression"),
+			BackPressure: $sce.trustAsHtml("Retour Pression"),
+			Temp: $sce.trustAsHtml("Temp&eacute;rature"),
+			Inlet: $sce.trustAsHtml("Dans"),
+			Outlet: $sce.trustAsHtml("En dehors")
+		}
+	};
+	var headers = {
+		en: {
+			PartList: "Parts list for tag number;",
+			PartNum: "Part number",
+			PartDesc: "Description of part",
+			PartQty: "Part quantity",
+			ReplSched: "Recommended replacement",
+			LeadTime: "Lead time",
+			Price: "Price per item or set",
+			Qty: "Quantity",
+			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
+			AddToQuote: "Add to Quote"
+		},
+		fr: {
+			PartList: $sce.trustAsHtml("FR: Parts list for tag number"),
+			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence"),
+			PartDesc: $sce.trustAsHtml("Description de la partie"),
+			PartQty: $sce.trustAsHtml("Quantit&eacute; de partie"),
+			ReplSched: $sce.trustAsHtml("Remplacement recommand&eacute;e"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de mise en &oelig;uvre"),
+			Price: $sce.trustAsHtml("Prix par article ou ensemble"),
+			Qty: $sce.trustAsHtml("Quantit&eacute;"),
+			LeadTimeNotice: $sce.trustAsHtml("D&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le plus long d&eacute;lai de la liste des pi&eacute;ces de rechange demand&eacute;es"),
+			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la proposition")
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
+	vm.headers = WeirService.LocaleResources(headers);
+
+	// vm.addPartToQuote = function(part) {
+		// WeirService.AddPartToQuote(part)
+				// .then(function(data) {
+					// $rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
+					// part.Quantity = null;
+				// });
+	// };
 }
 

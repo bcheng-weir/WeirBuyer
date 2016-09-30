@@ -1,4 +1,7 @@
 angular.module( 'orderCloud' )
+    .filter( 'serialPreSearch', serialPreSearch )
+    .filter( 'tagPreSearch', tagPreSearch )
+    .filter( 'partPreSearch', partPreSearch )
     .filter( 'serialnumber', serialnumber )
     .filter( 'searchresults', searchresults )
     .filter( 'weirdate', weirdate )
@@ -8,6 +11,29 @@ function serialnumber() {
     return function(number) {
         return number.substr(0,3) + '-' + number.substr(3,3) + '/' + number.substr(6,4);
     }
+}
+
+function serialPreSearch() {
+  return function(items, serial) {
+    return items.filter(function(category, index, array) {
+	return category && category.xp && category.xp.SN && category.xp.SN.indexOf(serial) >= 0;
+    });
+  };
+}
+
+function tagPreSearch() {
+  return function(items, tag) {
+    return items.filter(function(category, index, array) {
+	return category && category.xp && category.xp.TagNumber && category.xp.TagNumber.indexOf(tag) >= 0;
+    });
+  };
+}
+function partPreSearch() {
+  return function(items, partno) {
+    return items.filter(function(part, index, array) {
+	return part && part.Name && part.Name.indexOf(partno) >= 0;
+    });
+  };
 }
 
 function searchresults() {

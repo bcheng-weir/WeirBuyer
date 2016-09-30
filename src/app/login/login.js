@@ -115,7 +115,8 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
             ResetPasswordMessage: "Your password has been reset.",
             ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
             ResetPasswordLabel: "Reset Password",
-            SubmitLabel: "Submit"
+            SubmitLabel: "Submit",
+            BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter."
         },
         fr: {
             LoginLabel: "S'identifier",
@@ -128,7 +129,8 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
             ResetPasswordMessage: "Votre mot de passe a été réinitialisé.",
             ForgotMessageLabel: "Mot de passe oublié email a été envoyé. S'il vous plaît vérifier votre e-mail afin de réinitialiser votre mot de passe.",
             ResetPasswordLabel: "Réinitialiser le mot de passe",
-            SubmitLabel: "Soumettre"
+            SubmitLabel: "Soumettre",
+            BadUsernamePassword: "Nous ne sommes pas en mesure de reconnaître l'e-mail ou mot de passe entré. S'il vous plaît vérifier et entrer de nouveau."
         }
     };
     var navlabels = WeirService.navBarLabels();
@@ -151,8 +153,8 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
                 $state.go('home.serial');
             })
             .catch(function(ex) {
-                if(ex.data.error == "Username not found or password incorrect") {
-                    ex.data.error = "We are not able to recognise the email or password entered. Please check and re-enter.";
+                if(ex.status == 400) {
+                    ex.data.error = vm.labels.BadUsernamePassword;
                 }
                 $exceptionHandler(ex);
             });

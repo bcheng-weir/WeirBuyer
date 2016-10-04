@@ -32,13 +32,7 @@ function HomeConfig($stateProvider) {
 			url: '/serial',
 			templateUrl: 'home/templates/home.serial.tpl.html',
 			controller: 'SerialCtrl',
-			controllerAs: 'serial',
-			resolve: {
-				NewsArticles: function() { return []; }
-				// NewsArticles: function(NewsService) {
-					// return NewsService.List();
-				// }
-			}
+			controllerAs: 'serial'
 		})
 		.state( 'home.serial.results', {
 			url: '/search?numbers',
@@ -110,14 +104,14 @@ function HomeConfig($stateProvider) {
 	;
 }
 
-function HomeController(WeirService, SerialNumbers, PartNumbers, $sce) {
+function HomeController($sce, $state, WeirService, SerialNumbers, PartNumbers) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
 	vm.partNumberList = PartNumbers.Items;
+	vm.searchType = WeirService.GetLastSearchType();
 
 	vm.formatSerialNumber = function(number) {
 		if (!number) return;
-
 		return number.substr(0,3) + '-' + number.substr(3,3) + '/' + number.substr(6,4);
 	};
 	var labels = {
@@ -133,11 +127,19 @@ function HomeController(WeirService, SerialNumbers, PartNumbers, $sce) {
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+        var searchType = WeirService.GetLastSearchType();
+	searchType = searchType || WeirService.SearchType.Serial;
+	if (searchType == WeirService.SearchType.Part) {
+	    $state.go('home.part');
+	} else if (searchType == WeirService.SearchType.Tag) {
+	    $state.go('home.tag');
+	} else {
+	    $state.go('home.serial');
+	}
 }
 
-function SerialController(WeirService, $state, $sce /*, NewsArticles */ ) {
+function SerialController(WeirService, $state, $sce ) {
 	var vm = this;
-	// vm.newsArticles = NewsArticles;
 	
 	var labels = {
 		en: {
@@ -156,6 +158,7 @@ function SerialController(WeirService, $state, $sce /*, NewsArticles */ ) {
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+	WeirService.SetLastSearchType(WeirService.SearchType.Serial);
 
 	vm.serialNumbers = [null];
 
@@ -332,6 +335,7 @@ function PartController( $state, $sce, WeirService ) {
 	var vm = this;
 
 	vm.partNumbers = [null];
+	WeirService.SetLastSearchType(WeirService.SearchType.Part);
 
 	vm.addPartNumber = function() {
 		vm.partNumbers.push(null);
@@ -446,6 +450,7 @@ function TagController(WeirService, $state, $sce) {
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+	WeirService.SetLastSearchType(WeirService.SearchType.Tag);
 
 	vm.tags = [null];
 

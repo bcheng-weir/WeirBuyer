@@ -14,7 +14,10 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
         QuickQuote: quickQuote,
         Locale: getLocale,
         LocaleResources: selectLocaleResources,
-        navBarLabels: navlabels
+        navBarLabels: navlabels,
+	SetLastSearchType: setLastSearchType,
+	GetLastSearchType: getLastSearchType,
+	SearchType: { Serial: "s", Part: "p", Tag: "t"}
     };
     function getLocale() {
         var localeOfUser = $cookieStore.get('language');
@@ -276,6 +279,14 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
 		        })());
 	    });
 	}
+    }
+
+    var lastSearchType = "";
+    function setLastSearchType(type) {
+        lastSearchType = type;
+    }
+    function getLastSearchType() {
+        return lastSearchType;
     }
 
     function addPartToQuote(part) {

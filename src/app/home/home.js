@@ -21,10 +21,10 @@ function HomeConfig($stateProvider) {
 			controllerAs: 'home',
 			resolve: {
 				SerialNumbers: function(OrderCloud) {
-					return OrderCloud.Me.ListCategories(null, 1, 100);
+					return OrderCloud.Me.ListCategories(null, 1, 100, null, null, null, 3);
 				},
 				PartNumbers: function(OrderCloud) {
-					return OrderCloud.Me.ListProducts(null, 1, 100);
+					return OrderCloud.Me.ListProducts(null, 1, 100, null, null, null);
 				}
 			}
 		})

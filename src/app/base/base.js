@@ -108,7 +108,7 @@ function BaseConfig($stateProvider, $injector) {
 }
 
 
-function BaseController($rootScope, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base) {
+function BaseController($state, $rootScope, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
@@ -158,6 +158,18 @@ function BaseController($rootScope, $ocMedia, $sce, Underscore, snapRemote, defa
 
     vm.snapOptions = {
         disable: (!base.left && base.right) ? 'left' : ((base.left && !base.right) ? 'right' : 'none')
+    };
+
+    vm.sendToSearch = function() {
+        var searchType = WeirService.GetLastSearchType();
+	searchType = searchType || WeirService.SearchType.Serial;
+	if (searchType == WeirService.SearchType.Part) {
+	    $state.go('home.part');
+	} else if (searchType == WeirService.SearchType.Tag) {
+	    $state.go('home.tag');
+	} else {
+	    $state.go('home.serial');
+	}
     };
 
     function _isMobile() {

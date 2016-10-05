@@ -222,10 +222,14 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
     
                         OrderCloud.Me.ListProducts(null, 1, 50, null, null, {"Name": number})
                             .then(function(products) {
-			        angular.forEach(products.Items, function(product) {
-			           var result = {Number: number, Detail: product};
-                                   results.Parts.push(result);
-			        });
+				if (products.Items.length == 0) {
+                                    results.Parts.push({Number: number, Detail: null});
+				} else {
+			            angular.forEach(products.Items, function(product) {
+			               var result = {Number: number, Detail: product};
+                                       results.Parts.push(result);
+			            });
+				}
                                 d.resolve();
                             })
                             .catch(function(ex) {
@@ -240,21 +244,23 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
 
 	function getValvesForParts(results) {
 	    angular.forEach(results.Parts, function(result) {
-		    q2.push((function() {
-		        var d2 = $q.defer();
-		        var part = result.Detail;
-		        OrderCloud.Categories.ListProductAssignments(null, part.ID, 1, 50)
-		            .then(function(valveIds) {
-			         angular.forEach(valveIds.Items, function(entry) {
-				     if (categories.indexOf(entry) < 0) categories.push(entry);
+		    if (result.Detail) {
+		        q2.push((function() {
+		            var d2 = $q.defer();
+		            var part = result.Detail;
+		            OrderCloud.Categories.ListProductAssignments(null, part.ID, 1, 50)
+		                .then(function(valveIds) {
+			             angular.forEach(valveIds.Items, function(entry) {
+				         if (categories.indexOf(entry) < 0) categories.push(entry);
 			         });
-			         d2.resolve();
-			    })
-		        .catch (function(ex) {
-			        d2.resolve();
-		        });
-			return d2.promise;
-		    })());
+			             d2.resolve();
+			        })
+		            .catch (function(ex) {
+			            d2.resolve();
+		            });
+			    return d2.promise;
+		        })());
+		    }
 	    });
 	}
 

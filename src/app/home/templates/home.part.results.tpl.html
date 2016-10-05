@@ -28,7 +28,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="part in partResults.partNumberResults.Parts">
+                <tr ng-repeat="part in partResults.partNumberResults.Parts | searchresults:true">
                     <td class="text-danger">{{part.Detail.Name}}</td>
                     <td>{{part.Detail.Description}}</td>
                     <td>{{part.Detail.xp.ReplacementSchedule}}</td>

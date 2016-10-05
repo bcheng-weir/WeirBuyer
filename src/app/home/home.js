@@ -203,15 +203,18 @@ function SerialResultsController(WeirService, $stateParams, SerialNumberResults,
 
 	var multiCust = false;
 	var cust = "";
+	var numFound = 0;
 	for(var i=0; i< SerialNumberResults.length; i++) {
 		var tmp = SerialNumberResults[i].Detail;
-		if (tmp && (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust))) {
-			if (cust != "") {
-				multiCust = true;
-				break;
-			} else {
-				cust = tmp.xp.Customer;
-			}
+		if (tmp) {
+		    numFound++;
+		    if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
+		        if (cust != "") {
+			    multiCust = true;
+		        } else {
+			    cust = tmp.xp.Customer;
+		        }
+		    }
 		}
 	}
 	vm.MultipleCustomers = multiCust;
@@ -220,7 +223,7 @@ function SerialResultsController(WeirService, $stateParams, SerialNumberResults,
 	var labels = {
 		en: {
 			Customer: "Customer",
-			ResultsHeader: "Showing results for serial numbers;",
+			ResultsHeader: "Showing results for serial numbers; " + numFound.toString() + " of " + SerialNumberResults.length.toString() + " searched serial numbers found",
 			SerialNumber: "Serial Number",
 			TagNumber: "Tag number (if available)",
 			ValveDesc: "Valve description",
@@ -230,7 +233,7 @@ function SerialResultsController(WeirService, $stateParams, SerialNumberResults,
 		},
 		fr: {
 			Customer: "Client",
-			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de &eacute;rie;"),
+			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de &eacute;rie; " + numFound.toString() + " of " + SerialNumberResults.length.toString() + " searched serial numbers found"),
 			SerialNumber: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
 			TagNumber: $sce.trustAsHtml("Num&eacute;ro de tag (si disponible)"),
 			ValveDesc: "Description de soupape",
@@ -388,11 +391,15 @@ function PartResultsController( $rootScope, $sce, WeirService, PartNumberResults
 	vm.partNumberResults = PartNumberResults;
 	vm.Customer = PartNumberResults.Customer;
 	vm.MultipleCustomers = (vm.Customer == "*");
+	var numFound = 0;
+	angular.forEach(PartNumberResults.Parts, function(entry) {
+		if (entry.Detail) numFound++;
+	});
 
 	var labels = {
 		en: {
 			Customer: "Customer",
-			ResultsHeader: "Showing results for part numbers;",
+			ResultsHeader: "Showing results for part numbers; " + numFound.toString() + " of " + PartNumberResults.Parts.length.toString() + " searched part numbers found",
 			SearchAgain: "Search again",
 			PartNum: "Part number",
 			PartDesc: "Description of part",
@@ -405,7 +412,7 @@ function PartResultsController( $rootScope, $sce, WeirService, PartNumberResults
 		},
 		fr: {
 			Customer: "Client",
-			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de pi&eacute;ce"),
+			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de pi&eacute;ce " + numFound.toString() + " of " + PartNumberResults.Parts.length.toString() + " searched part numbers found"),
 			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence"),
 			PartDesc: $sce.trustAsHtml("Description de la partie"),
@@ -492,14 +499,17 @@ function TagResultsController(WeirService, $stateParams, TagNumberResults, $sce 
 
 	var multiCust = false;
 	var cust = "";
+	var numFound = 0;
 	for(var i=0; i< TagNumberResults.length; i++) {
 		var tmp = TagNumberResults[i].Detail;
-		if (tmp && (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust))) {
-			if (cust != "") {
+		if (tmp) {
+			numFound++;
+			if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
+			    if (cust != "") {
 				multiCust = true;
-				break;
-			} else {
+			    } else {
 				cust = tmp.xp.Customer;
+			    }
 			}
 		}
 	}
@@ -510,6 +520,7 @@ function TagResultsController(WeirService, $stateParams, TagNumberResults, $sce 
 		en: {
 			Customer: "Customer",
 			ResultsHeader: "Showing results for tag numbers;",
+			ResultsHeader: "Showing results for tag numbers; " + numFound.toString() + " of " + TagNumberResults.length.toString() + " searched tag numbers found",
 			SerialNumber: "Serial Number",
 			TagNumber: "Tag number (if available)",
 			ValveDesc: "Valve description",
@@ -519,7 +530,7 @@ function TagResultsController(WeirService, $stateParams, TagNumberResults, $sce 
 		},
 		fr: {
 			Customer: "Client",
-			ResultsHeader: $sce.trustAsHtml("FR: Showing results for tag numbers"),
+			ResultsHeader: $sce.trustAsHtml("FR: Showing results for tag numbers; " + numFound.toString() + " of " + TagNumberResults.length.toString() + " searched tag numbers found"),
 			SerialNumber: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
 			TagNumber: $sce.trustAsHtml("Num&eacute;ro de tag (si disponible)"),
 			ValveDesc: "Description de soupape",

@@ -16,7 +16,10 @@
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
                     <a href="#" uib-dropdown-toggle role="button">Your quotes <span class="caret"></span></a>
                     <ul uib-dropdown-menu>
-                        <li>TBD</li>
+                        <li><a href="" ui-sref="quotes.saved">Saved</a></li>
+                        <li><a href="" ui-sref="quotes.shared">Shared</a></li>
+                        <li><a href="" ui-sref="quotes.rejected">Rejected</a></li>
+                        <li><a href="" ui-sref="quotes.approved">Approved</a></li>
                     </ul>
                 </li>
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">

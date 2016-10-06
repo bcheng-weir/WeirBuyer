@@ -1,0 +1,11 @@
+<article id="COMPONENT_Quotes" class="container-fluid">
+	<ul class="nav nav-tabs nav-justified" ng-if="['quotes.saved', 'quotes.shared', 'quotes.rejected', 'quotes.approved'].indexOf(application.$state.current.name) > -1">
+		<li role="presentation" ui-sref-active="active" ui-sref="quotes.saved"><a href="#" ng-bind-html='quotes.labels.Saved'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="quotes.shared"><a href="#" ng-bind-html='quotes.labels.Shared'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="quotes.rejected"><a href="#" ng-bind-html='quotes.labels.Rejected'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="quotes.approved"><a href="#" ng-bind-html='quotes.labels.Approved'></a></li>
+	</ul>
+	<div ui-view></div>
+</article>
+
+

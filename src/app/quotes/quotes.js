@@ -14,7 +14,12 @@ function QuotesConfig($stateProvider) {
 			url: '/quotes',
 			templateUrl: 'quotes/templates/quotes.tpl.html',
 			controller: 'QuotesCtrl',
-			controllerAs: 'quotes'
+			controllerAs: 'quotes',
+			resolve: {
+				Customer: function(WeirService) {
+					return WeirService.GetCurrentCustomer();
+				}
+			}
 		})
 		.state( 'quotes.saved', {
 			url: '/saved',
@@ -23,7 +28,10 @@ function QuotesConfig($stateProvider) {
 			controllerAs: 'saved',
 			resolve: {
 				Quotes: function(WeirService) {
-					return WeirService.FindQuotes([WeirService.OrderStatus.Saved], false);
+					return WeirService.FindQuotes([WeirService.OrderStatus.Saved, WeirService.OrderStatus.Rejected], false);
+				},
+			        CurrentOrderId: function(CurrentOrder) {
+					return CurrentOrder.GetID();
 				}
 			}
 		})
@@ -63,8 +71,9 @@ function QuotesConfig($stateProvider) {
 	;
 }
 
-function QuotesController($sce, $state, WeirService) {
+function QuotesController($sce, $state, WeirService, Customer) {
 	var vm = this;
+	vm.Customer = Customer;
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);
 		if (status) {
@@ -88,12 +97,26 @@ function QuotesController($sce, $state, WeirService) {
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+
 }
 
-function SavedQuotesController(WeirService, $state, $sce, Quotes ) {
+function SavedQuotesController(WeirService, $state, $sce,
+    CurrentOrder, Quotes, CurrentOrderId) {
 	var vm = this;
 	vm.Quotes = Quotes;
+	vm.CurrentOrderId = CurrentOrderId;
 	
+	function _reviewQuote(quoteId) {
+	    var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ?
+                confirm(vm.labels.ReplaceCartMessage) : true;
+            if (gotoReview) {
+		CurrentOrder.Set(quoteId);
+		CurrentOrder.Get().then(function() {
+	            $state.go('myquote.detail');
+		});
+            }
+	}
+
 	var labels = {
 		en: {
 		    Header: Quotes.length.toString() + " saved Quote" +  (Quotes.length == 1 ? "" : "s"),
@@ -102,7 +125,8 @@ function SavedQuotesController(WeirService, $state, $sce, Quotes ) {
                     Total: "Total",
                     Customer: "Customer",
                     Status: "Status",
-                    ValidTo: "Valid until"
+                    ValidTo: "Valid until",
+		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
 		},
 		fr: {
 			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " saved Quote" +  (Quotes.length == 0 ? "" : "s")),
@@ -111,10 +135,12 @@ function SavedQuotesController(WeirService, $state, $sce, Quotes ) {
                     Total: $sce.trustAsHtml("FR-Total"),
                     Customer: $sce.trustAsHtml("FR-Customer"),
                     Status: $sce.trustAsHtml("FR-Status"),
-                    ValidTo: $sce.trustAsHtml("FR-Valid until")
+                    ValidTo: $sce.trustAsHtml("FR-Valid until"),
+		    ReplaceCartMessage: "FR: Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+	vm.ReviewQuote = _reviewQuote;
 }
 
 

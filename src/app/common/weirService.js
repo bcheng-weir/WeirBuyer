@@ -2,7 +2,7 @@ angular.module( 'orderCloud' )
     .factory( 'WeirService', WeirService )
 ;
 
-function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
+function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
     var orderStatuses = {
 	    Draft: {id: "DR", label: "Draft", desc: "This is the current quote under construction"},
 	    Saved: {id: "SV", label: "Saved", desc: "Quote has been saved but not yet shared"},
@@ -45,15 +45,17 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
 	SetLastSearchType: setLastSearchType,
 	GetLastSearchType: getLastSearchType,
 	SearchType: { Serial: "s", Part: "p", Tag: "t"},
+	GetWeirGroup: getWeirGroup,
+	SetWeirGroup: setWeirGroup,
 	OrderStatus: orderStatuses,
 	OrderStatusList: orderStatusList,
 	LookupStatus: getStatus,
 	SetCurrentCustomer: setCurrentCustomer,
 	GetCurrentCustomer: getCurrentCustomer,
-	FindQuotes: findQuotes
+	FindQuotes: findQuotes,
+	CartHasItems: cartHasItems,
+	UpdateQuote: updateQuote
     };
-
-
 
     function getLocale() {
         var localeOfUser = $cookieStore.get('language');
@@ -331,6 +333,31 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
         return lastSearchType;
     }
 
+    // Category representing the weir group of the buyer
+    var weirGroup = {};
+    function setWeirGroup(group) {
+        weirGroup = group;
+    }
+    function getWeirGroup() {
+	    // TODO: Remove this
+	    if (!weirGroup.ID) {
+		weirGroup = {
+                    "ID": "UK-9999",
+                    "Name": "Total Raffinage",
+                    "Description": null,
+                    "xp": {
+                      "CustomerNumber": "9999"
+                    },
+                    "ListOrder": 1,
+                    "Active": true,
+                    "ParentID": "UK",
+                    "ChildCount": 2
+                  };
+	    }
+        return weirGroup;
+    }
+
+
     function addPartToQuote(part) {
         var deferred = $q.defer();
 
@@ -492,6 +519,28 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
 		return deferred.promise;
 	}
 
+   // Resolve customer
+	var customers = {};
+	function getCustomerCategory(orgId) {
+            var deferred = $q.defer();
+		if (customers[orgId]) {
+		    deferred.resolve(customers[orgId]);
+		} else {
+			OrderCloud.Categories.Get(orgId)
+			.then(function(org) {
+				customers[orgId] = org;
+				deferred.resolve(org);
+			})
+			.catch(function(ex) {
+				deferred.resolve({});
+			});
+		}
+		return deferred.promise;
+	}
+
+	function cartHasItems() {
+	    return true;
+	}
 
     function findQuotes(statuses, resolveSharedId) {
 	    var quotes = [];
@@ -504,57 +553,106 @@ function WeirService( $q, $cookieStore, OrderCloud, CurrentOrder ) {
 	    	    "xp.Type": "Quote",
 		    "xp.CustomerID": cust.id
 	        };
-		for(var i=0; i<statuses.length; i++) {
-			filter["xp.Status"] = statuses[i].id;
-                        queue.push((function() {
-                             var d = $q.defer();
-                             OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
-                                 .then(function(results) {
-				     angular.forEach(results.Items, function(quote) {
-				         quotes.push(quote);
-				     });
-                                     d.resolve();
-                                 })
-                    	         .catch(function(ex) {
-                        	     d.resolve();
-                    	         });
-                             return d.promise;
-                         })());
-		}
-	    }
-            $q.all(queue).then(function() {
-		if (resolveSharedId) {
-	            var userIds = [];
-		     angular.forEach(quotes, function(quote) {
-                         if (quote.xp.SharedWithID && userIds.indexOf(quote.xp.SharedWithID) < 0) userIds.push(quote.xp.SharedWithID);
-		     });
-		     var queue2 = [];
-		     angular.forEach(userIds, function(id) {
-		          queue2.push((function() {
-			       var d = $q.defer();
-			       getUser(id).then(
-				  function(usr) { d.resolve(); }
-				  ).catch(function(ex) { d.resolve(); });
-			       return d.promise;
-			  })());
-		     });
-                     $q.all(queue2).then(function() {
-		         angular.forEach(quotes, function(quote) {
-                             if (quote.xp.SharedWithID) {
-				var usr = users[quote.xp.SharedWithID];
-				if (usr) {
-				    quote.tmp = quote.tmp || {};
-				    quote.tmp.user = usr;
-				}
-			     }
-		         });
-                         deferred.resolve(quotes);
-		     });
-		} else {
-                     deferred.resolve(quotes);
-		}
+		var statusFilter = statuses[0].id;
+		for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;
+                filter["xp.Status"] = statusFilter;
+
+                var d = $q.defer();
+                OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
+                    .then(function(results) {
+                        angular.forEach(results.Items, function(quote) {
+                            quotes.push(quote);
+                        });
+                        d.resolve();
+                    })
+                    .catch(function(ex) {
+                        d.resolve();
+                    });
+
+            d.promise.then(function() {
+                resolveCustomers(quotes).then( function() {
+		        resolveUsers(quotes, resolveSharedId).then(function() {
+                                deferred.resolve(quotes);
+	                });
+	        });
 	    });
-	    return deferred.promise;
+        } else {
+             deferred.resolve(quotes);
+        }
+	return deferred.promise;
+    }
+
+    function resolveUsers(quotes, resolveSharedId) {
+        var deferred = $q.defer();
+        if (resolveSharedId) {
+            var userIds = [];
+            angular.forEach(quotes, function(quote) {
+                if (quote.xp.SharedWithID && userIds.indexOf(quote.xp.SharedWithID) < 0) userIds.push(quote.xp.SharedWithID);
+            });
+            var queue2 = [];
+            angular.forEach(userIds, function(id) {
+                queue2.push((function() {
+                    var d = $q.defer();
+                    getUser(id)
+	                .then(function(usr) { d.resolve(); })
+	                .catch(function(ex) { d.resolve(); });
+                    return d.promise;
+                })());
+            });
+            $q.all(queue2).then(function() {
+                angular.forEach(quotes, function(quote) {
+                    if (quote.xp.SharedWithID) {
+                        var usr = users[quote.xp.SharedWithID];
+                        if (usr) {
+                            quote.tmp = quote.tmp || {};
+                            quote.tmp.user = usr;
+                        }
+                    }
+                });
+                deferred.resolve(quotes);
+             });
+         } else {
+             deferred.resolve(quotes);
+         }
+	return deferred.promise;
+    }
+
+    function resolveCustomers(quotes) {
+        var deferred = $q.defer();
+        var orgIds = [];
+        angular.forEach(quotes, function(quote) {
+            if (quote.xp.CustomerID && orgIds.indexOf(quote.xp.CustomerID) < 0) orgIds.push(quote.xp.CustomerID);
+        });
+	var queue = [];
+	angular.forEach(orgIds, function(id) {
+	    queue.push((function() {
+	        var d = $q.defer();
+	        getCustomerCategory(id).then(
+	            function(org) { d.resolve(); }
+	        ).catch(function(ex) { d.resolve(); });
+	            return d.promise;
+	    })());
+	});
+        $q.all(queue).then(function() {
+            angular.forEach(quotes, function(quote) {
+                if (quote.xp.CustomerID) {
+                    var org = customers[quote.xp.CustomerID];
+                    if (org) {
+                        quote.tmp = quote.tmp || {};
+                        quote.tmp.Customer = org;
+                    }
+                }
+            });
+            deferred.resolve(quotes);
+	});
+	return deferred.promise;
+    }
+
+    function updateQuote(quoteId, data) {
+        var deferred = $q.defer();
+	OrderCloud.Orders.Patch(quoteId, data)
+		.then(deferred.resolve());
+	return deferred.promise;
     }
 
     return service;

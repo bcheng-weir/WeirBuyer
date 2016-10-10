@@ -16,9 +16,11 @@ function MyQuoteConfig($stateProvider) {
 			controller: 'MyQuoteCtrl',
 			controllerAs: 'myquote',
 			resolve: {
-				Quote: function(WeirService) {
-					// Return Order object for current id
-					return {};
+				Quote: function(CurrentOrder) {
+					return CurrentOrder.Get();
+				},
+			        Customer: function(WeirService) {
+				    return WeirService.GetCurrentCustomer();
 				}
 			}
 		})
@@ -36,14 +38,14 @@ function MyQuoteConfig($stateProvider) {
 		})
 		.state( 'myquote.delivery', {
 			url: '/delivery',
-			templateUrl: 'myquote/templates/myquote.deliveryoption.tpl.html',
+			templateUrl: 'myquote/templates/myquote.delivery.tpl.html',
 			controller: 'QuoteDeliveryOptionCtrl',
 			controllerAs: 'delivery'
 		})
 		.state( 'myquote.review', {
 			url: '/review',
 		        templateUrl: 'myquote/templates/myquote.review.tpl.html',
-			controller: 'ReviewQuotesCtrl',
+			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
 		.state( 'myquote.confirm', {
@@ -55,9 +57,35 @@ function MyQuoteConfig($stateProvider) {
 	;
 }
 
-function MyQuoteController($sce, $state, WeirService, Quote) {
+function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 	var vm = this;
 	vm.Quote = Quote;
+	vm.Customer = Customer;
+
+	function save() {
+		var mods = {
+		    Comments: vm.Quote.Comments,
+		    xp: {
+		        StatusDate: new Date(),
+			RefNum: vm.Quote.xp.RefNum,
+			Name: vm.Quote.xp.Name
+		    }
+		};
+		WeirService.UpdateQuote(vm.Quote.ID, mods)
+			.then(function(res) {
+			    toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
+				// Do something here?
+			});
+	}
+	function share() {
+		alert("TODO: Implement share quote");
+	}
+	function download() {
+		alert("TODO: Implement download quote");
+	}
+	function print() {
+		alert("TODO: Implement print quote");
+	}
 
 	var labels = {
 		en: {
@@ -68,7 +96,9 @@ function MyQuoteController($sce, $state, WeirService, Quote) {
 			Save: "Save",
 			Share: "Share",
 			Download: "Download",
-			Print: "Print"
+			Print: "Print",
+                        SaveSuccessTitle: "Quote Saved",
+                        SaveSuccessMessage: "Your changes have been saved"
 		},
 		fr: {
 			YourQuote: $sce.trustAsHtml("FR: Your Quote"),
@@ -78,10 +108,16 @@ function MyQuoteController($sce, $state, WeirService, Quote) {
 			Save: $sce.trustAsHtml("FR: Save"),
 			Share: $sce.trustAsHtml("FR: Share"),
 			Download: $sce.trustAsHtml("FR: Download"),
-			Print: $sce.trustAsHtml("FR: Print")
+			Print: $sce.trustAsHtml("FR: Print"),
+                        SaveSuccessTitle: $sce.trustAsHtml("FR: Quote Saved"),
+                        SaveSuccessMessage: $sce.trustAsHtml("FR: Your changes have been saved")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+	vm.Save = save;
+	vm.Share = share;
+	vm.Download = download;
+	vm.Print = print;
 }
 
 function MyQuoteDetailController(WeirService, $state, $sce, LineItems ) {
@@ -90,8 +126,9 @@ function MyQuoteDetailController(WeirService, $state, $sce, LineItems ) {
 	
 	var labels = {
 		en: {
-                    Customer: "Customer",
-                    QuoteNumber: "Quote number",
+                    Customer: "Customer; ",
+                    QuoteNumber: "Quote number ",
+                    QuoteName: "Quote name ",
                     AddNew: "Add new items",
                     SerialNum: "Serial number",
                     TagNum: "Tag number (if available)",
@@ -112,6 +149,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, LineItems ) {
 		fr: {
 			Customer: $sce.trustAsHtml("FR: Customer"),
                     QuoteNumber: $sce.trustAsHtml("FR: Quote number"),
+                    QuoteName: $sce.trustAsHtml("Quote name "),
                     AddNew: $sce.trustAsHtml("FR: Add new items"),
                     SerialNum: $sce.trustAsHtml("FR: Serial number"),
                     TagNum: $sce.trustAsHtml("FR: Tag number (if available)"),

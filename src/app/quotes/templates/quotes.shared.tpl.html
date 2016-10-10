@@ -1,3 +1,37 @@
 <ui-view>
-	Placeholder for Shared quotes
+   <div class="row">
+        <div class="col-md-12">
+            <h3><span ng-bind-html='shared.labels.Header'></h3>
+            <table class="table table-bordered oc-table-responsive weir-results-table">
+                <thead>
+                <tr>
+		    <th ng-bind-html='shared.labels.QuoteNum'></th>
+                    <th ng-bind-html='shared.labels.QuoteRef'></th>
+                    <th ng-bind-html='shared.labels.Total'></th>
+                    <th ng-bind-html='shared.labels.Customer'>t</th>
+                    <th ng-bind-html='shared.labels.Approver'>t</th>
+                    <th ng-bind-html='shared.labels.Status'></th>
+                    <th ng-bind-html='shared.labels.ValidTo'></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="quote in shared.Quotes">
+                    <td class="text-danger">{{quote.xp.Name}}</td>
+                    <td>{{quote.xp.RefNum}}</td>
+		    <td ng-switch on="quote.xp.Currency">
+			    <span ng-switch-when="EUR">{{quote.Total | currency:'EUR '}}</span>
+			    <span ng-switch-default>{{quote.Total | currency:'GBP '}}</span>
+			    <!-- <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span> -->
+		    </td>
+                    <td>{{quote.xp.CustomerID}}</td>
+                    <td>{{quote.tmp.user.FirstName + ' ' + quote.tmp.user.LastName}}</td>
+                    <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
+                    <td>{{quote.xp.Expires | weirdate}}</td>
+		    <!-- <td class="button-td"><button class="btn btn-warning" ng-click="quotes.openQuote(quote.OrderID)" ng-bind-html='quote.labels.OpenQuote'></button></td> -->
+                </tr>
+                </tbody>
+            </table>
+            <p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>
+        </div>
+    </div>
 </ui-view>

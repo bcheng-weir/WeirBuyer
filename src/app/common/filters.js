@@ -69,33 +69,53 @@ function daySuffix(day) {
     }
 }
 
-function getMonthText(m) {
+function getMonthText(m, locale) {
     var months = {
-        0: 'January',
-        1: 'February',
-        2: 'March',
-        3: 'April',
-        4: 'May',
-        5: 'June',
-        6: 'July',
-        7: 'August',
-        8: 'September',
-        9: 'October',
-        10: 'November',
-        11: 'December'
+	    en: {
+		0: 'Jan',
+		1: 'Feb',
+		2: 'Mar',
+		3: 'Apr',
+		4: 'May',
+		5: 'Jun',
+		6: 'Jul',
+		7: 'Aug',
+		8: 'Sep',
+		9: 'Oct',
+		10: 'Nov',
+		11: 'Dec'
+	    },
+	    fr: {
+		0: 'FR-Jan',
+		1: 'FR-Feb',
+		2: 'FR-Mar',
+		3: 'FR-Apr',
+		4: 'FR-May',
+		5: 'FR-Jun',
+		6: 'FR-Jul',
+		7: 'FR-Aug',
+		8: 'FR-Sep',
+		9: 'FR-Oct',
+		10: 'FR-Nov',
+		11: 'FR-Dec'
+	    }
     };
-
-    return months[m];
+    switch(locale) {
+	    case "fr": return months.fr[m];
+	    case "en":
+	    default: 
+                return months.en[m];
+    }
 }
 
 function weirdate() {
-    return function(date) {
+    return function(date, locale) {
         var result;
         date = new Date(date);
 
         var day = date.getDate();
-        result = '<span>' + day + '<sup>' + daySuffix(day) + '</sup>' + ' ' + getMonthText(date.getMonth()) + ' ' + date.getFullYear();
-
+        // result = '<span>' + day + '<sup>' + daySuffix(day) + '</sup>' + ' ' + getMonthText(date.getMonth()) + ' ' + date.getFullYear();
+        result = day + '-' + getMonthText(date.getMonth(), locale) + '-' + (date.getFullYear() % 100).toString();
         return result;
     }
 }

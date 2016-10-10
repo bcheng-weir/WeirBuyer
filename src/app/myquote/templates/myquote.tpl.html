@@ -1,0 +1,17 @@
+<article id="COMPONENT_MyQuote" class="container-fluid">
+	<ul class="nav nav-tabs nav-justified">
+		<li role="presentation" ui-sref-active="active" ui-sref="myquotes.detail"><a href="#" ng-bind-html='myquote.labels.Save'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="myquotes.delivery"><a href="#" ng-bind-html='myquote.labels.Share'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="myquotes.review"><a href="#" ng-bind-html='myquote.labels.Download'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="myquotes.confirm"><a href="#" ng-bind-html='myquote.labels.Print'></a></li>
+	</ul>
+	<ol class="nav nav-tabs nav-justified">
+		<li role="presentation" ui-sref-active="active" ui-sref="myquotes.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="myquotes.delivery"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="myquotes.review"><a href="#" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="myquotes.confirm"><a href="#" ng-bind-html='myquote.labels.ConfirmOrder'></a></li>
+	</ol>
+	<div ui-view></div>
+</article>
+
+

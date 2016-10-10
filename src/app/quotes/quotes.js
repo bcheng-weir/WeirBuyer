@@ -22,9 +22,8 @@ function QuotesConfig($stateProvider) {
 			controller: 'SavedQuotesCtrl',
 			controllerAs: 'saved',
 			resolve: {
-				Quotes: function(OrderCloud) {
-					return [];
-					// return OrderCloud.Me.ListCategories(null, 1, 100, null, null, null, 3);
+				Quotes: function(WeirService) {
+					return WeirService.FindQuotes([WeirService.OrderStatus.Saved], false);
 				}
 			}
 		})
@@ -34,9 +33,8 @@ function QuotesConfig($stateProvider) {
 			controller: 'SharedQuotesCtrl',
 			controllerAs: 'shared',
 			resolve: {
-				Quotes: function( $stateParams, WeirService ) {
-					return [];
-					// return WeirService.SerialNumbers($stateParams.numbers.split(','));
+				Quotes: function(WeirService) {
+					return WeirService.FindQuotes([WeirService.OrderStatus.Shared], true);
 				}
 			}
 		})
@@ -46,9 +44,8 @@ function QuotesConfig($stateProvider) {
 			controller: 'RejectedQuotesCtrl',
 			controllerAs: 'rejected',
 			resolve: {
-				Quotes: function( $stateParams, WeirService ) {
-					return [];
-					// return WeirService.SerialNumbers($stateParams.numbers.split(','));
+				Quotes: function(WeirService) {
+					return WeirService.FindQuotes([WeirService.OrderStatus.Rejected]);
 				}
 			}
 		})
@@ -58,9 +55,8 @@ function QuotesConfig($stateProvider) {
 			controller: 'ApprovedQuotesCtrl',
 			controllerAs: 'approved',
 			resolve: {
-				Quotes: function( $stateParams, WeirService ) {
-					return [];
-					// return WeirService.SerialNumbers($stateParams.numbers.split(','));
+				Quotes: function(WeirService) {
+					return WeirService.FindQuotes([WeirService.OrderStatus.Approved]);
 				}
 			}
 		})
@@ -69,7 +65,13 @@ function QuotesConfig($stateProvider) {
 
 function QuotesController($sce, $state, WeirService) {
 	var vm = this;
-	// vm.serialNumberList = SerialNumbers.Items;
+	vm.getStatusLabel = function(id) {
+		var status = WeirService.LookupStatus(id);
+		if (status) {
+			return status.label;
+			// TODO: Address localization
+		}
+	};
 
 	var labels = {
 		en: {
@@ -94,10 +96,25 @@ function SavedQuotesController(WeirService, $state, $sce, Quotes ) {
 	
 	var labels = {
 		en: {
+		    Header: Quotes.length.toString() + " saved Quote" +  (Quotes.length == 1 ? "" : "s"),
+		    QuoteNum: "Weir Quote number",
+		    QuoteRef: "Your Quote ref;",
+                    Total: "Total",
+                    Customer: "Customer",
+                    Status: "Status",
+                    ValidTo: "Valid until"
 		},
 		fr: {
+			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " saved Quote" +  (Quotes.length == 0 ? "" : "s")),
+		    QuoteNum: $sce.trustAsHtml("FR-Weir Quote number"),
+		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
+                    Total: $sce.trustAsHtml("FR-Total"),
+                    Customer: $sce.trustAsHtml("FR-Customer"),
+                    Status: $sce.trustAsHtml("FR-Status"),
+                    ValidTo: $sce.trustAsHtml("FR-Valid until")
 		}
 	};
+	vm.labels = WeirService.LocaleResources(labels);
 }
 
 
@@ -107,10 +124,27 @@ function SharedQuotesController(WeirService, $state, $sce, Quotes ) {
 	
 	var labels = {
 		en: {
+		    Header: Quotes.length.toString() + " saved Quote" +  (Quotes.length == 1 ? "" : "s"),
+		    QuoteNum: "Weir Quote number",
+		    QuoteRef: "Your Quote ref;",
+                    Total: "Total",
+                    Customer: "Customer",
+		    Approver: "Approver",
+                    Status: "Status",
+                    ValidTo: "Valid until"
 		},
 		fr: {
+			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " saved Quote" +  (Quotes.length == 0 ? "" : "s")),
+		    QuoteNum: $sce.trustAsHtml("FR-Weir Quote number"),
+		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
+                    Total: $sce.trustAsHtml("FR-Total"),
+                    Customer: $sce.trustAsHtml("FR-Customer"),
+                    Approver: $sce.trustAsHtml("FR-Approver"),
+                    Status: $sce.trustAsHtml("FR-Status"),
+                    ValidTo: $sce.trustAsHtml("FR-Valid until")
 		}
 	};
+	vm.labels = WeirService.LocaleResources(labels);
 }
 
 

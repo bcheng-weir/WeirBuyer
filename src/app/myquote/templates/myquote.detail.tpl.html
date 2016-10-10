@@ -1,0 +1,57 @@
+<ui-view>
+   <div class="row">
+        <div class="col-md-9">
+		<p><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger">{{myquote.Quote.xp.CustomerName}}</span></p>
+		<p><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger">{{myquote.Quote.xp.QuoteNumber}}</span></p>
+	</div>
+
+        <div class="col-md-3">
+            <h2 class="pull-right">
+                <button class="btn btn-default" ui-sref="home" ng-bind-html='detail.labels.AddNew'></button>
+            </h2>
+        </div>
+    </div>
+
+   <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered oc-table-responsive weir-results-table">
+                <thead>
+                <tr>
+	 	    <th ng-bind-html='detail.labels.SerialNum'></th>
+	 	    <th ng-bind-html='detail.labels.TagNum'></th>
+	 	    <th ng-bind-html='detail.labels.PartNum'></th>
+                    <th ng-bind-html='detail.labels.PartDesc'></th>
+                    <th ng-bind-html='detail.labels.RecRepl'></th>
+                    <th ng-bind-html='detail.labels.LeadTime'></th>
+                    <th ng-bind-html='detail.labels.PricePer'></th>
+                    <th ng-bind-html='detail.labels.Quantity'></th>
+                    <th class="button-th"></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="line in detail.LineItems">
+		    </tr>
+		    <tr>
+			    <td class="button-th" colspan="5"></td>
+			    <td ng-bind-html='detail.labels.Total'></td>
+			    <td><input type='text' /> </td>
+		    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+   <div class="row">
+        <div class="col-md-6">
+		<h3><span ng-bind-html='detail.labels.UploadHeader'></span></h3>
+		<p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
+        </div>
+        <div class="col-md-6">
+		<h3><span ng-bind-html='detail.labels.RefNumHeader'></span></h3>
+		<p><input type='text' /></span></p>
+		<h3><span ng-bind-html='detail.labels.CommentsHeader'></span></h3>
+		<p><span ng-bind-html='detail.labels.CommentsInstr'></span></p>
+		<p><textarea rows='4' cols='40'></textarea></p>
+        </div>
+    </div>
+</ui-view>

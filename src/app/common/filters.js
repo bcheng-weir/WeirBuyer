@@ -1,4 +1,5 @@
 angular.module( 'orderCloud' )
+    .filter( 'customerPresearch', customerPresearch )
     .filter( 'serialPreSearch', serialPreSearch )
     .filter( 'tagPreSearch', tagPreSearch )
     .filter( 'partPreSearch', partPreSearch )
@@ -11,6 +12,14 @@ function serialnumber() {
     return function(number) {
         return number.substr(0,3) + '-' + number.substr(3,3) + '/' + number.substr(6,4);
     }
+}
+
+function customerPresearch() {
+  return function(items, name) {
+    return items.filter(function(cust, index, array) {
+	return cust && cust.name && cust.name.indexOf(name) >= 0;
+    });
+  };
 }
 
 function serialPreSearch() {

@@ -28,10 +28,12 @@ function QuotesConfig($stateProvider) {
 			controllerAs: 'saved',
 			resolve: {
 				Quotes: function(WeirService) {
+					// return [];
 					return WeirService.FindQuotes([WeirService.OrderStatus.Saved, WeirService.OrderStatus.Rejected], false);
 				},
 			        CurrentOrderId: function(CurrentOrder) {
-					return CurrentOrder.GetID();
+					return "";
+					// return CurrentOrder.GetID();
 				}
 			}
 		})
@@ -110,9 +112,11 @@ function SavedQuotesController(WeirService, $state, $sce,
 	    var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ?
                 confirm(vm.labels.ReplaceCartMessage) : true;
             if (gotoReview) {
-		CurrentOrder.Set(quoteId);
-		CurrentOrder.Get().then(function() {
-	            $state.go('myquote.detail');
+		CurrentOrder.Set(quoteId)
+		.then(function() {
+		    CurrentOrder.Get().then(function() {
+	                $state.go('myquote.detail');
+		    });
 		});
             }
 	}

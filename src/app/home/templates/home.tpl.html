@@ -1,10 +1,25 @@
 <article id="COMPONENT_Home" class="container-fluid">
-	<ul class="nav nav-tabs nav-justified" ng-if="['home.serial', 'home.part', 'home.tag', 'home.quickquote'].indexOf(application.$state.current.name) > -1">
+	<div ng-if="home.IsServiceOrg && ['home.serial', 'home.part', 'home.tag'].indexOf(application.$state.current.name) > -1" style="margin-left: 1em; margin-bottom: 1em;">
+		<div ng-if="!home.SelectingCustomer">
+			<div class="row" style="font-weight: bold;"><span ng-bind-html='home.labels.CustomerFilter'></span> {{home.Customer.name}}</div>
+			<div class="row"><a href="#" ng-click="home.SelectCustomer()" ng-bind-html="home.labels.SelectCustomer"></a></div>
+		</div>
+		<div ng-if="home.SelectingCustomer" >
+			<div class="row"><span ng-bind-html="home.labels.SearchMine"></span><input type="checkbox" style="margin-left: 1em;" ng-model="home.selfsearch" ng-change="home.ClearFilter()" /></div>
+			<div class="row"><span ng-bind-html="home.labels.SearchOr"></span></div>
+			<div class="row"><span ng-bind-html="home.labels.FilterEndUser"></span></div>
+		     <div class="row col-md-3 input-group">
+	                  <input type="text" class="form-control" style="width: 12em;" ng-disabled='home.selfsearch' ng-model="home.customerFilter" typeahead-min-length="3" uib-typeahead="cust.name for cust in home.AvailableCustomers | customerPresearch:$viewValue" />
+	                  <button style="margin-left: 1em;" ng-disabled="!home.customerFilter && !home.selfsearch" ng-click="home.CustomerSelected()" ng-bind-html="home.labels.Select"></input>
+		     </div>
+		</div>
+	</div>
+	<ul class="nav nav-tabs nav-justified" ng-if="['home.serial', 'home.part', 'home.tag'].indexOf(application.$state.current.name) > -1">
 		<li role="presentation" ui-sref-active="active" ui-sref="home.serial"><a href="#" ng-bind-html='home.labels.SerialSearch'></a></li>
 		<li role="presentation" ui-sref-active="active" ui-sref="home.part"><a href="#" ng-bind-html='home.labels.PartSearch'></a></li>
 		<li role="presentation" ui-sref-active="active" ui-sref="home.tag"><a href="#" ng-bind-html='home.labels.TagSearch'></a></li>
 	</ul>
-	<div ui-view></div>
+	<div ui-view ng-if='home.Customer.id'></div>
 </article>
 
 

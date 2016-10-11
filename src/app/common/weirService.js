@@ -103,7 +103,8 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
         var deferred = $q.defer();
         var result;
 
-        OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber})
+	var cust = getCurrentCustomer();
+        OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "ParentID": cust.id})
             .then(function(matches) {
 		if (matches.Items.length == 1) {
                        	result = matches.Items[0];
@@ -124,7 +125,8 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
         var deferred = $q.defer();
         var result;
 
-        OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber})
+	var cust = getCurrentCustomer();
+        OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber, "ParentID": cust.id})
             .then(function(matches) {
 		if (matches.Items.length == 1) {
                        	result = matches.Items[0];
@@ -160,11 +162,12 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 
         var results = [];
         var queue = [];
+	var cust = getCurrentCustomer();
         angular.forEach(serialNumbers, function(number) {
             if (number) {
             	queue.push((function() {
                 	var d = $q.defer();
-                	OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number})
+                	OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number, "ParentID": cust.id})
                     	.then(function(matches) {
 				if (matches.Items.length == 1) {
                         		results.push({Number: number, Detail: matches.Items[0]});
@@ -193,11 +196,12 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 
         var results = [];
         var queue = [];
+	var cust = getCurrentCustomer();
         angular.forEach(tagNumbers, function(number) {
             if (number) {
             	queue.push((function() {
                 	var d = $q.defer();
-                	OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": number})
+                	OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": number, "ParentID": cust.id})
                     	.then(function(matches) {
 				if (matches.Items.length == 1) {
                         		results.push({Number: number, Detail: matches.Items[0]});
@@ -342,16 +346,12 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 	    // TODO: Remove this
 	    if (!weirGroup.ID) {
 		weirGroup = {
-                    "ID": "UK-9999",
-                    "Name": "Total Raffinage",
+                    "ID": "WCVUK",
+                    "Name": "Weir Controls and Valves UK",
                     "Description": null,
-                    "xp": {
-                      "CustomerNumber": "9999"
-                    },
                     "ListOrder": 1,
                     "Active": true,
-                    "ParentID": "UK",
-                    "ChildCount": 2
+                    "ParentID": null
                   };
 	    }
         return weirGroup;
@@ -490,15 +490,9 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
         return id;
     }
 
-    // TODO: Remove when customer setting / selection implemented
-    var currentCustomer = { id: "UK-9999", name: "Temporary Test"};
-
-    function setCurrentCustomer(val) {
-	currentCustomer = val;
-    }
-    function getCurrentCustomer() {
-	return currentCustomer;
-    }
+    var currentCustomer = null;
+    function setCurrentCustomer(val) { currentCustomer = val; }
+    function getCurrentCustomer() { return currentCustomer; }
    
    // Resolve user
 	var users = {};
@@ -570,11 +564,11 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
                     });
 
             d.promise.then(function() {
-                resolveCustomers(quotes).then( function() {
+                // resolveCustomers(quotes).then( function() {
 		        resolveUsers(quotes, resolveSharedId).then(function() {
                                 deferred.resolve(quotes);
 	                });
-	        });
+	        // });
 	    });
         } else {
              deferred.resolve(quotes);

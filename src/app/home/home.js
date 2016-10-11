@@ -20,11 +20,18 @@ function HomeConfig($stateProvider) {
 			controller: 'HomeCtrl',
 			controllerAs: 'home',
 			resolve: {
-				SerialNumbers: function(OrderCloud) {
-					return OrderCloud.Me.ListCategories(null, 1, 100, null, null, null, 3);
+				SerialNumbers: function(WeirService, OrderCloud) {
+					var cust = WeirService.GetCurrentCustomer();
+					if (cust) {
+					    return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": cust.id});
+					}
+					return { Items: []};
 				},
 				PartNumbers: function(OrderCloud) {
 					return OrderCloud.Me.ListProducts(null, 1, 100, null, null, null);
+				},
+			        MyOrg: function(OrderCloud) {
+					return OrderCloud.Buyers.Get();
 				}
 			}
 		})
@@ -104,12 +111,57 @@ function HomeConfig($stateProvider) {
 	;
 }
 
-function HomeController($sce, $state, WeirService, SerialNumbers, PartNumbers) {
+function HomeController($sce, $state, OrderCloud, WeirService, SerialNumbers, PartNumbers, MyOrg) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
 	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
 
+        vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
+        vm.Customer = WeirService.GetCurrentCustomer();
+	vm.AvailableCustomers = MyOrg.xp.Customers;
+
+	if (!vm.IsServiceOrg) {
+	    vm.Customer = {id: MyOrg.ID, name: MyOrg.Name};
+	    WeirService.SetCurrentCustomer(vm.Customer);
+	}
+
+	vm.selfsearch = false;
+	vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
+	vm.customerFilter = null;
+	vm.SelectCustomer = function() {
+		if (vm.Customer.id == MyOrg.ID) {
+		    vm.customerFilter = "";
+		    vm.selfsearch = true;
+		} else {
+		    vm.customerFilter = vm.Customer.name;
+		    vm.selfsearch = false;
+		}
+		vm.SelectingCustomer = true;
+	};
+	vm.ClearFilter = function() { vm.customerFilter = null; }
+	vm.CustomerSelected = function() {
+	    if (vm.selfsearch) {
+	        vm.Customer = {id: MyOrg.ID, name: MyOrg.Name};
+	    } else {
+		for(var i=0; i<vm.AvailableCustomers.length; i++) {
+		    if (vm.AvailableCustomers[i].name == vm.customerFilter) {
+	                vm.Customer = vm.AvailableCustomers[i];
+			break;
+		    }
+		}
+	    }
+	    if (vm.Customer) {
+		    WeirService.SetCurrentCustomer(vm.Customer);
+		    vm.serialNumberList.length = 0;
+                    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": vm.Customer.id})
+                        .then(function(results) {
+				vm.serialNumberList.push.apply(vm.serialNumberList, results);
+		         });		
+	    }
+	    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
+	}
+					
 	vm.formatSerialNumber = function(number) {
 		if (!number) return;
 		return number.substr(0,3) + '-' + number.substr(3,3) + '/' + number.substr(6,4);
@@ -118,12 +170,24 @@ function HomeController($sce, $state, WeirService, SerialNumbers, PartNumbers) {
 		en: {
 			SerialSearch: "Search by serial number",
 			PartSearch: "Search by part number",
-			TagSearch: "Search by Tag number"
+			TagSearch: "Search by Tag number",
+			CustomerFilter: "Results filtered by; ",
+			SelectCustomer: "Reset search filter",
+			SearchMine: "Search your products",
+			SearchOr: "Or",
+			FilterEndUser: "Filter by end-user",
+			Select: "Select"
 		},
 		fr: {
 			SerialSearch: $sce.trustAsHtml("Recherche par num&eacute;ro de s&eacute;rie"),
 			PartSearch: $sce.trustAsHtml("Recherche par num&eacute;ro de pi&eacute;ce"),
-			TagSearch: $sce.trustAsHtml("Recherche par num&eacute;ro de tag")
+			TagSearch: $sce.trustAsHtml("Recherche par num&eacute;ro de tag"),
+			CustomerFilter: $sce.trustAsHtml("FR: Results filtered by; "),
+			SelectCustomer: $sce.trustAsHtml("FR: Reset search filter"),
+			SearchMine: $sce.trustAsHtml("FR: Search your products"),
+			SearchOr: $sce.trustAsHtml("FR: Or"),
+			FilterEndUser: $sce.trustAsHtml("FR: Filter by end-user"),
+			Select: $sce.trustAsHtml("FR: Select")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

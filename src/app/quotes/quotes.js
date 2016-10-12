@@ -18,7 +18,11 @@ function QuotesConfig($stateProvider) {
 			resolve: {
 				Customer: function(WeirService) {
 					return WeirService.GetCurrentCustomer();
+				},
+			        MyOrg: function(OrderCloud) {
+					return OrderCloud.Buyers.Get();
 				}
+					  
 			}
 		})
 		.state( 'quotes.saved', {
@@ -73,9 +77,10 @@ function QuotesConfig($stateProvider) {
 	;
 }
 
-function QuotesController($sce, $state, WeirService, Customer) {
+function QuotesController($sce, $state, WeirService, Customer, MyOrg) {
 	var vm = this;
 	vm.Customer = Customer;
+	vm.MyOrg = MyOrg;
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);
 		if (status) {
@@ -112,14 +117,12 @@ function SavedQuotesController(WeirService, $state, $sce,
 	    var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ?
                 confirm(vm.labels.ReplaceCartMessage) : true;
             if (gotoReview) {
-		CurrentOrder.Set(quoteId)
-		.then(function() {
-		    CurrentOrder.Get().then(function() {
+	       WeirService.SetQuoteAsCurrentOrder(quoteId)
+	           .then(function() {
 	                $state.go('myquote.detail');
 		    });
-		});
             }
-	}
+        }
 
 	var labels = {
 		en: {
@@ -130,6 +133,7 @@ function SavedQuotesController(WeirService, $state, $sce,
                     Customer: "Customer",
                     Status: "Status",
                     ValidTo: "Valid until",
+		    OwnProduct: "Own product",
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
 		},
 		fr: {
@@ -140,6 +144,7 @@ function SavedQuotesController(WeirService, $state, $sce,
                     Customer: $sce.trustAsHtml("FR-Customer"),
                     Status: $sce.trustAsHtml("FR-Status"),
                     ValidTo: $sce.trustAsHtml("FR-Valid until"),
+		    OwnProduct: $sce.trustAsHtml("FR: Own product"),
 		    ReplaceCartMessage: "FR: Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
 		}
 	};
@@ -159,6 +164,7 @@ function SharedQuotesController(WeirService, $state, $sce, Quotes ) {
 		    QuoteRef: "Your Quote ref;",
                     Total: "Total",
                     Customer: "Customer",
+		    OwnProduct: "Own product",
 		    Approver: "Approver",
                     Status: "Status",
                     ValidTo: "Valid until"
@@ -169,6 +175,7 @@ function SharedQuotesController(WeirService, $state, $sce, Quotes ) {
 		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
                     Total: $sce.trustAsHtml("FR-Total"),
                     Customer: $sce.trustAsHtml("FR-Customer"),
+		    OwnProduct: $sce.trustAsHtml("FR: Own product"),
                     Approver: $sce.trustAsHtml("FR-Approver"),
                     Status: $sce.trustAsHtml("FR-Status"),
                     ValidTo: $sce.trustAsHtml("FR-Valid until")

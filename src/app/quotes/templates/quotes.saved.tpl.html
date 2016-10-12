@@ -22,7 +22,8 @@
 			<span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
 			<span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
 		    </td>
-                    <td>{{quote.xp.CustomerName}}</td>
+                    <td ng-if="quote.xp.CustomerID != quotes.MyOrg.ID ">{{quote.xp.CustomerName}}</td>
+                    <td ng-if="quote.xp.CustomerID == quotes.MyOrg.ID ">{{saved.labels.OwnProduct}}</td>
                     <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
                     <td>{{quote.xp.Expires | weirdate}}</td>
 		    <!-- <td class="button-td"><button class="btn btn-warning" ng-click="quotes.openQuote(quote.OrderID)" ng-bind-html='quote.labels.OpenQuote'></button></td> -->

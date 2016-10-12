@@ -54,7 +54,9 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 	GetCurrentCustomer: getCurrentCustomer,
 	FindQuotes: findQuotes,
 	CartHasItems: cartHasItems,
-	UpdateQuote: updateQuote
+	UpdateQuote: updateQuote,
+        SetQuoteAsCurrentOrder: setQuoteAsCurrentOrder,
+	FindCart: findCart
     };
 
     function getLocale() {
@@ -536,16 +538,55 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 	    return true;
 	}
 
+    function findCart(customer) {
+        var deferred = $q.defer();
+        OrderCloud.Me.Get()
+        .then(function(user) {
+            var filter = {
+               "FromUserId": user.ID,
+               "xp.Type": "Quote",
+               "xp.CustomerID": customer.id,
+               "xp.Status": "DR"
+           };
+           OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
+           .then(function(results) {
+               if (results.Items.length > 0) {
+                   deferred.resolve(results.Items[0]);
+               } else {
+                   var cart = {
+                       "Type": "Standard",
+                       xp: {
+                           "Type": "Quote",
+                           "CustomerID": customer.id,
+                           "CustomerName": customer.name,
+                           "Status": "DR"
+                       }
+                   }
+                   OrderCloud.Orders.Create(cart)
+                   .then(function(ct) {
+                        CurrentOrder.Set(ct.ID);
+                       deferred.resolve(ct);
+                   })
+                   .catch(function(ex) {
+                       deferred.reject(ex);
+                   })
+               }
+           });
+       })
+       .catch(function(ex) {
+           d.reject(ex);
+        });
+	return deferred.promise;
+    }
+
     function findQuotes(statuses, resolveSharedId) {
 	    var quotes = [];
             var queue = [];
             var deferred = $q.defer();
 
-	    var cust = getCurrentCustomer();
-	    if (cust && cust.id && statuses && statuses.length) {
+	    if (statuses && statuses.length) {
 	        var filter = {
-	    	    "xp.Type": "Quote",
-		    "xp.CustomerID": cust.id
+	    	    "xp.Type": "Quote"
 	        };
 		var statusFilter = statuses[0].id;
 		for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;
@@ -645,7 +686,24 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
     function updateQuote(quoteId, data) {
         var deferred = $q.defer();
 	OrderCloud.Orders.Patch(quoteId, data)
-		.then(deferred.resolve());
+		.then(function() { deferred.resolve()})
+	        .catch(function(ex) { d.deferred.reject(ex); });
+	return deferred.promise;
+    }
+    function setQuoteAsCurrentOrder(quoteId) {
+        var deferred = $q.defer();
+	CurrentOrder.Set(quoteId)
+	    .then(function() {
+	        CurrentOrder.Get()
+		    .then(function(quote) {
+		        setCurrentCustomer({
+	                    id: quote.xp.CustomerID,
+			    name: quote.xp.CustomerName
+		        });
+		        deferred.resolve();
+	            });
+	    })
+  	    .catch(function(ex) { d.deferred.reject(ex); });
 	return deferred.promise;
     }
 

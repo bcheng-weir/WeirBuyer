@@ -124,6 +124,7 @@ function HomeController($sce, $state, OrderCloud, WeirService, SerialNumbers, Pa
 	if (!vm.IsServiceOrg) {
 	    vm.Customer = {id: MyOrg.ID, name: MyOrg.Name};
 	    WeirService.SetCurrentCustomer(vm.Customer);
+	    WeirService.FindCart(vm.Customer.id)
 	}
 
 	vm.selfsearch = false;
@@ -154,10 +155,13 @@ function HomeController($sce, $state, OrderCloud, WeirService, SerialNumbers, Pa
 	    if (vm.Customer) {
 		    WeirService.SetCurrentCustomer(vm.Customer);
 		    vm.serialNumberList.length = 0;
-                    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": vm.Customer.id})
+		    WeirService.FindCart(vm.Customer.id)
+		    .then(function() {
+                        OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": vm.Customer.id})
                         .then(function(results) {
-				vm.serialNumberList.push.apply(vm.serialNumberList, results);
+			    vm.serialNumberList.push.apply(vm.serialNumberList, results);
 		         });		
+		    })
 	    }
 	    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
 	}

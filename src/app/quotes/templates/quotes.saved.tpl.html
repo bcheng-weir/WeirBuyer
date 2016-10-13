@@ -15,7 +15,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="quote in saved.Quotes">
-		    <td ng-click="saved.ReviewQuote(quote.ID)"><a href="#">{{quote.xp.Name}}</a></td>
+		    <td ng-click="saved.ReviewQuote(quote.ID)"><a href="#">{{quote.ID}}</a></td>
                     <td>{{quote.xp.RefNum}}</td>
 		    <td ng-switch on="quote.xp.Currency">
 		        <span ng-switch-when="EUR">{{quote.Total | currency:'&euro; '}}</span>

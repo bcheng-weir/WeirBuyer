@@ -16,8 +16,8 @@ function QuotesConfig($stateProvider) {
 			controller: 'QuotesCtrl',
 			controllerAs: 'quotes',
 			resolve: {
-				Customer: function(WeirService) {
-					return WeirService.GetCurrentCustomer();
+				Customer: function(CurrentOrder) {
+					return CurrentOrder.GetCurrentCustomer();
 				},
 			        MyOrg: function(OrderCloud) {
 					return OrderCloud.Buyers.Get();

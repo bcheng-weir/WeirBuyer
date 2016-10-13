@@ -19,8 +19,8 @@ function MyQuoteConfig($stateProvider) {
 				Quote: function(CurrentOrder) {
 					return CurrentOrder.Get();
 				},
-			        Customer: function(WeirService) {
-				    return WeirService.GetCurrentCustomer();
+			        Customer: function(CurrentOrder) {
+				    return CurrentOrder.GetCurrentCustomer();
 				}
 			}
 		})
@@ -61,8 +61,16 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
+	vm.SaveableStatuses = [
+		WeirService.OrderStatus.Draft.id,
+		WeirService.OrderStatus.Saved.id,
+		WeirService.OrderStatus.Shared.id
+	];
 
 	function save() {
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
+		    // TODO: FAIL if no line items
+		}
 		var mods = {
 		    Comments: vm.Quote.Comments,
 		    xp: {
@@ -71,8 +79,12 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 			Name: vm.Quote.xp.Name
 		    }
 		};
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
+		    mods.xp.Status = WeirService.OrderStatus.Saved.id;
+		}
 		WeirService.UpdateQuote(vm.Quote.ID, mods)
-			.then(function(res) {
+			.then(function(quote) {
+			    vm.Quote = quote;
 			    toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
 				// Do something here?
 			});

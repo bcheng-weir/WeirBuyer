@@ -20,12 +20,18 @@ function HomeConfig($stateProvider) {
 			controller: 'HomeCtrl',
 			controllerAs: 'home',
 			resolve: {
-				SerialNumbers: function(WeirService, OrderCloud) {
-					var cust = WeirService.GetCurrentCustomer();
-					if (cust) {
-					    return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": cust.id});
-					}
-					return { Items: []};
+				CurrentCustomer: function(CurrentOrder) {
+					return CurrentOrder.GetCurrentCustomer();
+				},
+				SerialNumbers: function(WeirService, OrderCloud, CurrentOrder) {
+					return CurrentOrder.GetCurrentCustomer()
+					.then(function(cust) {
+					    if (cust) {
+					        return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": cust.id});
+					    } else {
+					       return { Items: []};
+					    }
+					});
 				},
 				PartNumbers: function(OrderCloud) {
 					return OrderCloud.Me.ListProducts(null, 1, 100, null, null, null);
@@ -111,20 +117,27 @@ function HomeConfig($stateProvider) {
 	;
 }
 
-function HomeController($sce, $state, OrderCloud, WeirService, SerialNumbers, PartNumbers, MyOrg) {
+function HomeController($sce, $state, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
 	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
 
         vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
-        vm.Customer = WeirService.GetCurrentCustomer();
+        vm.Customer = CurrentCustomer;
 	vm.AvailableCustomers = MyOrg.xp.Customers;
 
 	if (!vm.IsServiceOrg) {
-	    vm.Customer = {id: MyOrg.ID, name: MyOrg.Name};
-	    WeirService.SetCurrentCustomer(vm.Customer);
-	    WeirService.FindCart(vm.Customer.id)
+	    if (!vm.Customer || vm.Customer.id != MyOrg.ID) {
+	        vm.Customer = {id: MyOrg.ID, name: MyOrg.Name};
+	        CurrentOrder.SetCurrentCustomer(vm.Customer)
+                    .then(function() {
+	        CurrentOrder.Get();
+                })
+ 	        .catch(function() {
+	            WeirService.FindCart(vm.Customer);
+	        });
+	    }
 	}
 
 	vm.selfsearch = false;
@@ -142,26 +155,30 @@ function HomeController($sce, $state, OrderCloud, WeirService, SerialNumbers, Pa
 	};
 	vm.ClearFilter = function() { vm.customerFilter = null; }
 	vm.CustomerSelected = function() {
+	    var newCust = null;
 	    if (vm.selfsearch) {
-	        vm.Customer = {id: MyOrg.ID, name: MyOrg.Name};
+	        newCust = {id: MyOrg.ID, name: MyOrg.Name};
 	    } else {
 		for(var i=0; i<vm.AvailableCustomers.length; i++) {
 		    if (vm.AvailableCustomers[i].name == vm.customerFilter) {
-	                vm.Customer = vm.AvailableCustomers[i];
+	                newCust = vm.AvailableCustomers[i];
 			break;
 		    }
 		}
 	    }
-	    if (vm.Customer) {
-		    WeirService.SetCurrentCustomer(vm.Customer);
-		    vm.serialNumberList.length = 0;
-		    WeirService.FindCart(vm.Customer.id)
-		    .then(function() {
-                        OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": vm.Customer.id})
-                        .then(function(results) {
-			    vm.serialNumberList.push.apply(vm.serialNumberList, results);
-		         });		
-		    })
+	    if (newCust && (!vm.Customer || newCust.id != vm.Customer.id)) {
+		    vm.Customer = newCust;
+		    CurrentOrder.SetCurrentCustomer(vm.Customer)
+	            .then(function() {
+		        vm.serialNumberList.length = 0;
+		        WeirService.FindCart(vm.Customer)
+		        .then(function() {
+                            OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": vm.Customer.id})
+                            .then(function(results) {
+			        vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
+		             });		
+		        });
+		    });
 	    }
 	    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
 	}

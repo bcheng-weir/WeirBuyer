@@ -2,7 +2,7 @@
    <div class="row">
         <div class="col-md-9">
 		<p><b><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></b></p>
-		<p><b><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger">{{myquote.Quote.ID}}</span></b></p>
+		<p><b><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></b></p>
 		<p><b><span ng-bind-html='detail.labels.QuoteName'></span></b><input type='text' maxlength="20" ng-model='myquote.Quote.xp.Name' /></p>
 	</div>
 

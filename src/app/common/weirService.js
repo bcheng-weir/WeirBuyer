@@ -50,8 +50,6 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 	OrderStatus: orderStatuses,
 	OrderStatusList: orderStatusList,
 	LookupStatus: getStatus,
-	SetCurrentCustomer: setCurrentCustomer,
-	GetCurrentCustomer: getCurrentCustomer,
 	FindQuotes: findQuotes,
 	CartHasItems: cartHasItems,
 	UpdateQuote: updateQuote,
@@ -105,21 +103,27 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
         var deferred = $q.defer();
         var result;
 
-	var cust = getCurrentCustomer();
-        OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "ParentID": cust.id})
-            .then(function(matches) {
-		if (matches.Items.length == 1) {
-                       	result = matches.Items[0];
-                	getParts(result.ID, deferred, result);
-		} else if (matches.Items.length == 0) {
-			throw { message: "No matches found for serial number " + serialNumber};
-		} else {
-			throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
-		}
-            })
-            .catch(function(ex) {
-               	deferred.reject(ex);
-            });
+	CurrentOrder.GetCurrentCustomer()
+	.then(function(cust) {
+	    if (cust) {
+                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "ParentID": cust.id})
+                .then(function(matches) {
+		    if (matches.Items.length == 1) {
+                       	    result = matches.Items[0];
+                	    getParts(result.ID, deferred, result);
+		    } else if (matches.Items.length == 0) {
+			    throw { message: "No matches found for serial number " + serialNumber};
+		    } else {
+			    throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
+		    }
+                });
+	    } else {
+                 throw { message: "Customer for search not set"};
+	    }
+	})
+        .catch(function(ex) {
+            deferred.reject(ex);
+        });
 
         return deferred.promise;
     }
@@ -127,21 +131,25 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
         var deferred = $q.defer();
         var result;
 
-	var cust = getCurrentCustomer();
-        OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber, "ParentID": cust.id})
-            .then(function(matches) {
-		if (matches.Items.length == 1) {
+	CurrentOrder.GetCurrentCustomer()
+	.then(function(cust) {
+	    if (cust) {
+                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber, "ParentID": cust.id})
+                .then(function(matches) {
+		    if (matches.Items.length == 1) {
                        	result = matches.Items[0];
                 	getParts(result.ID, deferred, result);
-		} else if (matches.Items.length == 0) {
+		    } else if (matches.Items.length == 0) {
 			throw { message: "No matches found for tag number " + tagNumber};
-		} else {
+		    } else {
 			throw { message: "Data error: Tag number " + tagNumber + " is not unique"};
-		}
-            })
-            .catch(function(ex) {
-               	deferred.reject(ex);
-            });
+		    }
+                });
+	    }
+	})
+        .catch(function(ex) {
+            deferred.reject(ex);
+        });
 
         return deferred.promise;
     }
@@ -164,29 +172,36 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 
         var results = [];
         var queue = [];
-	var cust = getCurrentCustomer();
-        angular.forEach(serialNumbers, function(number) {
-            if (number) {
-            	queue.push((function() {
-                	var d = $q.defer();
-                	OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number, "ParentID": cust.id})
-                    	.then(function(matches) {
+	CurrentOrder.GetCurrentCustomer()
+	.then(function(cust) {
+	    if (cust) {
+                angular.forEach(serialNumbers, function(number) {
+                    if (number) {
+            	        queue.push((function() {
+                	    var d = $q.defer();
+                	    OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number, "ParentID": cust.id})
+                    	    .then(function(matches) {
 				if (matches.Items.length == 1) {
                         		results.push({Number: number, Detail: matches.Items[0]});
 				} else {
                                 	results.push({Number: number, Detail: null});
 				}
                         	d.resolve();
-                    	})
-                    	.catch(function(ex) {
-                        	results.push({Number: number, Detail: null});
-                        	d.resolve();
-                    	});
+                    	    })
+                    	    .catch(function(ex) {
+                        	    results.push({Number: number, Detail: null});
+                        	    d.resolve();
+                    	    });
 
-                	return d.promise;
-            	})());
-	    }
-        });
+                	    return d.promise;
+            	        })());
+	            }
+	        });
+	     }
+        })
+	.catch(function(ex) {
+            d.resolve();
+	});
 
         $q.all(queue).then(function() {
             deferred.resolve(results);
@@ -198,29 +213,34 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 
         var results = [];
         var queue = [];
-	var cust = getCurrentCustomer();
-        angular.forEach(tagNumbers, function(number) {
-            if (number) {
-            	queue.push((function() {
-                	var d = $q.defer();
-                	OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": number, "ParentID": cust.id})
-                    	.then(function(matches) {
+	CurrentOrder.GetCurrentCustomer()
+	.then(function(cust) {
+	    if (cust) {
+                angular.forEach(tagNumbers, function(number) {
+                    if (number) {
+            	        queue.push((function() {
+                	    var d = $q.defer();
+                	    OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": number, "ParentID": cust.id})
+                    	    .then(function(matches) {
 				if (matches.Items.length == 1) {
                         		results.push({Number: number, Detail: matches.Items[0]});
 				} else {
                                 	results.push({Number: number, Detail: null});
 				}
                         	d.resolve();
-                    	})
-                    	.catch(function(ex) {
+                    	    })
+                    	    .catch(function(ex) {
                         	results.push({Number: number, Detail: null});
                         	d.resolve();
-                    	});
+                    	    });
 
-                	return d.promise;
-            	})());
+                	    return d.promise;
+            	        })());
+	            }
+	        });
 	    }
-        });
+        })
+	.catch(function(ex) {});
 
         $q.all(queue).then(function() {
             deferred.resolve(results);
@@ -492,10 +512,6 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
         return id;
     }
 
-    var currentCustomer = null;
-    function setCurrentCustomer(val) { currentCustomer = val; }
-    function getCurrentCustomer() { return currentCustomer; }
-   
    // Resolve user
 	var users = {};
 	function getUser(userId) {
@@ -551,7 +567,9 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
            OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
            .then(function(results) {
                if (results.Items.length > 0) {
-                   deferred.resolve(results.Items[0]);
+                   var ct = results.Items[0];
+                   CurrentOrder.Set(ct.ID);
+                   deferred.resolve(ct);
                } else {
                    var cart = {
                        "Type": "Standard",
@@ -686,7 +704,7 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
     function updateQuote(quoteId, data) {
         var deferred = $q.defer();
 	OrderCloud.Orders.Patch(quoteId, data)
-		.then(function() { deferred.resolve()})
+		.then(function(quote) { deferred.resolve(quote)})
 	        .catch(function(ex) { d.deferred.reject(ex); });
 	return deferred.promise;
     }
@@ -696,11 +714,13 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 	    .then(function() {
 	        CurrentOrder.Get()
 		    .then(function(quote) {
-		        setCurrentCustomer({
+	                CurrentOrder.SetCurrentCustomer({
 	                    id: quote.xp.CustomerID,
 			    name: quote.xp.CustomerName
-		        });
-		        deferred.resolve();
+		        })
+			.then(function() {
+		            deferred.resolve();
+			});
 	            });
 	    })
   	    .catch(function(ex) { d.deferred.reject(ex); });

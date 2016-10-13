@@ -2,7 +2,7 @@ angular.module( 'orderCloud' )
     .factory( 'WeirService', WeirService )
 ;
 
-function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
+function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Underscore, buyerid ) {
     var orderStatuses = {
 	    Draft: {id: "DR", label: "Draft", desc: "This is the current quote under construction"},
 	    Saved: {id: "SV", label: "Saved", desc: "Quote has been saved but not yet shared"},
@@ -382,10 +382,22 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
 
     function addPartToQuote(part) {
         var deferred = $q.defer();
+        var currentOrder = {};
 
         CurrentOrder.Get()
             .then(function(order) {
-                addLineItem(order);
+                // order is the localforge order.
+                currentOrder = order;
+                return OrderCloud.LineItems.List(currentOrder.ID,null,null,null,null,null,null, buyerid);
+            })
+            .then(function(lineItems) {
+                // If the line items contains the current part, then update.
+                var elementPosition = lineItems.Items.map(function(x) {return x.ProductID;}).indexOf(part.Detail.ID);
+                if(elementPosition == -1) {
+                    addLineItem(currentOrder);
+                } else {
+                    updateLineItem(currentOrder, lineItems.Items[elementPosition]);
+                }
             })
             .catch(function() {
                 OrderCloud.Orders.Create({ID: randomQuoteID()})
@@ -395,10 +407,27 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder ) {
                     })
             });
 
+        function updateLineItem(order, lineItem) {
+            // find the line item and update the quantity of the current order.
+            var qty = part.Quantity + lineItem.Quantity;
+            var li = {
+                ProductID: lineItem.ProductID,
+                Quantity: qty
+            }
+            OrderCloud.LineItems.Patch(order.ID, lineItem.ID, li, buyerid)
+                .then(function(lineItem) {
+                    deferred.resolve({Order: order, LineItem: lineItem});
+                })
+        }
+
         function addLineItem(order) {
             var li = {
                 ProductID: part.Detail.ID,
-                Quantity: part.Quantity
+                Quantity: part.Quantity,
+                xp: {
+                    SN: part.xp.SN,
+                    TagNumber: part.xp.TagNumber
+                }
             };
 
             OrderCloud.LineItems.Create(order.ID, li)

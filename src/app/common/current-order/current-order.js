@@ -11,8 +11,8 @@ function CurrentOrderService($q, $localForage, OrderCloud, appname) {
         Set: _set,
         Remove: _remove,
         GetLineItems: _getLineItems,
-	GetCurrentCustomer: _getCurrentCustomer,
-	SetCurrentCustomer: _setCurrentCustomer
+        GetCurrentCustomer: _getCurrentCustomer,
+        SetCurrentCustomer: _setCurrentCustomer
     };
 
     function _get() {

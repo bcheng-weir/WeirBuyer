@@ -410,13 +410,16 @@ function SerialDetailController( $stateParams, $rootScope, $sce, WeirService, Se
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.headers = WeirService.LocaleResources(headers);
 
-	// vm.addPartToQuote = function(part) {
-	// 	WeirService.AddPartToQuote(part)
-	// 			.then(function(data) {
-	// 				$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
-	// 				part.Quantity = null;
-	// 			});
-	// };
+	vm.addPartToQuote = function(part) {
+		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
+		part.xp.SN = vm.serialNumber.Name;
+		part.xp.TagNumber = vm.serialNumber.xp.TagNumber;
+		WeirService.AddPartToQuote(part)
+			.then(function(data) {
+				$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem); //This kicks off an event in cart.js
+				part.Quantity = null;
+			});
+	};
 }
 
 function PartController( $state, $sce, WeirService ) {
@@ -513,13 +516,16 @@ function PartResultsController( $rootScope, $sce, WeirService, PartNumberResults
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 
-//	vm.addPartToQuote = function(part) {
-//		WeirService.AddPartToQuote(part)
-//				.then(function(data) {
-//					$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
-//					part.Quantity = null;
-//				});
-//	};
+	vm.addPartToQuote = function(part) {
+		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
+		part.xp.SN = null;
+		part.xp.TagNumber = null;
+		WeirService.AddPartToQuote(part)
+			.then(function(data) {
+				$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem); //This kicks off an event in cart.js
+				part.Quantity = null;
+			});
+	};
 }
 
 function TagController(WeirService, $state, $sce) {
@@ -576,7 +582,6 @@ function TagController(WeirService, $state, $sce) {
 	};
 }
 
-
 function TagResultsController(WeirService, $stateParams, TagNumberResults, $sce ) {
 	var vm = this;
 	vm.tagNumberResults = TagNumberResults;
@@ -631,7 +636,7 @@ function TagDetailController( $stateParams, $rootScope, $sce, WeirService, TagNu
 	var vm = this;
 	vm.tagNumber = TagNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
-        vm.PartQuantity = function(partId) {
+	vm.PartQuantity = function(partId) {
 		return TagNumberDetail.xp.Parts[partId];
 	};
 	var labels = {
@@ -712,9 +717,9 @@ function TagDetailController( $stateParams, $rootScope, $sce, WeirService, TagNu
 		part.xp.SN = vm.tagNumber.Name;
 		part.xp.TagNumber = vm.tagNumber.xp.TagNumber;
 		WeirService.AddPartToQuote(part)
-				.then(function(data) {
-					$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
-					part.Quantity = null;
-				});
+			.then(function(data) {
+				$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem); //This kicks off an event in cart.js
+				part.Quantity = null;
+			});
 	};
 }

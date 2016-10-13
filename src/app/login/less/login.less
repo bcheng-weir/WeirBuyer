@@ -1,21 +1,37 @@
 #COMPONENT_Login {
-  height:100vh;
-  display:flex;
-  align-items:center;
+  height: 100vh;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  background-color:@component-login-bg;
+  background-color: @component-login-bg;
   .panel {
-    max-width:@component-login-width;
+    max-width: @component-login-width;
   }
-  .centered{
+  .centered {
     position: fixed;
-    top: 30%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
+    max-height: 15%;
+    max-width: 15%;
   }
-  .languageBar{
+  .centeredLow {
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 25%;
+  }
+  .languageBar {
     position: absolute;
     top: 0px;
     right: 20px;
   }
+  .stretch {
+    width: 100%;
+    height: 50%;
+    position: absolute;
+    top: 2%;
+  }
+
 }

@@ -1,8 +1,13 @@
 <main id="COMPONENT_Login" ng-switch="login.form">
     <div class="languageBar"><a ng-click="login.setCookie('en')">English</a> | <a ng-click="login.setCookie('fr')">Francais</a> </div>
+
+    <img src="http://comex-egypt.com/wp-content/uploads/2015/11/Weir-Power-Industrial-label-for-Sarasin-RSBD-product..jpg" class="stretch">
+
     <div class="centered">
-    <div class="panel panel-default" ng-switch-when="login">
-        <form class="panel-body" name="LoginForm" ng-submit="login.submit()" >
+        <div class="panel panel-default" ng-switch-when="login">
+                <img class="img-responsive" width="auto" height="80%" style="padding: 15% 5% 0% 5%;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Weir-Logo.svg/2000px-Weir-Logo.svg.png">
+            <form class="panel-body" name="LoginForm" ng-submit="login.submit()" >
+
             <h1 class="text-center">{{login.labels.LoginLabel}}</h1>
             <div class="form-group">
                 <label for="Username">{{login.labels.UsernameLabel}}</label>
@@ -23,6 +28,8 @@
         </form>
     </div>
     <div class="panel panel-default" ng-switch-when="forgot">
+        <img class="weirLogo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Weir-Logo.svg/2000px-Weir-Logo.svg.png">
+
         <form class="panel-body" name="ForgotPasswordForm" ng-submit="login.forgotPassword()">
             <h1 class="text-center">{{login.labels.SubmitLabel}}</h1>
             <div class="form-group">
@@ -34,6 +41,8 @@
         </form>
     </div>
     <div class="panel panel-default" ng-switch-when="reset">
+        <img class="weirLogo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Weir-Logo.svg/2000px-Weir-Logo.svg.png">
+
         <form class="panel-body" name="ResetPasswordForm" ng-submit="login.resetPassword()" >
             <h1 class="text-center">{{login.labels.ForgotPasswordLabel}}</h1>
             <div class="form-group">
@@ -52,12 +61,16 @@
         </form>
     </div>
     <div class="panel panel-default" ng-switch-when="verificationCodeSuccess">
+        <img class="weirLogo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Weir-Logo.svg/2000px-Weir-Logo.svg.png">
+
         <form class="panel-body" name="VerificationCodeSuccessForm">
             <h1 class="text-center">{{login.labels.ForgotPasswordLabel}}</h1>
             <div class="alert alert-info" id="forgot_message">{{login.labels.ForgotMessageLabel}}</div>
         </form>
     </div>
     <div class="panel panel-default" ng-switch-when="resetSuccess">
+        <img class="weirLogo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Weir-Logo.svg/2000px-Weir-Logo.svg.png">
+
         <form class="panel-body" name="ResetSuccessForm">
             <h1 class="text-center">{{login.labels.ResetPasswordLabel}}</h1>
             <div class="alert alert-info">{{login.labels.ResetPasswordMessage}}</div>
@@ -68,6 +81,7 @@
 
     </div>
 
+    <div class="centeredLow">Welcome message and marketing messaging from Weir Flow Control</div>
     <nav class="navbar navbar-fixed-bottom" ng-controller="LoginCtrl">
         <div class="container-fluid" style="background-color: #d5d9dc;">
             <!-- Brand and toggle get grouped for better mobile display -->

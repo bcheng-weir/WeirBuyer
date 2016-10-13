@@ -30,11 +30,28 @@ function MyQuoteConfig($stateProvider) {
 			controller: 'MyQuoteDetailCtrl',
 			controllerAs: 'detail',
 			resolve: {
-				LineItems: function(WeirService) {
-					return [];
-					// return line items for current id
-				}
-			}
+                            LineItems: function($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers) {
+                                var dfd = $q.defer();
+				CurrentOrder.GetID()
+                                .then(function(id) {
+			             OrderCloud.LineItems.List(id)
+                                     .then(function(data) {
+                                         if (!data.Items.length) {
+                                             toastr.error('Your quote does not contain any line items.', 'Error');
+                                             dfd.resolve({Items: []});
+                                         } else {
+                                             LineItemHelpers.GetProductInfo(data.Items)
+                                             .then(function() { dfd.resolve(data); });
+                                        }
+                                    })
+                               })
+                               .catch(function() {
+                                   toastr.error('Your order does not contain any line items.', 'Error');
+                                   dfd.resolve({ Items: [] });
+                               });
+                               return dfd.promise;
+                           }
+                     }
 		})
 		.state( 'myquote.delivery', {
 			url: '/delivery',
@@ -134,7 +151,7 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 
 function MyQuoteDetailController(WeirService, $state, $sce, LineItems ) {
 	var vm = this;
-	vm.LineItems = LineItems;
+	vm.LineItems = LineItems.Items;
 	
 	var labels = {
 		en: {

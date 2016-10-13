@@ -31,11 +31,19 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="line in detail.LineItems">
+			 <td >{{line.xp.SN}}</td>
+                         <td>{{line.xp.TagNumber}}</td>
+                         <td>{{line.Product.Name}}</td>
+                         <td>{{line.Product.Description}}</td>
+                         <td>{{line.Product.xp.ReplacementSchedule}}</td>
+                         <td>{{line.Product.xp.LeadTime}}</td>
+		         <td>{{line.UnitPrice}}</td>
+		         <td>{{line.Quantity}}</td>
 		    </tr>
 		    <tr ng-if="detail.LineItems.length > 0">
 			    <td class="button-th" colspan="5"></td>
 			    <td ng-bind-html='detail.labels.Total'></td>
-			    <td><input type='text' /> </td>
+		            <td>{{myquote.Quote.Total}}</td>
 		    </tr>
                 </tbody>
             </table>

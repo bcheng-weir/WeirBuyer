@@ -19,8 +19,8 @@ function MyQuoteConfig($stateProvider) {
 				Quote: function(CurrentOrder) {
 					return CurrentOrder.Get();
 				},
-			        Customer: function(WeirService) {
-				    return WeirService.GetCurrentCustomer();
+				Customer: function(CurrentOrder) {
+				    return CurrentOrder.GetCurrentCustomer();
 				}
 			}
 		})
@@ -30,11 +30,28 @@ function MyQuoteConfig($stateProvider) {
 			controller: 'MyQuoteDetailCtrl',
 			controllerAs: 'detail',
 			resolve: {
-				LineItems: function(WeirService) {
-					return [];
-					// return line items for current id
-				}
-			}
+                            LineItems: function($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers) {
+                                var dfd = $q.defer();
+				CurrentOrder.GetID()
+                                .then(function(id) {
+			             OrderCloud.LineItems.List(id)
+                                     .then(function(data) {
+                                         if (!data.Items.length) {
+                                             toastr.error('Your quote does not contain any line items.', 'Error');
+                                             dfd.resolve({Items: []});
+                                         } else {
+                                             LineItemHelpers.GetProductInfo(data.Items)
+                                             .then(function() { dfd.resolve(data); });
+                                        }
+                                    })
+                               })
+                               .catch(function() {
+                                   toastr.error('Your order does not contain any line items.', 'Error');
+                                   dfd.resolve({ Items: [] });
+                               });
+                               return dfd.promise;
+                           }
+                     }
 		})
 		.state( 'myquote.delivery', {
 			url: '/delivery',
@@ -61,8 +78,18 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
+	vm.SaveableStatuses = [
+		WeirService.OrderStatus.Draft.id,
+		WeirService.OrderStatus.Saved.id,
+		WeirService.OrderStatus.Shared.id
+	];
+
+	console.log(vm.quote);
 
 	function save() {
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
+		    // TODO: FAIL if no line items
+		}
 		var mods = {
 		    Comments: vm.Quote.Comments,
 		    xp: {
@@ -71,8 +98,12 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 			Name: vm.Quote.xp.Name
 		    }
 		};
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
+		    mods.xp.Status = WeirService.OrderStatus.Saved.id;
+		}
 		WeirService.UpdateQuote(vm.Quote.ID, mods)
-			.then(function(res) {
+			.then(function(quote) {
+			    vm.Quote = quote;
 			    toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
 				// Do something here?
 			});
@@ -122,7 +153,7 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 
 function MyQuoteDetailController(WeirService, $state, $sce, LineItems ) {
 	var vm = this;
-	vm.LineItems = LineItems;
+	vm.LineItems = LineItems.Items;
 	
 	var labels = {
 		en: {

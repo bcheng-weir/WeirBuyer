@@ -15,14 +15,15 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="quote in saved.Quotes">
-		    <td ng-click="saved.ReviewQuote(quote.ID)"><a href="#">{{quote.xp.Name}}</a></td>
+		    <td ng-click="saved.ReviewQuote(quote.ID)"><a href="#">{{quote.ID}}</a></td>
                     <td>{{quote.xp.RefNum}}</td>
 		    <td ng-switch on="quote.xp.Currency">
 		        <span ng-switch-when="EUR">{{quote.Total | currency:'&euro; '}}</span>
 			<span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
 			<span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
 		    </td>
-                    <td>{{quote.xp.CustomerName}}</td>
+                    <td ng-if="quote.xp.CustomerID != quotes.MyOrg.ID ">{{quote.xp.CustomerName}}</td>
+                    <td ng-if="quote.xp.CustomerID == quotes.MyOrg.ID ">{{saved.labels.OwnProduct}}</td>
                     <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
                     <td>{{quote.xp.Expires | weirdate}}</td>
 		    <!-- <td class="button-td"><button class="btn btn-warning" ng-click="quotes.openQuote(quote.OrderID)" ng-bind-html='quote.labels.OpenQuote'></button></td> -->

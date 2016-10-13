@@ -153,7 +153,8 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
     };
 
     vm.goToCart = function() {
-        $state.go('cart', {}, {reload: true});
+        //$state.go('cart', {}, {reload: true});
+        $state.go('myquote.detail', {}, {reload: true});
     };
 
     vm.lineItemCall = function /*getLineItems*/(order) {

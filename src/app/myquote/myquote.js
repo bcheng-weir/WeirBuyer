@@ -19,7 +19,7 @@ function MyQuoteConfig($stateProvider) {
 				Quote: function(CurrentOrder) {
 					return CurrentOrder.Get();
 				},
-			        Customer: function(CurrentOrder) {
+				Customer: function(CurrentOrder) {
 				    return CurrentOrder.GetCurrentCustomer();
 				}
 			}
@@ -66,6 +66,8 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 		WeirService.OrderStatus.Saved.id,
 		WeirService.OrderStatus.Shared.id
 	];
+
+	console.log(vm.quote);
 
 	function save() {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {

@@ -411,11 +411,11 @@ function SerialDetailController( $stateParams, $rootScope, $sce, WeirService, Se
 	vm.headers = WeirService.LocaleResources(headers);
 
 	// vm.addPartToQuote = function(part) {
-		// WeirService.AddPartToQuote(part)
-				// .then(function(data) {
-					// $rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
-					// part.Quantity = null;
-				// });
+	// 	WeirService.AddPartToQuote(part)
+	// 			.then(function(data) {
+	// 				$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
+	// 				part.Quantity = null;
+	// 			});
 	// };
 }
 
@@ -707,12 +707,14 @@ function TagDetailController( $stateParams, $rootScope, $sce, WeirService, TagNu
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.headers = WeirService.LocaleResources(headers);
 
-	// vm.addPartToQuote = function(part) {
-		// WeirService.AddPartToQuote(part)
-				// .then(function(data) {
-					// $rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
-					// part.Quantity = null;
-				// });
-	// };
+	vm.addPartToQuote = function(part) {
+		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
+		part.xp.SN = vm.tagNumber.Name;
+		part.xp.TagNumber = vm.tagNumber.xp.TagNumber;
+		WeirService.AddPartToQuote(part)
+				.then(function(data) {
+					$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem);
+					part.Quantity = null;
+				});
+	};
 }
-

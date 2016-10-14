@@ -84,7 +84,7 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 		WeirService.OrderStatus.Shared.id
 	];
 
-	console.log(vm.quote);
+	console.log(vm.Quote);
 
 	function save() {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
@@ -151,7 +151,7 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 	vm.Print = print;
 }
 
-function MyQuoteDetailController(WeirService, $state, $sce, LineItems ) {
+function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, LineItems ) {
 	var vm = this;
 	vm.LineItems = LineItems.Items;
 	
@@ -175,7 +175,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, LineItems ) {
                     RefNumHeader: "Add your reference number for this quote",
                     CommentsHeader: "Your comments or instructions",
                     CommentsInstr: "Please add any specific comments or instructions for this quote",
-		    DeliveryOptions: "Delivery Options"
+		    DeliveryOptions: "Delivery Options",
+			Update: "Update"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("FR: Customer"),
@@ -196,10 +197,42 @@ function MyQuoteDetailController(WeirService, $state, $sce, LineItems ) {
                     RefNumHeader: $sce.trustAsHtml("FR: Add your reference number for this quote"),
                     CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
                     CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
-		    DeliveryOptions: $sce.trustAsHtml("FR: Delivery Options")
+		    DeliveryOptions: $sce.trustAsHtml("FR: Delivery Options"),
+			Update: $sce.trustAsHtml("FR: Mettre à jour")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+
+	vm.deleteLineItem = _deleteLineItem;
+	function _deleteLineItem(quoteNumber, itemid) {
+		OrderCloud.LineItems.Delete(quoteNumber, itemid, buyerid)
+			.then(function() {
+				// Testing. Should make another event for clarity. At this time I believe it just updates the cart items.
+				$rootScope.$broadcast('LineItemAddedToCart', quoteNumber, itemid); //This kicks off an event in cart.js
+			})
+			.then(function() {
+				$state.reload($state.current);
+			})
+			.catch(function(ex){
+				$exceptionHandler(ex);
+			});
+	}
+
+	vm.updateLineItem = _updateLineItem;
+	function _updateLineItem(quoteNumber, item) {
+		console.log(item);
+		OrderCloud.LineItems.Update(quoteNumber,item.ID,item,buyerid)
+			.then(function(resp) {
+				$rootScope.$broadcast('LineItemAddedToCart', quoteNumber, resp.ID);
+			})
+			.then(function() {
+				$state.reload($state.current);
+			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
+			});
+	}
+
 }
 
 function QuoteDeliveryOptionController(WeirService, $state, $sce) {

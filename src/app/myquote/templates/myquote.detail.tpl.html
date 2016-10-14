@@ -8,6 +8,7 @@
 
         <div class="col-md-3">
             <h2 class="pull-right">
+                <i class="fa fa-floppy-o fa-3" aria-hidden="true"></i>
                 <button class="btn btn-default" ui-sref="home" ng-bind-html='detail.labels.AddNew'></button>
             </h2>
         </div>
@@ -17,34 +18,38 @@
         <div class="col-md-12">
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
-                <tr>
-	 	    <th ng-bind-html='detail.labels.SerialNum'></th>
-	 	    <th ng-bind-html='detail.labels.TagNum'></th>
-	 	    <th ng-bind-html='detail.labels.PartNum'></th>
-                    <th ng-bind-html='detail.labels.PartDesc'></th>
-                    <th ng-bind-html='detail.labels.RecRepl'></th>
-                    <th ng-bind-html='detail.labels.LeadTime'></th>
-                    <th ng-bind-html='detail.labels.PricePer'></th>
-                    <th ng-bind-html='detail.labels.Quantity'></th>
-                    <th class="button-th"></th>
-                </tr>
+                    <tr>
+                        <th ng-bind-html='detail.labels.SerialNum'></th>
+                        <th ng-bind-html='detail.labels.TagNum'></th>
+                        <th ng-bind-html='detail.labels.PartNum'></th>
+                        <th ng-bind-html='detail.labels.PartDesc'></th>
+                        <th ng-bind-html='detail.labels.RecRepl'></th>
+                        <th ng-bind-html='detail.labels.LeadTime'></th>
+                        <th ng-bind-html='detail.labels.PricePer'></th>
+                        <th ng-bind-html='detail.labels.Quantity'></th>
+                        <th class="button-th"></th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="line in detail.LineItems">
-			 <td >{{line.xp.SN}}</td>
-                         <td>{{line.xp.TagNumber}}</td>
-                         <td>{{line.Product.Name}}</td>
-                         <td>{{line.Product.Description}}</td>
-                         <td>{{line.Product.xp.ReplacementSchedule}}</td>
-                         <td>{{line.Product.xp.LeadTime}}</td>
-		         <td>{{line.UnitPrice}}</td>
-		         <td>{{line.Quantity}}</td>
-		    </tr>
-		    <tr ng-if="detail.LineItems.length > 0">
-			    <td class="button-th" colspan="5"></td>
-			    <td ng-bind-html='detail.labels.Total'></td>
-		            <td>{{myquote.Quote.Total}}</td>
-		    </tr>
+                        <td>{{line.xp.SN}}</td>
+                        <td>{{line.xp.TagNumber}}</td>
+                        <td>{{line.Product.Name}}</td>
+                        <td>{{line.Product.Description}}</td>
+                        <td>{{line.Product.xp.ReplacementSchedule}}</td>
+                        <td>{{line.Product.xp.LeadTime}}</td>
+                        <td>{{line.UnitPrice}}</td>
+                        <td class="form-inline"><input type="number" class="form-control" ng-model="line.Quantity" ng-min="0"
+                                   ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:50%" />
+                            <button class="btn btn-default" ng-bind-html='detail.labels.Update' ng-click="detail.updateLineItem(myquote.Quote.ID,line)"></button>
+                        </td>
+                        <td ng-click="detail.deleteLineItem(myquote.Quote.ID,line.ID)"><i class="fa fa-times" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr ng-if="detail.LineItems.length > 0">
+                        <td class="button-th" colspan="5"></td>
+                        <td ng-bind-html='detail.labels.Total'></td>
+                        <td>{{myquote.Quote.Total}}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

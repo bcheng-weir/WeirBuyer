@@ -223,7 +223,7 @@ function HomeController($sce, $state, OrderCloud, CurrentOrder, WeirService, Cur
 	}
 }
 
-function SerialController(WeirService, $state, $sce ) {
+function SerialController(WeirService, $state, $sce, toastr ) {
 	var vm = this;
 	
 	var labels = {
@@ -256,10 +256,11 @@ function SerialController(WeirService, $state, $sce ) {
 	};
 
 	vm.searchSerialNumbers = function() {
-		if (vm.serialNumbers.length == 1) {
+		if(!vm.serialNumbers[0] || vm.serialNumbers.length == 0) {
+			toastr.info("Please enter an item in the search box.", "Empty Search");
+		} else if (vm.serialNumbers.length == 1) {
 			$state.go('home.serial.detail', {number: vm.serialNumbers[0]});
-		}
-		else {
+		} else {
 			$state.go('home.serial.results', {numbers: vm.serialNumbers.join(',')});
 		}
 	};
@@ -528,7 +529,7 @@ function PartResultsController( $rootScope, $sce, WeirService, PartNumberResults
 	};
 }
 
-function TagController(WeirService, $state, $sce) {
+function TagController(WeirService, $state, $sce, toastr) {
 	var vm = this;
 	
 	var labels = {
@@ -561,7 +562,9 @@ function TagController(WeirService, $state, $sce) {
 	};
 
 	vm.searchTags = function() {
-		if (vm.tags.length == 1) {
+		if(!vm.tags[0] || vm.tags.length == 0) {
+			toastr.info("Please enter an item in the search box.", "Empty Search");
+		} else if (vm.tags.length == 1) {
 			$state.go('home.tag.detail', {number: vm.tags[0]});
 		}
 		else {

@@ -197,15 +197,17 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
             	        })());
 	            }
 	        });
+                $q.all(queue).then(function() {
+                    deferred.resolve(results);
+                });
+	     } else {
+                  deferred.resolve(results);
 	     }
         })
 	.catch(function(ex) {
             d.resolve();
 	});
 
-        $q.all(queue).then(function() {
-            deferred.resolve(results);
-        });
         return deferred.promise;
     }
     function tagNumbers(tagNumbers) {
@@ -238,13 +240,15 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
             	        })());
 	            }
 	        });
+                $q.all(queue).then(function() {
+                    deferred.resolve(results);
+                });
+	    } else {
+                 deferred.resolve(results);
 	    }
         })
 	.catch(function(ex) {});
 
-        $q.all(queue).then(function() {
-            deferred.resolve(results);
-        });
         return deferred.promise;
     }
 

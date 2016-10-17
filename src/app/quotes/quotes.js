@@ -107,22 +107,21 @@ function QuotesController($sce, $state, WeirService, Customer, MyOrg) {
 
 }
 
-function SavedQuotesController(WeirService, $state, $sce,
-    CurrentOrder, Quotes, CurrentOrderId) {
+function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrder, Quotes, CurrentOrderId) {
 	var vm = this;
 	vm.Quotes = Quotes;
 	vm.CurrentOrderId = CurrentOrderId;
 	
 	function _reviewQuote(quoteId) {
-	    var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ?
-                confirm(vm.labels.ReplaceCartMessage) : true;
-            if (gotoReview) {
-	       WeirService.SetQuoteAsCurrentOrder(quoteId)
-	           .then(function() {
-	                $state.go('myquote.detail');
-		    });
-            }
-        }
+	    var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
+        if (gotoReview) {
+			WeirService.SetQuoteAsCurrentOrder(quoteId)
+                .then(function() {
+	                $rootScope.$broadcast('LineItemAddedToCart');
+                    $state.go('myquote.detail');
+				});
+		}
+    }
 
 	var labels = {
 		en: {

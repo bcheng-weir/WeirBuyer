@@ -1,11 +1,12 @@
 angular.module('orderCloud')
-        .factory( 'QuoteShareService', QuoteShareService) 
+    .factory( 'QuoteShareService', QuoteShareService)
 	.config(MyQuoteConfig)
 	.controller('MyQuoteCtrl', MyQuoteController)
 	.controller('MyQuoteDetailCtrl', MyQuoteDetailController)
 	.controller('QuoteDeliveryOptionCtrl', QuoteDeliveryOptionController )
 	.controller('ReviewQuoteCtrl', ReviewQuoteController )
 	.controller('ConfirmQuoteCtrl', ConfirmQuoteController )
+	.controller('ModalInstanceCtrl', ModalInstanceController)
 ;
 
 function QuoteShareService() {
@@ -30,23 +31,23 @@ function MyQuoteConfig($stateProvider) {
 				Customer: function(CurrentOrder) {
 				    return CurrentOrder.GetCurrentCustomer();
 				},
-                                LineItems: function($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService) {
-				    QuoteShareService.LineItems.length = 0;
-                                    var dfd = $q.defer();
+                LineItems: function($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService) {
+                    QuoteShareService.LineItems.length = 0;
+                    var dfd = $q.defer();
 				    CurrentOrder.GetID()
-                                    .then(function(id) {
-			                 OrderCloud.LineItems.List(id)
-                                         .then(function(data) {
-                                             if (!data.Items.length) {
-                                                 toastr.error('Your quote does not contain any line items.', 'Error');
-                                                 dfd.resolve({Items: []});
-                                             } else {
-                                                 LineItemHelpers.GetProductInfo(data.Items)
-                                                 .then(function() { dfd.resolve(data); });
-                                            }
-                                        })
-                                   })
-                                   .catch(function() {
+                        .then(function(id) {
+                            OrderCloud.LineItems.List(id)
+                                .then(function(data) {
+                                    if (!data.Items.length) {
+										toastr.error('Your quote does not contain any line items.', 'Error');
+                                        dfd.resolve({Items: []});
+                                    } else {
+                                        LineItemHelpers.GetProductInfo(data.Items)
+                                            .then(function() { dfd.resolve(data); });
+                                    }
+                                })
+                            })
+                        .catch(function() {
                                        toastr.error('Your quote does not contain any line items.', 'Error');
                                        dfd.resolve({ Items: [] });
                                    });
@@ -81,7 +82,7 @@ function MyQuoteConfig($stateProvider) {
 	;
 }
 
-function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer, LineItems, QuoteShareService) {
+function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirService, Quote, Customer, LineItems, QuoteShareService) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
@@ -94,9 +95,6 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer, L
 	vm.HasLineItems = function() {
 	    return (QuoteShareService.LineItems && QuoteShareService.LineItems.length);
 	};
-	
-
-	console.log(vm.Quote);
 
 	function save() {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
@@ -111,15 +109,31 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer, L
 		    }
 		};
 		var assignQuoteNumber = false;
+
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
 		    mods.xp.Status = WeirService.OrderStatus.Saved.id;
 		    assignQuoteNumber = true;
 		}
+
 		WeirService.UpdateQuote(vm.Quote.ID, mods, assignQuoteNumber, vm.Customer.id)
 			.then(function(quote) {
 			    vm.Quote = quote;
 			    toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
-				// Dave - this is where the popup needs to occur
+				// TODO Dave - this is where the popup needs to occur
+				var modalInstance = $uibModal.open({
+					animation: true,
+					ariaLabelledBy: 'modal-title',
+					ariaDescribedBy: 'modal-body',
+					templateUrl: 'modalConfirmation.html',
+					controller: 'ModalInstanceCtrl',
+					controllerAs: 'myQuote',
+					resolve: {
+						quote: function() {
+							return vm.Quote;
+						}
+					}
+				});
+				modalInstance.result;
 			});
 	}
 	function noItemsMessage() {
@@ -246,7 +260,6 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 	vm.updateLineItem = _updateLineItem;
 	function _updateLineItem(quoteNumber, item) {
-		console.log(item);
 		OrderCloud.LineItems.Update(quoteNumber,item.ID,item,buyerid)
 			.then(function(resp) {
 				$rootScope.$broadcast('LineItemAddedToCart', quoteNumber, resp.ID);
@@ -271,7 +284,6 @@ function QuoteDeliveryOptionController(WeirService, $state, $sce) {
 	};
 }
 
-
 function ReviewQuoteController(WeirService, $state, $sce) {
 	var vm = this;
 	var labels = {
@@ -281,7 +293,6 @@ function ReviewQuoteController(WeirService, $state, $sce) {
 		}
 	};
 }
-
 
 function ConfirmQuoteController(WeirService, $state, $sce) {
 	var vm = this;
@@ -293,3 +304,12 @@ function ConfirmQuoteController(WeirService, $state, $sce) {
 	};
 }
 
+function ModalInstanceController($uibModalInstance, quote) {
+	var vm = this;
+	vm.quote = quote;
+	console.log(vm.quote);
+	console.log(vm.quote.ID);
+	vm.ok = function() {
+		$uibModalInstance.close();
+	}
+}

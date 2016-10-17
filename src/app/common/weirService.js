@@ -734,13 +734,38 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
 	return deferred.promise;
     }
 
-    function updateQuote(quoteId, data) {
+    function updateQuote(quoteId, data, assignQuoteNumber, prefix) {
         var deferred = $q.defer();
-	OrderCloud.Orders.Patch(quoteId, data)
-		.then(function(quote) { deferred.resolve(quote)})
-	        .catch(function(ex) { d.deferred.reject(ex); });
+	if (assignQuoteNumber) {
+	   tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, 1);
+	} else {
+	   OrderCloud.Orders.Patch(quoteId, data)
+	      .then(function(quote) { deferred.resolve(quote)})
+	      .catch(function(ex) { d.deferred.reject(ex); });
+	}
 	return deferred.promise;
     }
+    function tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, trycount) {
+        var newQuoteId=createQuoteNumber(prefix);
+        data.ID = newQuoteId;
+	OrderCloud.Orders.Patch(quoteId, data)
+	   .then(function(quote) { deferred.resolve(quote)})
+	   .catch(function(ex) {
+                if(trycount > 4) {
+		    d.deferred.reject(ex);
+		} else {
+	            tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, trycount+1);
+		}
+	   });
+    }
+    function createQuoteNumber(prefix) {
+	// var timeoffset = 1476673277652;
+        var now = new Date();
+	var testVal = (now.getTime().toString());
+        var quoteNum = prefix + "-" + testVal;
+	return quoteNum;
+    }
+
     function setQuoteAsCurrentOrder(quoteId) {
         var deferred = $q.defer();
 	CurrentOrder.Set(quoteId)

@@ -120,11 +120,14 @@ function getMonthText(m, locale) {
 function weirdate() {
     return function(date, locale) {
         var result;
-        date = new Date(date);
+	if (date) {
+           date = new Date(date);
 
-        var day = date.getDate();
-        // result = '<span>' + day + '<sup>' + daySuffix(day) + '</sup>' + ' ' + getMonthText(date.getMonth()) + ' ' + date.getFullYear();
-        result = day + '-' + getMonthText(date.getMonth(), locale) + '-' + (date.getFullYear() % 100).toString();
+           var day = date.getDate();
+           result = day + '-' + getMonthText(date.getMonth(), locale) + '-' + (date.getFullYear() % 100).toString();
+	} else {
+	   result = "--";
+	}
         return result;
     }
 }

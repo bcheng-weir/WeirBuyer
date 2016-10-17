@@ -1,4 +1,5 @@
 angular.module('orderCloud')
+        .factory( 'QuoteShareService', QuoteShareService) 
 	.config(MyQuoteConfig)
 	.controller('MyQuoteCtrl', MyQuoteController)
 	.controller('MyQuoteDetailCtrl', MyQuoteDetailController)
@@ -6,6 +7,13 @@ angular.module('orderCloud')
 	.controller('ReviewQuoteCtrl', ReviewQuoteController )
 	.controller('ConfirmQuoteCtrl', ConfirmQuoteController )
 ;
+
+function QuoteShareService() {
+    var svc = {
+	    LineItems: []
+    };
+    return svc;
+}
 
 function MyQuoteConfig($stateProvider) {
 	$stateProvider
@@ -21,37 +29,36 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Customer: function(CurrentOrder) {
 				    return CurrentOrder.GetCurrentCustomer();
-				}
+				},
+                                LineItems: function($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService) {
+				    QuoteShareService.LineItems.length = 0;
+                                    var dfd = $q.defer();
+				    CurrentOrder.GetID()
+                                    .then(function(id) {
+			                 OrderCloud.LineItems.List(id)
+                                         .then(function(data) {
+                                             if (!data.Items.length) {
+                                                 toastr.error('Your quote does not contain any line items.', 'Error');
+                                                 dfd.resolve({Items: []});
+                                             } else {
+                                                 LineItemHelpers.GetProductInfo(data.Items)
+                                                 .then(function() { dfd.resolve(data); });
+                                            }
+                                        })
+                                   })
+                                   .catch(function() {
+                                       toastr.error('Your quote does not contain any line items.', 'Error');
+                                       dfd.resolve({ Items: [] });
+                                   });
+                                   return dfd.promise;
+                               }
 			}
 		})
 		.state( 'myquote.detail', {
 			url: '/detail',
 			templateUrl: 'myquote/templates/myquote.detail.tpl.html',
 			controller: 'MyQuoteDetailCtrl',
-			controllerAs: 'detail',
-			resolve: {
-                            LineItems: function($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers) {
-                                var dfd = $q.defer();
-				CurrentOrder.GetID()
-                                .then(function(id) {
-			             OrderCloud.LineItems.List(id)
-                                     .then(function(data) {
-                                         if (!data.Items.length) {
-                                             toastr.error('Your quote does not contain any line items.', 'Error');
-                                             dfd.resolve({Items: []});
-                                         } else {
-                                             LineItemHelpers.GetProductInfo(data.Items)
-                                             .then(function() { dfd.resolve(data); });
-                                        }
-                                    })
-                               })
-                               .catch(function() {
-                                   toastr.error('Your order does not contain any line items.', 'Error');
-                                   dfd.resolve({ Items: [] });
-                               });
-                               return dfd.promise;
-                           }
-                     }
+			controllerAs: 'detail' // ,
 		})
 		.state( 'myquote.delivery', {
 			url: '/delivery',
@@ -74,7 +81,7 @@ function MyQuoteConfig($stateProvider) {
 	;
 }
 
-function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
+function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer, LineItems, QuoteShareService) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
@@ -83,6 +90,11 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 		WeirService.OrderStatus.Saved.id,
 		WeirService.OrderStatus.Shared.id
 	];
+	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
+	vm.HasLineItems = function() {
+	    return (QuoteShareService.LineItems && QuoteShareService.LineItems.length);
+	};
+	
 
 	console.log(vm.Quote);
 
@@ -98,15 +110,23 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 			Name: vm.Quote.xp.Name
 		    }
 		};
+		var assignQuoteNumber = false;
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
 		    mods.xp.Status = WeirService.OrderStatus.Saved.id;
+		    assignQuoteNumber = true;
 		}
-		WeirService.UpdateQuote(vm.Quote.ID, mods)
+		WeirService.UpdateQuote(vm.Quote.ID, mods, assignQuoteNumber, vm.Customer.id)
 			.then(function(quote) {
 			    vm.Quote = quote;
 			    toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
-				// Do something here?
+				// Dave - this is where the popup needs to occur
 			});
+	}
+	function noItemsMessage() {
+             toastr.error(vm.labels.NoItemsError);
+	}
+	function cannotContinueNoItemsMessage() {
+             toastr.error(vm.labels.CannotContinueNoItems);
 	}
 	function share() {
 		alert("TODO: Implement share quote");
@@ -129,7 +149,9 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 			Download: "Download",
 			Print: "Print",
                         SaveSuccessTitle: "Quote Saved",
-                        SaveSuccessMessage: "Your changes have been saved"
+                        SaveSuccessMessage: "Your changes have been saved",
+			NoItemsError: "Please add parts to quote before saving",
+			CannotContinueNoItems: "Please add parts to quote before continuing"
 		},
 		fr: {
 			YourQuote: $sce.trustAsHtml("FR: Your Quote"),
@@ -141,19 +163,23 @@ function MyQuoteController($sce, $state, toastr, WeirService, Quote, Customer) {
 			Download: $sce.trustAsHtml("FR: Download"),
 			Print: $sce.trustAsHtml("FR: Print"),
                         SaveSuccessTitle: $sce.trustAsHtml("FR: Quote Saved"),
-                        SaveSuccessMessage: $sce.trustAsHtml("FR: Your changes have been saved")
+                        SaveSuccessMessage: $sce.trustAsHtml("FR: Your changes have been saved"),
+			NoItemsError: $sce.trustAsHtml("FR: Please add parts to quote before saving"),
+			CannotContinueNoItems: $sce.trustAsHtml("FR: Please add parts to quote before continuing")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.Save = save;
+	vm.NoItemsMessage = noItemsMessage;
+	vm.CannotContinueNoItemsMessage = cannotContinueNoItemsMessage;
 	vm.Share = share;
 	vm.Download = download;
 	vm.Print = print;
 }
 
-function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, LineItems ) {
+function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, QuoteShareService) {
 	var vm = this;
-	vm.LineItems = LineItems.Items;
+	vm.LineItems = QuoteShareService.LineItems;
 	
 	var labels = {
 		en: {

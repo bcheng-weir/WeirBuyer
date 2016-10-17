@@ -17,16 +17,14 @@
 	<div ui-view>
 		<div id="modalMyquote" class="modal-quote-confirmation">
 			<script type="text/ng-template" id="modalConfirmation.html">
-				<div class="modal-header">
-					<h3 class="modal-title" id="modal-title">
-						Confirmed
-					</h3>
+				<div class="modal-header" style="border-bottom: 0px; ">
+					<h1 class="pull-right"><a href="" ng-click="myQuote.ok(false)" style="text-decoration: none; " >X</a></h1>
 				</div>
 				<div class="modal-body" id="modal-body">
-					<h3>{{myQuote.quote.ID}}</h3>
+					<h3>Quote number {{myQuote.quote.ID}} has been saved to Your Quotes.</h3>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-primary" type="button" ng-click="myQuote.ok()">OK</button>
+					<a href="" ng-click="myQuote.ok(true)">View Your Quotes</a>
 				</div>
 			</script>
 		</div>

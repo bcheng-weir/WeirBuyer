@@ -344,10 +344,29 @@ function ModalInstanceController($uibModalInstance, $state, quote) {
 	}
 }
 
-function MoreQuoteInfoController($uibModalInstance, $state, quote) {
+function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService, quote) {
     var vm = this;
     vm.Cancel = cancel;
     vm.Continue = gotoDelivery;
+
+    	var vm = this;
+	var labels = {
+		en: {
+		    Title: "You can add more information to this quote;",
+		    Documents: "add service documentation",
+		    RefNum: "add your references",
+		    Comments: "add comments to your quote",
+		    Continue: "continue to delivery options"
+		},
+		fr: {
+			Title: $sce.trustAsHtml("FR: You can add more information to this quote;"),
+		    Documents: $sce.trustAsHtml("FR: add service documentation"),
+		    RefNum: $sce.trustAsHtml("FR: add your references"),
+		    Comments: $sce.trustAsHtml("FR: add comments to your quote"),
+		    Continue: $sce.trustAsHtml("continue to delivery options")
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
 
     function gotoDelivery() {
 	$uibModalInstance.close();

@@ -7,6 +7,7 @@ angular.module('orderCloud')
 	.controller('ReviewQuoteCtrl', ReviewQuoteController )
 	.controller('ConfirmQuoteCtrl', ConfirmQuoteController )
 	.controller('ModalInstanceCtrl', ModalInstanceController)
+	.controller('MoreQuoteInfoCtrl', MoreQuoteInfoController)
 ;
 
 function QuoteShareService() {
@@ -136,6 +137,27 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 				modalInstance.result;
 			});
 	}
+	function gotoDelivery() {
+		if (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.RefDocs && vm.Quote.xp.RefDocs.length) {
+                    $state.go("myquote.delivery");
+		} else {
+                    var modalInstance = $uibModal.open({
+                        animation: true,
+                        ariaLabelledBy: 'modal-title',
+                        ariaDescribedBy: 'modal-body',
+                        templateUrl: 'myquote/templates/myquote.missingdetail.tpl.html',
+                        controller: 'MoreQuoteInfoCtrl',
+                        controllerAs: 'moreInfo',
+			size: 'sm',
+                        resolve: {
+                            quote: function() {
+                                return vm.Quote;
+                            }
+                        }
+                    });
+                    modalInstance.result;
+		}
+	}
 	function noItemsMessage() {
              toastr.error(vm.labels.NoItemsError);
 	}
@@ -183,6 +205,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+	vm.GotoDelivery = gotoDelivery;
 	vm.Save = save;
 	vm.NoItemsMessage = noItemsMessage;
 	vm.CannotContinueNoItemsMessage = cannotContinueNoItemsMessage;
@@ -319,4 +342,18 @@ function ModalInstanceController($uibModalInstance, $state, quote) {
 			$uibModalInstance.close();
 		}
 	}
+}
+
+function MoreQuoteInfoController($uibModalInstance, $state, quote) {
+    var vm = this;
+    vm.Cancel = cancel;
+    vm.Continue = gotoDelivery;
+
+    function gotoDelivery() {
+	$uibModalInstance.close();
+        $state.go("myquote.delivery");
+    }
+    function cancel() {
+	$uibModalInstance.close();
+    }
 }

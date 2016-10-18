@@ -8,9 +8,9 @@
 	</ul>
 	<ol class="nav nav-tabs nav-justified">
 		<li role="presentation" ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="myquote.delivery" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
+		<!-- <li role="presentation" ui-sref-active="active" ui-sref="myquote.delivery" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li> -->
+		<li role="presentation" ui-sref-active="active" ng-click="myquote.GotoDelivery()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 		<li role="presentation" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="myquote.delivery"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 		<li role="presentation" ui-sref-active="active" ui-sref="myquote.review"><a href="#" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
 		<li role="presentation" ui-sref-active="active" ui-sref="myquote.confirm"><a href="#" ng-bind-html='myquote.labels.ConfirmOrder'></a></li>
 	</ol>

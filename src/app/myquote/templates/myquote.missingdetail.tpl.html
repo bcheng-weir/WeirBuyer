@@ -1,0 +1,19 @@
+<div class="source-list-modal">
+	<div class="modal-header" style="padding-bottom: 0px;">
+	    <div style="display: inline-block">
+	    <button class="btn btn-primary" style="float: right;" type="button" ng-click="moreInfo.Cancel()">X</button>
+	    <h4 style="float: left; width:75%; padding-bottom: 0px;">You can add more information to this quote;</h4>
+    </div>
+    </div>
+    <div class="modal-body" style="margin-top: -5px;" >
+        <div style="margin-left: auto; margin-right: auto; ">
+		<ul>
+                <li>add service documentation</li>
+                <li>add your references</li>
+                <li>add comments to your quote</li>
+            </ul>
+        </div>
+        <a ui-sref-active="active" ng-click="moreInfo.Continue()" href="#"
+		style="font-weight: bold; float: right; font-size: smaller;">continue to delivery options</a>
+    </div>
+</div>

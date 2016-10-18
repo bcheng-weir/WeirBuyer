@@ -119,7 +119,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 			.then(function(quote) {
 			    vm.Quote = quote;
 			    toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
-				// TODO Dave - this is where the popup needs to occur
+				// TODO Dave - Make this call the new modalNotice directive.
 				var modalInstance = $uibModal.open({
 					animation: true,
 					ariaLabelledBy: 'modal-title',
@@ -137,10 +137,10 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 			});
 	}
 	function noItemsMessage() {
-             toastr.error(vm.labels.NoItemsError);
+        toastr.error(vm.labels.NoItemsError);
 	}
 	function cannotContinueNoItemsMessage() {
-             toastr.error(vm.labels.CannotContinueNoItems);
+		toastr.error(vm.labels.CannotContinueNoItems);
 	}
 	function share() {
 		alert("TODO: Implement share quote");
@@ -162,8 +162,8 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 			Share: "Share",
 			Download: "Download",
 			Print: "Print",
-                        SaveSuccessTitle: "Quote Saved",
-                        SaveSuccessMessage: "Your changes have been saved",
+            SaveSuccessTitle: "Quote Saved",
+            SaveSuccessMessage: "Your changes have been saved",
 			NoItemsError: "Please add parts to quote before saving",
 			CannotContinueNoItems: "Please add parts to quote before continuing"
 		},
@@ -176,8 +176,8 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 			Share: $sce.trustAsHtml("FR: Share"),
 			Download: $sce.trustAsHtml("FR: Download"),
 			Print: $sce.trustAsHtml("FR: Print"),
-                        SaveSuccessTitle: $sce.trustAsHtml("FR: Quote Saved"),
-                        SaveSuccessMessage: $sce.trustAsHtml("FR: Your changes have been saved"),
+            SaveSuccessTitle: $sce.trustAsHtml("FR: Quote Saved"),
+            SaveSuccessMessage: $sce.trustAsHtml("FR: Your changes have been saved"),
 			NoItemsError: $sce.trustAsHtml("FR: Please add parts to quote before saving"),
 			CannotContinueNoItems: $sce.trustAsHtml("FR: Please add parts to quote before continuing")
 		}

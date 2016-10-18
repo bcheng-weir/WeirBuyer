@@ -117,7 +117,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
         if (gotoReview) {
 			WeirService.SetQuoteAsCurrentOrder(quoteId)
                 .then(function() {
-	                $rootScope.$broadcast('LineItemAddedToCart');
+	                $rootScope.$broadcast('SwitchCart');
                     $state.go('myquote.detail');
 				});
 		}

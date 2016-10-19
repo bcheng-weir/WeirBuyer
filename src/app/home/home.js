@@ -612,7 +612,6 @@ function TagResultsController(WeirService, $stateParams, TagNumberResults, $sce 
 	var labels = {
 		en: {
 			Customer: "Customer",
-			ResultsHeader: "Showing results for tag numbers;",
 			ResultsHeader: "Showing results for tag numbers; " + numFound.toString() + " of " + TagNumberResults.length.toString() + " searched tag numbers found",
 			SerialNumber: "Serial Number",
 			TagNumber: "Tag number (if available)",

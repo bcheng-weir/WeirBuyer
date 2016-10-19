@@ -49,11 +49,11 @@ function MyQuoteConfig($stateProvider) {
                                 })
                             })
                         .catch(function() {
-                                       toastr.error('Your quote does not contain any line items.', 'Error');
-                                       dfd.resolve({ Items: [] });
-                                   });
-                                   return dfd.promise;
-                               }
+							toastr.error('Your quote does not contain any line items.', 'Error');
+							dfd.resolve({ Items: [] });
+                        });
+                    return dfd.promise;
+				}
 			}
 		})
 		.state( 'myquote.detail', {
@@ -131,6 +131,9 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 					resolve: {
 						quote: function() {
 							return vm.Quote;
+						},
+						labels: function() {
+							return vm.labels;
 						}
 					}
 				});
@@ -139,23 +142,23 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 	}
 	function gotoDelivery() {
 		if (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.RefDocs && vm.Quote.xp.RefDocs.length) {
-                    $state.go("myquote.delivery");
+            $state.go("myquote.delivery");
 		} else {
-                    var modalInstance = $uibModal.open({
-                        animation: true,
-                        ariaLabelledBy: 'modal-title',
-                        ariaDescribedBy: 'modal-body',
-                        templateUrl: 'myquote/templates/myquote.missingdetail.tpl.html',
-                        controller: 'MoreQuoteInfoCtrl',
-                        controllerAs: 'moreInfo',
-			size: 'sm',
-                        resolve: {
-                            quote: function() {
-                                return vm.Quote;
-                            }
-                        }
-                    });
-                    modalInstance.result;
+            var modalInstance = $uibModal.open({
+                animation: true,
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'myquote/templates/myquote.missingdetail.tpl.html',
+                controller: 'MoreQuoteInfoCtrl',
+                controllerAs: 'moreInfo',
+				size: 'sm',
+                resolve: {
+                    quote: function() {
+                        return vm.Quote;
+                    }
+                }
+            });
+            modalInstance.result;
 		}
 	}
 	function noItemsMessage() {
@@ -187,7 +190,9 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
             SaveSuccessTitle: "Quote Saved",
             SaveSuccessMessage: "Your changes have been saved",
 			NoItemsError: "Please add parts to quote before saving",
-			CannotContinueNoItems: "Please add parts to quote before continuing"
+			CannotContinueNoItems: "Please add parts to quote before continuing",
+			SaveBody: "Quote number " + vm.Quote.ID + " has been saved to Your Quotes.",
+			SaveFooter: "View Your Quotes"
 		},
 		fr: {
 			YourQuote: $sce.trustAsHtml("FR: Your Quote"),
@@ -201,7 +206,9 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
             SaveSuccessTitle: $sce.trustAsHtml("FR: Quote Saved"),
             SaveSuccessMessage: $sce.trustAsHtml("FR: Your changes have been saved"),
 			NoItemsError: $sce.trustAsHtml("FR: Please add parts to quote before saving"),
-			CannotContinueNoItems: $sce.trustAsHtml("FR: Please add parts to quote before continuing")
+			CannotContinueNoItems: $sce.trustAsHtml("FR: Please add parts to quote before continuing"),
+			SaveBody: $sce.trustAsHtml("FR: Quote number " + vm.Quote.ID + " has been saved to Your Quotes."),
+			SaveFooter: $sce.trustAsHtml("FR: View Your Quotes")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -220,48 +227,50 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	
 	var labels = {
 		en: {
-                    Customer: "Customer; ",
-                    QuoteNumber: "Quote number ",
-                    QuoteName: "Quote name ",
-                    AddNew: "Add new items",
-                    SerialNum: "Serial number",
-                    TagNum: "Tag number (if available)",
-                    PartNum: "Part number",
-                    PartDesc: "Description of part",
-                    RecRepl: "Recommended replacement",
-                    LeadTime: "Lead time",
-                    PricePer: "Price per item or set",
-                    Quantity: "Quantity",
-                    Total: "Total",
-                    UploadHeader: "Upload your service or operating condition document",
-                    UploadInstruct: "Please upload any supporting documentation you have for valves  or spares requested so we can ensure use these for reference for this quote.",
-                    RefNumHeader: "Add your reference number for this quote",
-                    CommentsHeader: "Your comments or instructions",
-                    CommentsInstr: "Please add any specific comments or instructions for this quote",
+            Customer: "Customer; ",
+            QuoteNumber: "Quote number ",
+            QuoteName: "Quote name ",
+            AddNew: "Add new items",
+            SerialNum: "Serial number",
+            TagNum: "Tag number (if available)",
+            PartNum: "Part number",
+            PartDesc: "Description of part",
+            RecRepl: "Recommended replacement",
+            LeadTime: "Lead time",
+            PricePer: "Price per item or set",
+            Quantity: "Quantity",
+            Total: "Total",
+            UploadHeader: "Upload your service or operating condition document",
+            UploadInstruct: "Please upload any supporting documentation you have for valves  or spares requested so we can ensure use these for reference for this quote.",
+            RefNumHeader: "Add your reference number for this quote",
+            CommentsHeader: "Your comments or instructions",
+            CommentsInstr: "Please add any specific comments or instructions for this quote",
 		    DeliveryOptions: "Delivery Options",
-			Update: "Update"
+			Update: "Update",
+			DragAndDrop: "Drag and drop files here to upload"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("FR: Customer"),
-                    QuoteNumber: $sce.trustAsHtml("FR: Quote number"),
-                    QuoteName: $sce.trustAsHtml("Quote name "),
-                    AddNew: $sce.trustAsHtml("FR: Add new items"),
-                    SerialNum: $sce.trustAsHtml("FR: Serial number"),
-                    TagNum: $sce.trustAsHtml("FR: Tag number (if available)"),
-                    PartNum: $sce.trustAsHtml("FR: Part number"),
-                    PartDesc: $sce.trustAsHtml("FR: Description of part"),
-                    RecRepl: $sce.trustAsHtml("FR: Recommended replacement"),
-                    LeadTime: $sce.trustAsHtml("FR: Lead time"),
-                    PricePer: $sce.trustAsHtml("FR: Price per item or set"),
-                    Quantity: $sce.trustAsHtml("FR: Quantity"),
-                    Total: $sce.trustAsHtml("FR: Total"),
-                    UploadHeader: $sce.trustAsHtml("FR: Upload your service or operating condition document"),
-                    UploadInstruct: $sce.trustAsHtml("FR: Please upload any supporting documentation you have for valves  or spares requested so we can ensure use these for reference for this quote."),
-                    RefNumHeader: $sce.trustAsHtml("FR: Add your reference number for this quote"),
-                    CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
-                    CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
+            QuoteNumber: $sce.trustAsHtml("FR: Quote number"),
+            QuoteName: $sce.trustAsHtml("Quote name "),
+            AddNew: $sce.trustAsHtml("FR: Add new items"),
+            SerialNum: $sce.trustAsHtml("FR: Serial number"),
+            TagNum: $sce.trustAsHtml("FR: Tag number (if available)"),
+            PartNum: $sce.trustAsHtml("FR: Part number"),
+            PartDesc: $sce.trustAsHtml("FR: Description of part"),
+            RecRepl: $sce.trustAsHtml("FR: Recommended replacement"),
+            LeadTime: $sce.trustAsHtml("FR: Lead time"),
+            PricePer: $sce.trustAsHtml("FR: Price per item or set"),
+            Quantity: $sce.trustAsHtml("FR: Quantity"),
+            Total: $sce.trustAsHtml("FR: Total"),
+            UploadHeader: $sce.trustAsHtml("FR: Upload your service or operating condition document"),
+            UploadInstruct: $sce.trustAsHtml("FR: Please upload any supporting documentation you have for valves  or spares requested so we can ensure use these for reference for this quote."),
+            RefNumHeader: $sce.trustAsHtml("FR: Add your reference number for this quote"),
+            CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
+            CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
 		    DeliveryOptions: $sce.trustAsHtml("FR: Delivery Options"),
-			Update: $sce.trustAsHtml("FR: Mettre à jour")
+			Update: $sce.trustAsHtml("FR: Mettre à jour"),
+			DragAndDrop: $sce.trustAsHtml("FR: Drag and drop files here to upload")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -327,9 +336,10 @@ function ConfirmQuoteController(WeirService, $state, $sce) {
 	};
 }
 
-function ModalInstanceController($uibModalInstance, $state, quote) {
+function ModalInstanceController($uibModalInstance, $state, quote, labels) {
 	var vm = this;
 	vm.quote = quote;
+	vm.labels = labels;
 	vm.ok = function(navigatePage) {
 		if(navigatePage) {
 			$uibModalInstance.close();

@@ -190,6 +190,17 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
             });
     });
 
+    $rootScope.$on('SwitchCart', function() {
+        CurrentOrder.Get()
+            .then(function(order) {
+                if(vm.$ocMedia('max-width:767px')) {
+                    vm.openModal(order);
+                } else {
+                    vm.lineItemCall(order);
+                }
+            });
+    });
+
     $rootScope.$on('OC:RemoveOrder', function() {//broadcast is in build > src > app > common > line items
         vm.Order = null;
         vm.LineItems = {};

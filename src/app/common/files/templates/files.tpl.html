@@ -4,7 +4,7 @@
     </figure>
     <label>{{label}}</label>
     <p>
-        <button type="button" class="btn btn-default" ng-click="upload()">{{model.xp[keyname].URL ? 'Replace' : 'Upload'}}</button>
+        <button type="button" class="btn btn-default" ng-click="upload()">{{model.xp[keyname].URL ? 'Replace' : 'Or select files to upload'}}</button>
         <button type="button" class="btn btn-default" ng-click="remove()" ng-if="model.xp[keyname].URL"><i class="fa fa-trash text-danger"></i></button>
     </p>
     <input class="ng-hide" name="upload" type="file" id="orderCloudUpload" />

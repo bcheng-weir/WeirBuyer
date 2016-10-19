@@ -330,13 +330,10 @@ function ConfirmQuoteController(WeirService, $state, $sce) {
 function ModalInstanceController($uibModalInstance, $state, quote) {
 	var vm = this;
 	vm.quote = quote;
-	console.log(vm.quote);
-	console.log(vm.quote.ID);
 	vm.ok = function(navigatePage) {
 		if(navigatePage) {
 			$uibModalInstance.close();
 			$state.go("quotes.saved");
-			console.log("Worked!");
 		}
 		else {
 			$uibModalInstance.close();

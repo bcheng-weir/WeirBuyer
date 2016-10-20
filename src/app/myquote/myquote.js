@@ -17,7 +17,7 @@ function QuoteShareService() {
     return svc;
 }
 
-function MyQuoteConfig($stateProvider) {
+function MyQuoteConfig($stateProvider,buyerid) {
 	$stateProvider
 		.state('myquote', {
 			parent: 'base',
@@ -60,13 +60,18 @@ function MyQuoteConfig($stateProvider) {
 			url: '/detail',
 			templateUrl: 'myquote/templates/myquote.detail.tpl.html',
 			controller: 'MyQuoteDetailCtrl',
-			controllerAs: 'detail' // ,
+			controllerAs: 'detail'
 		})
 		.state( 'myquote.delivery', {
 			url: '/delivery',
 			templateUrl: 'myquote/templates/myquote.delivery.tpl.html',
 			controller: 'QuoteDeliveryOptionCtrl',
-			controllerAs: 'delivery'
+			controllerAs: 'delivery',
+			resolve: {
+				Addresses: function(OrderCloud) {
+					return OrderCloud.Addresses.List(null,null,null,null,null,null,buyerid);
+				}
+			}
 		})
 		.state( 'myquote.review', {
 			url: '/review',
@@ -306,14 +311,51 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 }
 
-function QuoteDeliveryOptionController(WeirService, $state, $sce) {
+function QuoteDeliveryOptionController(WeirService, $state, $sce, $scope, $exceptionHandler, toastr, Addresses, OrderCloud, buyerid) {
 	var vm = this;
+	vm.addresses = Addresses;
 	var labels = {
 		en: {
+			DefaultAddress: "Your default address",
+			AddNew: "Add a new address",
+			DeliveryType: "Delivery type",
+			DeliverHere: "Deliver to this address",
+			ReviewQuote: "Review quote",
+			BackToQuote: "Back to your quote"
 		},
 		fr: {
+			DefaultAddress: $sce.trustAsHtml("FR: Your default address"),
+			AddNew: $sce.trustAsHtml("FR: Add a new address"),
+			DeliveryType: $sce.trustAsHtml("FR: Delivery type"),
+			DeliverHere: $sce.trustAsHtml("FR: Deliver to this address"),
+			ReviewQuote: $sce.trustAsHtml("FR: Review quote"),
+			BackToQuote: $sce.trustAsHtml("FR: Back to your quote")
 		}
 	};
+
+	vm.ChunkedData = _chunkData(vm.addresses.Items,2);
+	function _chunkData(arr,size) {
+		var newArray = [];
+		for(var i=0;i<arr.length;i+=size) {
+			newArray.push(arr.slice(i,i+size));
+		}
+		return newArray;
+	}
+
+	vm.setShippingAddress = _setShippingAddress;
+	function _setShippingAddress(QuoteID, Address) {
+		console.log(buyerid + " " + QuoteID);
+		console.log(Address);
+		OrderCloud.Orders.SetShippingAddress(QuoteID, Address, buyerid)
+			.then(function(order) {
+				toastr.success("Shipping address set to " + order.ShippingAddressID,"Shipping Address Set");
+			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
+			});
+	}
+
+	vm.labels = WeirService.LocaleResources(labels);
 }
 
 function ReviewQuoteController(WeirService, $state, $sce) {

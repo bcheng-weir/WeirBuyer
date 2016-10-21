@@ -312,13 +312,17 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $scope, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, buyerid) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $scope, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, buyerid, OCGeography) {
 	var vm = this;
 	var activeAddress = function(address) { return !address.xp.inactive; };
 	vm.addresses = Underscore.sortBy(Addresses.Items, function(address) {
 		return address.xp.primary;
 	}).filter(activeAddress).reverse();
 	vm.customShipping = false;
+	vm.country = function(c) {
+		var result = Underscore.findWhere(OCGeography.Countries, {value:c});
+		return result ? result.label : '';
+	};
 
 	var labels = {
 		en: {

@@ -3,6 +3,10 @@ angular.module('ordercloud-geography', [])
 ;
 
 function OCGeography() {
+    var _weirCountries = [
+        { "label": "France", "value": "FR"},
+        { "label": "United Kingdom", "value": "GB"}
+    ];
     var _countries = [
         { "label": "United States of America", "value": "US"},
         { "label": "Afghanistan", "value": "AF"},
@@ -341,7 +345,7 @@ function OCGeography() {
     ];
 
     return {
-        Countries:  _countries,
+        Countries:  _weirCountries,
         States: _states
     };
 }

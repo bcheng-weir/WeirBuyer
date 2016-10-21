@@ -4,14 +4,15 @@ angular.module('ordercloud-address', [])
     .filter('address', AddressFilter)
 ;
 
-function AddressFormDirective(OCGeography) {
+function AddressFormDirective(OCGeography, WeirService) {
+    var template = WeirService.Locale() == "fr" ? "common/address/templates/addressFR.form.tpl.html" : "common/address/templates/addressUK.form.tpl.html";
     return {
         restrict: 'E',
         scope: {
             address: '=',
             isbilling: '='
         },
-        templateUrl: 'common/address/templates/address.form.tpl.html',
+        templateUrl: template,
         link: function(scope) {
             scope.countries = OCGeography.Countries;
             scope.states = OCGeography.States;

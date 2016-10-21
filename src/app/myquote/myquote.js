@@ -8,6 +8,7 @@ angular.module('orderCloud')
 	.controller('ConfirmQuoteCtrl', ConfirmQuoteController )
 	.controller('ModalInstanceCtrl', ModalInstanceController)
 	.controller('MoreQuoteInfoCtrl', MoreQuoteInfoController)
+	.controller('NewAddressModalCtrl', NewAddressModalController)
 ;
 
 function QuoteShareService() {
@@ -311,9 +312,14 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 }
 
-function QuoteDeliveryOptionController(WeirService, $state, $sce, $scope, $exceptionHandler, toastr, Addresses, OrderCloud, buyerid) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $scope, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, buyerid) {
 	var vm = this;
-	vm.addresses = Addresses;
+	var activeAddress = function(address) { return !address.xp.inactive; };
+	vm.addresses = Underscore.sortBy(Addresses.Items, function(address) {
+		return address.xp.primary;
+	}).filter(activeAddress).reverse();
+	vm.customShipping = false;
+
 	var labels = {
 		en: {
 			DefaultAddress: "Your default address",
@@ -333,7 +339,8 @@ function QuoteDeliveryOptionController(WeirService, $state, $sce, $scope, $excep
 		}
 	};
 
-	vm.ChunkedData = _chunkData(vm.addresses.Items,2);
+	// We do this so we can display the addresses in a two column table.
+	vm.ChunkedData = _chunkData(vm.addresses,2);
 	function _chunkData(arr,size) {
 		var newArray = [];
 		for(var i=0;i<arr.length;i+=size) {
@@ -344,14 +351,44 @@ function QuoteDeliveryOptionController(WeirService, $state, $sce, $scope, $excep
 
 	vm.setShippingAddress = _setShippingAddress;
 	function _setShippingAddress(QuoteID, Address) {
-		console.log(buyerid + " " + QuoteID);
-		console.log(Address);
 		OrderCloud.Orders.SetShippingAddress(QuoteID, Address, buyerid)
 			.then(function(order) {
+				$state.go($state.current, {}, {reload: true});
 				toastr.success("Shipping address set to " + order.ShippingAddressID,"Shipping Address Set");
 			})
 			.catch(function(ex) {
 				$exceptionHandler(ex);
+			});
+	}
+
+	vm.SaveCustomAddress = _saveCustomAddress;
+	function _saveCustomAddress() { return true; }
+
+	vm.CustomShipping = _customShipping;
+	function _customShipping(QuoteID) {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'newAddress.html',
+			controller: 'NewAddressModalCtrl',
+			controllerAs: 'NewAddressModal',
+			size: 'lg'
+		});
+
+		modalInstance.result
+			.then(function (address) {
+				return OrderCloud.Addresses.Create(address, buyerid);
+			})
+			.then(function(newAddress) {
+				return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, buyerid);
+			})
+			.then(function(order) {
+				$state.go($state.current, {}, {reload: true});
+				toastr.success("Shipping address set to " + order.ShippingAddressID,"Shipping Address Set");
+			})
+			.catch(function(ex) {
+				if(ex !== 'cancel') {
+					$exceptionHandler(ex);
+				}
 			});
 	}
 
@@ -398,7 +435,7 @@ function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService, q
     vm.Cancel = cancel;
     vm.Continue = gotoDelivery;
 
-    	var vm = this;
+	var vm = this;
 	var labels = {
 		en: {
 		    Title: "You can add more information to this quote;",
@@ -418,10 +455,27 @@ function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService, q
 	vm.labels = WeirService.LocaleResources(labels);
 
     function gotoDelivery() {
-	$uibModalInstance.close();
+		$uibModalInstance.close();
         $state.go("myquote.delivery");
     }
     function cancel() {
-	$uibModalInstance.close();
+		$uibModalInstance.close();
     }
+}
+
+function NewAddressModalController($uibModalInstance) {
+	var vm = this;
+	vm.address = {};
+	vm.address.xp = {};
+	vm.address.xp.inactive = false;
+	vm.address.xp.primary = false;
+
+	vm.submit = function () {
+		$uibModalInstance.close(vm.address);
+	};
+
+	vm.cancel = function () {
+		vm.address = {};
+		$uibModalInstance.dismiss('cancel');
+	};
 }

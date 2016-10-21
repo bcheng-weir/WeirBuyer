@@ -4,12 +4,26 @@
             <b ng-bind-html="delivery.labels.DefaultAddress"></b>
         </div>
         <div class="col-md-3">
-            <p><a href="" ng-bind-html="delivery.labels.AddNew"></a></p>
+            <p><a href="" ng-bind-html="delivery.labels.AddNew" ng-click="delivery.CustomShipping(myquote.Quote.ID)"></a></p>
         </div>
         <div class="col-md-3">
             <b ng-bind-html="delivery.labels.DeliveryType"></b>
         </div>
     </div>
+
+    <script type="text/ng-template" id="newAddress.html">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form ng-submit="NewAddressModal.submit();" name="newAddress_modal_form">
+                    <ordercloud-address-form address="NewAddressModal.address"></ordercloud-address-form>
+                    <div class="modal_buttons">
+                        <button ng-disabled="newAddress_modal_form.$invalid" type="submit" class="btn btn-success pull-left">Submit</button>
+                        <button ng-click="NewAddressModal.cancel();" type="button" class="btn btn-danger pull-right">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </script>
 
     <div class="row" ng-repeat="rows in delivery.ChunkedData">
         <div class="col-md-3" ng-repeat="item in rows">
@@ -18,7 +32,7 @@
             {{item.Street1}}<br>{{item.Street2}}<br>
             {{item.City}}, {{item.State}} {{item.Zip}}<br>
             {{item.Country}}<br>
-            <button ng-class="(item.xp.primary==true ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverHere' ng-click="delivery.setShippingAddress(myquote.Quote.ID,item)"></button>
+            <button ng-class="(myquote.Quote.ShippingAddressID==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverHere' ng-click="delivery.setShippingAddress(myquote.Quote.ID,item)"></button>
         </div>
     </div>
 

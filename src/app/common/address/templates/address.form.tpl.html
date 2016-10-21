@@ -32,10 +32,20 @@
             <label for="address_city">City</label>
             <input required="true" id="address_city" type="text" ng-model="address.City" class="form-control">
         </div>
-        <div class="col-md-4">
+        <!--<div class="col-md-4">
             <label for="address_state">State</label>
             <select class="form-control" id="address_state" ng-model="address.State" ng-options="state.value as state.label for state in states" required/>
+        </div>-->
+
+        <div class="col-md-4" ng-show="address.Country == 'US' || address.Country == 'CA'">
+            <label for="address_state">State</label>
+            <select id="address_state" class="form-control" ng-options="state.value as state.label for state in states" ng-model="address.State" />
         </div>
+        <div class="col-md-4" ng-hide="address.Country == 'US' || address.Country == 'CA'">
+            <label for="address_state">State</label>
+            <input id="address_state" class="form-control" ng-model="address.State" />
+        </div>
+
         <div class="col-md-4">
             <label for="address_zip">Zip</label>
             <input required="true" id="address_zip" type="number" ng-model="address.Zip" class="form-control" maxlength="5" minlength="5">

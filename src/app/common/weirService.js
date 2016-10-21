@@ -42,19 +42,19 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
         Locale: getLocale,
         LocaleResources: selectLocaleResources,
         navBarLabels: navlabels,
-	SetLastSearchType: setLastSearchType,
-	GetLastSearchType: getLastSearchType,
-	SearchType: { Serial: "s", Part: "p", Tag: "t"},
-	GetWeirGroup: getWeirGroup,
-	SetWeirGroup: setWeirGroup,
-	OrderStatus: orderStatuses,
-	OrderStatusList: orderStatusList,
-	LookupStatus: getStatus,
-	FindQuotes: findQuotes,
-	CartHasItems: cartHasItems,
-	UpdateQuote: updateQuote,
+	    SetLastSearchType: setLastSearchType,
+	    GetLastSearchType: getLastSearchType,
+	    SearchType: { Serial: "s", Part: "p", Tag: "t"},
+	    GetWeirGroup: getWeirGroup,
+	    SetWeirGroup: setWeirGroup,
+	    OrderStatus: orderStatuses,
+	    OrderStatusList: orderStatusList,
+	    LookupStatus: getStatus,
+	    FindQuotes: findQuotes,
+	    CartHasItems: cartHasItems,
+	    UpdateQuote: updateQuote,
         SetQuoteAsCurrentOrder: setQuoteAsCurrentOrder,
-	FindCart: findCart
+	    FindCart: findCart
     };
 
     function getLocale() {
@@ -112,9 +112,11 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
                        	    result = matches.Items[0];
                 	    getParts(result.ID, deferred, result);
 		    } else if (matches.Items.length == 0) {
-			    throw { message: "No matches found for serial number " + serialNumber};
+			    //throw { message: "No matches found for serial number " + serialNumber};
+                return deferred.resolve("No matches found for serial number " + serialNumber);
 		    } else {
-			    throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
+			    //throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
+                return deferred.resolve("No matches found for serial number " + serialNumber);
 		    }
                 });
 	    } else {
@@ -122,7 +124,7 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
 	    }
 	})
         .catch(function(ex) {
-            deferred.reject(ex);
+            return deferred.reject(ex);
         });
 
         return deferred.promise;
@@ -140,9 +142,11 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
                        	result = matches.Items[0];
                 	getParts(result.ID, deferred, result);
 		    } else if (matches.Items.length == 0) {
-			throw { message: "No matches found for tag number " + tagNumber};
+			//throw { message: "No matches found for tag number " + tagNumber};
+                return deferred.resolve("No matches found for tag number " + tagNumber);
 		    } else {
-			throw { message: "Data error: Tag number " + tagNumber + " is not unique"};
+			//throw { message: "Data error: Tag number " + tagNumber + " is not unique"};
+                return deferred.resolve("Data error: Tag number " + tagNumber + " is not unique");
 		    }
                 });
 	    }

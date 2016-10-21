@@ -439,7 +439,7 @@ function SubmitQuoteController($uibModal, $state, $sce, WeirService, CurrentOrde
                         animation: true,
                         ariaLabelledBy: 'modal-title',
                         ariaDescribedBy: 'modal-body',
-                        templateUrl: 'myquote/templates/myquote.submitconfirm.tpl.html',
+                        templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
 			size: 'lg',
                         controller: 'SubmitConfirmCtrl',
                         controllerAs: 'submitconfirm',
@@ -525,28 +525,20 @@ function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Q
     var vm = this;
     vm.Quote = Quote;
 
-    vm.Close = close;
-
 	var vm = this;
 	var labels = {
 		en: {
 		    Title: "Thank you. Your order has been placed",
-		    Close: "Close",
 		    MessageText1: "We have sent you a confirmation email.",
 		    MessageText2: "Order number; " + Quote.ID,
 		    MessageText3: "We will also send you a detailed order confirmation document via email"
 		},
 		fr: {
 		    Title: $sce.trustAsHtml("Thank you. Your order has been placed"),
-		    Close: $sce.trustAsHtml("Close"),
 		    MessageText1: $sce.trustAsHtml("We have sent you a confirmation email."),
 		    MessageText2: $sce.trustAsHtml("Order number; " + Quote.ID),
 		    MessageText3: $sce.trustAsHtml("We will also send you a detailed order confirmation document via email")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
-
-    function close() {
-        $uibModalInstance.close();
-    }
 }

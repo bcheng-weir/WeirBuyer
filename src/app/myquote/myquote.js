@@ -5,10 +5,11 @@ angular.module('orderCloud')
 	.controller('MyQuoteDetailCtrl', MyQuoteDetailController)
 	.controller('QuoteDeliveryOptionCtrl', QuoteDeliveryOptionController )
 	.controller('ReviewQuoteCtrl', ReviewQuoteController )
-	.controller('ConfirmQuoteCtrl', ConfirmQuoteController )
+	.controller('SubmitQuoteCtrl', SubmitQuoteController )
 	.controller('ModalInstanceCtrl', ModalInstanceController)
 	.controller('MoreQuoteInfoCtrl', MoreQuoteInfoController)
 	.controller('NewAddressModalCtrl', NewAddressModalController)
+	.controller('SubmitConfirmCtrl', SubmitConfirmController)
 ;
 
 function QuoteShareService() {
@@ -80,11 +81,19 @@ function MyQuoteConfig($stateProvider,buyerid) {
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
-		.state( 'myquote.confirm', {
-			url: '/confirm',
-			templateUrl: 'myquote/templates/myquote.confirm.tpl.html',
-			controller: 'ConfirmQuoteCtrl',
-			controllerAs: 'confirm'
+		.state( 'myquote.submitquote', {
+			url: '/submitquote',
+			templateUrl: 'myquote/templates/myquote.submitquote.tpl.html',
+			controller: 'SubmitQuoteCtrl',
+			controllerAs: 'submitquote',
+			resolve: {
+                            Quote: function(CurrentOrder) {
+                                return CurrentOrder.Get();
+                            },
+                            Customer: function(CurrentOrder) {
+                                return CurrentOrder.GetCurrentCustomer();
+                            }
+			}
 		})
 	;
 }
@@ -126,7 +135,6 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 			.then(function(quote) {
 			    vm.Quote = quote;
 			    toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
-				// TODO Dave - Make this call the new modalNotice directive.
 				var modalInstance = $uibModal.open({
 					animation: true,
 					ariaLabelledBy: 'modal-title',
@@ -188,7 +196,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 			YourQuote: "Your Quote",
 			DeliveryOptions: "Delivery Options",
 			ReviewQuote: "Review Quote",
-			ConfirmOrder: "Confirm Order",
+			SubmitQuote: "Submit Quote or Order",
 			Save: "Save",
 			Share: "Share",
 			Download: "Download",
@@ -204,7 +212,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 			YourQuote: $sce.trustAsHtml("FR: Your Quote"),
 			DeliveryOptions: $sce.trustAsHtml("FR: Delivert Options"),
 			ReviewQuote: $sce.trustAsHtml("FR: Review Quote"),
-			ConfirmOrder: $sce.trustAsHtml("FR: Confirm Order"),
+			SubmitQuote: $sce.trustAsHtml("FR: Submit Quote or Order"),
 			Save: $sce.trustAsHtml("FR: Save"),
 			Share: $sce.trustAsHtml("FR: Share"),
 			Download: $sce.trustAsHtml("FR: Download"),
@@ -403,16 +411,49 @@ function ReviewQuoteController(WeirService, $state, $sce) {
 		fr: {
 		}
 	};
+	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function ConfirmQuoteController(WeirService, $state, $sce) {
+function SubmitQuoteController($uibModal, $state, $sce, WeirService, CurrentOrder, Quote, Customer) {
 	var vm = this;
+	vm.Quote = Quote;
+	vm.Customer = Customer;
+
+	vm.Submit = submit;
+
 	var labels = {
 		en: {
+			Submit: "Submit Order"
 		},
 		fr: {
+			Submit: $sce.trustAsHtml("Submit Order")
 		}
 	};
+	vm.labels = WeirService.LocaleResources(labels);
+
+	function submit() {
+            // TODO: save status of quote as submitted then submit quote then
+	    CurrentOrder.Set(null)
+               .then(function() {
+                    var modalInstance = $uibModal.open({
+                        animation: true,
+                        ariaLabelledBy: 'modal-title',
+                        ariaDescribedBy: 'modal-body',
+                        templateUrl: 'myquote/templates/myquote.submitconfirm.tpl.html',
+			size: 'lg',
+                        controller: 'SubmitConfirmCtrl',
+                        controllerAs: 'submitconfirm',
+                        resolve: {
+                            Quote: function() {
+                                return vm.Quote;
+                            }
+                        }
+                    })
+		    .closed.then(function(){
+                        $state.go("home");
+                    });
+	       });
+	}
 }
 
 function ModalInstanceController($uibModalInstance, $state, quote, labels) {
@@ -478,4 +519,34 @@ function NewAddressModalController($uibModalInstance) {
 		vm.address = {};
 		$uibModalInstance.dismiss('cancel');
 	};
+}
+
+function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Quote) {
+    var vm = this;
+    vm.Quote = Quote;
+
+    vm.Close = close;
+
+	var vm = this;
+	var labels = {
+		en: {
+		    Title: "Thank you. Your order has been placed",
+		    Close: "Close",
+		    MessageText1: "We have sent you a confirmation email.",
+		    MessageText2: "Order number; " + Quote.ID,
+		    MessageText3: "We will also send you a detailed order confirmation document via email"
+		},
+		fr: {
+		    Title: $sce.trustAsHtml("Thank you. Your order has been placed"),
+		    Close: $sce.trustAsHtml("Close"),
+		    MessageText1: $sce.trustAsHtml("We have sent you a confirmation email."),
+		    MessageText2: $sce.trustAsHtml("Order number; " + Quote.ID),
+		    MessageText3: $sce.trustAsHtml("We will also send you a detailed order confirmation document via email")
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
+
+    function close() {
+        $uibModalInstance.close();
+    }
 }

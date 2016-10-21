@@ -12,7 +12,8 @@
 		<li role="presentation" ui-sref-active="active" ng-click="myquote.GotoDelivery()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 		<li role="presentation" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 		<li role="presentation" ui-sref-active="active" ui-sref="myquote.review"><a href="#" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="myquote.confirm"><a href="#" ng-bind-html='myquote.labels.ConfirmOrder'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="myquote.buyerreview" ng-if="myquote.UserIsBuyer()"><a href="#" ng-bind-html='myquote.labels.SubmitQuoteOrOrder'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="myquote.submitquote"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 	</ol>
 	<div ui-view>
 		<div id="modalMyquote" class="modal-quote-confirmation">

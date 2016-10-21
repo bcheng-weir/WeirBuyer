@@ -117,7 +117,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
         if (gotoReview) {
 			WeirService.SetQuoteAsCurrentOrder(quoteId)
                 .then(function() {
-	                $rootScope.$broadcast('LineItemAddedToCart');
+	                $rootScope.$broadcast('SwitchCart');
                     $state.go('myquote.detail');
 				});
 		}
@@ -158,7 +158,7 @@ function SharedQuotesController(WeirService, $state, $sce, Quotes ) {
 	
 	var labels = {
 		en: {
-		    Header: Quotes.length.toString() + " saved Quote" +  (Quotes.length == 1 ? "" : "s"),
+		    Header: Quotes.length.toString() + " shared Quote" +  (Quotes.length == 1 ? "" : "s"),
 		    QuoteNum: "Weir Quote number",
 		    QuoteRef: "Your Quote ref;",
                     Total: "Total",
@@ -169,7 +169,7 @@ function SharedQuotesController(WeirService, $state, $sce, Quotes ) {
                     ValidTo: "Valid until"
 		},
 		fr: {
-			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " saved Quote" +  (Quotes.length == 0 ? "" : "s")),
+			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " shared Quote" +  (Quotes.length == 0 ? "" : "s")),
 		    QuoteNum: $sce.trustAsHtml("FR-Weir Quote number"),
 		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
                     Total: $sce.trustAsHtml("FR-Total"),

@@ -4,7 +4,7 @@
             <div class="row">
 
                 <div class="col-xs-10  col-sm-6 col-sm-offset-0 col-md-5 bannerText">
-                    <h1>{{footer.labels.contactTitle}}</h1>
+                    <h1>{{footer.navlabels.contactTitle}}</h1>
 
                     <!-- renderReadMoreButton -->
                 </div>
@@ -12,35 +12,103 @@
             </div><!-- //row -->
         </div><!-- //container -->
     </div>
-    <div class="col-xs-12 col-md-8 main-content">
+
+
+
+
+    <div class="col-xs-12 col-md-8 main-content" ng-show="footer.navlabels.language == true">
 
 
         <h2>Get in touch with Weir</h2>
         <p>We'd like to hear from you. Please select from the list of subjects below to ensure your feedback or enquiry reaches the correct department.&nbsp;<span style="line-height: 1.5em;">For brand-specific or product-specific enquiries, please click on the 'Get in touch' tab on the right of your browser window.</span></p>
         <!-- [ [ getContentStandard ] ] -->
-        <div class="row accordion">
-            <div class="col-xs-12">
-                <div class="accordionItem clearfix">
-                    <div class="accordionPanelHeader">Investor relations<i class="icon-plus"></i></div>
-                    <div class="accordionPanel" style="display: none;">
-                        <p>For specific investor relations enquiries, please contact:</p>
-                        <p><span>Stephen Christie<br></span><span style="line-height: 1.5em;">Head of Investor Relations</span></p>
-                        <p>T: +44 (0)141 637 7111<br><a href="mailto:investor-relations@mail.weir">investor-relations@mail.weir</a></p>
-                    </div>
-                </div><div class="accordionItem clearfix">
-                <div class="accordionPanelHeader">Media enquiries<i class="icon-plus"></i></div>
-                <div class="accordionPanel" style="display: none;">
+        <div class="accordion" id="myAccodion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" class="accordionItem clearfix" data-parent="#myAccordion">Investor relations</a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>For specific investor relations enquiries, please contact:</p>
+                    <p><span>Stephen Christie<br></span><span style="line-height: 1.5em;">Head of Investor Relations</span></p>
+                    <p>T: +44 (0)141 637 7111<br><a href="mailto:investor-relations@mail.weir">investor-relations@mail.weir</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" class="accordionItem clearfix" data-parent="#myAccordion">Media enquiries</a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
                     <p>To support online, broadcast and print journalists we have a selection of Weir logos, images and video footage available to download. These include high resolution photographs of our senior management team. These can be downloaded from our&nbsp;<a href="http://weirgroup.thirdlight.com/viewcontainer.tlx?containerid=29303973276" target="_blank">online library</a>. You can also subscribe to <a href="investors/regulatory-news/email-alerts">email alerts</a> and follow our news on&nbsp;<a href="https://twitter.com/weirgroup" target="_blank">Twitter</a>.&nbsp; You can also contact our communications team.</p>
                     <p>Raymond Buchanan<br>Head of Communications and Public Affairs<br><span><br></span>T: +44 (0)141 637 7111<br><a href="mailto:media@mail.weir">media@mail.weir</a></p>
                 </div>
             </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" class="accordionItem clearfix" data-parent="#myAccordion">Group enquiries</a>
+                </h4>
             </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p><strong>The Weir Group PLC</strong><br/>1 West Regent Street<br/>Glasgow<br/>G2 1RW<br/>United Kingdom</p>
+                    <p>T: +44 (0)141 637 7111<br/><span><a href="mailto:contact-us@mail.weir">contact-us@mail.weir</a></span></p>
+                </div>
             </div>
         </div>
-
-
-
-
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseFourth" class="accordionItem clearfix" data-parent="#myAccordion">Website Feedback</a>
+                </h4>
+            </div>
+            <div id="collapseFourth" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>If you have any feedback on our website please email us at <a href="mailto:web@mail.weir" target="_blank">web@mail.weir</a></p>
+                </div>
+            </div>
+        </div>
+        </div>
     </div>
+
+
+
+
+    <div class="col-xs-12 col-md-8 main-content" ng-show="footer.navlabels.language == false">
+        <h2> Entrez en contact avec Weir </h2><p> Nous aimerions vous entendre. S'il vous plaît sélectionner dans la liste des sujets ci-dessous pour vous assurer que votre rétroaction ou de l'enquête atteint le bon service &nbsp; <span style="line-height: 1.5em;"> Pour des questions spécifiques à la marque ou des produits spécifiques, s'il vous plaît cliquer sur le ' Obtenez dans l'onglet contact "sur la droite de la fenêtre du navigateur. </span> </p><!-- - [[GetContentStandard]] ---><div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive" class="accordionItem clearfix collapsed" aria-expanded="false"> Relations investisseurs </a></h4></div><div id="collapseFive" class="panel-collapse collapse" aria-expanded="false" style="height: 1.11111px;">
+        <div class="panel-body"><p> Renseignements sur les relations avec les investisseurs spécifiques, s'il vous plaît contacter: </p><p> <span> Stephen Christie <br> </span> <span style="line-height: 1.5em;"> Directeur des Relations Investisseurs </span> </p><p> T: +44 (0) 141 637 7111 <br> <a href="mailto:investor-relations@mail.weir"> investor-relations@mail.weir </a> </p></div></div></div><div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix" class="accordionItem clearfix collapsed" aria-expanded="false"> Demandes des médias </a></h4></div><div id="collapseSix" class="panel-collapse collapse" aria-expanded="false" style="height: 1.11111px;">
+        <div class="panel-body">
+            <p> Pour soutenir, de diffusion et d'impression des journalistes en ligne, nous avons une sélection de logos Weir, des images et des séquences vidéo disponibles en téléchargement. Notamment des photos haute résolution de notre équipe de haute direction. Ceux-ci peuvent être téléchargés à partir de notre &nbsp; <a href="http://weirgroup.thirdlight.com/viewcontainer.tlx?containerid=29303973276" target="_blank"> bibliothèque </a> en ligne. Vous pouvez également vous abonner à <a alertes="" email="" href="investors/regulatory-news/email-alerts"> </a> et suivez nos nouvelles sur &nbsp; <a href="https://twitter.com/weirgroup" target="." "_blank"=""> Twitter </a> &nbsp; Vous pouvez également contacter notre équipe de communication. </p>
+            <p> Head Raymond Buchanan Communications et affaires publiques de <la span=""> <br>  T: +44 (0) 141 637 7111 <br> <a href="mailto: media @ mail .weir "> media@mail.weir </a> </la></p>
+        </div></div></div><div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven" class="accordionItem clearfix collapsed" aria-expanded="false"> enquêtes Groupe </a>
+            </h4></div><div id="collapseSeven" class="panel-collapse collapse" aria-expanded="false" style="height: 1.11111px;">
+        <div class="panel-body">
+            <p> <strong> The Weir Group PLC </strong> <br> 1 West Regent Street <br> Glasgow <br> G2 1RW <br> Royaume-Uni </p>
+            <p> T: +44 (0) 141 637 7111 <br> <span> <a href="mailto:contact-us@mail.weir"> contact-us@mail.weir </a> </span> </p>
+        </div></div></div><div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight" class="accordionItem clearfix collapsed" aria-expanded="false"> Website Feedback </a></h4></div><div id="collapseEight" class="panel-collapse collapse" aria-expanded="false" style="height: 1.11111px;">
+        <div class="panel-body"><p> Si vous avez des commentaires sur notre site s'il vous plaît nous envoyer un courriel à l'adresse <a href="mailto:web@mail.weir" target="_blank"> web@mail.weir </a> </p></div></div></div>
+    </div>
+
+
     <div ng-include="'../common/bottom-navBar/navbarFooter.tpl.html'"></div>
-    </article>
+
+</article>

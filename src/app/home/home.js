@@ -9,6 +9,7 @@ angular.module('orderCloud')
 	.controller( 'TagCtrl', TagController)
 	.controller( 'TagResultsCtrl', TagResultsController )
 	.controller( 'TagDetailCtrl', TagDetailController )
+	.controller( 'NoResultCtrl', NoResultsController )
 ;
 
 function HomeConfig($stateProvider) {
@@ -103,6 +104,7 @@ function HomeConfig($stateProvider) {
 				}
 			}
 		})
+
 		.state( 'home.tag.detail', {
 			url: '/:number?:searchNumbers',
 		        templateUrl: 'home/templates/home.tag.detail.tpl.html',
@@ -114,6 +116,13 @@ function HomeConfig($stateProvider) {
 				}
 			}
 		})
+		.state( 'home.noresults', {
+			url: '/noresults',
+			templateUrl: 'home/templates/home.noresults.tpl.html',
+			controller: 'NoResultCtrl',
+			controllerAs: 'noResult'
+		})
+
 	;
 }
 
@@ -214,13 +223,15 @@ function HomeController($sce, $state, OrderCloud, CurrentOrder, WeirService, Cur
 	vm.labels = WeirService.LocaleResources(labels);
         var searchType = WeirService.GetLastSearchType();
 	searchType = searchType || WeirService.SearchType.Serial;
-	if (searchType == WeirService.SearchType.Part) {
+	if($state.current.name == 'home.noresults') $state.go('home.noresults');
+	else if (searchType == WeirService.SearchType.Part) {
 	    $state.go('home.part');
 	} else if (searchType == WeirService.SearchType.Tag) {
 	    $state.go('home.tag');
-	} else {
+	} else if (searchType == WeirService.SearchType.Serial){
 	    $state.go('home.serial');
 	}
+
 }
 
 function SerialController(WeirService, $state, $sce, toastr ) {
@@ -276,13 +287,12 @@ function SerialController(WeirService, $state, $sce, toastr ) {
 		});
 		return count > 0;
 	};
-
 	vm.goToArticle = function(article) {
 		$state.go('news', {id: article.ID});
 	};
 }
 
-function SerialResultsController(WeirService, $stateParams, SerialNumberResults, $sce ) {
+function SerialResultsController(WeirService, $stateParams, $state, SerialNumberResults, $sce ) {
 	var vm = this;
 	vm.serialNumberResults = SerialNumberResults;
 	vm.searchNumbers = $stateParams.numbers;
@@ -328,16 +338,20 @@ function SerialResultsController(WeirService, $stateParams, SerialNumberResults,
 			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
 		}
 	};
+	if(numFound == 0) $state.go('home.noresults');
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SerialDetailController( $stateParams, $rootScope, $sce, WeirService, SerialNumberDetail ) {
+function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirService, SerialNumberDetail ) {
 	var vm = this;
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
         vm.PartQuantity = function(partId) {
 		return SerialNumberDetail.xp.Parts[partId];
 	};
+	if(vm.searchNumbers == null) {
+		$state.go('home.noresults', {}, {reload:true});
+	}
 	var labels = {
 		en: {
 			ResultsHeader: "Showing results for serial number; ",
@@ -475,9 +489,10 @@ function PartController( $state, $sce, WeirService ) {
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function PartResultsController( $rootScope, $sce, WeirService, PartNumberResults ) {
+function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults ) {
 	var vm = this;
 	vm.partNumberResults = PartNumberResults;
+	if(vm.PartNumberResults == null) $state.go('home.noresults');
 	vm.Customer = PartNumberResults.Customer;
 	vm.MultipleCustomers = (vm.Customer == "*");
 	var numFound = 0;
@@ -516,7 +531,7 @@ function PartResultsController( $rootScope, $sce, WeirService, PartNumberResults
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
-
+	if(numFound == 0) $state.go('home.noresults');
 	vm.addPartToQuote = function(part) {
 		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
 		part.xp.SN = null;
@@ -585,11 +600,10 @@ function TagController(WeirService, $state, $sce, toastr) {
 	};
 }
 
-function TagResultsController(WeirService, $stateParams, TagNumberResults, $sce ) {
+function TagResultsController(WeirService, $stateParams, $state, TagNumberResults, $sce ) {
 	var vm = this;
 	vm.tagNumberResults = TagNumberResults;
 	vm.searchNumbers = $stateParams.numbers;
-
 	var multiCust = false;
 	var cust = "";
 	var numFound = 0;
@@ -631,13 +645,15 @@ function TagResultsController(WeirService, $stateParams, TagNumberResults, $sce 
 			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
 		}
 	};
+	if(numFound == 0) $state.go('home.noresults');
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function TagDetailController( $stateParams, $rootScope, $sce, WeirService, TagNumberDetail ) {
+function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirService, TagNumberDetail ) {
 	var vm = this;
 	vm.tagNumber = TagNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
+	if(vm.searchNumbers == null)  $state.go('home.noresults');
 	vm.PartQuantity = function(partId) {
 		return TagNumberDetail.xp.Parts[partId];
 	};
@@ -723,5 +739,23 @@ function TagDetailController( $stateParams, $rootScope, $sce, WeirService, TagNu
 				$rootScope.$broadcast('LineItemAddedToCart', data.Order.ID, data.LineItem); //This kicks off an event in cart.js
 				part.Quantity = null;
 			});
+	};
+}
+
+function NoResultsController($state, WeirService){
+	var vm = this;
+	vm.submitEnquiry = function(){
+		console.log("Functioning.");
+	};
+	vm.searchAgain = function () {
+		var searchType = WeirService.GetLastSearchType();
+		searchType = searchType || WeirService.SearchType.Serial;
+		if (searchType == WeirService.SearchType.Part) {
+			$state.go('home.part');
+		} else if (searchType == WeirService.SearchType.Tag) {
+			$state.go('home.tag');
+		} else {
+			$state.go('home.serial');
+		}
 	};
 }

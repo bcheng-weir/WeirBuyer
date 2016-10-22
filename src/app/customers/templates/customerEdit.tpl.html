@@ -1,0 +1,133 @@
+<div ui-view>
+<h3 class="page-header">
+    <b>Edit Customer:</b> {{customerEdit.buyerName}}
+</h3>
+<form ng-submit="customerEdit.Submit()" name="CustomerEditForm" novalidate>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="buyer_id">ID</label>
+            <input id="buyer_id" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ng-model="customerEdit.buyer.ID" class="form-control">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="buyer_name">Name</label>
+            <input id="buyer_name" type="text" ng-model="customerEdit.buyer.Name" class="form-control" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-3">
+            <label for="buyer_div">Weir Group</label>
+            <input id="buyer_div" type="text" ng-disabled="true" ng-model="customerEdit.buyer.xp.WeirGroup.label" />
+        </div>
+        <div class="form-group col-md-3">
+            <label for="buyer_type">Customer Type</label>
+            <input id="buyer_type" type="text" ng-disabled="true" ng-model="customerEdit.buyer.xp.Type.label" />
+        </div>
+    </div>
+    <!--
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label id="buyer_analytics">Analytics ID</label>
+            <input for="buyer_analytics" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ng-model="customerEdit.buyer.xp.analytics_code" class="form-control">
+        </div>
+    </div>-->
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="buyer_active"></label>
+            <input id="buyer_active" type="checkbox" ng-model="customerEdit.buyer.Active"> Active
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="buyer_termsConditions" >Terms and Conditions</label>
+            <textarea rows="6" cols="40" id="buyer_termsConditions" type="text" ng-model="customerEdit.buyer.xp.termsConditions" class="form-control"/>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="buyer_shippingDetails" >Shipping Details</label>
+            <textarea rows="6" cols="40" id="buyer_shippingDetails" type="text" ng-model="customerEdit.buyer.xp.ShippingDetails" class="form-control"/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-primary" type="submit" ng-disabled="CustomerEditForm.$invalid || customerEdit.checkForPrimary()">Save</button>
+        <button class="btn btn-default" ui-sref="^" type="button">Cancel</button>
+        <!--<button class="btn btn-primary" ng-click="customerEdit.Delete();" type="button"><i class="fa fa-trash text-danger"></i> Delete</button>-->
+    </div>
+        <!--TODO: The Address Edit state should also include Address Assignments-->
+    <!--====== LIST ======-->
+    <div class="page-header">
+        <button type="button" class="btn btn-success pull-right" ui-sref=".addressCreate({buyerid: customerEdit.buyer.ID})"><i class="fa fa-plus-circle"></i> Create New</button>
+        <H3>Addresses</H3>
+    </div>
+    <div class="no-matches" ng-if="!customerEdit.list.Items.length">
+        <b>No matches found.</b>
+    </div>
+    <div ng-if="customerEdit.list.Items.length">
+        <b class="pull-right">{{(application.$ocMedia('min-width:768px') ? customerEdit.list.Meta.ItemRange[0] : '1') + ' - ' +
+            customerEdit.list.Meta.ItemRange[1] + ' of ' + customerEdit.list.Meta.TotalCount + ' results'}}</b>
+        <table class="table table-hover table-condensed oc-table-responsive">
+            <thead>
+            <tr>
+                <th scope="col">
+                    Primary
+                </th>
+                <th scope="col">
+                    <a href="#" role="button" ng-click="customerEdit.updateSort('ID')">
+                        ID
+                        <i class="fa fa-caret-down" ng-show="customerEdit.parameters.sortBy == 'ID'"></i>
+                        <i class="fa fa-caret-up" ng-show="customerEdit.parameters.sortBy == '!ID'"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a href="#" role="button" ng-click="customerEdit.updateSort('AddressName')">
+                        Name
+                        <i class="fa fa-caret-down" ng-show="customerEdit.parameters.sortBy == 'AddressName'"></i>
+                        <i class="fa fa-caret-up" ng-show="customerEdit.parameters.sortBy == '!AddressName'"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    <a href="#" role="button" ng-click="customerEdit.updateSort('Street1')">
+                        Address
+                        <i class="fa fa-caret-down" ng-show="customerEdit.parameters.sortBy == 'Street1'"></i>
+                        <i class="fa fa-caret-up" ng-show="customerEdit.parameters.sortBy == '!Street1'"></i>
+                    </a>
+                </th>
+                <th scope="col">
+                    Phone
+                </th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="address in customerEdit.list.Items">
+                <td>{{address.xp.primary}}</td>
+                <th scope="row">{{address.ID}}</th>
+                <td data-title="Name">{{address.AddressName || '---'}}</td>
+                <td data-title="Address">{{address.Street1 + (address.Street2 ? (' ' + address.Street2) : '')}} <br
+                        ng-if="application.$ocMedia('max-width:767px')"> {{address.City + ', ' + address.State + ' ' +
+                    address.Zip}}
+                </td>
+                <td data-title="Phone">{{address.Phone || '---'}}</td>
+                <td class="actions-cell">
+                    <button type="button" class="btn btn-default btn-sm" ui-sref=".addressEdit({buyerid: customerEdit.buyer.ID,addressid: address.ID})">Edit
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm" ui-sref=".assign({addressid: address.ID})">Assign
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="text-center" ng-if="application.$ocMedia('min-width:768px') && customersEdit.list.Meta.TotalPages > 1">
+            <uib-pagination boundary-links="customerEdit.list.Meta.TotalPages > 5" max-size="5"
+                            total-items="customerEdit.list.Meta.TotalCount" items-per-page="customerEdit.list.Meta.PageSize"
+                            ng-model="customerEdit.list.Meta.Page" ng-change="customerEdit.pageChanged()"></uib-pagination>
+        </div>
+        <button type="button"
+                ng-if="application.$ocMedia('max-width:767px')"
+                class="btn btn-default btn-block btn-lg"
+                ng-show="customerEdit.list.Meta.Page < customerEdit.list.Meta.TotalPages"
+                ng-click="customerEdit.loadMore()">Load More
+        </button>
+    </div>
+
+</form>
+</div>

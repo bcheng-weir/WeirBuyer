@@ -388,7 +388,8 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 
 		modalInstance.result
 			.then(function (address) {
-				return OrderCloud.Addresses.Create(address, buyerid);
+				//return OrderCloud.Addresses.Create(address, buyerid);
+				return OrderCloud.Me.CreateAddress(address)
 			})
 			.then(function(newAddress) {
 				return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, buyerid);

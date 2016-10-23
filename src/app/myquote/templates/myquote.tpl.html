@@ -15,7 +15,7 @@
 		<li role="presentation" ui-sref-active="active" ui-sref="myquote.buyerreview" ng-if="myquote.UserIsBuyer()"><a href="#" ng-bind-html='myquote.labels.SubmitQuoteOrOrder'></a></li>
 		<li role="presentation" ui-sref-active="active" ui-sref="myquote.submitquote"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 	</ol>
-	<div ui-view>
+	<div ui-view id="printable">
 		<div id="modalMyquote" class="modal-quote-confirmation">
 			<script type="text/ng-template" id="modalConfirmation.html">
 				<div class="modal-header" style="border-bottom: 0px; ">

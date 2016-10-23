@@ -98,7 +98,7 @@ function MyQuoteConfig($stateProvider,buyerid) {
 	;
 }
 
-function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirService, Quote, Customer, LineItems, QuoteShareService) {
+function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Quote, Customer, LineItems, QuoteShareService) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
@@ -185,10 +185,10 @@ function MyQuoteController($sce, $state, $document, $uibModal, toastr, WeirServi
 		alert("TODO: Implement share quote");
 	}
 	function download() {
-		alert("TODO: Implement download quote");
+		$timeout($window.print,1);
 	}
 	function print() {
-		alert("TODO: Implement print quote");
+		$timeout($window.print,1);
 	}
 
 	var labels = {

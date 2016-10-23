@@ -9,3 +9,41 @@
 
 .fa-5 {
   font-size: 5em !important;}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #BASE {
+    left: 0px !important;
+  }
+
+  #BASE_TOP, #BASE_TOP * {
+    display: none !important;
+  }
+
+  #BASE_BOTTOM, #BASE_BOTTOM * {
+    display: none !important;
+  }
+
+  #BASE_LEFT, #BASE_LEFT * {
+    display: none !important;
+  }
+
+  #printable, #printable * {
+    visibility: visible;
+    z-index: 9;
+  }
+
+  #printable {
+    position: absolute;
+    left: 400px;
+    top: 50px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    zoom: 75%;
+  }
+}

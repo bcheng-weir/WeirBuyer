@@ -1,10 +1,10 @@
-<ui-view>
+<div>
    <div class="row">
         <div class="col-md-9">
-		<p><b><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></b></p>
-		<p><b><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></b></p>
-		<p><b><span ng-bind-html='detail.labels.QuoteName'></span></b><input type='text' maxlength="20" ng-model='myquote.Quote.xp.Name' /></p>
-	</div>
+            <p><b><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></b></p>
+            <p><b><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></b></p>
+            <p><b><span ng-bind-html='detail.labels.QuoteName'></span></b><input type='text' maxlength="20" ng-model='myquote.Quote.xp.Name' /></p>
+        </div>
 
         <div class="col-md-3">
             <h2 class="pull-right">
@@ -57,7 +57,7 @@
    <div class="row">
         <div class="col-md-6">
             <h3><span ng-bind-html='detail.labels.UploadHeader'></span></h3>
-		    <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
+            <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
             <div class="panel panel-default">
                 <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
                 <p><ordercloud-file-upload keyname="test" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p>
@@ -72,5 +72,4 @@
             <p><button class="btn btn-success" ng-click="myquote.GotoDelivery()" ng-bind-html='detail.labels.DeliveryOptions'></button></p>
         </div>
     </div>
-
-</ui-view>
+</div>

@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="row" ng-if="!review.SubmittingToReview">
+    <div class="row" ng-if="!review.SubmittingToReview && !review.SubmittingWithPO">
         <div class="col-md-6">
             <p><b><span ng-bind-html='review.labels.YourReference'></span><br>
                 <span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></b></p>
@@ -125,6 +125,25 @@
             </div>
             <div class="col-md-6 pull-right">
                 <button class="btn btn-success" ng-click="review.submitForReview()" ng-bind-html='review.labels.SubmitForReview'></button>
+            </div>
+        </div>
+    </div>
+    <div ng-if="review.SubmittingWithPO">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 ng-bind-html="review.labels.PONeededHeader"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <h4 ng-bind-html="review.labels.POUpload"></h4>
+				<p>TODO: Drag and drop PO document upload</p>
+            </div>
+            <div class="col-md-3">
+                <h4 ng-bind-html="review.labels.POEntry"></h4>
+				<p class="form-inline"><input type="text" class="form-control" ng-model="myquote.Quote.xp.PONumber" /></p>
+				<p>&nbsp;</p>
+                <button class="btn btn-success pull-right" ng-disabled="!myquote.Quote.xp.PONumber" ng-click="review.submitOrder()" ng-bind-html='review.labels.SubmitOrder'></button>
             </div>
         </div>
     </div>

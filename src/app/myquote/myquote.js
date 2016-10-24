@@ -5,16 +5,17 @@ angular.module('orderCloud')
 	.controller('MyQuoteDetailCtrl', MyQuoteDetailController)
 	.controller('QuoteDeliveryOptionCtrl', QuoteDeliveryOptionController )
 	.controller('ReviewQuoteCtrl', ReviewQuoteController )
-	.controller('SubmitQuoteCtrl', SubmitQuoteController )
 	.controller('ModalInstanceCtrl', ModalInstanceController)
 	.controller('MoreQuoteInfoCtrl', MoreQuoteInfoController)
 	.controller('NewAddressModalCtrl', NewAddressModalController)
 	.controller('SubmitConfirmCtrl', SubmitConfirmController)
+        .controller('ChooseSubmitCtrl', ChooseSubmitController)
 ;
 
 function QuoteShareService() {
     var svc = {
-	    LineItems: []
+	    LineItems: [],
+	    Quote: null
     };
     return svc;
 }
@@ -103,6 +104,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 		WeirService.OrderStatus.Saved.id,
 		WeirService.OrderStatus.Shared.id
 	];
+	QuoteShareService.Quote = Quote;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
 	vm.HasLineItems = function() {
 	    return (QuoteShareService.LineItems && QuoteShareService.LineItems.length);
@@ -151,7 +153,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 			});
 	}
 	function gotoDelivery() {
-		if (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.RefDocs && vm.Quote.xp.RefDocs.length) {
+		if (!$state.is("myquote.detail") || (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.RefDocs && vm.Quote.xp.RefDocs.length)) {
             $state.go("myquote.delivery");
 		} else {
             var modalInstance = $uibModal.open({
@@ -404,14 +406,18 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography) {
+function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
+    buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography) {
 	var vm = this;
 	vm.LineItems = QuoteShareService.LineItems;
+        vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
 	vm.country = function(c) {
 		var result = Underscore.findWhere(OCGeography.Countries, {value:c});
 		return result ? result.label : '';
 	};
 	vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown"); 
+	vm.SubmittingToReview = false;
+
 	var labels = {
 		en: {
 			Customer: "Customer; ",
@@ -436,7 +442,12 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			DeliveryOptions: "Delivery Options",
 			DeliveryAddress: "Delivery Address",
 			ChangeAddr: "Change address",
-			Update: "Update"
+			Update: "Update",
+			WeirComment: "Comment",
+			AddComment: "Add",
+			CancelComment: "Cancel",
+			SubmitForReview: "Submit quote for review",
+			CommentSavedMsg: "Your quote has been updated"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("FR: Customer"),
@@ -461,12 +472,16 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			DeliveryOptions: $sce.trustAsHtml("FR: Delivery Options"),
 			DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
 			ChangeAddr: $sce.trustAsHtml("FR: Change address"),
-			Update: $sce.trustAsHtml("FR: Mettre à jour")
+			Update: $sce.trustAsHtml("FR: Mettre à jour"),
+			WeirComment: $sce.trustAsHtml("FR: Comment"),
+			AddComment: $sce.trustAsHtml("FR: Add"),
+			CancelComment: $sce.trustAsHtml("FR: Cancel"),
+			SubmitForReview: $sce.trustAsHtml("FR: Submit quote for review"),
+			CommentSavedMsg: $sce.trustAsHtml("FR:Your quote has been updated")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 
-	vm.deleteLineItem = _deleteLineItem;
 	function _deleteLineItem(quoteNumber, itemid) {
 		OrderCloud.LineItems.Delete(quoteNumber, itemid, buyerid)
 			.then(function() {
@@ -481,7 +496,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			});
 	}
 
-	vm.updateLineItem = _updateLineItem;
 	function _updateLineItem(quoteNumber, item) {
 		OrderCloud.LineItems.Update(quoteNumber,item.ID,item,buyerid)
 			.then(function(resp) {
@@ -494,26 +508,30 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				$exceptionHandler(ex);
 			});
 	}
-}
 
-function SubmitQuoteController($uibModal, $state, $sce, WeirService, CurrentOrder, Quote, Customer) {
-	var vm = this;
-	vm.Quote = Quote;
-	vm.Customer = Customer;
-
-	vm.Submit = submit;
-
-	var labels = {
-		en: {
-			Submit: "Submit Order"
-		},
-		fr: {
-			Submit: $sce.trustAsHtml("Submit Order")
+        function _proceedToSubmit() {
+            vm.SubmittingToReview = false;
+            if (!$state.is('myquote.submitquote')) return;
+            var modalInstance = $uibModal.open({
+                animation: true,
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'myquote/templates/myquote.submitorconfirm.tpl.html',
+                controller: 'ChooseSubmitCtrl',
+                controllerAs: 'choosesubmit'
+            });
+	    modalInstance.result.then(
+                function(val) {
+		    if (val == "Review") {
+                        vm.SubmittingToReview = true;
+		    } else if (val == "Submit") {
+                        console.log("proceed with submission");
+		    }
 		}
-	};
-	vm.labels = WeirService.LocaleResources(labels);
+            );
+        }
 
-	function submit() {
+	function _submitOrder() {
             // TODO: save status of quote as submitted then submit quote then
 	    CurrentOrder.Set(null)
                .then(function() {
@@ -536,6 +554,35 @@ function SubmitQuoteController($uibModal, $state, $sce, WeirService, CurrentOrde
                     });
 	       });
 	}
+
+        function _saveWeirComment() {
+            var quote = QuoteShareService.Quote;
+            if (vm.CommentsToWeir && ( vm.CommentsToWeir != quote.xp.CommentsToWeir)) {
+                var data = {
+                    xp: {
+                        CommentsToWeir: vm.CommentsToWeir
+                    }
+                };
+                WeirService.UpdateQuote(quote.ID, data)
+                    .then(function(d) {
+                        QuoteShareService.Quote.xp.CommentsToWeir = vm.CommentsToWeir;
+                        toastr.success(vm.labels.CommentSavedMsg);
+                    });
+            }
+        }
+        function _cancelWeirComment() {
+            vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
+        }
+        function _submitForReview() {
+            console.log("Proceed to submit for review");
+        }
+
+	vm.deleteLineItem = _deleteLineItem;
+	vm.updateLineItem = _updateLineItem;
+	vm.proceedToSubmit = _proceedToSubmit;
+	vm.saveWeirComment = _saveWeirComment;
+	vm.cancelWeirComment = _cancelWeirComment;
+	vm.submitForReview = _submitForReview;
 }
 
 function ModalInstanceController($uibModalInstance, $state, quote, labels) {
@@ -623,4 +670,40 @@ function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Q
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+}
+
+function ChooseSubmitController($uibModalInstance, $state, $sce, WeirService, QuoteShareService) {
+    var vm = this;
+    vm.Quote = QuoteShareService.Quote;
+
+	var labels = {
+		en: {
+		    SubmitReview: "Submit quote for review",
+		    SubmitReviewMessage: $sce.trustAsHtml("<p>Some text TBC to say that you can submit your quote to the Spares sales team if there are any items that you would like to be confirmed</p><p>Some terms and conditions copy should also be here</p><p>If you submit you are acknowledging these terms</p>"),
+		    SubmitReviewBtn: "Submit quote for review",
+		    ConfirmPO: "Confirm order with Purchase Order",
+		    ConfirmPOMessage: $sce.trustAsHtml("<p>Some text TBC to say that you can submit your order with a purchase order number and upload a copy of your purchase order document.</p><p>Some terms and conditions copy should also be here</p><p>If you submit you are acknowledging these terms</p>"),
+		    ConfirmPOBtn: "Confirm Order with Purchase Order"
+		},
+		fr: {
+			SubmitReview: $sce.trustAsHtml("FR: Submit quote for review"),
+		    SubmitReviewMessage: $sce.trustAsHtml("<p>FR: Some text TBC to say that you can submit your quote to the Spares sales team if there are any items that you would like to be confirmed</p><p>Some terms and conditions copy should also be here</p><p>If you submit you are acknowledging these terms</p>"),
+			SubmitReviewBtn: $sce.trustAsHtml("FR: Submit quote for review"),
+		    ConfirmPO: $sce.trustAsHtml("FR: Confirm order with Purchase Order"),
+		    ConfirmPOMessage: $sce.trustAsHtml("<p>FR: Some text TBC to say that you can submit your order with a purchase order number and upload a copy of your purchase order document.</p><p>Some terms and conditions copy should also be here</p><p>If you submit you are acknowledging these terms</p>"),
+		    ConfirmPOBtn: $sce.trustAsHtml("FR: Confirm Order with Purchase Order")
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels)
+
+    function _submitForReview() {
+        $uibModalInstance.close("Review");
+    }
+
+    function _confirmOrderWithPO() {
+        $uibModalInstance.close("Submit");
+    }
+
+    vm.submitForReview = _submitForReview;
+    vm.confirmOrderWithPO = _confirmOrderWithPO;
 }

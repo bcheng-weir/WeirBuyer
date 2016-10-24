@@ -15,7 +15,8 @@ angular.module('orderCloud')
 function QuoteShareService() {
     var svc = {
 	    LineItems: [],
-	    Quote: null
+	    Quote: null,
+	    Me: null
     };
     return svc;
 }
@@ -37,6 +38,9 @@ function MyQuoteConfig($stateProvider, buyerid) {
 				},
 				Customer: function(CurrentOrder) {
 				    return CurrentOrder.GetCurrentCustomer();
+				},
+				Me: function(OrderCloud) {
+				    return OrderCloud.Me.Get();
 				},
                 LineItems: function($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService) {
                     QuoteShareService.LineItems.length = 0;
@@ -94,7 +98,7 @@ function MyQuoteConfig($stateProvider, buyerid) {
 	;
 }
 
-function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Quote, ShippingAddress, Customer, LineItems, QuoteShareService) {
+function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, QuoteShareService) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
@@ -105,6 +109,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 		WeirService.OrderStatus.Shared.id
 	];
 	QuoteShareService.Quote = Quote;
+	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
 	vm.HasLineItems = function() {
 	    return (QuoteShareService.LineItems && QuoteShareService.LineItems.length);
@@ -410,6 +415,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography) {
 	var vm = this;
 	vm.LineItems = QuoteShareService.LineItems;
+        vm.Quote = QuoteShareService.Quote;
         vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
 	vm.country = function(c) {
 		var result = Underscore.findWhere(OCGeography.Countries, {value:c});
@@ -417,7 +423,11 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	};
 	vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown"); 
 	vm.SubmittingToReview = false;
-
+	// TODO: Also add condition that user has Buyer role
+        var allowNextStatuses = [WeirService.OrderStatus.Draft.id, WeirService.OrderStatus.Saved.id, WeirService.OrderStatus.Shared.id];
+	vm.ShowNextButton = (QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
+                            ((vm.Quote.xp.Status == WeirService.OrderStatus.Approved.id) ||
+                            (vm.Quote.FromUserID == QuoteShareService.Me.ID && (allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1)));
 	var labels = {
 		en: {
 			Customer: "Customer; ",

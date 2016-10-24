@@ -1,64 +1,4 @@
-angular.module('orderCloud.Files', [])
-    .factory('FilesService', FilesService)
-;
-
-function FilesService($q) {
-    var service = {
-        Get: _get,
-        Upload: _upload,
-        Delete: _delete
-    };
-
-    AWS.config.region = 'us-east-2';
-    AWS.config.update({ accessKeyId: 'AKIAJANBKH5365J7JHAQ', secretAccessKey: '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' });
-
-    function randomString() {
-        var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        var string_length = 15;
-        var randomstring = '';
-        for (var i = 0; i < string_length; i++) {
-            var rnum = Math.floor(Math.random() * chars.length);
-            randomstring += chars.substring(rnum, rnum + 1);
-        }
-        return randomstring;
-    }
-
-    function _get(fileKey) {
-        var deferred = $q.defer();
-        var s3 = new AWS.S3();
-        var params = {Bucket: 'ordercloudtest', Key: fileKey};
-        s3.getObject(params, function (err, data) {
-            err ? console.log(err) : console.log(data);
-            deferred.resolve(data);
-        });
-        return deferred.promise;
-    }
-
-    function _upload(file) {
-        var deferred = $q.defer();
-        var s3 = new AWS.S3();
-        var params = {Bucket: 'ordercloudtest', Key: randomString(), ContentType: file.type, Body: file};
-        s3.upload(params, function (err, data) {
-            err ? console.log(err) : console.log(data);
-            deferred.resolve(data);
-        });
-        return deferred.promise;
-    }
-
-    function _delete(fileKey) {
-        var deferred = $q.defer();
-        var s3 = new AWS.S3();
-        var params = {Bucket: 'ordercloudtest', Key: fileKey};
-        s3.deleteObject(params, function (err, data) {
-            err ? console.log(err) : console.log(data);
-            deferred.resolve(data);
-        });
-        return deferred.promise;
-    }
-
-    return service;
-}
-/*angular.module('orderCloud')
+angular.module('orderCloud')
     .factory('FileReader', fileReader)
     .factory('FilesService', FilesService)
     .directive('ordercloudFileUpload', ordercloudFileUpload)
@@ -116,7 +56,7 @@ function fileReader($q) {
     return service;
 }
 
-function FilesService($q, $http, OrderCloud, apiurl) {
+/*function FilesService($q, $http, OrderCloud, apiurl) {
     var service = {
         Upload: _upload
     };
@@ -141,9 +81,67 @@ function FilesService($q, $http, OrderCloud, apiurl) {
     }
 
     return service;
+}*/
+
+function FilesService($q) {
+    var service = {
+        Get: _get,
+        Upload: _upload,
+        Delete: _delete
+    };
+
+    AWS.config.region = 'us-east-2';
+    AWS.config.update({ accessKeyId: 'AKIAJANBKH5365J7JHAQ', secretAccessKey: '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' });
+
+    function randomString() {
+        var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var string_length = 15;
+        var randomstring = '';
+        for (var i = 0; i < string_length; i++) {
+            var rnum = Math.floor(Math.random() * chars.length);
+            randomstring += chars.substring(rnum, rnum + 1);
+        }
+        return randomstring;
+    }
+
+    function _get(fileKey) {
+        var deferred = $q.defer();
+        var s3 = new AWS.S3();
+        var params = {Bucket: 'ordercloudtest', Key: fileKey};
+        s3.getObject(params, function (err, data) {
+            err ? console.log(err) : console.log(data);
+            deferred.resolve(data);
+        });
+        return deferred.promise;
+    }
+
+    function _upload(file, fileName) {
+        var deferred = $q.defer();
+        var s3 = new AWS.S3();
+        //var params = {Bucket: 'ordercloudtest', Key: randomString(), ContentType: file.type, Body: file};
+        var params = {Bucket: 'ordercloudtest', Key: fileName, ContentType: file.type, Body: file};
+        s3.upload(params, function (err, data) {
+            err ? console.log(err) : console.log(data);
+            deferred.resolve(data);
+        });
+        return deferred.promise;
+    }
+
+    function _delete(fileKey) {
+        var deferred = $q.defer();
+        var s3 = new AWS.S3();
+        var params = {Bucket: 'ordercloudtest', Key: fileKey};
+        s3.deleteObject(params, function (err, data) {
+            err ? console.log(err) : console.log(data);
+            deferred.resolve(data);
+        });
+        return deferred.promise;
+    }
+
+    return service;
 }
 
-function ordercloudFileUpload($parse, Underscore, FileReader, FilesService) {
+function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buyerid, OrderCloud) {
     var directive = {
         scope: {
             model: '=',
@@ -168,16 +166,32 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService) {
             $('#orderCloudUpload').click();
         };
 
-        scope.remove = function() {
-            delete scope.model.xp[scope.keyname];
+        scope.remove = function(fileName) {
+            console.log(fileName);
+            FilesService.Delete(scope.model.ID + fileName)
+                .then(function(fileData) {
+                    var index = scope.model.xp[scope.keyname].indexOf(fileName);
+                    if(index > -1) {
+                        scope.model.xp[scope.keyname].splice(index,1);
+                        var xp = {"xp": {
+                            "Files": scope.model.xp[scope.keyname]
+                        }};
+                        return OrderCloud.Orders.Patch(scope.model.ID,xp,buyerid);
+                    }
+                })
         };
 
         function afterSelection(file, fileName) {
-            FilesService.Upload(file, fileName)
+            var uniqueFileName = scope.model.ID + fileName;
+            FilesService.Upload(file, uniqueFileName)
                 .then(function(fileData) {
                     if (!scope.model.xp) scope.model.xp = {};
-                    scope.model.xp[scope.keyname] = fileData;
-                    scope.model.xp[scope.keyname].Type = file.type;
+                    if (!scope.model.xp[scope.keyname]) scope.model.xp[scope.keyname] = [];
+                    scope.model.xp[scope.keyname].push(fileName);
+                    var xp = {"xp": {
+                        "Files": scope.model.xp[scope.keyname]
+                    }};
+                    return OrderCloud.Orders.Patch(scope.model.ID,xp,buyerid);
                 });
         }
 
@@ -185,6 +199,7 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService) {
             Extensions: [],
             Types: []
         };
+
         if (scope.extensions) {
             var items = Underscore.map(scope.extensions.split(','), function(ext) { return ext.replace(/ /g ,'').replace(/\./g, '').toLowerCase() });
             angular.forEach(items, function(item) {
@@ -241,5 +256,3 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService) {
 
     return directive;
 }
-
-*/

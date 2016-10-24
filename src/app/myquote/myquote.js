@@ -19,7 +19,7 @@ function QuoteShareService() {
     return svc;
 }
 
-function MyQuoteConfig($stateProvider,buyerid) {
+function MyQuoteConfig($stateProvider, buyerid) {
 	$stateProvider
 		.state('myquote', {
 			parent: 'base',
@@ -30,6 +30,9 @@ function MyQuoteConfig($stateProvider,buyerid) {
 			resolve: {
 				Quote: function(CurrentOrder) {
 					return CurrentOrder.Get();
+				},
+				ShippingAddress: function(Quote,OrderCloud) {
+					return OrderCloud.Addresses.Get(Quote.ShippingAddressID, buyerid);
 				},
 				Customer: function(CurrentOrder) {
 				    return CurrentOrder.GetCurrentCustomer();
@@ -77,7 +80,7 @@ function MyQuoteConfig($stateProvider,buyerid) {
 		})
 		.state( 'myquote.review', {
 			url: '/review',
-		        templateUrl: 'myquote/templates/myquote.review.tpl.html',
+			templateUrl: 'myquote/templates/myquote.review.tpl.html',
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
@@ -87,21 +90,22 @@ function MyQuoteConfig($stateProvider,buyerid) {
 			controller: 'SubmitQuoteCtrl',
 			controllerAs: 'submitquote',
 			resolve: {
-                            Quote: function(CurrentOrder) {
-                                return CurrentOrder.Get();
-                            },
-                            Customer: function(CurrentOrder) {
-                                return CurrentOrder.GetCurrentCustomer();
-                            }
+                Quote: function(CurrentOrder) {
+                    return CurrentOrder.Get();
+                },
+                Customer: function(CurrentOrder) {
+                    return CurrentOrder.GetCurrentCustomer();
+                }
 			}
 		})
 	;
 }
 
-function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Quote, Customer, LineItems, QuoteShareService) {
+function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Quote, ShippingAddress, Customer, LineItems, QuoteShareService) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
+	vm.ShippingAddress = ShippingAddress;
 	vm.SaveableStatuses = [
 		WeirService.OrderStatus.Draft.id,
 		WeirService.OrderStatus.Saved.id,
@@ -120,8 +124,8 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 		    Comments: vm.Quote.Comments,
 		    xp: {
 		        StatusDate: new Date(),
-			RefNum: vm.Quote.xp.RefNum,
-			Name: vm.Quote.xp.Name
+				RefNum: vm.Quote.xp.RefNum,
+				Name: vm.Quote.xp.Name
 		    }
 		};
 		var assignQuoteNumber = false;
@@ -326,7 +330,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 	vm.addresses = Underscore.sortBy(Addresses.Items, function(address) {
 		return address.xp.primary;
 	}).filter(activeAddress).reverse();
-	vm.customShipping = false;
+	//vm.customShipping = false;
 	vm.country = function(c) {
 		var result = Underscore.findWhere(OCGeography.Countries, {value:c});
 		return result ? result.label : '';
@@ -408,15 +412,91 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function ReviewQuoteController(WeirService, $state, $sce) {
+function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography) {
 	var vm = this;
+	vm.LineItems = QuoteShareService.LineItems;
+	vm.country = function(c) {
+		var result = Underscore.findWhere(OCGeography.Countries, {value:c});
+		return result ? result.label : '';
+	};
 	var labels = {
 		en: {
+			Customer: "Customer; ",
+			QuoteNumber: "Quote number ",
+			QuoteName: "Quote name ",
+			AddNew: "Add new items",
+			SerialNum: "Serial number",
+			TagNum: "Tag number (if available)",
+			PartNum: "Part number",
+			PartDesc: "Description of part",
+			RecRepl: "Recommended replacement",
+			LeadTime: "Lead time",
+			PricePer: "Price per item or set",
+			Quantity: "Quantity",
+			Total: "Total",
+			YourAttachments: "Your attachments",
+			YourReference: "Your Reference No;",
+			RefNumHeader: "Add your reference number for this quote",
+			CommentsHeader: "Your comments or instructions",
+			CommentsInstr: "Please add any specific comments or instructions for this quote",
+			DeliveryOptions: "Delivery Options",
+			DeliveryAddress: "Delivery Address",
+			Update: "Update"
 		},
 		fr: {
+			Customer: $sce.trustAsHtml("FR: Customer"),
+			QuoteNumber: $sce.trustAsHtml("FR: Quote number"),
+			QuoteName: $sce.trustAsHtml("Quote name "),
+			AddNew: $sce.trustAsHtml("FR: Add new items"),
+			SerialNum: $sce.trustAsHtml("FR: Serial number"),
+			TagNum: $sce.trustAsHtml("FR: Tag number (if available)"),
+			PartNum: $sce.trustAsHtml("FR: Part number"),
+			PartDesc: $sce.trustAsHtml("FR: Description of part"),
+			RecRepl: $sce.trustAsHtml("FR: Recommended replacement"),
+			LeadTime: $sce.trustAsHtml("FR: Lead time"),
+			PricePer: $sce.trustAsHtml("FR: Price per item or set"),
+			Quantity: $sce.trustAsHtml("FR: Quantity"),
+			Total: $sce.trustAsHtml("FR: Total"),
+			YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
+			YourReference: $sce.trustAsHtml("FR: Your Reference No;"),
+			RefNumHeader: $sce.trustAsHtml("FR: Add your reference number for this quote"),
+			CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
+			CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
+			DeliveryOptions: $sce.trustAsHtml("FR: Delivery Options"),
+			DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
+			Update: $sce.trustAsHtml("FR: Mettre à jour")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+
+	vm.deleteLineItem = _deleteLineItem;
+	function _deleteLineItem(quoteNumber, itemid) {
+		OrderCloud.LineItems.Delete(quoteNumber, itemid, buyerid)
+			.then(function() {
+				// Testing. Should make another event for clarity. At this time I believe it just updates the cart items.
+				$rootScope.$broadcast('LineItemAddedToCart', quoteNumber, itemid); //This kicks off an event in cart.js
+			})
+			.then(function() {
+				$state.reload($state.current);
+			})
+			.catch(function(ex){
+				$exceptionHandler(ex);
+			});
+	}
+
+	vm.updateLineItem = _updateLineItem;
+	function _updateLineItem(quoteNumber, item) {
+		OrderCloud.LineItems.Update(quoteNumber,item.ID,item,buyerid)
+			.then(function(resp) {
+				$rootScope.$broadcast('LineItemAddedToCart', quoteNumber, resp.ID);
+			})
+			.then(function() {
+				$state.reload($state.current);
+			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
+			});
+	}
 }
 
 function SubmitQuoteController($uibModal, $state, $sce, WeirService, CurrentOrder, Quote, Customer) {

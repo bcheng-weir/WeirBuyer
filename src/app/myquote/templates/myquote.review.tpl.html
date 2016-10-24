@@ -9,7 +9,7 @@
         <div class="col-md-3">
             <h2 class="pull-right">
                 <button ng-if="review.Step=='Review'" class="btn btn-success" ng-bind-html='review.labels.Share'></button>
-                <button ng-if="review.Step=='Submit' && !review.SubmittingToReview" class="btn btn-success" ng-bind-html='review.labels.NextStep' ng-click="review.proceedToSubmit()"></button>
+                <button ng-if="review.Step=='Submit' && !review.SubmittingToReview && review.ShowNextButton" class="btn btn-success" ng-bind-html='review.labels.NextStep' ng-click="review.proceedToSubmit()"></button>
             </h2>
         </div>
     </div>

@@ -158,7 +158,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 			});
 	}
 	function gotoDelivery() {
-		if (!$state.is("myquote.detail") || (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.RefDocs && vm.Quote.xp.RefDocs.length)) {
+		if (!$state.is("myquote.detail") || (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.Files && vm.Quote.xp.Files.length)) {
             $state.go("myquote.delivery");
 		} else {
             var modalInstance = $uibModal.open({

@@ -86,17 +86,9 @@ function MyQuoteConfig($stateProvider, buyerid) {
 		})
 		.state( 'myquote.submitquote', {
 			url: '/submitquote',
-			templateUrl: 'myquote/templates/myquote.submitquote.tpl.html',
-			controller: 'SubmitQuoteCtrl',
-			controllerAs: 'submitquote',
-			resolve: {
-                Quote: function(CurrentOrder) {
-                    return CurrentOrder.Get();
-                },
-                Customer: function(CurrentOrder) {
-                    return CurrentOrder.GetCurrentCustomer();
-                }
-			}
+			templateUrl: 'myquote/templates/myquote.review.tpl.html',
+			controller: 'ReviewQuoteCtrl',
+			controllerAs: 'review'
 		})
 	;
 }
@@ -419,12 +411,14 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 		var result = Underscore.findWhere(OCGeography.Countries, {value:c});
 		return result ? result.label : '';
 	};
+	vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown"); 
 	var labels = {
 		en: {
 			Customer: "Customer; ",
 			QuoteNumber: "Quote number ",
 			QuoteName: "Quote name ",
-			AddNew: "Add new items",
+			Share: "Share quote",
+			NextStep: "Next",
 			SerialNum: "Serial number",
 			TagNum: "Tag number (if available)",
 			PartNum: "Part number",
@@ -441,13 +435,15 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			CommentsInstr: "Please add any specific comments or instructions for this quote",
 			DeliveryOptions: "Delivery Options",
 			DeliveryAddress: "Delivery Address",
+			ChangeAddr: "Change address",
 			Update: "Update"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("FR: Customer"),
 			QuoteNumber: $sce.trustAsHtml("FR: Quote number"),
 			QuoteName: $sce.trustAsHtml("Quote name "),
-			AddNew: $sce.trustAsHtml("FR: Add new items"),
+			Share: $sce.trustAsHtml("FR: Share quote"),
+			NextStep: $sce.trustAsHtml("FR: Next"),
 			SerialNum: $sce.trustAsHtml("FR: Serial number"),
 			TagNum: $sce.trustAsHtml("FR: Tag number (if available)"),
 			PartNum: $sce.trustAsHtml("FR: Part number"),
@@ -464,6 +460,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
 			DeliveryOptions: $sce.trustAsHtml("FR: Delivery Options"),
 			DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
+			ChangeAddr: $sce.trustAsHtml("FR: Change address"),
 			Update: $sce.trustAsHtml("FR: Mettre à jour")
 		}
 	};

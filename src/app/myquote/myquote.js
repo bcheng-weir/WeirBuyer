@@ -423,6 +423,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	};
 	vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown"); 
 	vm.SubmittingToReview = false;
+        vm.SubmittingWithPO = false;
 	// TODO: Also add condition that user has Buyer role
         var allowNextStatuses = [WeirService.OrderStatus.Draft.id, WeirService.OrderStatus.Saved.id, WeirService.OrderStatus.Shared.id];
 	vm.ShowNextButton = (QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
@@ -457,7 +458,11 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			AddComment: "Add",
 			CancelComment: "Cancel",
 			SubmitForReview: "Submit quote for review",
-			CommentSavedMsg: "Your quote has been updated"
+			CommentSavedMsg: "Your quote has been updated",
+			PONeededHeader: "Please provide a Purchase Order to finalise your order",
+			POUpload: "Upload PO document",
+			POEntry: "Enter PO Number",
+			SubmitOrder: "Submit Order"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("FR: Customer"),
@@ -487,7 +492,11 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			AddComment: $sce.trustAsHtml("FR: Add"),
 			CancelComment: $sce.trustAsHtml("FR: Cancel"),
 			SubmitForReview: $sce.trustAsHtml("FR: Submit quote for review"),
-			CommentSavedMsg: $sce.trustAsHtml("FR:Your quote has been updated")
+			CommentSavedMsg: $sce.trustAsHtml("FR:Your quote has been updated"),
+			PONeededHeader: $sce.trustAsHtml("FR:Please provide a Purchase Order to finalise your order"),
+			POUpload: $sce.trustAsHtml("FR:Upload PO document"),
+			POEntry: $sce.trustAsHtml("FR:Enter PO Number"),
+			SubmitOrder: $sce.trustAsHtml("FR:Submit Order")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -521,6 +530,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 
         function _proceedToSubmit() {
             vm.SubmittingToReview = false;
+            vm.SubmittingWithPO = false;
             if (!$state.is('myquote.submitquote')) return;
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -535,22 +545,37 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 		    if (val == "Review") {
                         vm.SubmittingToReview = true;
 		    } else if (val == "Submit") {
-                        console.log("proceed with submission");
+                        vm.SubmittingWithPO = true;
 		    }
 		}
             );
         }
 
-	function _submitOrder() {
+        function _submitOrder() {
+            var data = {
+                xp: {
+                    Status: WeirService.OrderStatus.SubmittedWithPO.id,
+                    Type: "Order"
+                }
+            };
+            if (vm.Quote.xp.PONumber) {
+                    data.xp.PONumber = vm.Quote.xp.PONumber;
+            }
             // TODO: save status of quote as submitted then submit quote then
-	    CurrentOrder.Set(null)
+            WeirService.UpdateQuote(vm.quote.ID, data)
+                .then(function(qt) {
+                    OrderCloud.Orders().Submit(vm.quote.ID);
+                })
+                .then(function (info) {
+                    CurrentOrder.Set(null);
+                })
                .then(function() {
                     var modalInstance = $uibModal.open({
                         animation: true,
                         ariaLabelledBy: 'modal-title',
                         ariaDescribedBy: 'modal-body',
                         templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
-			size: 'lg',
+                        size: 'lg',
                         controller: 'SubmitConfirmCtrl',
                         controllerAs: 'submitconfirm',
                         resolve: {
@@ -559,11 +584,11 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                             }
                         }
                     })
-		    .closed.then(function(){
+                    .closed.then(function(){
                         $state.go("home");
                     });
-	       });
-	}
+               });
+        }
 
         function _saveWeirComment() {
             var quote = QuoteShareService.Quote;
@@ -593,6 +618,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	vm.saveWeirComment = _saveWeirComment;
 	vm.cancelWeirComment = _cancelWeirComment;
 	vm.submitForReview = _submitForReview;
+	vm.submitOrder = _submitOrder;
 }
 
 function ModalInstanceController($uibModalInstance, $state, quote, labels) {

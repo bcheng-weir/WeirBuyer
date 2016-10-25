@@ -91,7 +91,7 @@ function FilesService($q) {
     };
 
     AWS.config.region = 'us-east-2';
-    AWS.config.update({ accessKeyId: 'AKIAJANBKH5365J7JHAQ', secretAccessKey: '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' });
+    AWS.config.update({ accessKeyId: '', secretAccessKey: '' });
 
     function randomString() {
         var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

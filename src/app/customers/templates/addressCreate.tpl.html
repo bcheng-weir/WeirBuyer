@@ -39,6 +39,10 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-sm-3 form-group">
+            <label for="addressZipInput">Post Code</label>
+            <input id="addressZipInput" type="text" class="form-control" ng-model="customerAddressCreate.address.Zip" required/>
+        </div>
         <div class="col-sm-6 form-group">
             <label for="addressCityInput">City</label>
             <input id="addressCityInput" type="text" class="form-control" ng-model="customerAddressCreate.address.City" required/>
@@ -48,12 +52,8 @@
             <select  id="addressStateInput" class="form-control" ng-options="state.value as state.label for state in customerAddressCreate.states" ng-model="customerAddressCreate.address.State" />
         </div>
         <div class="col-sm-3 form-group" ng-hide="customerAddressCreate.address.Country == 'US' || customerAddressCreate.address.Country == 'CA'">
-            <label for="addressStateInput">State</label>
+            <label for="addressStateInput">County</label>
             <input  id="addressStateInput" class="form-control" ng-model="customerAddressCreate.address.State" />
-        </div>
-        <div class="col-sm-3 form-group">
-            <label for="addressZipInput">Zip</label>
-            <input id="addressZipInput" type="text" class="form-control" ng-model="customerAddressCreate.address.Zip" required/>
         </div>
     </div>
     <div class="row">

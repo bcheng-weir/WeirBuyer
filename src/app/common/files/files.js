@@ -56,33 +56,6 @@ function fileReader($q) {
     return service;
 }
 
-/*function FilesService($q, $http, OrderCloud, apiurl) {
-    var service = {
-        Upload: _upload
-    };
-
-    var fileURL = apiurl + '/v1/files';
-
-    function _upload(file, fileName) {
-        var deferred = $q.defer();
-
-        var fd = new FormData();
-        fd.append('file', file);
-
-        $http.post(fileURL + '?filename=' + fileName, fd, {transformRequest: angular.identity, headers: {'Content-Type': undefined, 'Authorization': 'Bearer ' + OrderCloud.Auth.ReadToken()}})
-            .success(function(data) {
-                deferred.resolve(data);
-            })
-            .error(function(error) {
-                deferred.reject(error)
-            });
-
-        return deferred.promise;
-    }
-
-    return service;
-}*/
-
 function FilesService($q) {
     var service = {
         Get: _get,

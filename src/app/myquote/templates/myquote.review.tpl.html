@@ -9,7 +9,7 @@
         <div class="col-md-3">
             <h2 class="pull-right">
                 <button ng-if="review.Step=='Review'" class="btn btn-success" ng-bind-html='review.labels.Share'></button>
-                <button ng-if="review.Step=='Submit' && !review.SubmittingToReview && review.ShowNextButton" class="btn btn-success" ng-bind-html='review.labels.NextStep' ng-click="review.proceedToSubmit()"></button>
+                <button ng-if="review.Step=='Submit' && !review.SubmittingToReview && !review.SubmittingWithPO && review.ShowNextButton" class="btn btn-success" ng-bind-html='review.labels.NextStep' ng-click="review.proceedToSubmit()"></button>
             </h2>
         </div>
     </div>
@@ -141,9 +141,9 @@
             </div>
             <div class="col-md-3">
                 <h4 ng-bind-html="review.labels.POEntry"></h4>
-				<p class="form-inline"><input type="text" class="form-control" ng-model="myquote.Quote.xp.PONumber" /></p>
+				<p class="form-inline"><input type="text" class="form-control" ng-model="review.PONumber" /></p>
 				<p>&nbsp;</p>
-                <button class="btn btn-success pull-right" ng-disabled="!myquote.Quote.xp.PONumber" ng-click="review.submitOrder()" ng-bind-html='review.labels.SubmitOrder'></button>
+                <button class="btn btn-success pull-right" ng-disabled="!review.PONumber" ng-click="review.submitOrder()" ng-bind-html='review.labels.SubmitOrder'></button>
             </div>
         </div>
     </div>

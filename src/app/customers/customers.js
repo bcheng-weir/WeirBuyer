@@ -89,14 +89,11 @@ function CustomerConfig($stateProvider) {
                 }
             }
         });
-
 }
 
 function CustomerService($q, $state, OrderCloud, toastr, $exceptionHandler) {
     var _weirGroups = [{id: "1", label: "WCVUK"}, {id: "2", label: "WPIFR"}];
     var _customerTypes = [{id: "1", label: "End User"}, {id: "2", label: "Service Company"}];
-
-    function AbortError() {}
 
     function _createBuyer(buyer) {
         return OrderCloud.Buyers.Create(buyer)
@@ -116,7 +113,7 @@ function CustomerService($q, $state, OrderCloud, toastr, $exceptionHandler) {
         return OrderCloud.Addresses.Update(address.ID, address, buyerID)
             .catch(function(ex) {
                 $exceptionHandler(ex);
-            })
+            });
     }
 
     return {

@@ -1,5 +1,5 @@
 angular.module('orderCloud')
-    .factory( 'QuoteShareService', QuoteShareService)
+    .service( 'QuoteShareService', QuoteShareService)
 	.config(MyQuoteConfig)
 	.controller('MyQuoteCtrl', MyQuoteController)
 	.controller('MyQuoteDetailCtrl', MyQuoteDetailController)
@@ -418,15 +418,14 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography) {
+    buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder) {
     var vm = this;
     vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
     vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
-    if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber; //ToDo: Why are we doing this?
-
+    if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
     vm.country = function (c) {
         var result = Underscore.findWhere(OCGeography.Countries, { value: c });
         return result ? result.label : '';
@@ -555,12 +554,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                     if (val == "Review") {
                         vm.SubmittingToReview = true;
                     } else if (val == "Submit") {
-                    	//ToDo If we hit this point. Check for a PO Number before continuing. Else, fail and stop procesing.
-	                    if(vm.PONumber) {
-		                    vm.SubmittingWithPO = true;
-	                    } else {
-							toastr.error(vm.labels.POEntry,"Missing PO Number");
-	                    }
+						vm.SubmittingWithPO = true;
                     }
                 }
             );
@@ -608,7 +602,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         };
         WeirService.UpdateQuote(vm.Quote.ID, data)
             .then(function (qt) {
-                OrderCloud.Orders().Submit(vm.Quote.ID);
+                OrderCloud.Orders.Submit(vm.Quote.ID);
             })
             .then(function (info) {
                 CurrentOrder.Set(null);

@@ -61,7 +61,7 @@ function HomeConfig($stateProvider) {
 		})
 		.state( 'home.serial.detail', {
 			url: '/:number?:searchNumbers',
-		        templateUrl: 'home/templates/home.serial.detail.tpl.html',
+			templateUrl: 'home/templates/home.serial.detail.tpl.html',
 			controller: 'SerialDetailCtrl',
 			controllerAs: 'serialDetail',
 			resolve: {
@@ -107,7 +107,7 @@ function HomeConfig($stateProvider) {
 
 		.state( 'home.tag.detail', {
 			url: '/:number?:searchNumbers',
-		        templateUrl: 'home/templates/home.tag.detail.tpl.html',
+			templateUrl: 'home/templates/home.tag.detail.tpl.html',
 			controller: 'TagDetailCtrl',
 			controllerAs: 'tagDetail',
 			resolve: {
@@ -306,9 +306,9 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 		    numFound++;
 		    if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
 		        if (cust != "") {
-			    multiCust = true;
+			        multiCust = true;
 		        } else {
-			    cust = tmp.xp.Customer;
+			        cust = tmp.xp.Customer;
 		        }
 		    }
 		}
@@ -346,7 +346,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 	var vm = this;
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
-        vm.PartQuantity = function(partId) {
+	vm.PartQuantity = function(partId) {
 		return SerialNumberDetail.xp.Parts[partId];
 	};
 	if(vm.searchNumbers == null) {
@@ -492,7 +492,7 @@ function PartController( $state, $sce, WeirService ) {
 function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults ) {
 	var vm = this;
 	vm.partNumberResults = PartNumberResults;
-	if(vm.PartNumberResults == null) $state.go('home.noresults');
+	if(vm.partNumberResults == null) $state.go('home.noresults');
 	vm.Customer = PartNumberResults.Customer;
 	vm.MultipleCustomers = (vm.Customer == "*");
 	var numFound = 0;

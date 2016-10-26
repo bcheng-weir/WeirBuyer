@@ -178,47 +178,46 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
 
     function serialNumbers(serialNumbers) {
         var deferred = $q.defer();
-
         var results = [];
         var queue = [];
-	CurrentOrder.GetCurrentCustomer()
-	.then(function(cust) {
-	    if (cust) {
-                angular.forEach(serialNumbers, function(number) {
-                    if (number) {
-            	        queue.push((function() {
-                	    var d = $q.defer();
-                	    OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number, "ParentID": cust.id})
-                    	    .then(function(matches) {
-				if (matches.Items.length == 1) {
-                        		results.push({Number: number, Detail: matches.Items[0]});
+		CurrentOrder.GetCurrentCustomer()
+			.then(function(cust) {
+	            if (cust) {
+                    angular.forEach(serialNumbers, function(number) {
+                        if (number) {
+            	            queue.push((function() {
+                	            var d = $q.defer();
+                	            OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number, "ParentID": cust.id})
+                    	            .then(function(matches) {
+										if (matches.Items.length == 1) {
+                        		            results.push({Number: number, Detail: matches.Items[0]});
+										} else {
+                                	        results.push({Number: number, Detail: null});
+										}
+                        	            d.resolve();
+                    	            })
+                    	            .catch(function(ex) {
+                        	            results.push({Number: number, Detail: null});
+                        	            d.resolve();
+                    	            });
+                	            return d.promise;
+            	            })());
+	                    }
+	                });
+                    $q.all(queue)
+	                    .then(function() {
+                            deferred.resolve(results);
+                        });
 				} else {
-                                	results.push({Number: number, Detail: null});
-				}
-                        	d.resolve();
-                    	    })
-                    	    .catch(function(ex) {
-                        	    results.push({Number: number, Detail: null});
-                        	    d.resolve();
-                    	    });
-
-                	    return d.promise;
-            	        })());
-	            }
-	        });
-                $q.all(queue).then(function() {
                     deferred.resolve(results);
-                });
-	     } else {
-                  deferred.resolve(results);
-	     }
-        })
-	.catch(function(ex) {
-            d.resolve();
-	});
-
+				}
+            })
+			.catch(function(ex) {
+                d.resolve();
+			});
         return deferred.promise;
     }
+
     function tagNumbers(tagNumbers) {
         var deferred = $q.defer();
 

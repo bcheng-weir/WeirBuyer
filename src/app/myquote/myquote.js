@@ -9,7 +9,7 @@ angular.module('orderCloud')
 	.controller('MoreQuoteInfoCtrl', MoreQuoteInfoController)
 	.controller('NewAddressModalCtrl', NewAddressModalController)
 	.controller('SubmitConfirmCtrl', SubmitConfirmController)
-        .controller('ChooseSubmitCtrl', ChooseSubmitController)
+	.controller('ChooseSubmitCtrl', ChooseSubmitController)
 ;
 
 function QuoteShareService() {
@@ -425,7 +425,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
-    if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
+    if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber; //ToDo: Why are we doing this?
 
     vm.country = function (c) {
         var result = Underscore.findWhere(OCGeography.Countries, { value: c });
@@ -555,7 +555,12 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                     if (val == "Review") {
                         vm.SubmittingToReview = true;
                     } else if (val == "Submit") {
-                        vm.SubmittingWithPO = true;
+                    	//ToDo If we hit this point. Check for a PO Number before continuing. Else, fail and stop procesing.
+	                    if(vm.PONumber) {
+		                    vm.SubmittingWithPO = true;
+	                    } else {
+							toastr.error(vm.labels.POEntry,"Missing PO Number");
+	                    }
                     }
                 }
             );

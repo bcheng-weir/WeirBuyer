@@ -4,8 +4,8 @@
     </figure>
     <label>{{label}}</label>
     <p ng-repeat="fileName in model.xp[keyname]">
-        <!--<a href="{{fileStore.location}}{{model.ID}}{{fileName}}" target="_blank" download="{{fileName}}">{{fileName}}</a>-->
-        <a href="" ng-click="get(fileName)">{{fileName}}</a>
+        <a href="{{fileStore.location}}{{model.ID}}{{fileName}}" target="_blank">{{fileName}}</a>
+        <!--<a href="" ng-click="get(fileName)">{{fileName}}</a>-->
         <button type="button" class="btn btn-default" ng-click="remove(fileName)"><i class="fa fa-trash text-danger"></i></button>
     </p>
     <p>

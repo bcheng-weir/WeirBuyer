@@ -1,12 +1,9 @@
 <div class="form-group" ng-class="{'has-error': invalidExtension}">
-    <figure ng-if="model.xp[keyname].URL && model.xp[keyname].Type.indexOf('image') > -1">
-        <img class="img-responsive" ng-src="{{model.xp[keyname].URL}}" alt="Product Image">
-    </figure>
     <label>{{label}}</label>
-    <p ng-repeat="fileName in model.xp[keyname]">
+    <p>
         <!--<a href="{{fileStore.location}}{{model.ID}}{{fileName}}" target="_blank" download="{{fileName}}">{{fileName}}</a>-->
-        <a href="" ng-click="get(fileName)">{{fileName}}</a>
-        <button type="button" class="btn btn-default" ng-click="remove(fileName)"><i class="fa fa-trash text-danger"></i></button>
+        <a href="" ng-click="get(model.xp[keyname])">{{model.xp[keyname]}}</a>
+        <button type="button" class="btn btn-default" ng-click="remove(model.xp[keyname])"><i class="fa fa-trash text-danger"></i></button>
     </p>
     <p>
         <button type="button" class="btn btn-default" ng-click="upload()">Or select files to upload</button>

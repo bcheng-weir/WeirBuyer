@@ -10,5 +10,12 @@
 		"right": false,
 		"top": true,
 		"bottom": true
+	},
+	"fileStore": {
+		"akid":"AKIAIDJEBSBD44ECHPAQ",
+		"sak":"vals+hHD4gvcnZpOgzS8j1C1ixRrLOjl+yINYbzN",
+		"awsRegion":"us-east-2",
+		"bucket": "ordercloudtest",
+		"location": "https://s3.us-east-2.amazonaws.com/ordercloudtest/"
 	}
 }

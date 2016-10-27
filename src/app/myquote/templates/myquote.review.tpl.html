@@ -39,10 +39,10 @@
                     <td>{{line.Product.xp.ReplacementSchedule}}</td>
                     <td>{{line.Product.xp.LeadTime}}</td>
                     <td ng-switch on="myquote.Quote.xp.Currency" class='text-right'>
-		        <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
-			<span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
-			<span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
-		    </td>
+		                <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
+			            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
+			            <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
+		            </td>
 
 		    </td>
                     <td class="form-inline"><input  type="number" class="form-control" ng-model="line.Quantity" ng-min="0"
@@ -137,7 +137,12 @@
         <div class="row">
             <div class="col-md-9">
                 <h4 ng-bind-html="review.labels.POUpload"></h4>
-				<p>TODO: Drag and drop PO document upload</p>
+                <h3><span ng-bind-html='review.labels.UploadHeader'></span></h3>
+                <p><span ng-bind-html='review.labels.UploadInstruct'></span></p>
+                <div class="panel panel-default">
+                    <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                    <p><ordercloud-file-upload model="myquote.Quote" keyname="Files" label='{{review.labels.DragAndDrop}}'></ordercloud-file-upload></p>
+                </div>
             </div>
             <div class="col-md-3">
                 <h4 ng-bind-html="review.labels.POEntry"></h4>

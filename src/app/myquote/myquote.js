@@ -768,7 +768,7 @@ function ChooseSubmitController($uibModalInstance, $state, $sce, WeirService, Qu
             ConfirmPOBtn: $sce.trustAsHtml("FR: Confirm Order with Purchase Order")
         }
     };
-    vm.labels = WeirService.LocaleResources(labels)
+    vm.labels = WeirService.LocaleResources(labels);
 
     function _submitForReview() {
         $uibModalInstance.close("Review");

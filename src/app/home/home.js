@@ -270,7 +270,7 @@ function SerialController(WeirService, $state, $sce, toastr ) {
 		if(!vm.serialNumbers[0] || vm.serialNumbers.length == 0) {
 			toastr.info("Please enter an item in the search box.", "Empty Search");
 		} else if (vm.serialNumbers.length == 1) {
-			$state.go('home.serial.detail', {number: vm.serialNumbers[0]});
+			$state.go('home.serial.detail', {number: vm.serialNumbers[0], searchNumbers:  vm.serialNumbers[0]});
 		} else {
 			$state.go('home.serial.results', {numbers: vm.serialNumbers.join(',')});
 		}
@@ -580,7 +580,7 @@ function TagController(WeirService, $state, $sce, toastr) {
 		if(!vm.tags[0] || vm.tags.length == 0) {
 			toastr.info("Please enter an item in the search box.", "Empty Search");
 		} else if (vm.tags.length == 1) {
-			$state.go('home.tag.detail', {number: vm.tags[0]});
+			$state.go('home.tag.detail', {number: vm.tags[0], searchNumbers: vm.tags[0]});
 		}
 		else {
 			$state.go('home.tag.results', {numbers: vm.tags.join(',')});

@@ -561,6 +561,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     }
 
     function _submitOrder() {
+		payment.xp = payment.xp ? payment.xp : {}; //if there is no xp for the payment entity it will break the code.
         if (payment == null) {
             if (vm.PONumber) {
                 var data = {
@@ -623,6 +624,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                    }
                })
                .closed.then(function () {
+               	   $rootScope.$broadcast('OC:RemoveOrder');
                    $state.go("home");
                });
            });

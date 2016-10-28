@@ -270,6 +270,7 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
             FilesService.Delete(scope.model.ID + fileName)
                 .then(function(fileData) {
                     if(scope.model.xp[scope.keyname]) {
+                        scope.model.xp[scope.keyname] = null;
                         var xp = {"xp": {
                             "PODocument": null
                         }};
@@ -283,9 +284,9 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
             FilesService.Upload(file, uniqueFileName)
                 .then(function(fileData) {
                     if (!scope.model.xp) scope.model.xp = {};
-                    if (!scope.model.xp[scope.keyname]) scope.model.xp[scope.keyname] = {};
+                    if (!scope.model.xp[scope.keyname]) scope.model.xp[scope.keyname] = fileName;
                     var xp = {"xp": {
-                        "PODocument": scope.model.xp[scope.keyname]
+                        "PODocument": fileName
                     }};
                     return OrderCloud.Orders.Patch(scope.model.ID,xp,buyerid);
                 })

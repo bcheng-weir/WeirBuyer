@@ -477,12 +477,12 @@ function CustomerAddressEditCtrl($q, $exceptionHandler, $state, $scope, toastr, 
 
 function CustomerAddressCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, OrderCloud, OCGeography, CustomerService, SelectedBuyer, Underscore) {
     var vm = this;
-    vm.address = {
+    /*vm.address = {
         Country: 'US' // this is to default 'create' addresses to the country US
-    };
+    };*/
     vm.countries = OCGeography.Countries;
     vm.states = OCGeography.States;
-
+    vm.address = {Country: null};
     $scope.$watch(function() {
         return vm.address.Country
     }, function() {

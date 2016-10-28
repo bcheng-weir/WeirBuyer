@@ -39,21 +39,21 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="col-sm-3 form-group">
+			<label for="addressZipInput">Postcode</label>
+			<input id="addressZipInput" name="addressZipInput" type="text" class="form-control" ng-model="customerAddressEdit.address.Zip" required/>
+		</div>
 		<div class="col-sm-6 form-group">
 			<label for="addressCityInput">City</label>
 			<input id="addressCityInput" name="addressCityInput" type="text" class="form-control" ng-model="customerAddressEdit.address.City" required/>
 		</div>
 		<div class="col-sm-3 form-group" ng-show="customerAddressEdit.address.Country == 'US' || customerAddressEdit.address.Country == 'CA'">
-			<label for="addressStateInput">State</label>
+			<label for="addressStateInput">County</label>
 			<select id="addressStateInput" name="addressStateInput" class="form-control" ng-options="state.value as state.label for state in customerAddressEdit.states" ng-model="customerAddressEdit.address.State"/>
 		</div>
 		<div class="col-sm-3 form-group"  ng-hide="customerAddressEdit.address.Country == 'US' || customerAddressEdit.address.Country == 'CA'">
-			<label for="addressStateInput">State</label>
+			<label for="addressStateInput">County</label>
 			<input id="addressStateInput" name="addressStateInput" class="form-control" ng-model="customerAddressEdit.address.State"/>
-		</div>
-		<div class="col-sm-3 form-group">
-			<label for="addressZipInput">Zip</label>
-			<input id="addressZipInput" name="addressZipInput" type="text" class="form-control" ng-model="customerAddressEdit.address.Zip" required/>
 		</div>
 	</div>
 	<div class="row">

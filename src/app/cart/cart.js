@@ -190,10 +190,6 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
             });
     });
 
-    $rootScope.$on('', function() {
-
-    })
-
     $rootScope.$on('SwitchCart', function() {
         CurrentOrder.Get()
             .then(function(order) {

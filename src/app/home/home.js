@@ -126,7 +126,7 @@ function HomeConfig($stateProvider) {
 	;
 }
 
-function HomeController($sce, $state, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg) {
+function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
 	vm.partNumberList = PartNumbers.Items;
@@ -162,34 +162,35 @@ function HomeController($sce, $state, OrderCloud, CurrentOrder, WeirService, Cur
 		}
 		vm.SelectingCustomer = true;
 	};
-	vm.ClearFilter = function() { vm.customerFilter = null; }
+	vm.ClearFilter = function() { vm.customerFilter = null; $rootScope.$broadcast('SwitchCart', null, null); };
 	vm.CustomerSelected = function() {
 	    var newCust = null;
 	    if (vm.selfsearch) {
 	        newCust = {id: MyOrg.ID, name: MyOrg.Name};
 	    } else {
-		for(var i=0; i<vm.AvailableCustomers.length; i++) {
-		    if (vm.AvailableCustomers[i].name == vm.customerFilter) {
+			for(var i=0; i<vm.AvailableCustomers.length; i++) {
+		        if (vm.AvailableCustomers[i].name == vm.customerFilter) {
 	                newCust = vm.AvailableCustomers[i];
-			break;
-		    }
-		}
+					break;
+		        }
+			}
 	    }
 	    if (newCust && (!vm.Customer || newCust.id != vm.Customer.id)) {
 		    vm.Customer = newCust;
 		    CurrentOrder.SetCurrentCustomer(vm.Customer)
 	            .then(function() {
-		        vm.serialNumberList.length = 0;
-		        WeirService.FindCart(vm.Customer)
-		        .then(function() {
+		            vm.serialNumberList.length = 0;
+		            WeirService.FindCart(vm.Customer)
+		                .then(function() {
                             OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": vm.Customer.id})
-                            .then(function(results) {
-			        vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
-		             });		
-		        });
-		    });
+                                .then(function(results) {
+									vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
+								});
+		                });
+	            });
 	    }
 	    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
+		$rootScope.$broadcast('OC:RemoveOrder');
 	}
 					
 	vm.formatSerialNumber = function(number) {

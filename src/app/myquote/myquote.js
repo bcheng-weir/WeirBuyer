@@ -397,8 +397,8 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 
 		modalInstance.result
 			.then(function (address) {
-				//return OrderCloud.Addresses.Create(address, buyerid);
-				return OrderCloud.Me.CreateAddress(address)
+				return OrderCloud.Addresses.Create(address, buyerid);
+				//return OrderCloud.Me.CreateAddress(address)
 			})
 			.then(function(newAddress) {
 				return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, buyerid);
@@ -561,7 +561,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     }
 
     function _submitOrder() {
-		payment.xp = payment.xp ? payment.xp : {}; //if there is no xp for the payment entity it will break the code.
         if (payment == null) {
             if (vm.PONumber) {
                 var data = {
@@ -577,7 +576,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                         completeSubmit();
                     })
             }
-        } else if (payment.xp.PONumber != vm.PONumber) {
+        } else if (!payment.xp || payment.xp.PONumber != vm.PONumber) {
             var data = {
                 xp: {
                     PONumber: vm.PONumber

@@ -445,7 +445,10 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
             OrderCloud.LineItems.Create(order.ID, li)
                 .then(function(lineItem) {
                     deferred.resolve({Order: order, LineItem: lineItem});
-                });
+                })
+	            .catch(function(ex) {
+		            console.log(ex);
+	            });
         }
 
         return deferred.promise;
@@ -756,14 +759,15 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
     function tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, trycount) {
         var newQuoteId=createQuoteNumber(prefix);
         data.ID = newQuoteId;
-	OrderCloud.Orders.Patch(quoteId, data)
-	   .then(function(quote) { deferred.resolve(quote)})
-	   .catch(function(ex) {
+		OrderCloud.Orders.Patch(quoteId, data)
+			.then(function(quote) { CurrentOrder.Set(newQuoteId); return quote;})
+			.then(function(quote) { deferred.resolve(quote)})
+			.catch(function(ex) {
                 if(trycount > 4) {
-		    d.deferred.reject(ex);
-		} else {
-	            tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, trycount+1);
-		}
+		            d.deferred.reject(ex);
+				} else {
+					tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, trycount+1);
+				}
 	   });
     }
     function createQuoteNumber(prefix) {

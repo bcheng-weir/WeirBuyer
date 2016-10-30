@@ -9,6 +9,7 @@ angular.module('orderCloud')
 	.controller('MoreQuoteInfoCtrl', MoreQuoteInfoController)
 	.controller('NewAddressModalCtrl', NewAddressModalController)
 	.controller('SubmitConfirmCtrl', SubmitConfirmController)
+	.controller('SubmitConfirmOrderCtrl', SubmitConfirmOrderController)
 	.controller('ChooseSubmitCtrl', ChooseSubmitController)
 ;
 
@@ -647,8 +648,41 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     function _cancelWeirComment() {
         vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
     }
+
     function _submitForReview() {
-        console.log("Proceed to submit for review");
+	    var data = {
+		    xp: {
+			    Status: WeirService.OrderStatus.Submitted.id
+		    }
+	    };
+	    WeirService.UpdateQuote(vm.Quote.ID, data)
+		    .then(function (qt) {
+			    return OrderCloud.Orders.Submit(vm.Quote.ID);
+		    })
+		    .then(function (info) {
+			    CurrentOrder.Set(null);
+		    })
+		    .then(function () {
+			    var modalInstance = $uibModal.open({
+				    animation: true,
+				    ariaLabelledBy: 'modal-title',
+				    ariaDescribedBy: 'modal-body',
+				    templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
+				    size: 'lg',
+				    controller: 'SubmitConfirmOrderCtrl',
+				    controllerAs: 'submitconfirm',
+				    resolve: {
+					    Quote: function () {
+						    return vm.Quote;
+					    }
+				    }
+			    })
+				    .closed.then(function () {
+					    $rootScope.$broadcast('OC:RemoveOrder');
+					    $state.go("home");
+				    });
+		    });
+
     }
 
     vm.deleteLineItem = _deleteLineItem;
@@ -725,11 +759,31 @@ function NewAddressModalController($uibModalInstance) {
 	};
 }
 
+function SubmitConfirmOrderController($sce, WeirService, Quote) {
+	var vm = this;
+	vm.Quote = Quote;
+
+	var labels = {
+		en: {
+			Title: "Thank you. Your order has submitted for review.​",
+			MessageText1: "We have sent you a confirmation email.​",
+			MessageText2: "We will be in touch with you to discuss the items you have requested to be reviewed.",
+			MessageText3: "If your order needs to be revised we will email you an updated quote."
+		},
+		fr: {
+			Title: $sce.trustAsHtml("Thank you. Your order has submitted for review.​"),
+			MessageText1: $sce.trustAsHtml("We have sent you a confirmation email.​"),
+			MessageText2: $sce.trustAsHtml("We will be in touch with you to discuss the items you have requested to be reviewed."),
+			MessageText3: $sce.trustAsHtml("If your order needs to be revised we will email you an updated quote.")
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
+}
+
 function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Quote) {
     var vm = this;
     vm.Quote = Quote;
 
-	var vm = this;
 	var labels = {
 		en: {
 		    Title: "Thank you. Your order has been placed",

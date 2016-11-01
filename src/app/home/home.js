@@ -37,8 +37,8 @@ function HomeConfig($stateProvider) {
 				PartNumbers: function(OrderCloud) {
 					return OrderCloud.Me.ListProducts(null, 1, 100, null, null, null);
 				},
-			        MyOrg: function(OrderCloud) {
-					return OrderCloud.Buyers.Get();
+				MyOrg: function(OrderCloud) {
+					return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
 				}
 			}
 		})

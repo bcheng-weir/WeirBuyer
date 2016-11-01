@@ -28,7 +28,7 @@ function HomeConfig($stateProvider) {
 					return CurrentOrder.GetCurrentCustomer()
 					.then(function(cust) {
 					    if (cust) {
-					        return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": cust.id});
+					        return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": cust.id});
 					    } else {
 					       return { Items: []};
 					    }
@@ -182,7 +182,7 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 		            vm.serialNumberList.length = 0;
 		            WeirService.FindCart(vm.Customer)
 		                .then(function() {
-                            OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": vm.Customer.id})
+                            OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": vm.Customer.id})
                                 .then(function(results) {
 									vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
 								});
@@ -350,7 +350,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 	vm.PartQuantity = function(partId) {
 		return SerialNumberDetail.xp.Parts[partId];
 	};
-	if(vm.searchNumbers == null) {
+	if(typeof vm.serialNumber != 'object') {
 		$state.go('home.noresults', {}, {reload:true});
 	}
 	var labels = {
@@ -654,7 +654,9 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 	var vm = this;
 	vm.tagNumber = TagNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
-	if(vm.searchNumbers == null)  $state.go('home.noresults');
+	if(typeof vm.serialNumber != 'object') {
+		$state.go('home.noresults', {}, {reload:true});
+	}
 	vm.PartQuantity = function(partId) {
 		return TagNumberDetail.xp.Parts[partId];
 	};

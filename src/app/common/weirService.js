@@ -111,7 +111,7 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
 	CurrentOrder.GetCurrentCustomer()
 	.then(function(cust) {
 	    if (cust) {
-                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "ParentID": cust.id})
+                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "catalogID": cust.id})
                 .then(function(matches) {
 		    if (matches.Items.length == 1) {
                        	    result = matches.Items[0];
@@ -141,7 +141,7 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
 	CurrentOrder.GetCurrentCustomer()
 	.then(function(cust) {
 	    if (cust) {
-                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber, "ParentID": cust.id})
+                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber, "catalogID": cust.id})
                 .then(function(matches) {
 		    if (matches.Items.length == 1) {
                        	result = matches.Items[0];
@@ -187,7 +187,7 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
                         if (number) {
             	            queue.push((function() {
                 	            var d = $q.defer();
-                	            OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number, "ParentID": cust.id})
+                	            OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number, "catalogID": cust.id})
                     	            .then(function(matches) {
 										if (matches.Items.length == 1) {
                         		            results.push({Number: number, Detail: matches.Items[0]});
@@ -230,7 +230,7 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
                     if (number) {
             	        queue.push((function() {
                 	    var d = $q.defer();
-                	    OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": number, "ParentID": cust.id})
+                	    OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": number, "catalogID": cust.id})
                     	    .then(function(matches) {
 				if (matches.Items.length == 1) {
                         		results.push({Number: number, Detail: matches.Items[0]});

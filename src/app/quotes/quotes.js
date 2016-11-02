@@ -7,7 +7,7 @@ angular.module('orderCloud')
 	.controller( 'RejectedQuotesCtrl', RejectedQuotesController )
 ;
 
-function QuotesConfig($stateProvider) {
+function QuotesConfig($stateProvider, buyerid) {
 	$stateProvider
 		.state('quotes', {
 			parent: 'base',
@@ -20,7 +20,7 @@ function QuotesConfig($stateProvider) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
 			        MyOrg: function(OrderCloud) {
-					return OrderCloud.Buyers.Get();
+					return OrderCloud.Buyers.Get(buyerid);
 				}
 					  
 			}

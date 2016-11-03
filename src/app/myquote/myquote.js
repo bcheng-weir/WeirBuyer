@@ -518,15 +518,16 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         OrderCloud.LineItems.Delete(quoteNumber, itemid, buyerid)
 			.then(function () {
 			    // Testing. Should make another event for clarity. At this time I believe it just updates the cart items.
-			    $rootScope.$broadcast('LineItemAddedToCart', quoteNumber, itemid); //This kicks off an event in cart.js
+			    $rootScope.$broadcast('SwitchCart', quoteNumber, itemid); //This kicks off an event in cart.js
 			})
 			.then(function () {
-			    $state.reload($state.current);
+			    $state.reload();
 			})
 			.catch(function (ex) {
 			    $exceptionHandler(ex);
 			});
     }
+
 
     function _updateLineItem(quoteNumber, item) {
         OrderCloud.LineItems.Update(quoteNumber, item.ID, item, buyerid)

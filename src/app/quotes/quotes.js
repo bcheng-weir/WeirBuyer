@@ -127,10 +127,10 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
 		    Header: Quotes.length.toString() + " saved Quote" +  (Quotes.length == 1 ? "" : "s"),
 		    QuoteNum: "Weir Quote number",
 		    QuoteRef: "Your Quote ref;",
-                    Total: "Total",
-                    Customer: "Customer",
-                    Status: "Status",
-                    ValidTo: "Valid until",
+            Total: "Total",
+            Customer: "Customer",
+			Status: "Status",
+            ValidTo: "Valid until",
 		    OwnProduct: "Own product",
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
 		},
@@ -138,10 +138,10 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
 			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " saved Quote" +  (Quotes.length == 0 ? "" : "s")),
 		    QuoteNum: $sce.trustAsHtml("FR-Weir Quote number"),
 		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
-                    Total: $sce.trustAsHtml("FR-Total"),
-                    Customer: $sce.trustAsHtml("FR-Customer"),
-                    Status: $sce.trustAsHtml("FR-Status"),
-                    ValidTo: $sce.trustAsHtml("FR-Valid until"),
+            Total: $sce.trustAsHtml("FR-Total"),
+            Customer: $sce.trustAsHtml("FR-Customer"),
+            Status: $sce.trustAsHtml("FR-Status"),
+            ValidTo: $sce.trustAsHtml("FR-Valid until"),
 		    OwnProduct: $sce.trustAsHtml("FR: Own product"),
 		    ReplaceCartMessage: "FR: Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
 		}
@@ -160,23 +160,23 @@ function SharedQuotesController(WeirService, $state, $sce, Quotes ) {
 		    Header: Quotes.length.toString() + " shared Quote" +  (Quotes.length == 1 ? "" : "s"),
 		    QuoteNum: "Weir Quote number",
 		    QuoteRef: "Your Quote ref;",
-                    Total: "Total",
-                    Customer: "Customer",
+            Total: "Total",
+            Customer: "Customer",
 		    OwnProduct: "Own product",
 		    Approver: "Approver",
-                    Status: "Status",
-                    ValidTo: "Valid until"
+            Status: "Status",
+            ValidTo: "Valid until"
 		},
 		fr: {
 			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " shared Quote" +  (Quotes.length == 0 ? "" : "s")),
 		    QuoteNum: $sce.trustAsHtml("FR-Weir Quote number"),
 		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
-                    Total: $sce.trustAsHtml("FR-Total"),
-                    Customer: $sce.trustAsHtml("FR-Customer"),
+            Total: $sce.trustAsHtml("FR-Total"),
+            Customer: $sce.trustAsHtml("FR-Customer"),
 		    OwnProduct: $sce.trustAsHtml("FR: Own product"),
-                    Approver: $sce.trustAsHtml("FR-Approver"),
-                    Status: $sce.trustAsHtml("FR-Status"),
-                    ValidTo: $sce.trustAsHtml("FR-Valid until")
+            Approver: $sce.trustAsHtml("FR-Approver"),
+            Status: $sce.trustAsHtml("FR-Status"),
+            ValidTo: $sce.trustAsHtml("FR-Valid until")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

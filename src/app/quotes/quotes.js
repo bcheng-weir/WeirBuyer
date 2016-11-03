@@ -19,10 +19,9 @@ function QuotesConfig($stateProvider, buyerid) {
 				Customer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
-			        MyOrg: function(OrderCloud) {
+                MyOrg: function(OrderCloud) {
 					return OrderCloud.Buyers.Get(buyerid);
 				}
-					  
 			}
 		})
 		.state( 'quotes.saved', {
@@ -35,7 +34,7 @@ function QuotesConfig($stateProvider, buyerid) {
 					// return [];
 					return WeirService.FindQuotes([WeirService.OrderStatus.Saved, WeirService.OrderStatus.Rejected], false);
 				},
-			        CurrentOrderId: function(CurrentOrder) {
+                CurrentOrderId: function(CurrentOrder) {
 					return "";
 					// return CurrentOrder.GetID();
 				}

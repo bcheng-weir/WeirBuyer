@@ -402,6 +402,9 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 				//return OrderCloud.Me.CreateAddress(address)
 			})
 			.then(function(newAddress) {
+				return WeirService.AssignAddressToGroups(newAddress.ID);
+			})
+			.then(function(newAddress) {
 				return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, buyerid);
 			})
 			.then(function(order) {

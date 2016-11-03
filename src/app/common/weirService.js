@@ -2,7 +2,7 @@ angular.module( 'orderCloud' )
     .factory( 'WeirService', WeirService )
 ;
 
-function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Underscore, buyerid ) {
+function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, CurrentOrder, Underscore, buyerid ) {
     var orderStatuses = {
 	    Draft: {id: "DR", label: "Draft", desc: "This is the current quote under construction"},
 	    Saved: {id: "SV", label: "Saved", desc: "Quote has been saved but not yet shared"},
@@ -36,6 +36,7 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
     }
 
     var service = {
+    	AssignAddressToGroups: assignAddressToGroups,
         SerialNumber: serialNumber,
         SerialNumbers: serialNumbers,
         PartNumbers: partNumbers,
@@ -61,6 +62,43 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
         SetQuoteAsCurrentOrder: setQuoteAsCurrentOrder,
 	    FindCart: findCart
     };
+
+    function assignAddressToGroups(addressId) {
+    	var deferred = $q.defer();
+	    var buyerAssignment = {
+		    AddressID: addressId,
+		    UserID: null,
+		    UserGroupID: "Buyer",
+		    IsShipping: true,
+		    IsBilling: true
+	    };
+	    var shopperAssignment = {
+		    AddressID: addressId,
+		    UserID: null,
+		    UserGroupID: "Shopper",
+		    IsShipping: true,
+		    IsBilling: true
+	    };
+	    var adminAssignment = {
+		    AddressID: addressId,
+		    UserID: null,
+		    UserGroupID: "X6hpCL9v50GE_JG0tWD6vA",
+		    IsShipping: true,
+		    IsBilling: true
+	    };
+	    OrderCloud.Addresses.SaveAssignment(buyerAssignment)
+		    .then(function() {
+		    	return OrderCloud.Addresses.SaveAssignment(shopperAssignment);
+		    })
+		    .then(function() {
+		    	return OrderCloud.Addresses.SaveAssignment(adminAssignment);
+		    })
+		    .catch(function(ex) {
+			    return deferred.reject(ex);
+		    });
+
+	    return deferred.promise;
+    }
 
     function getLocale() {
         var localeOfUser = $cookieStore.get('language');
@@ -108,60 +146,60 @@ function WeirService( $q, $cookieStore, $sce, OrderCloud, CurrentOrder, Undersco
         var deferred = $q.defer();
         var result;
 
-	CurrentOrder.GetCurrentCustomer()
-	.then(function(cust) {
-	    if (cust) {
+		CurrentOrder.GetCurrentCustomer()
+		.then(function(cust) {
+	        if (cust) {
                 OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "catalogID": cust.id})
-                .then(function(matches) {
-		    if (matches.Items.length == 1) {
+                    .then(function(matches) {
+						if (matches.Items.length == 1) {
                        	    result = matches.Items[0];
-                	    getParts(result.ID, deferred, result);
-		    } else if (matches.Items.length == 0) {
-			    //throw { message: "No matches found for serial number " + serialNumber};
-                return deferred.resolve("No matches found for serial number " + serialNumber);
-		    } else {
-			    //throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
-                return deferred.resolve("No matches found for serial number " + serialNumber);
-		    }
-                });
-	    } else {
-                 throw { message: "Customer for search not set"};
-	    }
-	})
+                	        getParts(result.ID, deferred, result);
+		                } else if (matches.Items.length == 0) {
+			                //throw { message: "No matches found for serial number " + serialNumber};
+                            return deferred.resolve("No matches found for serial number " + serialNumber);
+		                } else {
+			                //throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
+                            return deferred.resolve("No matches found for serial number " + serialNumber);
+		                }
+                    });
+	        } else {
+                throw { message: "Customer for search not set"};
+	        }
+		})
         .catch(function(ex) {
             return deferred.reject(ex);
         });
 
         return deferred.promise;
     }
+
     function tagNumber(tagNumber) {
         var deferred = $q.defer();
         var result;
-
-	CurrentOrder.GetCurrentCustomer()
-	.then(function(cust) {
-	    if (cust) {
-                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber, "catalogID": cust.id})
-                .then(function(matches) {
-		    if (matches.Items.length == 1) {
-                       	result = matches.Items[0];
-                	getParts(result.ID, deferred, result);
-		    } else if (matches.Items.length == 0) {
-			//throw { message: "No matches found for tag number " + tagNumber};
-                return deferred.resolve("No matches found for tag number " + tagNumber);
-		    } else {
-			//throw { message: "Data error: Tag number " + tagNumber + " is not unique"};
-                return deferred.resolve("Data error: Tag number " + tagNumber + " is not unique");
-		    }
-                });
-	    }
-	})
-        .catch(function(ex) {
-            deferred.reject(ex);
-        });
-
+		CurrentOrder.GetCurrentCustomer()
+			.then(function(cust) {
+	            if (cust) {
+                    OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber, "catalogID": cust.id})
+                        .then(function(matches) {
+		                    if (matches.Items.length == 1) {
+                       	        result = matches.Items[0];
+                	            getParts(result.ID, deferred, result);
+		                    } else if (matches.Items.length == 0) {
+								//throw { message: "No matches found for tag number " + tagNumber};
+                                return deferred.resolve("No matches found for tag number " + tagNumber);
+		                    } else {
+								//throw { message: "Data error: Tag number " + tagNumber + " is not unique"};
+                                return deferred.resolve("Data error: Tag number " + tagNumber + " is not unique");
+		                    }
+                        });
+	            }
+			})
+            .catch(function(ex) {
+                deferred.reject(ex);
+            });
         return deferred.promise;
     }
+
     function getParts(catId, deferred, result) {
         OrderCloud.Me.ListProducts(null, 1, 100, null, null, null, catId)
             .then(function(products) {

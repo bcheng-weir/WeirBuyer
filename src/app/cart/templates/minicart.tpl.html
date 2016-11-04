@@ -14,7 +14,8 @@
         <div id="minicartButton" ng-click="minicart.toggleDropdown($event)">
             <span>
                 <i class="fa fa-shopping-cart"></i>
-                <i class="badge">{{minicart.LineItems.Meta.TotalCount}}</i>
+                <!--<i class="badge">{{minicart.LineItems.Meta.TotalCount}}</i>-->
+                <i class="badge">{{minicart.TotalItems}}</i>
                 <i ng-if="!minicart.$ocMedia('max-width:767px')" class="caret"></i>
             </span>
         </div>
@@ -24,7 +25,8 @@
     <div ng-if="!minicart.$ocMedia('max-width:767px')" id="minicart_line_item_list" uib-dropdown-menu role="menu" class="panel panel-primary">
         <div class="panel-heading">
             <div class="panel-title">
-            <ng-pluralize count="minicart.LineItems.Meta.TotalCount"
+            <!--<ng-pluralize count="minicart.LineItems.Meta.TotalCount"-->
+                <ng-pluralize count="minicart.TotalItems"
                           when="{
                      'one': '1 item in your quote',
                      'other': '{} items in your quote'}">
@@ -33,8 +35,6 @@
         </div>
         <div class="minicart-body">
             <table class="table table-hover table-striped">
-
-
                 <tr ng-repeat="lineItem in minicart.LineItems.Items">
                     <td>{{lineItem.Quantity}}</td>
                     <td>
@@ -42,9 +42,16 @@
                         <small class="text-muted">{{lineItem.ProductID}}</small>
                         </br>
                     </td>
-                    <td style="padding-right: 25px;">
+                    <!--<td style="padding-right: 25px;">
                         <b class="text-success">{{lineItem.LineTotal | currency}}</b>
+                    </td>-->
+
+                    <td ng-switch on="minicart.Order.xp.Currency" style="padding-right: 25px;">
+                        <span ng-switch-when="EUR">{{lineItem.LineTotal | currency:'&euro;'}}</span>
+                        <span ng-switch-when="GBP">{{lineItem.LineTotal | currency:'&#163; '}}</span>
+                        <span ng-switch-default>{{lineItem.LineTotal | currency:'&#163; '}}</span>
                     </td>
+
                 </tr>
             </table>
         </div>

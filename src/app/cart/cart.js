@@ -113,12 +113,13 @@ function CartController($q, $rootScope, $timeout, OrderCloud, LineItemHelpers, O
     });
 }
 
-function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderCloud, LineItemHelpers, CurrentOrder) {
+function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderCloud, LineItemHelpers, CurrentOrder, Underscore) {
     var vm = this;
     vm.LineItems = {};
     vm.Order = null;
     vm.showLineItems = false;
     vm.$ocMedia = $ocMedia;
+    vm.TotalItems = 0;
 
     vm.getLI = function() {
         CurrentOrder.Get()
@@ -174,6 +175,10 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
                         });
                         dfd.resolve(LineItemHelpers.GetProductInfo(vm.LineItems.Items.reverse()));
                     });
+                Underscore.map(vm.LineItems.Items, function(value, key){
+                    vm.TotalItems += value.Quantity;
+                    console.log(value);
+                });
             });
         return dfd.promise;
     };

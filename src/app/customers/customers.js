@@ -37,7 +37,10 @@ function CustomerConfig($stateProvider) {
                     return OrderCloud.Buyers.Get($stateParams.buyerid)
                 },
                 AddressList: function(OrderCloud, $stateParams, Parameters) {
-                    return OrderCloud.Addresses.List(null,null,null,null,null,null,$stateParams.buyerid);
+                    var f = {
+                        "xp.active":"true"
+                    };
+                    return OrderCloud.Addresses.List(Parameters.search,Parameters.page,Parameters.pageSize,Parameters.searchOn,Parameters.sortBy,f,$stateParams.buyerid);
                 }
             }
         })
@@ -53,7 +56,6 @@ function CustomerConfig($stateProvider) {
                 SelectedAddress: function($stateParams, $state, OrderCloud) {
                     return OrderCloud.Addresses.Get($stateParams.addressid,$stateParams.buyerid).catch(function() {
                         console.writeline("failed to get address");
-                        //$state.go('^');
                     });
                 }
             }
@@ -91,9 +93,96 @@ function CustomerConfig($stateProvider) {
         });
 }
 
-function CustomerService($q, $state, OrderCloud, toastr, $exceptionHandler) {
+function CustomerService($q, $state, $sce, OrderCloud, toastr, $exceptionHandler) {
     var _weirGroups = [{id: "1", label: "WCVUK"}, {id: "2", label: "WPIFR"}];
     var _customerTypes = [{id: "1", label: "End User"}, {id: "2", label: "Service Company"}];
+
+    var _componentLabels = {
+        en: {
+            NewCustomer: "New Customer",
+            WeirGroup: "Weir Group",
+            CustomerType: "Customer Type",
+            SelectGroup: "(Select Weir Group)",
+            SelectType: "(Select Customer Type)",
+            Active: "Active",
+            Terms: "Terms and Conditions",
+            ShippingDetails: "Shipping Details",
+            NewAddress: "New Address",
+            AddressId:"Address ID",
+            AddressName:"Address Name",
+            CompanyName:"Company Name",
+            FirstName:"First Name",
+            LastName:"Last Name",
+            StreetOne: "Street 1",
+            StreetTwo: "Street 2",
+            City: "City",
+            County: "County",
+            PostCode: "Post Code",
+            Country: "Country",
+            PhoneNumber: "Phone Number",
+            Primary: "Primary",
+            Save: "Save",
+            Cancel: "Cancel",
+            Edit: "Edit",
+            EditAddress: "Edit Address",
+            SetInactive: "Set as Inactive",
+            AssignmentsFor: "Assignments for",
+            ID: "ID",
+            Name: "Name",
+            Back: "Back",
+            UpdateAssignments: "Update Assignments",
+            EditCustomer: "Edit Customer",
+            CreateNew: "Create New",
+            Address: "Address",
+            Addresses: "Addresses",
+            NoMatch: "No matches found.",
+            LoadMore: "Load More",
+            Customers: "Customers",
+            Search: "Search"
+        },
+        fr: {
+            NewCustomer: $sce.trustAsHtml("New Customer"),
+            WeirGroup: $sce.trustAsHtml("Weir Group"),
+            CustomerType: $sce.trustAsHtml("Customer Type"),
+            SelectGroup: $sce.trustAsHtml("(Select Weir Group)"),
+            SelectType: $sce.trustAsHtml("(Select Customer Type)"),
+            Active: $sce.trustAsHtml("Active"),
+            Terms: $sce.trustAsHtml("Terms and Conditions"),
+            ShippingDetails: $sce.trustAsHtml("Shipping Details"),
+            NewAddress: $sce.trustAsHtml("New Address"),
+            AddressId: $sce.trustAsHtml("Address ID"),
+            AddressName: $sce.trustAsHtml("Address Name"),
+            CompanyName: $sce.trustAsHtml("Company Name"),
+            FirstName: $sce.trustAsHtml("First Name"),
+            LastName: $sce.trustAsHtml("Last Name"),
+            StreetOne: $sce.trustAsHtml("Street 1"),
+            StreetTwo: $sce.trustAsHtml("Street 2"),
+            City: $sce.trustAsHtml("City"),
+            County: $sce.trustAsHtml("County"),
+            PostCode: $sce.trustAsHtml("Post Code"),
+            Country: $sce.trustAsHtml("Country"),
+            PhoneNumber: $sce.trustAsHtml("Phone Number"),
+            Primary: $sce.trustAsHtml("Primary"),
+            Save: $sce.trustAsHtml("Save"),
+            Cancel: $sce.trustAsHtml("Cancel"),
+            Edit: $sce.trustAsHtml("Edit"),
+            EditAddress: $sce.trustAsHtml("Edit Address"),
+            SetInactive: $sce.trustAsHtml("Set as Inactive"),
+            AssignmentsFor: $sce.trustAsHtml("Assignments for"),
+            ID: $sce.trustAsHtml("ID"),
+            Name: $sce.trustAsHtml("Name"),
+            Back: $sce.trustAsHtml("Back"),
+            UpdateAssignments: $sce.trustAsHtml("Update Assignments"),
+            EditCustomer: $sce.trustAsHtml("Edit Customer"),
+            CreateNew: $sce.trustAsHtml("Create New"),
+            Address: $sce.trustAsHtml("Address"),
+            Addresses: $sce.trustAsHtml("Addresses"),
+            NoMatch: $sce.trustAsHtml("No matches found."),
+            LoadMore: $sce.trustAsHtml("Load More"),
+            Customers: $sce.trustAsHtml("Customers"),
+            Search: $sce.trustAsHtml("Search")
+        }
+    };
 
     function _createBuyer(buyer) {
         return OrderCloud.Buyers.Create(buyer)
@@ -121,15 +210,17 @@ function CustomerService($q, $state, OrderCloud, toastr, $exceptionHandler) {
         CustomerTypes: _customerTypes,
         CreateBuyer: _createBuyer,
         CreateAddress: _createAddress,
-        UpdateAddress: _updateAddress
+        UpdateAddress: _updateAddress,
+        Labels: _componentLabels
     };
 }
 
-function CustomerCtrl($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, BuyerList) {
+function CustomerCtrl($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, BuyerList, CustomerService, WeirService) {
     var vm = this;
     vm.list = BuyerList;
     vm.parameters = Parameters;
     vm.sortSelection =  Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
+    vm.labels = CustomerService.Labels[WeirService.Locale()];
 
     //check if filters are applied
     vm.filtersApplied = vm.parameters.filters || ($ocMedia('max-width:767px') && vm.sortSelection); //Sort by is a filter on mobile devices
@@ -198,12 +289,13 @@ function CustomerCtrl($state, $ocMedia, OrderCloud, OrderCloudParameters, Parame
     };
 }
 
-function CustomerEditCtrl($exceptionHandler, $scope, $state, $ocMedia, toastr, OrderCloud, SelectedBuyer, AddressList, CustomerService, Parameters, Underscore) {
+function CustomerEditCtrl($exceptionHandler, $scope, $state, $ocMedia, toastr, OrderCloud, SelectedBuyer, AddressList, CustomerService, Parameters, Underscore, OrderCloudParameters, WeirService) {
     var vm = this;
     $scope.$state = $state;
     vm.buyer = SelectedBuyer;
     vm.list = AddressList;
     vm.parameters = Parameters;
+    vm.labels = CustomerService.Labels[WeirService.Locale()];
     vm.sortSelection =  Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
 
     //check if filters are applied
@@ -300,23 +392,13 @@ function CustomerEditCtrl($exceptionHandler, $scope, $state, $ocMedia, toastr, O
     }
 }
 
-function CustomerCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, OrderCloud, CustomerService, OCGeography) {
+function CustomerCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, OrderCloud, CustomerService, OCGeography, WeirService) {
     var vm = this;
     vm.WeirGroups = CustomerService.WeirGroups;
     vm.types = CustomerService.CustomerTypes;
-    vm.address = {
-        Country: 'US' //This defaults create addresses to the US. Change to UK?
-    };
     vm.countries = OCGeography.Countries;
     vm.states = OCGeography.States;
-
-    //Watch the country.
-    $scope.$watch(function() {
-        return vm.address.Country
-    }, function() {
-        vm.address.State = null; //If the country changes, null the state.
-    });
-
+    vm.labels = CustomerService.Labels[WeirService.Locale()];
     vm.Submit = _submit;
 
     function _submit() {
@@ -325,6 +407,7 @@ function CustomerCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, Order
         var newBuyerID = null;
         vm.address.xp = {};
         vm.address.xp.primary = true;
+        vm.address.xp.active = true;
         vm.buyer.xp.Assignments = [];
 
         var buyerPromise = CustomerService.CreateBuyer(vm.buyer);
@@ -346,41 +429,30 @@ function CustomerCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, Order
     }
 }
 
-function CustomerAddressEditCtrl($q, $exceptionHandler, $state, $scope, toastr, OrderCloud, OCGeography, SelectedBuyer, SelectedAddress, Underscore) {
+function CustomerAddressEditCtrl($q, $exceptionHandler, $state, $scope, toastr, OrderCloud, OCGeography, SelectedBuyer, SelectedAddress, Underscore, WeirService, CustomerService) {
     var vm = this,
         addressID = SelectedAddress.ID;
     vm.addressName = SelectedAddress.AddressName;
     vm.address = SelectedAddress;
     vm.countries = OCGeography.Countries;
     vm.states = OCGeography.States;
-    var original = angular.copy(vm.address); //use this to make the copy if there are dirty items. Set the inactive to true and primary to false if versioning.
-
-
-    $scope.$watch(function() {
-        return vm.address.Country
-    }, function() {
-        //vm.address.State = null;
-    });
+    vm.labels = CustomerService.Labels[WeirService.Locale()];
+    var original = angular.copy(vm.address); //use this to make the copy if there are dirty items. Set the active to false and primary to false if versioning.
 
     vm.Submit = _submit;
 
     function _submit() {
         // Determine what has changed. If only xp.primary is changed do NOT version.
-        console.log($scope.AddressEditForm);
-
         var dirtyItems = [];
         angular.forEach($scope.AddressEditForm, function(value, key) {
-            //if(key[0] != '$' && key != "addressPrimaryInput" && value.$pristine == false) {
             if(key[0] != '$' && value.$pristine == false) {
                 this.push(key);
             }
         }, dirtyItems);
 
-        console.log(dirtyItems);
-
         original.xp = typeof original.xp == "undefined" ? {} : original.xp;
         original.xp.primary = false;
-        original.xp.inactive = true;
+        original.xp.active = false;
 
         var primaryAddress = null;
         if(Underscore.contains(dirtyItems,"addressPrimaryInput") && vm.address.xp && vm.address.xp.primary == true && dirtyItems.length == 1) {
@@ -426,6 +498,9 @@ function CustomerAddressEditCtrl($q, $exceptionHandler, $state, $scope, toastr, 
                 })
                 .then(function (resp) {
                     vm.address.ID = null;
+                    vm.address.xp = typeof vm.address.xp == "undefined" ? {} : vm.address.xp;
+                    vm.address.xp.active = true;
+                    vm.address.xp.primary = typeof vm.address.xp.primary == "undefined" ? false : vm.address.xp.primary;
                     return OrderCloud.Addresses.Create(vm.address, SelectedBuyer.ID);
                 })
                 .then(function (resp) {
@@ -462,12 +537,12 @@ function CustomerAddressEditCtrl($q, $exceptionHandler, $state, $scope, toastr, 
 
     vm.Delete = function() {
         vm.address.xp = typeof vm.address.xp === "undefined" ? {} : vm.address.xp;
-        vm.address.xp.inactive = true;
+        vm.address.xp.active = false;
 
         OrderCloud.Addresses.Update(addressID, vm.address, SelectedBuyer.ID)
             .then(function() {
                 $state.go('customers.edit', {"buyerid":SelectedBuyer.ID}, {reload: true});
-                toastr.success('Address set to inactive.', 'Success');
+                toastr.success('Address made inactive.', 'Success');
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
@@ -477,18 +552,12 @@ function CustomerAddressEditCtrl($q, $exceptionHandler, $state, $scope, toastr, 
 
 function CustomerAddressCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, OrderCloud, OCGeography, CustomerService, SelectedBuyer, Underscore, WeirService) {
     var vm = this;
-    /*vm.address = {
-        Country: 'US' // this is to default 'create' addresses to the country US
-    };*/
     vm.countries = OCGeography.Countries;
     vm.states = OCGeography.States;
     vm.address = {Country: null};
-    $scope.$watch(function() {
-        return vm.address.Country
-    }, function() {
-        vm.address.State = null;
-    });
-
+    vm.labels = CustomerService.Labels[WeirService.Locale()];
+    vm.address.xp = {};
+    vm.address.xp.active = true;
     vm.Submit = _submit;
 
     function _submit() {
@@ -522,7 +591,6 @@ function CustomerAddressCreateCtrl($q, $exceptionHandler, $scope, $state, toastr
                     $exceptionHandler(ex);
                 });
         } else {
-            vm.address.xp = {};
             vm.address.xp.primary = false;
             CustomerService.CreateAddress(vm.address, SelectedBuyer.ID)
 	            .then(function(newAddress) {
@@ -540,12 +608,13 @@ function CustomerAddressCreateCtrl($q, $exceptionHandler, $scope, $state, toastr
     }
 }
 
-function CustomerAssignCtrl($q, $exceptionHandler, $scope, $state, toastr, Underscore, OrderCloud, SelectedBuyer, EndUsers, Assignments) {
+function CustomerAssignCtrl($q, $exceptionHandler, $scope, $state, toastr, Underscore, OrderCloud, SelectedBuyer, EndUsers, Assignments, WeirService, CustomerService) {
     var vm = this;
     vm.list = angular.copy(EndUsers);
     vm.endUsers = angular.copy(EndUsers);
     vm.assignments = angular.copy(SelectedBuyer.xp.Customers);
     vm.serviceCompany = SelectedBuyer;
+    vm.labels = CustomerService.Labels[WeirService.Locale()];
     EndUsers.Items = Underscore.filter(EndUsers.Items, function(item) {
         return item.Active == true && item.xp.Type.id == 1 && item.xp.WeirGroup.id == vm.serviceCompany.xp.WeirGroup.id;
     });

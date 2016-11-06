@@ -4,8 +4,36 @@ angular.module('ordercloud-address', [])
     .filter('address', AddressFilter)
 ;
 
-function AddressFormDirective(OCGeography, WeirService) {
+function AddressFormDirective(OCGeography, WeirService, $sce) {
     var template = WeirService.Locale() == "fr" ? "common/address/templates/addressFR.form.tpl.html" : "common/address/templates/addressUK.form.tpl.html";
+    var labels = {
+        en: {
+            AddressName:"Address Name",
+            CompanyName:"Company Name",
+            FirstName:"First Name",
+            LastName:"Last Name",
+            StreetOne: "Street 1",
+            StreetTwo: "Street 2",
+            City: "City",
+            County: "County",
+            PostCode: "Post Code",
+            Country: "Country",
+            PhoneNumber: "Phone Number"
+        },
+        fr: {
+            AddressName: $sce.trustAsHtml("Address Name"),
+            CompanyName: $sce.trustAsHtml("Company Name"),
+            FirstName: $sce.trustAsHtml("First Name"),
+            LastName: $sce.trustAsHtml("Last Name"),
+            StreetOne: $sce.trustAsHtml("Street 1"),
+            StreetTwo: $sce.trustAsHtml("Street 2"),
+            City: $sce.trustAsHtml("City"),
+            County: $sce.trustAsHtml("County"),
+            PostCode: $sce.trustAsHtml("Post Code"),
+            Country: $sce.trustAsHtml("Country"),
+            PhoneNumber: $sce.trustAsHtml("Phone Number")
+        }
+    };
     return {
         restrict: 'E',
         scope: {
@@ -16,6 +44,7 @@ function AddressFormDirective(OCGeography, WeirService) {
         link: function(scope) {
             scope.countries = OCGeography.Countries;
             scope.states = OCGeography.States;
+            scope.labels = labels[WeirService.Locale()];
         }
     };
 }

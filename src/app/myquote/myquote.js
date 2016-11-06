@@ -396,20 +396,22 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 			size: 'lg'
 		});
 
+		var newAddressResults = {};
 		modalInstance.result
 			.then(function (address) {
 				return OrderCloud.Addresses.Create(address, buyerid);
-				//return OrderCloud.Me.CreateAddress(address)
 			})
 			.then(function(newAddress) {
-				return WeirService.AssignAddressToGroups(newAddress.ID);
-			})
-			.then(function(newAddress) {
+				newAddressResults.ID = newAddress.ID;
+				newAddressResults.Name = newAddress.AddressName;
 				return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, buyerid);
 			})
 			.then(function(order) {
+				return WeirService.AssignAddressToGroups(newAddressResults.ID);
+			})
+			.then(function(order) {
 				$state.go($state.current, {}, {reload: true});
-				toastr.success("Shipping address set to " + order.ShippingAddressID,"Shipping Address Set");
+				toastr.success("Shipping address set to " + newAddressResults.Name,"Shipping Address Set");
 			})
 			.catch(function(ex) {
 				if(ex !== 'cancel') {
@@ -750,7 +752,7 @@ function NewAddressModalController($uibModalInstance) {
 	var vm = this;
 	vm.address = {};
 	vm.address.xp = {};
-	vm.address.xp.inactive = false;
+	vm.address.xp.active = true;
 	vm.address.xp.primary = false;
 
 	vm.submit = function () {

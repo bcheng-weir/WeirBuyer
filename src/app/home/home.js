@@ -16,7 +16,7 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 	$sceDelegateProvider.resourceUrlWhitelist([
 		'self',
 		'https://www.global.weir/brands/**'
-	])
+	]);
 	$stateProvider
 		.state('home', {
 			parent: 'base',
@@ -166,7 +166,7 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 		}
 		vm.SelectingCustomer = true;
 	};
-	vm.ClearFilter = function() { vm.customerFilter = null; $rootScope.$broadcast('SwitchCart', null, null); };
+	vm.ClearFilter = function() { vm.customerFilter = null; $rootScope.$broadcast('OC:RemoveOrder', null, null); };
 	vm.CustomerSelected = function() {
 	    var newCust = null;
 	    if (vm.selfsearch) {
@@ -195,7 +195,7 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 	    }
 	    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
 		$rootScope.$broadcast('OC:RemoveOrder');
-	}
+	};
 					
 	vm.formatSerialNumber = function(number) {
 		if (!number) return;

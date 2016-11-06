@@ -177,7 +177,6 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
                     });
                 Underscore.map(vm.LineItems.Items, function(value, key){
                     vm.TotalItems += value.Quantity;
-                    console.log(value);
                 });
             });
         return dfd.promise;
@@ -209,6 +208,7 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
     $rootScope.$on('OC:RemoveOrder', function() {//broadcast is in build > src > app > common > line items
         vm.Order = null;
         vm.LineItems = {};
+        vm.TotalItems = 0;
     });
 
     vm.toggleDropdown = function($event) {

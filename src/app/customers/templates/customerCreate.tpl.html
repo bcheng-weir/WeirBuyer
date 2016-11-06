@@ -1,56 +1,41 @@
 <h3>
-    <b>New Customer</b>
+    <b>{{customerCreate.labels.NewCustomer}}</b>
 </h3>
 <form ng-submit="customerCreate.Submit()" name="CustomerCreateForm" novalidate>
     <div class="row">
         <div class="form-group col-md-6">
-            <label for="buyer_id">ID</label>
-            <input id="buyer_id" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ordercloud-auto-id ng-model="customerCreate.buyer.ID" class="form-control">
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label for="buyer_name">Name</label>
+            <label for="buyer_name">{{customerCreate.labels.Name}}</label>
             <input id="buyer_name" type="text" ng-model="customerCreate.buyer.Name" class="form-control" required>
         </div>
     </div>
     <div class="row">
         <div class="form-group col-md-3">
-            <label for="buyer_div">Weir Group</label>
+            <label for="buyer_div">{{customerCreate.labels.WeirGroup}}</label>
             <select id="buyer_div" class="form-control" required ng-options="d.label for d in customerCreate.WeirGroups track by d.id" ng-model="customerCreate.buyer.xp.WeirGroup">
-                <option value="">(select WeirGroup)</option>
+                <option value="">{{customerCreate.labels.SelectGroup}}</option>
             </select>
         </div>
         <div class="form-group col-md-3">
-            <label for="buyer_type">Customer Type</label>
+            <label for="buyer_type">{{customerCreate.labels.CustomerType}}</label>
             <select id="buyer_type" class="form-control" required ng-options="t.label for t in customerCreate.types track by t.id" ng-model="customerCreate.buyer.xp.Type" >
-                <option value="">(select customer type)</option>
+                <option value="">{{customerCreate.labels.SelectType}}</option>
             </select>
         </div>
     </div>
-    <!--
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label for="buyer_analytics">Analytics ID</label>
-            <input id="buyer_analytics" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ng-model="customerCreate.buyer.xp.analytics_code" class="form-control">
-        </div>
-    </div>
-    -->
     <div class="row">
         <div class="form-group col-md-6">
             <label for="buyer_active">
-                <input id="buyer_active" type="checkbox" ng-model="customerCreate.buyer.Active"> Active
+                <input id="buyer_active" type="checkbox" ng-model="customerCreate.buyer.Active"> {{customerCreate.labels.Active}}
             </label>
         </div>
     </div>
-
     <div class="row">
         <div class="form-group col-md-6">
-            <label for="buyer_termsConditions" >Terms and Conditions</label>
+            <label for="buyer_termsConditions" >{{customerCreate.labels.Terms}}</label>
             <textarea rows="6" cols="50" id="buyer_termsConditions" type="text" ng-model="customerCreate.buyer.xp.termsConditions" class="form-control"/>
         </div>
         <div class="form-group col-md-6">
-            <label for="buyer_shippingDetails" >Shipping Details</label>
+            <label for="buyer_shippingDetails" >{{customerCreate.labels.ShippingDetails}}</label>
             <textarea rows="6" cols="50" id="buyer_shippingDetails" type="text" ng-model="customerCreate.buyer.xp.ShippingDetails" class="form-control"/>
         </div>
     </div>
@@ -58,71 +43,63 @@
     <!-- Address Start -->
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressIDInput">Address ID</label>
-            <input id="addressIDInput" type="text" class="form-control" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ordercloud-auto-id ng-model="customerCreate.address.ID"/>
-        </div>
-        <div class="col-sm-6 form-group">
-            <label for="addressNameInput">Address Name</label>
+            <label for="addressNameInput">{{customerCreate.labels.AddressName}}</label>
             <input id="addressNameInput" type="text" class="form-control" ng-model="customerCreate.address.AddressName" required/>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12 form-group">
-            <label for="addressCompanyNameInput">Company Name</label>
+        <div class="col-sm-6 form-group">
+            <label for="addressCompanyNameInput">{{customerCreate.labels.CompanyName}}</label>
             <input id="addressCompanyNameInput" type="text" class="form-control" ng-model="customerCreate.address.CompanyName"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressFirstNameInput">First Name</label>
+            <label for="addressFirstNameInput">{{customerCreate.labels.FirstName}}</label>
             <input id="addressFirstNameInput" type="text" class="form-control" ng-model="customerCreate.address.FirstName"/>
         </div>
         <div class="col-sm-6 form-group">
-            <label for="addressLastNameInput">Last Name</label>
+            <label for="addressLastNameInput">{{customerCreate.labels.LastName}}</label>
             <input id="addressLastNameInput" type="text" class="form-control" ng-model="customerCreate.address.LastName"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressStreet1Input">Street 1</label>
+            <label for="addressStreet1Input">{{customerCreate.labels.StreetOne}}</label>
             <input id="addressStreet1Input" type="text" class="form-control" ng-model="customerCreate.address.Street1" required/>
         </div>
         <div class="col-sm-6 form-group">
-            <label for="addressStreet2Input">Street 2</label>
+            <label for="addressStreet2Input">{{customerCreate.labels.StreetTwo}}</label>
             <input id="addressStreet2Input" type="text" class="form-control" ng-model="customerCreate.address.Street2"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressCityInput">City</label>
+            <label for="addressCityInput">{{customerCreate.labels.City}}</label>
             <input id="addressCityInput" type="text" class="form-control" ng-model="customerCreate.address.City" required/>
         </div>
-        <div class="col-sm-3 form-group" ng-show="customerCreate.address.Country == 'US' || customerCreate.address.Country == 'CA'">
-            <label for="addressStateInput">State</label>
-            <select  id="addressStateInput" class="form-control" ng-options="state.value as state.label for state in customerCreate.states" ng-model="customerCreate.address.State" />
-        </div>
-        <div class="col-sm-3 form-group" ng-hide="customerCreate.address.Country == 'US' || customerCreate.address.Country == 'CA'">
-            <label for="addressStateInput">State</label>
+        <div class="col-sm-3 form-group">
+            <label for="addressStateInput">{{customerCreate.labels.County}}</label>
             <input  id="addressStateInput" class="form-control" ng-model="customerCreate.address.State" />
         </div>
         <div class="col-sm-3 form-group">
-            <label for="addressZipInput">Zip</label>
-            <input id="addressZipInput" type="text" class="form-control" ng-model="customerCreate.address.Zip" required/>
+            <label for="addressZipInput">{{customerCreate.labels.PostCode}}</label>
+            <input id="addressZipInput" type="text" class="form-control" ng-model="customerCreate.address.Zip" maxlength="8" minlength="5" required/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressCountryInput">Country</label>
+            <label for="addressCountryInput">{{customerCreate.labels.Country}}</label>
             <select  id="addressCountryInput" class="form-control" ng-options="country.value as country.label for country in customerCreate.countries" ng-model="customerCreate.address.Country" required/>
         </div>
         <div class="col-sm-6 form-group">
-            <label for="addressPhoneInput">Phone Number</label>
+            <label for="addressPhoneInput">{{customerCreate.labels.PhoneNumber}}</label>
             <input id="addressPhoneInput" type="text" class="form-control" ng-model="customerCreate.address.Phone"/>
         </div>
     </div>
    <!-- Address End-->
     <div class="form-group">
-        <button class="btn btn-primary" ng-click="customerCreate.Submit();" type="button" ng-disabled="CustomerCreateForm.$invalid">Save</button>
-        <button class="btn btn-default" ui-sref="^" type="button">Cancel</button>
+        <button class="btn btn-primary" ng-click="customerCreate.Submit();" type="button" ng-disabled="CustomerCreateForm.$invalid">{{customerCreate.labels.Save}}</button>
+        <button class="btn btn-default" ui-sref="^" type="button">{{customerCreate.labels.Cancel}}</button>
     </div>
 </form>

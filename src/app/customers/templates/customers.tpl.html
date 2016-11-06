@@ -1,7 +1,7 @@
 <article id="COMPONENT_Customers" ui-view class="container-fluid">
     <div class="page-header">
-        <button type="button" class="btn btn-success pull-right" ui-sref=".create"><i class="fa fa-plus-circle"></i> Create New</button>
-        <h3>Customers</h3>
+        <button type="button" class="btn btn-success pull-right" ui-sref=".create"><i class="fa fa-plus-circle"></i> {{customers.labels.CreateNew}}</button>
+        <h3>{{customers.labels.Customers}}</h3>
     </div>
 
     <!--====== SEARCH/FILTERS ======-->
@@ -11,7 +11,7 @@
         </fieldset>
         <fieldset class="form-group" ng-class="{'text-center':application.$ocMedia('max-width:767px')}">
 		<span ng-class="{'btn-group':customers.searchResults}">
-			<button type="submit" class="btn btn-primary">Search</button>
+			<button type="submit" class="btn btn-primary">{{customers.labels.Search}}</button>
 			<button ng-if="customers.searchResults" ng-click="customers.clearSearch()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
 		</span>
         </fieldset>
@@ -19,7 +19,7 @@
 
     <!--====== LIST ======-->
     <div class="no-matches" ng-if="!customers.list.Items.length">
-        <b>No matches found.</b>
+        <b>{{customers.labels.NoMatch}}.</b>
     </div>
     <div ng-if="customers.list.Items.length">
         <b class="pull-right">{{(application.$ocMedia('min-width:768px') ? customers.list.Meta.ItemRange[0] : '1') + ' - ' +
@@ -30,7 +30,7 @@
                 <th scope="col">
                     <!-- Commented out until API supports sorting for buyers -->
                     <!-- <a href="#" role="button" ng-click="customers.updateSort('ID')"> -->
-                    ID
+                    {{customers.labels.ID}}
                     <i class="fa fa-caret-down" ng-show="customers.parameters.sortBy == 'ID'"></i>
                     <i class="fa fa-caret-up" ng-show="customers.parameters.sortBy == '!ID'"></i>
                     <!-- </a> -->
@@ -38,19 +38,19 @@
                 <th scope="col">
                     <!-- Commented out until API supports sorting for buyers -->
                     <!-- <a href="#" role="button" ng-click="customers.updateSort('Name')"> -->
-                    Name
+                    {{customers.labels.Name}}
                     <i class="fa fa-caret-down" ng-show="customers.parameters.sortBy == 'Name'"></i>
                     <i class="fa fa-caret-up" ng-show="customers.parameters.sortBy == '!Name'"></i>
                     <!-- </a> -->
                 </th>
                 <th class="text-center" scope="col">
-                    Weir Group
+                    {{customers.labels.WeirGroup}}
                 </th>
                 <th class="text-center" scope="col">
-                    Type
+                    {{customers.labels.CustomerType}}
                 </th>
                 <th class="text-center" scope="col">
-                    Active
+                    {{customers.labels.Active}}
                 </th>
                 <th scope="col"></th>
             </tr>
@@ -61,12 +61,11 @@
                 <td data-title="Name">{{buyer.Name}}</td>
                 <td data-title="WeirGroup" class="text-center">{{buyer.xp.WeirGroup.label}}</td>
                 <td data-title="Name" class="text-center">{{buyer.xp.Type.label}}</td>
-                <td class="text-center" data-title="Active"><i class="fa fa-circle" aria-hidden="true"
-                                                               ng-class="{'active':buyer.Active}"></i></td>
+                <td class="text-center" data-title="Active"><i class="fa fa-circle" aria-hidden="true" ng-class="{'active':buyer.Active}"></i></td>
                 <td class="actions-cell">
                     <!--<button type="button" ui-sref="customers.assign({buyerid: buyer.ID})" class="btn btn-default btn-sm" ng-hide="buyer.xp.Type.id==1">Assign
                     </button>-->
-                    <button type="button" ui-sref="customers.edit({buyerid: buyer.ID})" class="btn btn-default btn-sm">Edit
+                    <button type="button" ui-sref="customers.edit({buyerid: buyer.ID})" class="btn btn-default btn-sm">{{customers.labels.Edit}}
                     </button>
                 </td>
             </tr>
@@ -81,7 +80,7 @@
                 ng-if="application.$ocMedia('max-width:767px')"
                 class="btn btn-default btn-block btn-lg"
                 ng-show="customers.list.Meta.Page < customers.list.Meta.TotalPages"
-                ng-click="customers.loadMore()">Load More
+                ng-click="customers.loadMore()">{{customers.labels.LoadMore}}
         </button>
     </div>
 </article>

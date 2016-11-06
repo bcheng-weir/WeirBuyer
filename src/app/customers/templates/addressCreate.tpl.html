@@ -1,79 +1,71 @@
 <h3 class="page-header">
-    <b>New Address</b>
+    <b>{{customerAddressCreate.labels.NewAddress}}</b>
 </h3>
 <form name="AddressCreateForm" ng-submit="customerAddressCreate.Submit()" novalidate>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressIDInput">Address ID</label>
-            <input id="addressIDInput" type="text" class="form-control" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ordercloud-auto-id ng-model="customerAddressCreate.address.ID"/>
-        </div>
-        <div class="col-sm-6 form-group">
-            <label for="addressNameInput">Address Name</label>
+            <label for="addressNameInput">{{customerAddressCreate.labels.AddressName}}</label>
             <input id="addressNameInput" type="text" class="form-control" ng-model="customerAddressCreate.address.AddressName" required/>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12 form-group">
-            <label for="addressCompanyNameInput">Company Name</label>
+        <div class="col-sm-6 form-group">
+            <label for="addressCompanyNameInput">{{customerAddressCreate.labels.CompanyName}}</label>
             <input id="addressCompanyNameInput" type="text" class="form-control" ng-model="customerAddressCreate.address.CompanyName"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressFirstNameInput">First Name</label>
+            <label for="addressFirstNameInput">{{customerAddressCreate.labels.FirstName}}</label>
             <input id="addressFirstNameInput" type="text" class="form-control" ng-model="customerAddressCreate.address.FirstName"/>
         </div>
         <div class="col-sm-6 form-group">
-            <label for="addressLastNameInput">Last Name</label>
+            <label for="addressLastNameInput">{{customerAddressCreate.labels.LastName}}</label>
             <input id="addressLastNameInput" type="text" class="form-control" ng-model="customerAddressCreate.address.LastName"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressStreet1Input">Street 1</label>
+            <label for="addressStreet1Input">{{customerAddressCreate.labels.StreetOne}}</label>
             <input id="addressStreet1Input" type="text" class="form-control" ng-model="customerAddressCreate.address.Street1" required/>
         </div>
         <div class="col-sm-6 form-group">
-            <label for="addressStreet2Input">Street 2</label>
+            <label for="addressStreet2Input">{{customerAddressCreate.labels.StreetTwo}}</label>
             <input id="addressStreet2Input" type="text" class="form-control" ng-model="customerAddressCreate.address.Street2"/>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3 form-group">
-            <label for="addressZipInput">Post Code</label>
-            <input id="addressZipInput" type="text" class="form-control" ng-model="customerAddressCreate.address.Zip" required/>
-        </div>
         <div class="col-sm-6 form-group">
-            <label for="addressCityInput">City</label>
+            <label for="addressCityInput">{{customerAddressCreate.labels.City}}</label>
             <input id="addressCityInput" type="text" class="form-control" ng-model="customerAddressCreate.address.City" required/>
         </div>
-        <div class="col-sm-3 form-group" ng-show="customerAddressCreate.address.Country == 'US' || customerAddressCreate.address.Country == 'CA'">
-            <label for="addressStateInput">State</label>
-            <select  id="addressStateInput" class="form-control" ng-options="state.value as state.label for state in customerAddressCreate.states" ng-model="customerAddressCreate.address.State" />
-        </div>
-        <div class="col-sm-3 form-group" ng-hide="customerAddressCreate.address.Country == 'US' || customerAddressCreate.address.Country == 'CA'">
-            <label for="addressStateInput">County</label>
+        <div class="col-sm-3 form-group">
+            <label for="addressStateInput">{{customerAddressCreate.labels.County}}</label>
             <input  id="addressStateInput" class="form-control" ng-model="customerAddressCreate.address.State" />
+        </div>
+        <div class="col-sm-3 form-group">
+            <label for="addressZipInput">{{customerAddressCreate.labels.PostCode}}</label>
+            <input id="addressZipInput" type="text" class="form-control" ng-model="customerAddressCreate.address.Zip" maxlength="8" minlength="5" required/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressCountryInput">Country</label>
+            <label for="addressCountryInput">{{customerAddressCreate.labels.Country}}</label>
             <select  id="addressCountryInput" class="form-control" ng-options="country.value as country.label for country in customerAddressCreate.countries" ng-model="customerAddressCreate.address.Country" required/>
         </div>
         <div class="col-sm-6 form-group">
-            <label for="addressPhoneInput">Phone Number</label>
+            <label for="addressPhoneInput">{{customerAddressCreate.labels.PhoneNumber}}</label>
             <input id="addressPhoneInput" type="text" class="form-control" ng-model="customerAddressCreate.address.Phone"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
-            <label for="addressPrimaryInput">Primary</label>
+            <label for="addressPrimaryInput">{{customerAddressCreate.labels.Primary}}</label>
             <input id="addressPrimaryInput" type="checkbox" ng-model="customerAddressCreate.address.xp.primary" />
         </div>
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary" ng-disabled="AddressCreateForm.$invalid">Save</button>
-        <button type="button" class="btn btn-default" ui-sref="^">Cancel</button>
+        <button type="submit" class="btn btn-primary" ng-disabled="AddressCreateForm.$invalid">{{customerAddressCreate.labels.Save}}</button>
+        <button type="button" class="btn btn-default" ui-sref="^">{{customerAddressCreate.labels.Cancel}}</button>
     </div>
 </form>

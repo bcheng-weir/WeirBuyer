@@ -93,10 +93,9 @@ function CustomerConfig($stateProvider) {
         });
 }
 
-function CustomerService($q, $state, $sce, OrderCloud, toastr, $exceptionHandler) {
+function CustomerService($q, $state, $sce, OrderCloud, $exceptionHandler) {
     var _weirGroups = [{id: "1", label: "WCVUK"}, {id: "2", label: "WPIFR"}];
     var _customerTypes = [{id: "1", label: "End User"}, {id: "2", label: "Service Company"}];
-
     var _componentLabels = {
         en: {
             NewCustomer: "New Customer",
@@ -591,6 +590,7 @@ function CustomerAddressCreateCtrl($q, $exceptionHandler, $scope, $state, toastr
                     $exceptionHandler(ex);
                 });
         } else {
+            vm.address.xp = {};
             vm.address.xp.primary = false;
             CustomerService.CreateAddress(vm.address, SelectedBuyer.ID)
 	            .then(function(newAddress) {
@@ -622,11 +622,9 @@ function CustomerAssignCtrl($q, $exceptionHandler, $scope, $state, toastr, Under
     $scope.$watchCollection(function() {
         return vm.list;
     }, function() {
-        //EndUsers.Items = Underscore.filter(vm.list.Items, function(item) {
         vm.endUsers.Items = Underscore.filter(vm.list.Items, function(item) {
             return item.Active == true && item.xp.Type.id == 1 && item.xp.WeirGroup.id == vm.serviceCompany.xp.WeirGroup.id;
         });
-        //vm.endUsers = EndUsers;
         setSelected();
     });
 
@@ -650,25 +648,12 @@ function CustomerAssignCtrl($q, $exceptionHandler, $scope, $state, toastr, Under
         vm.assignments = [];
 
         angular.forEach(EndUsers.Items, function(Item) {
-            console.log(Item);
             if(toAdd.indexOf(Item.ID) > -1) {
                 vm.assignments.push({"id":Item.ID,"name":Item.Name});
             } else if(assigned.indexOf(Item.ID) > -1) {
                 vm.assignments.push({"id":Item.ID,"name":Item.Name});
             }
-        })
-
-/*        angular.forEach(assigned, function(item) {
-            var elementPosition = vm.list.Items.map(function(x) {return x.ID;}).indexOf(item);
-            console.log(elementPosition);
-            vm.assignments.push({"id":item,"name":vm.list.Items[elementPosition].Name});
         });
-
-        angular.forEach(toAdd, function(item) {
-            var elementPosition = vm.list.Items.map(function(x) {return x.ID;}).indexOf(item);
-            console.log(elementPosition);
-            vm.assignments.push({"id":item,"name":vm.list.Items[elementPosition].Name});
-        });*/
 
         angular.forEach(toDelete, function(value) {
             var elementPosition = vm.assignments.map(function(x) {return x.id;}).indexOf(value);

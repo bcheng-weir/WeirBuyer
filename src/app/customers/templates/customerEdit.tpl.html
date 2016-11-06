@@ -23,13 +23,6 @@
             <input id="buyer_type" type="text" ng-disabled="true" ng-model="customerEdit.buyer.xp.Type.label" />
         </div>
     </div>
-    <!--
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label id="buyer_analytics">Analytics ID</label>
-            <input for="buyer_analytics" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ng-model="customerEdit.buyer.xp.analytics_code" class="form-control">
-        </div>
-    </div>-->
     <div class="row">
         <div class="form-group col-md-6">
             <label for="buyer_active"></label>
@@ -50,7 +43,6 @@
     <div class="form-group">
         <button class="btn btn-primary" type="submit" ng-disabled="CustomerEditForm.$invalid || customerEdit.checkForPrimary()">{{customerEdit.labels.Save}}</button>
         <button class="btn btn-default" ui-sref="^" type="button">{{customerEdit.labels.Cancel}}</button>
-        <!--<button class="btn btn-primary" ng-click="customerEdit.Delete();" type="button"><i class="fa fa-trash text-danger"></i> Delete</button>-->
     </div>
         <!--TODO: The Address Edit state should also include Address Assignments-->
     <!--====== LIST ======-->

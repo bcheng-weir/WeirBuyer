@@ -590,7 +590,6 @@ function CustomerAddressCreateCtrl($q, $exceptionHandler, $scope, $state, toastr
                     $exceptionHandler(ex);
                 });
         } else {
-            vm.address.xp = {};
             vm.address.xp.primary = false;
             CustomerService.CreateAddress(vm.address, SelectedBuyer.ID)
 	            .then(function(newAddress) {

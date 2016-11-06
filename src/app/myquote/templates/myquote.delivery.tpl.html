@@ -18,7 +18,7 @@
             <b ng-bind-html="delivery.labels.DefaultAddress"></b>
         </div>
         <div class="col-md-3">
-            <p><a href="" ng-bind-html="delivery.labels.AddNew" ng-click="delivery.CustomShipping(myquote.Quote.ID)"></a></p>
+            <button class="btn btn-success" ng-click="delivery.CustomShipping(myquote.Quote.ID)"><i class="fa fa-plus-circle"></i> {{delivery.labels.AddNew}}</button>
         </div>
         <div class="col-md-3">
             <b ng-bind-html="delivery.labels.DeliveryType"></b>

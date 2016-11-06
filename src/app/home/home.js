@@ -135,9 +135,8 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 	vm.serialNumberList = SerialNumbers.Items;
 	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
-
-        vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
-        vm.Customer = CurrentCustomer;
+	vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
+    vm.Customer = CurrentCustomer;
 	vm.AvailableCustomers = MyOrg.xp.Customers;
 
 	if (!vm.IsServiceOrg) {

@@ -17,7 +17,7 @@ function serialnumber() {
 function customerPresearch() {
   return function(items, name) {
     return items.filter(function(cust, index, array) {
-	return cust && cust.name && cust.name.indexOf(name) >= 0;
+		return cust && cust.name && cust.name.toLowerCase().indexOf(name.toLowerCase()) >= 0;
     });
   };
 }

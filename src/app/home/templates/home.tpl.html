@@ -8,9 +8,9 @@
 			<div class="row"><span ng-bind-html="home.labels.SearchMine"></span><input type="checkbox" style="margin-left: 1em;" ng-model="home.selfsearch" ng-change="home.ClearFilter()" /></div>
 			<div class="row"><span ng-bind-html="home.labels.SearchOr"></span></div>
 			<div class="row"><span ng-bind-html="home.labels.FilterEndUser"></span></div>
-		     <div class="row col-md-3 input-group">
-	                  <input type="text" class="form-control" style="width: 12em;" ng-disabled='home.selfsearch' ng-model="home.customerFilter" typeahead-min-length="3" uib-typeahead="cust.name for cust in home.AvailableCustomers | customerPresearch:$viewValue" />
-	                  <button style="margin-left: 1em;" ng-disabled="!home.customerFilter && !home.selfsearch" ng-click="home.CustomerSelected()" ng-bind-html="home.labels.Select"></input>
+			<div class="row col-md-3 input-group">
+				<input type="text" class="form-control" style="width: 12em;" ng-disabled='home.selfsearch' ng-model="home.customerFilter" typeahead-min-length="3" uib-typeahead="cust.name for cust in home.AvailableCustomers | customerPresearch:$viewValue" />
+				<button style="margin-left: 1em;" ng-disabled="!home.customerFilter && !home.selfsearch" ng-click="home.CustomerSelected()" ng-bind-html="home.labels.Select"></input>
 		     </div>
 		</div>
 	</div>

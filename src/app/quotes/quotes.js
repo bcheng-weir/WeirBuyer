@@ -126,6 +126,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
 		en: {
 		    Header: Quotes.length.toString() + " saved Quote" +  (Quotes.length == 1 ? "" : "s"),
 		    QuoteNum: "Weir Quote number",
+			QuoteName: "Quote Name",
 		    QuoteRef: "Your Quote ref;",
             Total: "Total",
             Customer: "Customer",
@@ -137,6 +138,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
 		fr: {
 			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " saved Quote" +  (Quotes.length == 0 ? "" : "s")),
 		    QuoteNum: $sce.trustAsHtml("FR-Weir Quote number"),
+			QuoteName: $sce.trustAsHtml("FR-Quote Name"),
 		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
             Total: $sce.trustAsHtml("FR-Total"),
             Customer: $sce.trustAsHtml("FR-Customer"),

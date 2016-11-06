@@ -161,6 +161,7 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
     vm.lineItemCall = function /*getLineItems*/(order) {
         var dfd = $q.defer();
         var queue = [];
+        vm.TotalItems = 0;
         OrderCloud.LineItems.List(order.ID)
             .then(function(li) {
                 vm.LineItems = li;

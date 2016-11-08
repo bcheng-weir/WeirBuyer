@@ -1,10 +1,10 @@
 <div>
-   <div class="row">
+   <div class="row" style="padding-top:20px;">
         <div class="col-md-9">
-            <p><b><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></b></p>
-            <p><b><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></b></p>
-            <p><b><span ng-bind-html='detail.labels.QuoteName'></span></b><input type='text' style="margin-left:1em;" maxlength="20" ng-model='myquote.Quote.xp.Name' /></p>
-	    <p><b><span ng-bind-html='detail.labels.RefNumHeader'></span></b><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></p>
+            <h3><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></h3>
+            <h3><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h3>
+            <h3><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' style="margin-left:1em;" maxlength="20" ng-model='myquote.Quote.xp.Name' /></h3>
+	        <h3><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h3>
         </div>
 
         <div class="col-md-3">
@@ -18,16 +18,16 @@
    <div class="row">
         <div class="col-md-12">
             <table class="table table-bordered oc-table-responsive weir-results-table">
-                <thead>
+                <thead class="header-cell">
                     <tr>
-                        <th ng-bind-html='detail.labels.SerialNum'></th>
-                        <th ng-bind-html='detail.labels.TagNum'></th>
-                        <th ng-bind-html='detail.labels.PartNum'></th>
-                        <th ng-bind-html='detail.labels.PartDesc'></th>
-                        <th ng-bind-html='detail.labels.RecRepl'></th>
-                        <th ng-bind-html='detail.labels.LeadTime'></th>
-                        <th ng-bind-html='detail.labels.PricePer'></th>
-                        <th ng-bind-html='detail.labels.Quantity'></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.SerialNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.TagNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PartNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PartDesc'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.RecRepl'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.LeadTime'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PricePer'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.Quantity'></h4></th>
                         <th class="button-th"></th>
                     </tr>
                 </thead>
@@ -52,8 +52,8 @@
                     </tr>
                     <tr ng-if="detail.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
-                        <td ng-bind-html='detail.labels.Total'></td>
-                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right'>
+                        <td style="font-weight:bold;" ng-bind-html='detail.labels.Total'></td>
+                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
                             <span ng-switch-when="EUR">{{myquote.Quote.Total | currency:'&euro;'}}</span>
                             <span ng-switch-when="GBP">{{myquote.Quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{myquote.Quote.Total | currency:'&#163; '}}</span>
@@ -66,7 +66,7 @@
 
    <div class="row">
         <div class="col-md-6">
-            <h3><span ng-bind-html='detail.labels.UploadHeader'></span></h3>
+            <h4><span ng-bind-html='detail.labels.UploadHeader'></span></h4>
             <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
             <div class="panel panel-default">
                 <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
@@ -74,7 +74,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h3><span ng-bind-html='detail.labels.CommentsHeader'></span></h3>
+            <h4><span ng-bind-html='detail.labels.CommentsHeader'></span></h4>
             <p><span ng-bind-html='detail.labels.CommentsInstr'></span></p>
             <p><textarea rows='4' cols='40' maxlength="1000" ng-model='myquote.Quote.Comments'></textarea></p>
         </div>

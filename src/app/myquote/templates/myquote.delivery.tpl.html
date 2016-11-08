@@ -13,22 +13,14 @@
         </div>
     </script>
 
-    <div class="row">
-        <div class="col-md-6">
-            <b ng-bind-html="delivery.labels.DefaultAddress"></b>
-        </div>
-        <div class="col-md-3">
-            <button class="btn btn-success" ng-click="delivery.CustomShipping(myquote.Quote.ID)"><i class="fa fa-plus-circle"></i> {{delivery.labels.AddNew}}</button>
-        </div>
-        <div class="col-md-3">
-            <b ng-bind-html="delivery.labels.DeliveryType"></b>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-7">
+            <div class="row">
+                <span style="font-weight: bold; margin-left: 0.5em;" ng-bind-html="delivery.labels.DefaultAddress"></span>
+                <button class="btn btn-success pull-right" ng-click="delivery.CustomShipping(myquote.Quote.ID)"><i class="fa fa-plus-circle"></i> {{delivery.labels.AddNew}}</button>
+            </div>
             <div class="row" ng-repeat="rows in delivery.ChunkedData">
-                <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country=='FR'">
+                <div class="col-md-5 address-cell" ng-repeat="item in rows" ng-if="item.Country=='FR'">
                     {{item.CompanyName}}<br>
                     {{item.Street1}}<br>
                     {{item.Street2}}<br>
@@ -37,7 +29,7 @@
                     <button ng-class="(myquote.Quote.ShippingAddressID==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverHere' ng-click="delivery.setShippingAddress(myquote.Quote.ID,item)"></button>
                     <br>
                 </div>
-                <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country=='GB'">
+                <div class="col-md-5 address-cell" ng-repeat="item in rows" ng-if="item.Country=='GB'">
                     {{item.CompanyName}}<br>
                     {{item.Street1}}<br>
                     {{item.Street2}}<br>
@@ -47,7 +39,7 @@
                     <button ng-class="(myquote.Quote.ShippingAddressID==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverHere' ng-click="delivery.setShippingAddress(myquote.Quote.ID,item)"></button>
                     <br>
                 </div>
-                <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country!='GB' && item.Country!='FR'">
+                <div class="col-md-5 address-cell" ng-repeat="item in rows" ng-if="item.Country!='GB' && item.Country!='FR'">
                     {{item.CompanyName}}<br>
                     {{item.Street1}}<br>
                     {{item.Street2}}<br>
@@ -58,40 +50,21 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="row">
-                <div class="col-sm-6">
-                    <br><br><br>
-                </div>
-                <div calss="col-sm-6">
-                    <p><i>Delivery costs will be confirmed on order.</i></p>
-                </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <button class="btn btn-primary" ui-sref="myquote.detail"><i class="fa fa-angle-left" aria-hidden="true"></i> {{delivery.labels.BackToQuote}}</button>
+                <button class="btn btn-success" style="margin-left: 1em;" ui-sref="myquote.review">{{delivery.labels.ReviewQuote}} <i class="fa fa-angle-right" aria-hidden="true"></i></button>
             </div>
             <div class="row">
-                <div class="col-sm-6">
-                    <br><br><br>
-                </div>
-                <div calss="col-sm-6">
-                    <p><i>Deliveries will be prepared for shipping based on your standard delivery instructions.</i></p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <br><br><br>
-                </div>
-                <div calss="col-sm-6">
-                    <p><i>Lead time for all orders will be based on the longest lead time from the list of spares requested.</i></p>
+                <div class="col-md-8 pull-right">
+                    <br />
+                    <br />
+                    <p style="font-weight:bold; margin-left:-4em;" ng-bind-html="delivery.labels.DeliveryInfo"></p>
+                        <p style="font-style:italic; margin-left:-4em;" ng-bind-html="delivery.labels.InfoText1"></p>
+                        <p style="font-style:italic; margin-left:-4em;" ng-if="delivery.labels.InfoText2" ng-bind-html="delivery.labels.InfoText2"></p>
+                        <p style="font-style:italic;margin-left:-4em;" ng-if="delivery.labels.InfoText3" ng-bind-html="delivery.labels.InfoText3"></p>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-9"></div>
-        <div class="col-md-3">
-            <button class="btn btn-success" ui-sref="myquote.review">{{delivery.labels.ReviewQuote}} <i class="fa fa-angle-right" aria-hidden="true"></i></button>
-            <br><br>
-            <button class="btn btn-primary" ui-sref="myquote.detail"><i class="fa fa-angle-left" aria-hidden="true"></i> {{delivery.labels.BackToQuote}}</button>
         </div>
     </div>
 </ui-view>

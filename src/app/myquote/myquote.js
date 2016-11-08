@@ -342,22 +342,28 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 	};
 
 	var labels = {
-		en: {
-			DefaultAddress: "Your default address",
-			AddNew: "Add a new address",
-			DeliveryType: "Delivery type",
-			DeliverHere: "Deliver to this address",
-			ReviewQuote: "Review quote",
-			BackToQuote: "Back to your quote"
-		},
-		fr: {
-			DefaultAddress: $sce.trustAsHtml("FR: Your default address"),
-			AddNew: $sce.trustAsHtml("FR: Add a new address"),
-			DeliveryType: $sce.trustAsHtml("FR: Delivery type"),
-			DeliverHere: $sce.trustAsHtml("FR: Deliver to this address"),
-			ReviewQuote: $sce.trustAsHtml("FR: Review quote"),
-			BackToQuote: $sce.trustAsHtml("FR: Back to your quote")
-		}
+	    en: {
+	        DefaultAddress: "Your default address",
+	        AddNew: "Add a new address",
+	        DeliveryInfo: "Delivery information",
+	        DeliverHere: "Deliver to this address",
+	        ReviewQuote: "Review quote",
+	        BackToQuote: "Back to your quote",
+	        InfoText1: "Delivery costs will be confirmed on order.",
+	        InfoText2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
+	        InfoText3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
+	    },
+	    fr: {
+	        DefaultAddress: $sce.trustAsHtml("FR: Your default address"),
+	        AddNew: $sce.trustAsHtml("FR: Add a new address"),
+	        DeliveryInfo: $sce.trustAsHtml("FR: Delivery information"),
+	        DeliverHere: $sce.trustAsHtml("FR: Deliver to this address"),
+	        ReviewQuote: $sce.trustAsHtml("FR: Review quote"),
+	        BackToQuote: $sce.trustAsHtml("FR: Back to your quote"),
+	        InfoText1: $sce.trustAsHtml("FR: Delivery costs will be confirmed on order."),
+	        InfoText2: $sce.trustAsHtml("FR: Deliveries will be prepared for shipping based on your standard delivery instructions."),
+	        InfoText3: $sce.trustAsHtml("FR: Lead time for all orders will be based on the longest lead time from the list of spares requested.")
+	    }
 	};
 
 	// We do this so we can display the addresses in a two column table.
@@ -439,17 +445,19 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.SubmittingToReview = false;
     vm.SubmittingWithPO = false;
     // TODO: Also add condition that user has Buyer role
-    var allowNextStatuses = [WeirService.OrderStatus.Draft.id, WeirService.OrderStatus.Saved.id, WeirService.OrderStatus.Shared.id];
+    var allowNextStatuses = [WeirService.OrderStatus.Draft.id, WeirService.OrderStatus.Saved.id];
     vm.ShowNextButton = (QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
-                            ((vm.Quote.xp.Status == WeirService.OrderStatus.Approved.id) ||
+                            ((vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) ||
                             (vm.Quote.FromUserID == QuoteShareService.Me.ID && (allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1)));
     var labels = {
         en: {
             Customer: "Customer; ",
             QuoteNumber: "Quote number ",
             QuoteName: "Quote name ",
-            Share: "Share quote",
             NextStep: "Next",
+            Submit: "Submit quote or order",
+            BackToReview: "Review quote",
+            BackToDelivery: "Back to delivery",
             SerialNum: "Serial number",
             TagNum: "Tag number (if available)",
             PartNum: "Part number",
@@ -482,8 +490,10 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             Customer: $sce.trustAsHtml("FR: Customer"),
             QuoteNumber: $sce.trustAsHtml("FR: Quote number"),
             QuoteName: $sce.trustAsHtml("Quote name "),
-            Share: $sce.trustAsHtml("FR: Share quote"),
             NextStep: $sce.trustAsHtml("FR: Next"),
+            Submit: $sce.trustAsHtml("Submit quote or order"),
+            BackToReview: $sce.trustAsHtml("Review quote"),
+            BackToDelivery: $sce.trustAsHtml("FR: Back to delivery"),
             SerialNum: $sce.trustAsHtml("FR: Serial number"),
             TagNum: $sce.trustAsHtml("FR: Tag number (if available)"),
             PartNum: $sce.trustAsHtml("FR: Part number"),
@@ -541,6 +551,16 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			.catch(function (ex) {
 			    $exceptionHandler(ex);
 			});
+    }
+
+    function _gotoDelivery() {
+        $state.go("myquote.delivery");
+    }
+    function _gotoSubmit() {
+        $state.go("myquote.submitquote");
+    }
+    function _gotoReview() {
+        $state.go("myquote.review");
     }
 
     function _proceedToSubmit() {
@@ -697,6 +717,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.cancelWeirComment = _cancelWeirComment;
     vm.submitForReview = _submitForReview;
     vm.submitOrder = _submitOrder;
+    vm.backToDelivery = _gotoDelivery;
+    vm.toSubmit = _gotoSubmit;
+    vm.toReview = _gotoReview;
 }
 
 function ModalInstanceController($uibModalInstance, $state, quote, labels) {

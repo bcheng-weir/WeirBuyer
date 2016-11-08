@@ -1,15 +1,17 @@
 <div>
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-6">
             <p><b><span ng-bind-html='review.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></b></p>
             <p><b><span ng-bind-html='review.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></b></p>
             <p><b><span ng-bind-html='review.labels.QuoteName'></span><span class="text-danger">{{myquote.Quote.xp.Name}}</span></b></p>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-6">
             <h2 class="pull-right">
-                <button ng-if="review.Step=='Review'" class="btn btn-success" ng-bind-html='review.labels.Share'></button>
-                <button ng-if="review.Step=='Submit' && !review.SubmittingToReview && !review.SubmittingWithPO && review.ShowNextButton" class="btn btn-success" ng-bind-html='review.labels.NextStep' ng-click="review.proceedToSubmit()"></button>
+                <button ng-if="review.Step=='Review'" class="btn btn-primary" ng-bind-html='review.labels.BackToDelivery' ng-click="review.backToDelivery()"></button>
+                <button ng-if="review.Step=='Review'" class="btn btn-success" ng-bind-html='review.labels.NextStep' ng-click="review.toSubmit()"></button>
+                <button ng-if="review.Step=='Submit' && !review.SubmittingToReview && !review.SubmittingWithPO" class="btn btn-primary" ng-bind-html='review.labels.BackToReview' ng-click="review.toReview()"></button>
+                <button ng-if="review.Step=='Submit' && !review.SubmittingToReview && !review.SubmittingWithPO && review.ShowNextButton" class="btn btn-success" ng-bind-html='review.labels.Submit' ng-click="review.proceedToSubmit()"></button>
             </h2>
         </div>
     </div>

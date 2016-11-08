@@ -1,14 +1,16 @@
 <article id="COMPONENT_MyQuote" class="container-fluid">
-	<ul class="nav nav-tabs nav-justified">
-		<li ng-click="myquote.Save()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && myquote.HasLineItems()">
-			<a href="#" ><i class="fa fa-floppy-o fa-3" aria-hidden="true"></i>&nbsp;&nbsp;<span ng-bind-html='myquote.labels.Save'></span></a>
-		</li>
-		<li ng-click="myquote.NoItemsMessage()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && !myquote.HasLineItems()">
-			<a href="#" ><i class="fa fa-floppy-o fa-3" aria-hidden="true"></i>&nbsp;&nbsp;<span ng-bind-html='myquote.labels.Save'></span></a>
-		</li>
-		<li ng-click="myquote.Download()"><a href="#" ng-bind-html='myquote.labels.Download'></a></li>
-		<li ng-click="myquote.Print()"><a href="#" ng-bind-html='myquote.labels.Print'></a></li>
-	</ul>
+    <div class="panel-default">
+        <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
+            <span style="margin-left:1em; float:right;" ng-click="myquote.Print()"><a href="#" ng-bind-html='myquote.labels.Print'></a></span>
+            <span style="margin-left:1em; float:right;" ng-click="myquote.Download()"><a href="#" ng-bind-html='myquote.labels.Download'></a></span>
+            <span style="margin-left:1em; float:right;" ng-click="myquote.NoItemsMessage()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && !myquote.HasLineItems()">
+                <a href="#"><i class="fa fa-floppy-o fa-3" aria-hidden="true"></i>&nbsp;&nbsp;<span ng-bind-html='myquote.labels.Save'></span></a>
+            </span>
+                <div style="display:inline-block; float:right;" ng-click="myquote.Save()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && myquote.HasLineItems()">
+                    <a href="#"><i class="fa fa-floppy-o fa-3" style="margin-left:0.8em;" aria-hidden="true"></i><br /><span ng-bind-html='myquote.labels.Save'></span></a>
+                </div>
+        </div>
+    </div>
 	<ol class="nav nav-tabs nav-justified">
 		<li role="presentation" ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
 		<!--<li role="presentation" ui-sref-active="active" ui-sref="myquote.delivery" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>-->

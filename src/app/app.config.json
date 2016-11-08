@@ -1,7 +1,8 @@
 {
 	"appname": "WeirBuyer",
 	"scope": "CategoryAdmin ProductAdmin ProductAssignmentAdmin FullAccess",
-	"clientid": "0CEE8276-C669-4D48-BBBB-3A1C082D140D",
+  "clientid": "0CEE8276-C669-4D48-BBBB-3A1C082D140D",
+  "xclientid": "290DD50B-0085-4AB4-94F4-57F315AB9BE0",
 	"buyerid": "weir",
 	"environment": "prod",
 	"anonymous": false,

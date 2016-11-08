@@ -2,9 +2,9 @@ angular.module('orderCloud')
 	.config(QuotesConfig)
 	.controller('QuotesCtrl', QuotesController)
 	.controller('SavedQuotesCtrl', SavedQuotesController)
-	.controller( 'SharedQuotesCtrl', SharedQuotesController )
-	.controller( 'ApprovedQuotesCtrl', ApprovedQuotesController )
-	.controller( 'RejectedQuotesCtrl', RejectedQuotesController )
+	.controller('InReviewQuotesCtrl', InReviewQuotesController)
+	.controller( 'ConfirmedQuotesCtrl', ConfirmedQuotesController )
+	.controller( 'RevisedQuotesCtrl', RevisedQuotesController )
 ;
 
 function QuotesConfig($stateProvider, buyerid) {
@@ -32,7 +32,7 @@ function QuotesConfig($stateProvider, buyerid) {
 			resolve: {
 				Quotes: function(WeirService) {
 					// return [];
-					return WeirService.FindQuotes([WeirService.OrderStatus.Saved, WeirService.OrderStatus.Rejected], false);
+					return WeirService.FindQuotes([WeirService.OrderStatus.Saved], false);
 				},
                 CurrentOrderId: function(CurrentOrder) {
 					return "";
@@ -40,36 +40,36 @@ function QuotesConfig($stateProvider, buyerid) {
 				}
 			}
 		})
-		.state( 'quotes.shared', {
-			url: '/shared',
-			templateUrl: 'quotes/templates/quotes.shared.tpl.html',
-			controller: 'SharedQuotesCtrl',
-			controllerAs: 'shared',
+		.state( 'quotes.inreview', {
+			url: '/inreview',
+			templateUrl: 'quotes/templates/quotes.inreview.tpl.html',
+			controller: 'InReviewQuotesCtrl',
+			controllerAs: 'inreview',
 			resolve: {
 				Quotes: function(WeirService) {
-					return WeirService.FindQuotes([WeirService.OrderStatus.Shared], true);
+					return WeirService.FindQuotes([WeirService.OrderStatus.Submitted], true);
 				}
 			}
 		})
-		.state( 'quotes.rejected', {
-			url: '/rejected',
-		        templateUrl: 'quotes/templates/quotes.rejected.tpl.html',
-			controller: 'RejectedQuotesCtrl',
-			controllerAs: 'rejected',
+		.state( 'quotes.revised', {
+			url: '/revised',
+		        templateUrl: 'quotes/templates/quotes.revised.tpl.html',
+			controller: 'RevisedQuotesCtrl',
+			controllerAs: 'revised',
 			resolve: {
 				Quotes: function(WeirService) {
-					return WeirService.FindQuotes([WeirService.OrderStatus.Rejected]);
+				    return WeirService.FindQuotes([WeirService.OrderStatus.RevisedQuote]);
 				}
 			}
 		})
-		.state( 'quotes.approved', {
-			url: '/approved',
-			templateUrl: 'quotes/templates/quotes.approved.tpl.html',
-			controller: 'ApprovedQuotesCtrl',
-			controllerAs: 'approved',
+		.state( 'quotes.confirmed', {
+			url: '/confirmed',
+			templateUrl: 'quotes/templates/quotes.confirmed.tpl.html',
+			controller: 'ConfirmedQuotesCtrl',
+			controllerAs: 'confirmed',
 			resolve: {
 				Quotes: function(WeirService) {
-					return WeirService.FindQuotes([WeirService.OrderStatus.Approved]);
+				    return WeirService.FindQuotes([WeirService.OrderStatus.ConfirmedQuote]);
 				}
 			}
 		})
@@ -91,19 +91,18 @@ function QuotesController($sce, $state, WeirService, Customer, MyOrg) {
 	var labels = {
 		en: {
 			Saved: "Saved",
-			Shared: "Shared",
-			Approved: "Approved",
-			Rejected: "Rejected"
+			InReview: "Quotes submitted for review",
+			Revised: "Revised Quotes",
+			Confirmed: "Confirmed Quotes"
 		},
 		fr: {
-			Saved: "Saved",
-			Shared: "Shared",
-			Approved: "Approved",
-			Rejected: "Rejected"
+		    Saved: $sce.trustAsHtml("Sauv&eacute;"),
+		    InReview: "**Cotation soumis pour examen",
+		    Revised: $sce.trustAsHtml("**Cotation r&eacute;vis&eacute;es"),
+		    Confirmed: $sce.trustAsHtml("Cotation confirm&eacute;es"),
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
-
 }
 
 function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrder, Quotes, CurrentOrderId) {
@@ -136,16 +135,16 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
 		},
 		fr: {
-			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " saved Quote" +  (Quotes.length == 0 ? "" : "s")),
-		    QuoteNum: $sce.trustAsHtml("FR-Weir Quote number"),
-			QuoteName: $sce.trustAsHtml("FR-Quote Name"),
-		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
-            Total: $sce.trustAsHtml("FR-Total"),
-            Customer: $sce.trustAsHtml("FR-Customer"),
-            Status: $sce.trustAsHtml("FR-Status"),
-            ValidTo: $sce.trustAsHtml("FR-Valid until"),
-		    OwnProduct: $sce.trustAsHtml("FR: Own product"),
-		    ReplaceCartMessage: "FR: Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
+		    Header: $sce.trustAsHtml(Quotes.length.toString() + " cotation(s) sauv&eacute;e(s)"),
+		    QuoteNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de cotation chez WEIR"),
+		    QuoteName: $sce.trustAsHtml("Nom de la cotation"),
+			QuoteRef: $sce.trustAsHtml("Votre R&eacute;f&eacute;rence de cotation"),
+            Total: $sce.trustAsHtml("Total"),
+            Customer: $sce.trustAsHtml("Client"),
+            Status: $sce.trustAsHtml("Statut"),
+            ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
+            OwnProduct: $sce.trustAsHtml("Propre Produit"),
+            ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -153,13 +152,13 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
 }
 
 
-function SharedQuotesController(WeirService, $state, $sce, Quotes ) {
+function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 	var vm = this;
 	vm.Quotes = Quotes;
 	
 	var labels = {
 		en: {
-		    Header: Quotes.length.toString() + " shared Quote" +  (Quotes.length == 1 ? "" : "s"),
+		    Header: Quotes.length.toString() + " Quote" +  (Quotes.length == 1 ? "" : "s under review"),
 		    QuoteNum: "Weir Quote number",
 		    QuoteRef: "Your Quote ref;",
             Total: "Total",
@@ -170,22 +169,23 @@ function SharedQuotesController(WeirService, $state, $sce, Quotes ) {
             ValidTo: "Valid until"
 		},
 		fr: {
-			Header: $sce.trustAsHtml("FR: " + Quotes.length.toString() + " shared Quote" +  (Quotes.length == 0 ? "" : "s")),
-		    QuoteNum: $sce.trustAsHtml("FR-Weir Quote number"),
-		    QuoteRef: $sce.trustAsHtml("FR-Your Quote ref;"),
-            Total: $sce.trustAsHtml("FR-Total"),
-            Customer: $sce.trustAsHtml("FR-Customer"),
-		    OwnProduct: $sce.trustAsHtml("FR: Own product"),
-            Approver: $sce.trustAsHtml("FR-Approver"),
-            Status: $sce.trustAsHtml("FR-Status"),
-            ValidTo: $sce.trustAsHtml("FR-Valid until")
-		}
+		    Header: $sce.trustAsHtml(Quotes.length.toString() + " cotation(s) dans l'examen"),
+		    QuoteNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de cotation chez WEIR"),
+		    QuoteRef: $sce.trustAsHtml("Votre R&eacute;f&eacute;rence de cotation"),
+		    Total: $sce.trustAsHtml("Total"),
+		    Customer: $sce.trustAsHtml("Client"),
+		    OwnProduct: $sce.trustAsHtml("Propre Produit"),
+		    Approver: $sce.trustAsHtml("Approuv&eacute;"),
+            Status: $sce.trustAsHtml("Statut"),
+            ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;")
+	
+	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
 
-function RejectedQuotesController(WeirService, $state, $sce, Quotes ) {
+function RevisedQuotesController(WeirService, $state, $sce, Quotes ) {
 	var vm = this;
 	vm.Quotes = Quotes;
 	
@@ -198,7 +198,7 @@ function RejectedQuotesController(WeirService, $state, $sce, Quotes ) {
 }
 
 
-function ApprovedQuotesController(WeirService, $state, $sce, Quotes ) {
+function ConfirmedQuotesController(WeirService, $state, $sce, Quotes ) {
 	var vm = this;
 	vm.Quotes = Quotes;
 	

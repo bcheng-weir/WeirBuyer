@@ -14,26 +14,26 @@
         <div class="collapse navbar-collapse" id="BASE_TOP_COLLAPSE">
             <ul class="nav navbar-nav navbar-right">
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-                    <a href="#" uib-dropdown-toggle role="button">Your quotes <span class="caret"></span></a>
+		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
                     <ul uib-dropdown-menu>
                         <li><a href="" ui-sref="myquote.detail">Current</a></li>
-                        <li><a href="" ui-sref="quotes.saved">Saved</a></li>
-                        <li><a href="" ui-sref="quotes.shared">Shared</a></li>
-                        <li><a href="" ui-sref="quotes.rejected">Rejected</a></li>
-                        <li><a href="" ui-sref="quotes.approved">Approved</a></li>
+                        <li><a href="" ui-sref="quotes.saved" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
+                        <li><a href="" ui-sref="quotes.inreview" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
+                        <li><a href="" ui-sref="quotes.revised" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
+                        <li><a href="" ui-sref="quotes.confirmed" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
                     </ul>
                 </li>
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-                    <a href="#" uib-dropdown-toggle role="button">Your orders <span class="caret"></span></a>
+		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourOrders"></span><span class="caret"></span></a>
                     <ul uib-dropdown-menu>
                         <li>TBD</li>
                     </ul>
                 </li>
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-		<a href="#" uib-dropdown-toggle role="button"><!--<i class="fa fa-user"></i>--> Your Account <span class="caret"></span></a>
+		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
                     <ul uib-dropdown-menu>
                         <li class="dropdown-header">{{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</li>
-                        <li><a href="" ui-sref="account">Account</a></li>
+                        <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
                         <li class="divider"></li>
                         <li><a ng-click="application.logout()">Logout</a></li>
                     </ul>
@@ -65,11 +65,8 @@
 			<li>
 				<a ui-sref="brands({brandId:2})">About Hopkinsons</a>
 			</li>
-			<li>
-				<a href="#">Quick Quote </a>
-			</li>
 			<li class="active">
-			<a href="#" ng-click="base.sendToSearch()">Search<i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
+			<a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
 			</li>
 		</ul>
 	</div>

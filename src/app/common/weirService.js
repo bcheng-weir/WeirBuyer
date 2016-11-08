@@ -128,13 +128,31 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 cookieTitle: "Cookie Policy",
                 termsTitle: "Terms of Use",
                 contactTitle: "Contact",
+                YourQuotes: "Your Quotes",
+                YourOrders: "Your Orders",
+                YourAccount: "Your Account",
+                Account: "Account",
+                Search: "Search",
+                SavedQuotes: "Saved",
+                ReviewQuotes: "Quotes submitted for review",
+                RevisedQuotes: "Revised Quotes",
+                ConfirmedQuotes: "Confirmed Quotes",
                 language: true
             },
             fr: {
-                privacyTitle: "Déclaration de confidentialité",
+                privacyTitle: $sce.trustAsHtml("D&eacute;claration de confidentialit&eacute;"),
                 cookieTitle: "Politique de Cookie",
                 termsTitle: "Conditions d'utilisation",
                 contactTitle: "Contact",
+                YourQuotes: "Votre Cotations",
+                YourOrders: "**Votre commandes",
+                YourAccount: "**Votre compte",
+                Account: "Compte",
+                Search: "Rechercher",
+                SavedQuotes: $sce.trustAsHtml("Sauv&eacute;"),
+                ReviewQuotes: "**Cotation soumis pour examen",
+                RevisedQuotes: $sce.trustAsHtml("**Cotation r&eacute;vis&eacute;es"),
+                ConfirmedQuotes: $sce.trustAsHtml("Cotation confirm&eacute;es"),
                 language: false
             }
         };

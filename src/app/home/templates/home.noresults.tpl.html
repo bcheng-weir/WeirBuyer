@@ -1,33 +1,36 @@
 <article>
     <div class="row">
         <div class="col-md-8">
-            <p><h3>Can't find what you are looking for?</h3></p>
+            <h4 ng-bind-html="noResult.labels.CantFindHeader"></h4>
             <br />
-            <p style="font-style: italic;">If you can't find what you are looking for please try searching again <br /><br /> Alternatively please complete the simple form below and we will get in touch with you.</p>
+	    <p style="font-style: italic;">
+                <span ng-bind-html="noResult.labels.CantFindText1"></span>
+		<br /><br />
+                <span ng-bind-html="noResult.labels.CantFindText2"></span>
+            </p>
         <form>
             <div class="form-group">
-                <label for="numberOfItem"><h3>Please provide Serial number, or part number or Tag number</h3></label>
+                <label for="numberOfItem"><h4 ng-bind-html="noResult.labels.SerNumPrompt"></h4></label>
                 <input type="text" class="form-control" id="numberOfItem">
             </div>
             <div class="form-group">
-                <label for="detailsOfSpare"><h3>Please provide details of the spares you require a quote for.</h3></label>
+                <label for="detailsOfSpare"><h4 ng-bind-html="noResult.labels.SparesPrompt"></h4></label>
                 <input type="text" class="form-control" id="detailsOfSpare">
             </div>
             <div class="pull-right">
-                <button type="submit" class="btn btn-default" style="background-color: blue; color: white; height: 15%; width: 100%" ng-click="noResult.submitEnquiry()">Submit Enquiry</button>
+                <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%"
+			ng-click="noResult.submitEnquiry()" ng-bind-html="noResult.labels.Submit"></button>
             </div>
         </form>
 
     </div>
         <div class="col-md-4" style="padding: 0px 5px 0px 60px;">
             <div>
-                <button type="submit" class="btn btn-default" style="background-color: blue; color: white; height: 15%; width: 100%;" ng-click="noResult.searchAgain()">Search again</button>
+                <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;"
+			ng-click="noResult.searchAgain()" ng-bind-html="noResult.labels.SearchAgain"></button>
             </div>
             <h2 class="pull-right">
-
-
-                <p><h3>Your contact</h3></p>
-
+                <p><h3 ng-html-bind="noResults.labels.YourContact"></h3></p>
                 <p>
                     Sarasin-RSBD <br />
                     ZI Du Bois Rigault<br />
@@ -37,8 +40,6 @@
                     T: +33 (0)321 79 54 50<br />
                     F: +33 (0)321 28 62 00<br />
                 </p>
-
-
             </h2>
         </div>
     </div>

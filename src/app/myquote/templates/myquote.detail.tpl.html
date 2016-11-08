@@ -1,14 +1,16 @@
 <div>
    <div class="row">
         <div class="col-md-9">
-            <p><b><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></b></p>
-            <p><b><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></b></p>
-            <p><b><span ng-bind-html='detail.labels.QuoteName'></span></b><input type='text' maxlength="20" ng-model='myquote.Quote.xp.Name' /></p>
+            <p><b><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></b></p>
+            <p><b><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></b></p>
+            <p><b><span ng-bind-html='detail.labels.QuoteName'></span></b><input type='text' style="margin-left:1em;" maxlength="20" ng-model='myquote.Quote.xp.Name' /></p>
+	    <p><b><span ng-bind-html='detail.labels.RefNumHeader'></span></b><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></p>
         </div>
 
         <div class="col-md-3">
             <h2 class="pull-right">
                 <button class="btn btn-default" ui-sref="home" ng-bind-html='detail.labels.AddNew'></button>
+                <button class="btn btn-success" ng-click="myquote.GotoDelivery()" ng-bind-html='detail.labels.DeliveryOptions'></button>
             </h2>
         </div>
     </div>
@@ -72,12 +74,9 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h3><span ng-bind-html='detail.labels.RefNumHeader'></span></h3>
-            <p><input type='text' maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></span></p>
             <h3><span ng-bind-html='detail.labels.CommentsHeader'></span></h3>
             <p><span ng-bind-html='detail.labels.CommentsInstr'></span></p>
             <p><textarea rows='4' cols='40' maxlength="1000" ng-model='myquote.Quote.Comments'></textarea></p>
-            <p><button class="btn btn-success" ng-click="myquote.GotoDelivery()" ng-bind-html='detail.labels.DeliveryOptions'></button></p>
         </div>
     </div>
 </div>

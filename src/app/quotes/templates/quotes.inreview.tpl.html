@@ -1,21 +1,21 @@
 <ui-view>
    <div class="row">
         <div class="col-md-12">
-            <h3><span ng-bind-html='shared.labels.Header'></h3>
+            <h3><span ng-bind-html='inreview.labels.Header'></h3>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
                 <tr>
-		    <th ng-bind-html='shared.labels.QuoteNum'></th>
-                    <th ng-bind-html='shared.labels.QuoteRef'></th>
-                    <th ng-bind-html='shared.labels.Total'></th>
-                    <th ng-bind-html='shared.labels.Customer'>t</th>
-                    <th ng-bind-html='shared.labels.Approver'>t</th>
-                    <th ng-bind-html='shared.labels.Status'></th>
-                    <th ng-bind-html='shared.labels.ValidTo'></th>
+		    <th ng-bind-html='inreview.labels.QuoteNum'></th>
+                    <th ng-bind-html='inreview.labels.QuoteRef'></th>
+                    <th ng-bind-html='inreview.labels.Total'></th>
+                    <th ng-bind-html='inreview.labels.Customer'>t</th>
+                    <th ng-bind-html='inreview.labels.Approver'>t</th>
+                    <th ng-bind-html='inreview.labels.Status'></th>
+                    <th ng-bind-html='inreview.labels.ValidTo'></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="quote in shared.Quotes">
+                <tr ng-repeat="quote in inreview.Quotes">
                     <td class="text-danger">{{quote.ID}}</td>
                     <td>{{quote.xp.RefNum}}</td>
 		    <td ng-switch on="quote.xp.Currency">

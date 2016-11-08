@@ -111,8 +111,7 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 	vm.ShippingAddress = ShippingAddress;
 	vm.SaveableStatuses = [
 		WeirService.OrderStatus.Draft.id,
-		WeirService.OrderStatus.Saved.id,
-		WeirService.OrderStatus.Shared.id
+		WeirService.OrderStatus.Saved.id
 	];
 	QuoteShareService.Quote = Quote;
 	QuoteShareService.Me = Me;
@@ -219,20 +218,20 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 			SaveFooter: "View Your Quotes"
 		},
 		fr: {
-			YourQuote: $sce.trustAsHtml("FR: Your Quote"),
-			DeliveryOptions: $sce.trustAsHtml("FR: Delivert Options"),
-			ReviewQuote: $sce.trustAsHtml("FR: Review Quote"),
+		    YourQuote: $sce.trustAsHtml("Votre Cotation"),
+		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
+		    ReviewQuote: $sce.trustAsHtml("R&eacute;viser votre cotation"),
 			SubmitQuote: $sce.trustAsHtml("FR: Submit Quote or Order"),
-			Save: $sce.trustAsHtml("FR: Save"),
-			Share: $sce.trustAsHtml("FR: Share"),
-			Download: $sce.trustAsHtml("FR: Download"),
-			Print: $sce.trustAsHtml("FR: Print"),
-            SaveSuccessTitle: $sce.trustAsHtml("FR: Quote Saved"),
-            SaveSuccessMessage: $sce.trustAsHtml("FR: Your changes have been saved"),
-			NoItemsError: $sce.trustAsHtml("FR: Please add parts to quote before saving"),
-			CannotContinueNoItems: $sce.trustAsHtml("FR: Please add parts to quote before continuing"),
+			Save: $sce.trustAsHtml("Sauvegarder"),
+			Share: $sce.trustAsHtml("Partager"),
+			Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
+			Print: $sce.trustAsHtml("Imprimer"),
+			SaveSuccessTitle: $sce.trustAsHtml("Cotation enregistr&eacute;e"),
+			SaveSuccessMessage: $sce.trustAsHtml("Vos modifications ont &eacute;t&eacute; enregistr&eacute;es"),
+			NoItemsError: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de sauvegarder"),
+			CannotContinueNoItems: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de continuer"),
 			SaveBody: $sce.trustAsHtml("FR: Quote number " + vm.Quote.ID + " has been saved to Your Quotes."),
-			SaveFooter: $sce.trustAsHtml("FR: View Your Quotes")
+			SaveFooter: $sce.trustAsHtml("**Voir vos cotations")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -253,7 +252,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 		en: {
             Customer: "Customer; ",
             QuoteNumber: "Quote number ",
-            QuoteName: "Quote name ",
+            QuoteName: "Add your quote name ",
             AddNew: "Add new items",
             SerialNum: "Serial number",
             TagNum: "Tag number (if available)",
@@ -266,7 +265,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             Total: "Total",
             UploadHeader: "Upload your service or operating condition document",
             UploadInstruct: "Please upload any supporting documentation you have for valves  or spares requested so we can ensure use these for reference for this quote.",
-            RefNumHeader: "Add your reference number for this quote",
+            RefNumHeader: "Add your reference number",
             CommentsHeader: "Your comments or instructions",
             CommentsInstr: "Please add any specific comments or instructions for this quote",
 		    DeliveryOptions: "Delivery Options",
@@ -274,26 +273,26 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			DragAndDrop: "Drag and drop files here to upload"
 		},
 		fr: {
-			Customer: $sce.trustAsHtml("FR: Customer"),
-            QuoteNumber: $sce.trustAsHtml("FR: Quote number"),
-            QuoteName: $sce.trustAsHtml("Quote name "),
-            AddNew: $sce.trustAsHtml("FR: Add new items"),
-            SerialNum: $sce.trustAsHtml("FR: Serial number"),
-            TagNum: $sce.trustAsHtml("FR: Tag number (if available)"),
-            PartNum: $sce.trustAsHtml("FR: Part number"),
-            PartDesc: $sce.trustAsHtml("FR: Description of part"),
-            RecRepl: $sce.trustAsHtml("FR: Recommended replacement"),
-            LeadTime: $sce.trustAsHtml("FR: Lead time"),
-            PricePer: $sce.trustAsHtml("FR: Price per item or set"),
-            Quantity: $sce.trustAsHtml("FR: Quantity"),
-            Total: $sce.trustAsHtml("FR: Total"),
-            UploadHeader: $sce.trustAsHtml("FR: Upload your service or operating condition document"),
-            UploadInstruct: $sce.trustAsHtml("FR: Please upload any supporting documentation you have for valves  or spares requested so we can ensure use these for reference for this quote."),
-            RefNumHeader: $sce.trustAsHtml("FR: Add your reference number for this quote"),
-            CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
-            CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
-		    DeliveryOptions: $sce.trustAsHtml("FR: Delivery Options"),
-			Update: $sce.trustAsHtml("FR: Mettre à jour"),
+			Customer: $sce.trustAsHtml("Client"),
+			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation"),
+			QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+			AddNew: $sce.trustAsHtml("Ajouter un item"),
+			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
+			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
+			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
+			PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
+			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
+			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
+            Total: $sce.trustAsHtml("Total"),
+            UploadHeader: $sce.trustAsHtml("T&eacute;l&eacute;charger vos documents concernant vos conditions de services"),
+            UploadInstruct: $sce.trustAsHtml("Veuillez t&eacute;l&eacute;charger tout type de document concernant vos soupapes ou vos pi&egrave;ces de rechanges. De ce fait, nous pouvons les utiliser comme r&eacute;f&eacute;rence pour cette cotation."),
+            RefNumHeader: $sce.trustAsHtml("Ajouter votre numéro de r&eacute;f&eacute;rence"),
+            CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
+            CommentsInstr: $sce.trustAsHtml("Veuillez ajouter tout commentaire ou instructions sp&eacute;cifiques pour cette cotation"),
+            DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
+			Update: $sce.trustAsHtml("Mettre &agrave; jour"),
 			DragAndDrop: $sce.trustAsHtml("FR: Drag and drop files here to upload")
 		}
 	};

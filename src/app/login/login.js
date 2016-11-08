@@ -122,15 +122,15 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
             LoginLabel: "S'identifier",
             UsernameLabel: "Nom d'utilisateur",
             PasswordLabel: "Mot de passe",
-            BackToLoginLabel: "Retour connexion",
-            ForgotPasswordLabel: "Mot de passe oublié",
+            BackToLoginLabel: "Retourner &agrave; l'identification",
+            ForgotPasswordLabel: "Mot de passe oubli&eacute;",
             NewPasswordLabel: "Nouveau mot de passe",
-            ConfirmPasswordLabel: "Confirmez le mot de passe",
-            ResetPasswordMessage: "Votre mot de passe a été réinitialisé.",
-            ForgotMessageLabel: "Mot de passe oublié email a été envoyé. S'il vous plaît vérifier votre e-mail afin de réinitialiser votre mot de passe.",
-            ResetPasswordLabel: "Réinitialiser le mot de passe",
+            ConfirmPasswordLabel: "Confirmer votre mot de passe",
+            ResetPasswordMessage: "Votre mot de passe a &eacute;t&eacute; chang&eacute;",
+            ForgotMessageLabel: "Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe.",
+            ResetPasswordLabel: "Changer de mot de passe",
             SubmitLabel: "Soumettre",
-            BadUsernamePassword: "Nous ne sommes pas en mesure de reconnaître l'e-mail ou mot de passe entré. S'il vous plaît vérifier et entrer de nouveau."
+            BadUsernamePassword: "Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de v&eacute;rifier vos identifiant, puis veuillez r&eacute;essayer."
         }
     };
     var navlabels = WeirService.navBarLabels();
@@ -148,9 +148,16 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
         OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
                 vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : angular.noop();
-                OrderCloud.BuyerID.Set(buyerid);
+                // OrderCloud.BuyerID.Set(buyerid);
                 OrderCloud.Auth.SetToken(data['access_token']);
-                $state.go('home.serial');
+                OrderCloud.Buyers.List().then(function (buyers) {
+                    if (buyers && buyers.Items.length > 0) {
+                        var buyer = buyers.Items[0];
+                        OrderCloud.BuyerID.Set(buyer.ID);
+                        $state.go('home');
+                        // $state.go('home.serial');
+                    }
+                }); 
             })
             .catch(function(ex) {
                 if(ex.status == 400) {

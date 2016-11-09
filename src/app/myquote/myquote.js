@@ -101,7 +101,13 @@ function MyQuoteConfig($stateProvider, buyerid) {
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
-	;
+		.state('myquote.readonly', {
+		    url: '/readonly',
+		    templateUrl: 'myquote/templates/myquote.readonly.tpl.html',
+		    controller: 'ReviewQuoteCtrl',
+		    controllerAs: 'review'
+		})
+    ;
 }
 
 function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService) {
@@ -251,7 +257,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	var labels = {
 		en: {
             Customer: "Customer; ",
-            QuoteNumber: "Quote number ",
+            QuoteNumber: "Quote number; ",
             QuoteName: "Add your quote name ",
             AddNew: "Add new items",
             SerialNum: "Serial number",
@@ -288,7 +294,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             Total: $sce.trustAsHtml("Total"),
             UploadHeader: $sce.trustAsHtml("T&eacute;l&eacute;charger vos documents concernant vos conditions de services"),
             UploadInstruct: $sce.trustAsHtml("Veuillez t&eacute;l&eacute;charger tout type de document concernant vos soupapes ou vos pi&egrave;ces de rechanges. De ce fait, nous pouvons les utiliser comme r&eacute;f&eacute;rence pour cette cotation."),
-            RefNumHeader: $sce.trustAsHtml("Ajouter votre numéro de r&eacute;f&eacute;rence"),
+            RefNumHeader: $sce.trustAsHtml("Ajouter votre num&eacute;ro de r&eacute;f&eacute;rence"),
             CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
             CommentsInstr: $sce.trustAsHtml("Veuillez ajouter tout commentaire ou instructions sp&eacute;cifiques pour cette cotation"),
             DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
@@ -452,8 +458,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     var labels = {
         en: {
             Customer: "Customer; ",
-            QuoteNumber: "Quote number ",
-            QuoteName: "Quote name ",
+            QuoteNumber: "Quote number; ",
+            QuoteName: "Quote name; ",
             NextStep: "Next",
             Submit: "Submit quote or order",
             BackToReview: "Review quote",
@@ -468,8 +474,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             Quantity: "Quantity",
             Total: "Total",
             YourAttachments: "Your attachments",
-            YourReference: "Your Reference No;",
-            RefNumHeader: "Add your reference number for this quote",
+            YourReference: "Your Reference No; ",
             CommentsHeader: "Your comments or instructions",
             CommentsInstr: "Please add any specific comments or instructions for this quote",
             DeliveryOptions: "Delivery Options",
@@ -487,32 +492,31 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             SubmitOrder: "Submit Order"
         },
         fr: {
-            Customer: $sce.trustAsHtml("FR: Customer"),
-            QuoteNumber: $sce.trustAsHtml("FR: Quote number"),
-            QuoteName: $sce.trustAsHtml("Quote name "),
+            Customer: $sce.trustAsHtml("Client "),
+            QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
+            QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
             NextStep: $sce.trustAsHtml("FR: Next"),
             Submit: $sce.trustAsHtml("Submit quote or order"),
             BackToReview: $sce.trustAsHtml("Review quote"),
             BackToDelivery: $sce.trustAsHtml("FR: Back to delivery"),
-            SerialNum: $sce.trustAsHtml("FR: Serial number"),
-            TagNum: $sce.trustAsHtml("FR: Tag number (if available)"),
-            PartNum: $sce.trustAsHtml("FR: Part number"),
-            PartDesc: $sce.trustAsHtml("FR: Description of part"),
-            RecRepl: $sce.trustAsHtml("FR: Recommended replacement"),
-            LeadTime: $sce.trustAsHtml("FR: Lead time"),
-            PricePer: $sce.trustAsHtml("FR: Price per item or set"),
-            Quantity: $sce.trustAsHtml("FR: Quantity"),
-            Total: $sce.trustAsHtml("FR: Total"),
+            SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
+            TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
+            PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
+            PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
+            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
+            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+            PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
+            Quantity: $sce.trustAsHtml("Quantit&eacute;"),
+            Total: $sce.trustAsHtml("Total"),
             YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
-            YourReference: $sce.trustAsHtml("FR: Your Reference No;"),
-            RefNumHeader: $sce.trustAsHtml("FR: Add your reference number for this quote"),
+            YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
             CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
             CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
-            DeliveryOptions: $sce.trustAsHtml("FR: Delivery Options"),
+            DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
             DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
             ChangeAddr: $sce.trustAsHtml("FR: Change address"),
             Update: $sce.trustAsHtml("FR: Mettre à jour"),
-            WeirComment: $sce.trustAsHtml("FR: Comment"),
+            WeirComment: $sce.trustAsHtml("** Commentaires"),
             AddComment: $sce.trustAsHtml("FR: Add"),
             CancelComment: $sce.trustAsHtml("FR: Cancel"),
             SubmitForReview: $sce.trustAsHtml("FR: Submit quote for review"),

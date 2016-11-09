@@ -1,12 +1,13 @@
 <div>
-    <div class="row">
-        <div class="col-md-6">
-            <p><b><span ng-bind-html='review.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></b></p>
-            <p><b><span ng-bind-html='review.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></b></p>
-            <p><b><span ng-bind-html='review.labels.QuoteName'></span><span class="text-danger">{{myquote.Quote.xp.Name}}</span></b></p>
+    <div class="row" style="padding-top:20px;">
+        <div class="col-md-8">
+            <h3><span ng-bind-html='review.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></h3>
+            <h3><span ng-bind-html='review.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h3>
+            <h3><span ng-bind-html='review.labels.QuoteName'></span><span class="text-danger">{{myquote.Quote.xp.Name}}</span></h3>
+            <h3><span ng-bind-html='review.labels.YourReference'></span><span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></h3>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h2 class="pull-right">
                 <button ng-if="review.Step=='Review'" class="btn btn-primary" ng-bind-html='review.labels.BackToDelivery' ng-click="review.backToDelivery()"></button>
                 <button ng-if="review.Step=='Review'" class="btn btn-success" ng-bind-html='review.labels.NextStep' ng-click="review.toSubmit()"></button>
@@ -19,16 +20,16 @@
     <div class="row">
         <div class="col-md-12">
             <table class="table table-bordered oc-table-responsive weir-results-table">
-                <thead>
+                <thead class="header-cell">
                     <tr>
-                        <th ng-bind-html='review.labels.SerialNum'></th>
-                        <th ng-bind-html='review.labels.TagNum'></th>
-                        <th ng-bind-html='review.labels.PartNum'></th>
-                        <th ng-bind-html='review.labels.PartDesc'></th>
-                        <th ng-bind-html='review.labels.RecRepl'></th>
-                        <th ng-bind-html='review.labels.LeadTime'></th>
-                        <th ng-bind-html='review.labels.PricePer'></th>
-                        <th ng-bind-html='review.labels.Quantity'></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.SerialNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.TagNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.PartNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.PartDesc'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.RecRepl'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.LeadTime'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.PricePer'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.Quantity'></h4></th>
                         <th ng-if="review.Step=='Review'" class="button-th"></th>
                     </tr>
                 </thead>
@@ -53,8 +54,8 @@
                     </tr>
                     <tr ng-if="review.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
-                        <td ng-bind-html='review.labels.Total'></td>
-                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right'>
+                        <td style="font-weight: bold;" ng-bind-html='review.labels.Total'></td>
+                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
                             <span ng-switch-when="EUR">{{myquote.Quote.Total | currency:'&euro; '}}</span>
                             <span ng-switch-when="GBP">{{myquote.Quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{myquote.Quote.Total | currency:'&#163; '}}</span>
@@ -67,8 +68,8 @@
 
     <div class="row" ng-if="!review.SubmittingToReview && !review.SubmittingWithPO">
         <div class="col-md-6">
-            <p><b><span ng-bind-html='review.labels.YourReference'></span><br>
-                <span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></b></p>
+            <!-- <p><b><span ng-bind-html='review.labels.YourReference'></span><br>
+                <span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></b></p> -->
 	    <p><b><span>{{review.labels.DeliveryAddress}}</span></b></p>
             <div ng-if="myquote.ShippingAddress.Country=='FR'">
                 {{myquote.ShippingAddress.CompanyName}}<br>

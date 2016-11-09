@@ -1,13 +1,13 @@
 <div>
    <div class="row" style="padding-top:20px;">
-        <div class="col-md-9">
+        <div class="col-md-8">
             <h3><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></h3>
             <h3><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h3>
             <h3><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' style="margin-left:1em;" maxlength="20" ng-model='myquote.Quote.xp.Name' /></h3>
 	        <h3><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h3>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4">
             <h2 class="pull-right">
                 <button class="btn btn-default" ui-sref="home" ng-bind-html='detail.labels.AddNew'></button>
                 <button class="btn btn-success" ng-click="myquote.GotoDelivery()" ng-bind-html='detail.labels.DeliveryOptions'></button>

@@ -3,8 +3,6 @@ angular.module('orderCloud')
 	.controller('QuotesCtrl', QuotesController)
 	.controller('SavedQuotesCtrl', SavedQuotesController)
 	.controller('InReviewQuotesCtrl', InReviewQuotesController)
-	.controller( 'ConfirmedQuotesCtrl', ConfirmedQuotesController )
-	.controller( 'RevisedQuotesCtrl', RevisedQuotesController )
 ;
 
 function QuotesConfig($stateProvider, buyerid) {
@@ -31,12 +29,10 @@ function QuotesConfig($stateProvider, buyerid) {
 			controllerAs: 'saved',
 			resolve: {
 				Quotes: function(WeirService) {
-					// return [];
 					return WeirService.FindQuotes([WeirService.OrderStatus.Saved], false);
 				},
                 CurrentOrderId: function(CurrentOrder) {
-					return "";
-					// return CurrentOrder.GetID();
+					return CurrentOrder.GetID();
 				}
 			}
 		})
@@ -53,23 +49,29 @@ function QuotesConfig($stateProvider, buyerid) {
 		})
 		.state( 'quotes.revised', {
 			url: '/revised',
-		        templateUrl: 'quotes/templates/quotes.revised.tpl.html',
-			controller: 'RevisedQuotesCtrl',
-			controllerAs: 'revised',
+		        templateUrl: 'quotes/templates/quotes.saved.tpl.html',
+		        controller: 'SavedQuotesCtrl',
+			controllerAs: 'saved',
 			resolve: {
 				Quotes: function(WeirService) {
 				    return WeirService.FindQuotes([WeirService.OrderStatus.RevisedQuote]);
+				},
+				CurrentOrderId: function (CurrentOrder) {
+				    return CurrentOrder.GetID();
 				}
 			}
 		})
 		.state( 'quotes.confirmed', {
 			url: '/confirmed',
-			templateUrl: 'quotes/templates/quotes.confirmed.tpl.html',
-			controller: 'ConfirmedQuotesCtrl',
-			controllerAs: 'confirmed',
+			templateUrl: 'quotes/templates/quotes.saved.tpl.html',
+			controller: 'SavedQuotesCtrl',
+			controllerAs: 'saved',
 			resolve: {
 				Quotes: function(WeirService) {
 				    return WeirService.FindQuotes([WeirService.OrderStatus.ConfirmedQuote]);
+				},
+				CurrentOrderId: function (CurrentOrder) {
+				    return CurrentOrder.GetID();
 				}
 			}
 		})
@@ -110,16 +112,24 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
 	vm.Quotes = Quotes;
 	vm.CurrentOrderId = CurrentOrderId;
 	
-	function _reviewQuote(quoteId) {
-	    var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
-        if (gotoReview) {
-			WeirService.SetQuoteAsCurrentOrder(quoteId)
-                .then(function() {
-	                $rootScope.$broadcast('SwitchCart');
-                    $state.go('myquote.detail');
-				});
-		}
-    }
+	function _reviewQuote(quoteId, status) {
+	    if (status == WeirService.OrderStatus.ConfirmedQuote.id) {
+	        $state.go('myquote.readonly', { quoteID: quoteId });
+	    } else {
+	        var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
+	        if (gotoReview) {
+	            WeirService.SetQuoteAsCurrentOrder(quoteId)
+                    .then(function () {
+                        $rootScope.$broadcast('SwitchCart');
+                        if (status == WeirService.OrderStatus.RevisedQuote) {
+                            $state.go('myquote.revised');
+                        } else {
+                            $state.go('myquote.detail');
+                        }
+                    });
+	        }
+	    }
+	}
 
 	var labels = {
 		en: {
@@ -131,7 +141,8 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
             Customer: "Customer",
 			Status: "Status",
             ValidTo: "Valid until",
-		    OwnProduct: "Own product",
+            OwnProduct: "Own product",
+            View: "View",
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
 		},
 		fr: {
@@ -144,9 +155,17 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
             Status: $sce.trustAsHtml("Statut"),
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
             OwnProduct: $sce.trustAsHtml("Propre Produit"),
+            View: $sce.trustAsHtml("FR: View"),
             ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?")
 		}
 	};
+	if ($state.is('quotes.revised')) {
+	    labels.en.Header = Quotes.length.toString() + " revised Quote" + (Quotes.length == 1 ? "" : "s");
+	    labels.fr.Header = "FR: " + Quotes.length.toString() + " revised Quote" + (Quotes.length == 1 ? "" : "s");
+	} else if ($state.is('quotes.confirmed')) {
+	    labels.en.Header = Quotes.length.toString() + " confirmed Quote" + (Quotes.length == 1 ? "" : "s");
+	    labels.fr.Header = "FR: " + Quotes.length.toString() + " confirmed Quote" + (Quotes.length == 1 ? "" : "s");
+	}
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.ReviewQuote = _reviewQuote;
 }
@@ -183,20 +202,6 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
-
-
-function RevisedQuotesController(WeirService, $state, $sce, Quotes ) {
-	var vm = this;
-	vm.Quotes = Quotes;
-	
-	var labels = {
-		en: {
-		},
-		fr: {
-		}
-	};
-}
-
 
 function ConfirmedQuotesController(WeirService, $state, $sce, Quotes ) {
 	var vm = this;

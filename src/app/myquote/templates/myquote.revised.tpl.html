@@ -1,0 +1,149 @@
+<div>
+    <div class="row" style="padding-top:20px; padding-bottom:20px;">
+        <div class="col-md-8">
+            <!-- <h3><span ng-bind-html='revised.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></h3> -->
+            <h3><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h3>
+            <h3><span ng-bind-html='revised.labels.QuoteName'></span><span class="text-danger">{{myquote.Quote.xp.Name}}</span></h3>
+            <h3><span ng-bind-html='revised.labels.YourReference'></span><span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></h3>
+            <h4><a href="#" ng-click="revised.gotoRevisions()" ng-bind-html="revised.labels.ViewRevisions"></a></h4>
+        </div>
+
+        <div class="col-md-4">
+            <h2 class="pull-right">
+                <button class="btn btn-primary" ng-bind-html='revised.labels.BackToQuotes' ng-click="revised.gotoQuotes()"></button>
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered oc-table-responsive weir-results-table">
+                <thead class="header-cell">
+                    <tr>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='revised.labels.SerialNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='revised.labels.TagNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='revised.labels.PartNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='revised.labels.PartDesc'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='revised.labels.RecRepl'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='revised.labels.LeadTime'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='revised.labels.PricePer'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='revised.labels.Quantity'></h4></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="line in revised.LineItems">
+                        <td>{{line.xp.SN}}</td>
+                        <td>{{line.xp.TagNumber}}</td>
+                        <td>{{line.Product.Name}}</td>
+                        <td>{{line.Product.Description}}</td>
+                        <td>{{line.Product.xp.ReplacementSchedule}}</td>
+                        <td>{{line.Product.xp.LeadTime}}</td>
+                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right'>
+                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
+                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
+                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
+                        </td>
+                        <td class="form-inline">
+                            <input  type="number" class="form-control" style="width:5em;" ng-model="line.Quantity" readonly />
+                        </td>
+                        <td ng-if="line.xp.OriginalQty && line.xp.OriginalQty == 0 && line.Quantity !=0"><button class="btn btn-xs btn-success" disabled ng-bind-html="revised.labels.New"></button></td>
+                        <td ng-if="line.xp.OriginalQty && line.xp.OriginalQty!=0 && line.Quantity != 0 && line.Quantity != line.xp.OriginalQty"><button class="btn btn-xs btn-warning" disabled ng-bind-html="revised.labels.Updated"></button></td>
+                        <td ng-if="line.xp.OriginalQty && line.xp.OriginalQty!=0 && line.Quantity == 0"><button class="btn btn-xs btn-danger" disabled ng-bind-html="revised.labels.Removed"></button></td>
+                    </tr>
+                    <tr ng-if="revised.LineItems.length > 0">
+                        <td class="button-th" colspan="5"></td>
+                        <td style="font-weight: bold;" ng-bind-html='revised.labels.Total'></td>
+                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
+                            <span ng-switch-when="EUR">{{myquote.Quote.Total | currency:'&euro; '}}</span>
+                            <span ng-switch-when="GBP">{{myquote.Quote.Total | currency:'&#163; '}}</span>
+                            <span ng-switch-default>{{myquote.Quote.Total | currency:'&#163; '}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row" ng-if="!revised.SubmittingToReview && !revised.SubmittingWithPO">
+        <div class="col-md-6">
+            <!-- <p><b><span ng-bind-html='revised.labels.YourReference'></span><br>
+                <span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></b></p> -->
+	    <p><b><span>{{revised.labels.DeliveryAddress}}</span></b></p>
+            <div ng-if="myquote.ShippingAddress.Country=='FR'">
+                {{myquote.ShippingAddress.CompanyName}}<br>
+                {{myquote.ShippingAddress.Street1}}<br>
+                <span ng-if="myquote.ShippingAddress.Street2">{{myquote.ShippingAddress.Street2}}<br></span>
+                {{myquote.ShippingAddress.Zip}} {{myquote.ShippingAddress.City}}<br>
+                {{revised.country(myquote.ShippingAddress.Country)}}
+            </div>
+            <div ng-if="myquote.ShippingAddress.Country=='GB'">
+                {{myquote.ShippingAddress.CompanyName}}<br>
+                {{myquote.ShippingAddress.Street1}}<br>
+                <span ng-if="myquote.ShippingAddress.Street2">{{myquote.ShippingAddress.Street2}}<br></span>
+                {{myquote.ShippingAddress.City}}<br>
+                {{myquote.ShippingAddress.Zip}}<br>
+                {{revised.country(myquote.ShippingAddress.Country)}}
+            </div>
+            <div ng-if="myquote.ShippingAddress.Country!='GB' && myquote.ShippingAddress.Country!='FR'">
+                {{myquote.ShippingAddress.CompanyName}}<br>
+                {{myquote.ShippingAddress.Street1}}<br>
+                <span ng-if="myquote.ShippingAddress.Street2">{{myquote.ShippingAddress.Street2}}<br></span>
+                {{myquote.ShippingAddress.City}}, {{myquote.ShippingAddress.State}} {{myquote.ShippingAddress.Zip}}<br>
+                {{revised.country(myquote.ShippingAddress.Country)}}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p><b><span ng-bind-html='revised.labels.YourAttachments'></span><br></b></p>
+            <p ng-repeat="fileName in myquote.Quote.xp.Files">{{fileName}}</p>
+            <p><b><span ng-bind-html='revised.labels.CommentsHeader'></span></b></p>
+            <p><textarea rows='4' cols='40' maxlength="1000" ng-model='myquote.Quote.Comments' readonly></textarea></p>
+        </div>
+    </div>
+
+    <div ng-if="revised.SubmittingToReview">
+        <hr />
+        <div class="row">
+            <div class="col-md-3">
+                <h4 ng-bind-html="revised.labels.WeirComment"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <textarea rows="5" cols="100" maxlength="1000" ng-model="revised.CommentsToWeir"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary" ng-click="revised.saveWeirComment()" ng-bind-html='revised.labels.AddComment'></button>
+                <button class="btn btn-default" ng-click="revised.cancelWeirComment()" ng-bind-html='revised.labels.CancelComment'></button>
+            </div>
+            <div class="col-md-6 pull-right">
+                <button class="btn btn-success" ng-click="revised.submitForReview()" ng-bind-html='revised.labels.SubmitForReview'></button>
+            </div>
+        </div>
+    </div>
+    <div ng-if="revised.SubmittingWithPO">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 ng-bind-html="revised.labels.PONeededHeader"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <h4 ng-bind-html="revised.labels.POUpload"></h4>
+                <h3><span ng-bind-html='revised.labels.UploadHeader'></span></h3>
+                <p><span ng-bind-html='revised.labels.UploadInstruct'></span></p>
+                <div class="panel panel-default">
+                    <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                    <p><ordercloud-po-upload model="myquote.Quote" keyname="PODocument" label='{{revised.labels.DragAndDrop}}'></ordercloud-po-upload></p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <h4 ng-bind-html="revised.labels.POEntry"></h4>
+				<p class="form-inline"><input type="text" class="form-control" ng-model="revised.PONumber" /></p>
+				<p>&nbsp;</p>
+                <button class="btn btn-success pull-right" ng-disabled="!revised.PONumber" ng-click="revised.submitOrder()" ng-bind-html='revised.labels.SubmitOrder'></button>
+            </div>
+        </div>
+    </div>
+</div>

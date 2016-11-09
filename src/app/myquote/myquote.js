@@ -1,10 +1,14 @@
 angular.module('orderCloud')
     .service( 'QuoteShareService', QuoteShareService)
-	.config(MyQuoteConfig)
+    .service('QuoteHelperService', QuoteHelperService)
+    .config(MyQuoteConfig)
 	.controller('MyQuoteCtrl', MyQuoteController)
 	.controller('MyQuoteDetailCtrl', MyQuoteDetailController)
 	.controller('QuoteDeliveryOptionCtrl', QuoteDeliveryOptionController )
-	.controller('ReviewQuoteCtrl', ReviewQuoteController )
+	.controller('ReviewQuoteCtrl', ReviewQuoteController)
+	.controller('RevisedQuoteCtrl', RevisedQuoteController)
+	.controller('ReadonlyQuoteCtrl', ReadonlyQuoteController)
+	.controller('QuoteRevisionsCtrl', QuoteRevisionsController)
 	.controller('ModalInstanceCtrl', ModalInstanceController)
 	.controller('MoreQuoteInfoCtrl', MoreQuoteInfoController)
 	.controller('NewAddressModalCtrl', NewAddressModalController)
@@ -21,6 +25,20 @@ function QuoteShareService() {
 	    Me: null
     };
     return svc;
+}
+
+function QuoteHelperService($q, OrderCloud) {
+    function findRevisions(quoteID) {
+        var filter = {
+                "xp.OriginalOrderID": quoteID
+        };
+        return OrderCloud.Orders.ListOutgoing(null, null, null, 1, 100, null, "DateCreated", filter);
+    }
+
+    var service = {
+        FindQuoteRevisions: findRevisions
+    };
+    return service;
 }
 
 function MyQuoteConfig($stateProvider, buyerid) {
@@ -95,17 +113,63 @@ function MyQuoteConfig($stateProvider, buyerid) {
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
-		.state( 'myquote.submitquote', {
+		.state('myquote.revised', {
+		    url: '/revised',
+		    templateUrl: 'myquote/templates/myquote.revised.tpl.html',
+		    controller: 'RevisedQuoteCtrl',
+		    controllerAs: 'revised'
+		})
+		.state('revisions', {
+		    parent: 'base',
+		    url: '/revisions?quoteID',
+		    templateUrl: 'myquote/templates/myquote.revisions.tpl.html',
+		    controller: 'QuoteRevisionsCtrl',
+		    controllerAs: 'revisions',
+		    resolve: {
+		        Revisions: function ($stateParams, QuoteHelperService) {
+		            return QuoteHelperService.FindQuoteRevisions($stateParams.quoteID);
+		        },
+		        QuoteID: function($stateParams) {
+		            return $stateParams.quoteID;
+		        }
+		    }
+		})
+		.state('myquote.submitquote', {
 			url: '/submitquote',
 			templateUrl: 'myquote/templates/myquote.review.tpl.html',
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
 		.state('myquote.readonly', {
-		    url: '/readonly',
+		    url: '/readonly?quoteID',
 		    templateUrl: 'myquote/templates/myquote.readonly.tpl.html',
-		    controller: 'ReviewQuoteCtrl',
-		    controllerAs: 'review'
+		    controller: 'ReadonlyQuoteCtrl',
+		    controllerAs: 'readonly',
+		    resolve: {
+		        Quote: function ($stateParams, OrderCloud) {
+		            return OrderCloud.Orders.Get($stateParams.quoteID);
+		        },
+		        ShippingAddress: function (Quote, OrderCloud) {
+		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, buyerid);
+		            return null;
+		        },
+		        LineItems: function ($q, $stateParams, OrderCloud, LineItemHelpers) {
+		            var dfd = $q.defer();
+		            OrderCloud.LineItems.List($stateParams.quoteID)
+                                .then(function (data) {
+                                    if (!data.Items.length) {
+                                        dfd.resolve({ Items: [] });
+                                    } else {
+                                        LineItemHelpers.GetProductInfo(data.Items)
+                                            .then(function () { dfd.resolve(data); });
+                                    }
+                                });
+		            return dfd.promise;
+		        },
+		        Payments: function ($stateParams, OrderCloud) {
+		            return OrderCloud.Payments.List($stateParams.quoteID);
+		        }
+		    }
 		})
     ;
 }
@@ -126,7 +190,19 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 	vm.HasLineItems = function () {
 	    return (QuoteShareService.LineItems && QuoteShareService.LineItems.length);
 	};
-
+	vm.Readonly = function () {
+	    $state.go("myquote.readonly", { quoteID: vm.Quote.ID });
+	}
+	function getStatusLabel() {
+	    if (vm.Quote.xp.Status) {
+	        var status = WeirService.LookupStatus(vm.Quote.xp.Status);
+	        if (status) {
+	            return status.label;
+	            // TODO: Address localization
+	        }
+	    }
+	    return "";
+	}
 	function save() {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
 		    // TODO: FAIL if no line items
@@ -169,6 +245,42 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 				modalInstance.result;
 			});
 	}
+	function _approve() {
+	    if (vm.Quote.xp.Status == 'RV') {
+	        var mods = {
+	            xp: {
+	                StatusDate: new Date(),
+	                Status: WeirService.OrderStatus.ConfirmedQuote.id
+	            }
+	        };
+	        WeirService.UpdateQuote(vm.Quote.ID, mods)
+            .then(function (qte) {
+                toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
+            });
+	    }
+	}
+
+	function _reject() {
+	    if (vm.Quote.xp.Status == 'RV') {
+	        var mods = {
+	            xp: {
+	                StatusDate: new Date(),
+	                Status: WeirService.OrderStatus.RejectedQuote.id
+	            }
+	        };
+	        WeirService.UpdateQuote(vm.Quote.ID, mods)
+            .then(function (qte) {
+                toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
+            });
+        }
+	}
+
+	function _comments() {
+	    if (vm.Quote.Status == 'RV') {
+	        console.log("Do something with comments ...");
+	    }
+	}
+
 	function gotoDelivery() {
 		if (!$state.is("myquote.detail") || (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.Files && vm.Quote.xp.Files.length)) {
             $state.go("myquote.delivery");
@@ -207,22 +319,31 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 	}
 
 	var labels = {
-		en: {
-			YourQuote: "Your Quote",
-			DeliveryOptions: "Delivery Options",
-			ReviewQuote: "Review Quote",
-			SubmitQuote: "Submit Quote or Order",
-			Save: "Save",
-			Share: "Share",
-			Download: "Download",
-			Print: "Print",
-            SaveSuccessTitle: "Quote Saved",
-            SaveSuccessMessage: "Your changes have been saved",
-			NoItemsError: "Please add parts to quote before saving",
-			CannotContinueNoItems: "Please add parts to quote before continuing",
-			SaveBody: "Quote number " + vm.Quote.ID + " has been saved to Your Quotes.",
-			SaveFooter: "View Your Quotes"
-		},
+	    en: {
+	        YourQuote: "Your Quote",
+	        DeliveryOptions: "Delivery Options",
+	        ReviewQuote: "Review Quote",
+	        SubmitQuote: "Submit Quote or Order",
+	        Save: "Save",
+	        Share: "Share",
+	        Download: "Download",
+	        Print: "Print",
+	        SaveSuccessTitle: "Quote Saved",
+	        SaveSuccessMessage: "Your changes have been saved",
+	        NoItemsError: "Please add parts to quote before saving",
+	        CannotContinueNoItems: "Please add parts to quote before continuing",
+	        SaveBody: "Quote number " + vm.Quote.ID + " has been saved to Your Quotes.",
+	        SaveFooter: "View Your Quotes",
+	        Approve: "Approve",
+	        Reject: "Reject",
+	        Comments: "Comments",
+	        Status: "Status",
+	        OrderDate: "Order date;",
+	        RejectedMessage: "The revised quote has been rejected.",
+	        RejectedTitle: "Quote updated",
+	        ApprovedMessage: "The revised quote has been accepted",
+	        ApprovedTitle: "Quote updated"
+	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Votre Cotation"),
 		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
@@ -237,9 +358,19 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 			NoItemsError: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de sauvegarder"),
 			CannotContinueNoItems: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de continuer"),
 			SaveBody: $sce.trustAsHtml("FR: Quote number " + vm.Quote.ID + " has been saved to Your Quotes."),
-			SaveFooter: $sce.trustAsHtml("**Voir vos cotations")
+			SaveFooter: $sce.trustAsHtml("**Voir vos cotations"),
+			Approve: $sce.trustAsHtml("FR: Approve"),
+			Reject: $sce.trustAsHtml("FR: Reject"),
+			Comments: $sce.trustAsHtml("FR: Comments"),
+			Status: $sce.trustAsHtml("FR: Status"),
+			OrderDate: $sce.trustAsHtml("FR: Order date;"),
+			RejectedMessage: $sce.trustAsHtml("FR: The revised quote has been rejected."),
+			RejectedTitle: $sce.trustAsHtml("FR: Quote updated"),
+			ApprovedMessage: $sce.trustAsHtml("FR: The revised quote has been accepted"),
+			ApprovedTitle: $sce.trustAsHtml("FR: Quote updated")
 		}
 	};
+
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.GotoDelivery = gotoDelivery;
 	vm.Save = save;
@@ -248,6 +379,10 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 	vm.Share = share;
 	vm.Download = download;
 	vm.Print = print;
+	vm.GetStatusLabel = getStatusLabel;
+	vm.Approve = _approve;
+	vm.Reject = _reject;
+	vm.Comments = _comments;
 }
 
 function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, QuoteShareService) {
@@ -726,6 +861,81 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.toReview = _gotoReview;
 }
 
+function RevisedQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
+    buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder) {
+    var vm = this;
+    vm.LineItems = QuoteShareService.LineItems;
+    vm.Quote = QuoteShareService.Quote;
+    vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
+    vm.PONumber = "";
+    var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
+    if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
+    vm.country = function (c) {
+        var result = Underscore.findWhere(OCGeography.Countries, { value: c });
+        return result ? result.label : '';
+    };
+    var labels = {
+        en: {
+            Customer: "Customer; ",
+            QuoteNumber: "Quote number; ",
+            QuoteName: "Quote name; ",
+            BackToQuotes: "Back to your Quotes",
+            SerialNum: "Serial number",
+            TagNum: "Tag number (if available)",
+            PartNum: "Part number",
+            PartDesc: "Description of part",
+            RecRepl: "Recommended replacement",
+            LeadTime: "Lead time / availability",
+            PricePer: "Price per item",
+            Quantity: "Quantity",
+            Total: "Total",
+            Removed: "Removed",
+            Updated: "Updated",
+            New: "New",
+            YourAttachments: "Your attachments",
+            YourReference: "Your Reference No; ",
+            CommentsHeader: "Your comments or instructions",
+            DeliveryAddress: "Delivery Address",
+            ViewRevisions: "View Previous revisions"
+        },
+        fr: {
+            Customer: $sce.trustAsHtml("Client "),
+            QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
+            QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+            BackToQuotes: $sce.trustAsHtml("FR: Back to your Quotes"),
+            SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
+            TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
+            PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
+            PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
+            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
+            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+            PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
+            Quantity: $sce.trustAsHtml("Quantit&eacute;"),
+            Total: $sce.trustAsHtml("Total"),
+            Removed: "Removed",
+            Updated: "Updated",
+            New: "New",
+            YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
+            YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
+            CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
+            CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
+            DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
+            ViewRevisions: $sce.trustAsHtml("FR: View Previous revisions")
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
+
+    function _gotoQuotes() {
+        $state.go("quotes.revised");
+    }
+    function _gotoRevisions() {
+        $state.go("revisions", { quoteID: vm.Quote.ID });
+    }
+
+    vm.gotoQuotes = _gotoQuotes;
+    vm.gotoRevisions = _gotoRevisions;
+}
+
 function ModalInstanceController($uibModalInstance, $state, quote, labels) {
 	var vm = this;
 	vm.quote = quote;
@@ -867,4 +1077,118 @@ function ChooseSubmitController($uibModalInstance, $state, $sce, WeirService, Qu
 
     vm.submitForReview = _submitForReview;
     vm.confirmOrderWithPO = _confirmOrderWithPO;
+}
+
+function QuoteRevisionsController(WeirService, $state, $sce, $exceptionHandler, $rootScope, OrderCloud, QuoteShareService, QuoteID, Revisions, buyerid) {
+    var vm = this;
+    vm.Revisions = Revisions;
+    vm.QuoteID = QuoteID;
+
+    function getStatusLabel(statusId) {
+        if (statusId) {
+            var status = WeirService.LookupStatus(statusId);
+            if (status) {
+                return status.label;
+                // TODO: Address localization
+            }
+        }
+        return "";
+    }
+    function view(revID) {
+        if (revID == vm.QuoteID) {
+            $state.go("myquote.detail");
+        } else {
+            $state.go("myquote.readonly", { quoteID: vm.QuoteID });
+        }
+    }
+
+    var labels = {
+        en: {
+            QuoteHeading: "Quote revisions for Quote; " + vm.QuoteID,
+            Instructions1: "Select 'view' to view previous revisions for reference",
+            Instructions2: "You can view and comment on the current revision",
+            SearchQuotes: "Search Quotes",
+            Search: "Search",
+            QuoteID: "Quote ID",
+            CustomerRef: "Customer Ref",
+            BusinessName: "Business Name",
+            SubmittedBy: "Submitted by",
+            QuoteValue: "Quote value",
+            DateRevised: "Date Revised",
+            Reviewer: "Reviewer",
+            Status: "Status",
+            View: "View",
+            LoadMore: "Load more"
+        },
+        fr: {
+            QuoteHeading: $sce.trustAsHtml("FR: Quote revisions for Quote; " + QuoteID),
+            Instructions1: $sce.trustAsHtml("FR: Select 'view' to view previous revisions for reference"),
+            Instructions2: $sce.trustAsHtml("FR: You can view and comment on the current revision"),
+            SearchQuotes: $sce.trustAsHtml("FR: Search Quotes"),
+            Search: $sce.trustAsHtml("FR: Search"),
+            QuoteID: $sce.trustAsHtml("FR: Quote ID"),
+            CustomerRef: $sce.trustAsHtml("FR: Customer Ref"),
+            BusinessName: $sce.trustAsHtml("FR: Business Name"),
+            SubmittedBy: $sce.trustAsHtml("FR: Submitted by"),
+            QuoteValue: $sce.trustAsHtml("FR: Quote value"),
+            DateRevised: $sce.trustAsHtml("FR: Date Revised"),
+            Reviewer: $sce.trustAsHtml("FR: Reviewer"),
+            Status: $sce.trustAsHtml("FR: Status"),
+            View: $sce.trustAsHtml("FR: View")
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
+    vm.GetStatusLabel = getStatusLabel;
+    vm.View = view;
+}
+function ReadonlyQuoteController($sce, WeirService, Quote, ShippingAddress, LineItems, Payments) {
+    var vm = this;
+    vm.Quote = Quote;
+    vm.ShippingAddress = ShippingAddress;
+    vm.LineItems = LineItems ? LineItems.Items : [];
+    vm.Payments = Payments;
+    var labels = {
+        en: {
+            Customer: "Customer; ",
+            QuoteNumber: "Quote number; ",
+            QuoteName: "Quote name; ",
+            SerialNum: "Serial number",
+            TagNum: "Tag number (if available)",
+            PartNum: "Part number",
+            PartDesc: "Description of part",
+            RecRepl: "Recommended replacement",
+            LeadTime: "Lead time",
+            PricePer: "Price per item or set",
+            Quantity: "Quantity",
+            Total: "Total",
+            YourAttachments: "Your attachments",
+            YourReference: "Your Reference No; ",
+            CommentsHeader: "Your comments or instructions",
+            DeliveryOptions: "Delivery Options",
+            DeliveryAddress: "Delivery Address",
+            WeirComment: "Comment"
+        },
+        fr: {
+            Customer: $sce.trustAsHtml("Client "),
+            QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
+            QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+            SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
+            TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
+            PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
+            PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
+            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
+            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+            PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
+            Quantity: $sce.trustAsHtml("Quantit&eacute;"),
+            Total: $sce.trustAsHtml("Total"),
+            YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
+            YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
+            CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
+            DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
+            DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
+            WeirComment: $sce.trustAsHtml("** Commentaires")
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
+
 }

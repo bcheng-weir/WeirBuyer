@@ -1,16 +1,15 @@
 <div>
    <div class="row" style="padding-top:20px;">
         <div class="col-md-8">
-            <h3><span ng-bind-html='review.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></h3>
-            <h3><span ng-bind-html='review.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Quote.ID}}</span></h3>
-            <h3><span ng-bind-html='review.labels.QuoteName'></span><span class='text-danger' style="margin-left:1em;" maxlength="20">{{myquote.Quote.xp.Name}}</span></h3>
-	        <h3><span ng-bind-html='review.labels.YourReference'></span><span class='text-danger' style="margin-left:1em;" maxlength="50">{{myquote.Quote.xp.RefNum}}</span></h3>
+            <h3><span ng-bind-html='readonly.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{readonly.Quote.xp.CustomerName}}</span></h3>
+            <h3><span ng-bind-html='readonly.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;">{{readonly.Quote.ID}}</span></h3>
+            <h3><span ng-bind-html='readonly.labels.QuoteName'></span><span class='text-danger' style="margin-left:1em;" maxlength="20">{{readonly.Quote.xp.Name}}</span></h3>
+	        <h3><span ng-bind-html='readonly.labels.YourReference'></span><span class='text-danger' style="margin-left:1em;" maxlength="50">{{readonly.Quote.xp.RefNum}}</span></h3>
         </div>
 
         <!-- <div class="col-md-4">
             <h2 class="pull-right">
-                <button class="btn btn-default" ui-sref="home" ng-bind-html='review.labels.AddNew'></button>
-                <button class="btn btn-success" ng-click="myquote.GotoDelivery()" ng-bind-html='review.labels.DeliveryOptions'></button>
+                <button class="btn btn-success" ng-click="readonly.GotoDelivery()" ng-bind-html='readonly.labels.DeliveryOptions'></button>
             </h2>
         </div> -->
     </div>
@@ -20,38 +19,38 @@
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead class="header-cell">
                     <tr>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.SerialNum'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.TagNum'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.PartNum'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.PartDesc'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.RecRepl'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.LeadTime'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.PricePer'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='review.labels.Quantity'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.SerialNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.TagNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.PartNum'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.PartDesc'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.RecRepl'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.LeadTime'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.PricePer'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.Quantity'></h4></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="line in review.LineItems">
+                    <tr ng-repeat="line in readonly.LineItems">
                         <td>{{line.xp.SN}}</td>
                         <td>{{line.xp.TagNumber}}</td>
                         <td>{{line.Product.Name}}</td>
                         <td>{{line.Product.Description}}</td>
                         <td>{{line.Product.xp.ReplacementSchedule}}</td>
                         <td>{{line.Product.xp.LeadTime}}</td>
-                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right'>
+                        <td ng-switch on="readonly.Quote.xp.Currency" class='text-right'>
                             <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
                             <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
                         </td>
                         <td class="text-right">{{line.Quantity}}</td>
                     </tr>
-                    <tr ng-if="review.LineItems.length > 0">
+                    <tr ng-if="readonly.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
-                        <td style="font-weight:bold;" ng-bind-html='review.labels.Total'></td>
-                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="EUR">{{myquote.Quote.Total | currency:'&euro;'}}</span>
-                            <span ng-switch-when="GBP">{{myquote.Quote.Total | currency:'&#163; '}}</span>
-                            <span ng-switch-default>{{myquote.Quote.Total | currency:'&#163; '}}</span>
+                        <td style="font-weight:bold;" ng-bind-html='readonly.labels.Total'></td>
+                        <td ng-switch on="readonly.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
+                            <span ng-switch-when="EUR">{{readonly.Quote.Total | currency:'&euro;'}}</span>
+                            <span ng-switch-when="GBP">{{readonly.Quote.Total | currency:'&#163; '}}</span>
+                            <span ng-switch-default>{{readonly.Quote.Total | currency:'&#163; '}}</span>
                         </td>
                     </tr>
                 </tbody>
@@ -63,47 +62,47 @@
 
     <div class="row">
         <div class="col-md-6">
-            <p><b><span>{{review.labels.DeliveryAddress}}</span></b></p>
-            <div ng-if="myquote.ShippingAddress.Country=='FR'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                {{myquote.ShippingAddress.Street2}}<br>
-                {{myquote.ShippingAddress.Zip}} {{myquote.ShippingAddress.City}}<br>
-                {{review.country(myquote.ShippingAddress.Country)}}
+            <p><b><span>{{readonly.labels.DeliveryAddress}}</span></b></p>
+            <div ng-if="readonly.ShippingAddress.Country=='FR'">
+                {{readonly.ShippingAddress.CompanyName}}<br>
+                {{readonly.ShippingAddress.Street1}}<br>
+                {{readonly.ShippingAddress.Street2}}<br>
+                {{readonly.ShippingAddress.Zip}} {{readonly.ShippingAddress.City}}<br>
+                {{readonly.country(readonly.ShippingAddress.Country)}}
             </div>
-            <div ng-if="myquote.ShippingAddress.Country=='GB'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                {{myquote.ShippingAddress.Street2}}<br>
-                {{myquote.ShippingAddress.City}}<br>
-                {{myquote.ShippingAddress.Zip}}<br>
-                {{review.country(myquote.ShippingAddress.Country)}}
+            <div ng-if="readonly.ShippingAddress.Country=='GB'">
+                {{readonly.ShippingAddress.CompanyName}}<br>
+                {{readonly.ShippingAddress.Street1}}<br>
+                {{readonly.ShippingAddress.Street2}}<br>
+                {{readonly.ShippingAddress.City}}<br>
+                {{readonly.ShippingAddress.Zip}}<br>
+                {{readonly.country(readonly.ShippingAddress.Country)}}
             </div>
-            <div ng-if="myquote.ShippingAddress.Country!='GB' && myquote.ShippingAddress.Country!='FR'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                {{myquote.ShippingAddress.Street2}}<br>
-                {{myquote.ShippingAddress.City}}, {{myquote.ShippingAddress.State}} {{myquote.ShippingAddress.Zip}}<br>
-                {{review.country(myquote.ShippingAddress.Country)}}
+            <div ng-if="readonly.ShippingAddress.Country!='GB' && readonly.ShippingAddress.Country!='FR'">
+                {{readonly.ShippingAddress.CompanyName}}<br>
+                {{readonly.ShippingAddress.Street1}}<br>
+                {{readonly.ShippingAddress.Street2}}<br>
+                {{readonly.ShippingAddress.City}}, {{readonly.ShippingAddress.State}} {{readonly.ShippingAddress.Zip}}<br>
+                {{readonly.country(readonly.ShippingAddress.Country)}}
             </div>
         </div>
         <div class="col-md-6">
-            <p><b><span ng-bind-html='review.labels.YourAttachments'></span><br></b></p>
-            <p ng-repeat="fileName in myquote.Quote.xp.Files">{{fileName}}</p>
-            <p><b><span ng-bind-html='review.labels.CommentsHeader'></span></b></p>
+            <p><b><span ng-bind-html='readonly.labels.YourAttachments'></span><br></b></p>
+            <p ng-repeat="fileName in readonly.Quote.xp.Files">{{fileName}}</p>
+            <p><b><span ng-bind-html='readonly.labels.CommentsHeader'></span></b></p>
             <p>
-                <textarea rows='4' cols='40' maxlength="1000" ng-model='myquote.Quote.Comments' readonly></textarea>
+                <textarea rows='4' cols='40' maxlength="1000" ng-model='readonly.Quote.Comments' readonly></textarea>
             </p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-3">
-            <h4 ng-bind-html="review.labels.WeirComment"></h4>
+            <h4 ng-bind-html="readonly.labels.WeirComment"></h4>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            <textarea rows="5" cols="100" maxlength="1000" readonly ng-model="review.CommentsToWeir"></textarea>
+            <textarea rows="5" cols="100" maxlength="1000" readonly ng-model="readonly.CommentsToWeir"></textarea>
         </div>
     </div>
 

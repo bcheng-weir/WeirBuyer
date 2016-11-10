@@ -807,15 +807,18 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 
     function updateQuote(quoteId, data, assignQuoteNumber, prefix) {
         var deferred = $q.defer();
-	if (assignQuoteNumber) {
-	   tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, 1);
-	} else {
-	   OrderCloud.Orders.Patch(quoteId, data)
-	      .then(function(quote) { deferred.resolve(quote)})
-	      .catch(function(ex) { d.deferred.reject(ex); });
-	}
-	return deferred.promise;
+	    //Some of the original quotes do not have the buyer id.
+	    data.xp.BuyerId = data.xp.buyerid ? data.xp.BuyerId : buyerid;
+		if (assignQuoteNumber) {
+			tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, 1);
+		} else {
+			OrderCloud.Orders.Patch(quoteId, data)
+				.then(function(quote) { deferred.resolve(quote)})
+				.catch(function(ex) { d.deferred.reject(ex); });
+		}
+			return deferred.promise;
     }
+
     function tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, trycount) {
         var newQuoteId=createQuoteNumber(prefix);
         data.ID = newQuoteId;

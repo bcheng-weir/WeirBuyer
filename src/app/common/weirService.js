@@ -809,6 +809,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
         var deferred = $q.defer();
 	    //Some of the original quotes do not have the buyer id.
 	    data.xp.BuyerId = data.xp.buyerid ? data.xp.BuyerId : buyerid;
+	    data.xp.Active = data.xp.Active ? data.xp.Active : true;
 		if (assignQuoteNumber) {
 			tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, 1);
 		} else {

@@ -174,11 +174,12 @@ function MyQuoteConfig($stateProvider, buyerid) {
     ;
 }
 
-function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService) {
+function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
 	vm.ShippingAddress = ShippingAddress;
+	vm.ImageBaseUrl = imageRoot;
 	vm.SaveableStatuses = [
 		WeirService.OrderStatus.Draft.id,
 		WeirService.OrderStatus.Saved.id
@@ -187,12 +188,16 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
 	QuoteShareService.Payments.push.apply(QuoteShareService.Payments, Payments.Items);
+	vm.GetImageUrl = function(img) {
+	    return vm.ImageBaseUrl + img;
+	};
 	vm.HasLineItems = function () {
 	    return (QuoteShareService.LineItems && QuoteShareService.LineItems.length);
 	};
 	vm.Readonly = function () {
 	    $state.go("myquote.readonly", { quoteID: vm.Quote.ID });
 	}
+	vm.imageRoot = imageRoot;
 	function getStatusLabel() {
 	    if (vm.Quote.xp.Status) {
 	        var status = WeirService.LookupStatus(vm.Quote.xp.Status);

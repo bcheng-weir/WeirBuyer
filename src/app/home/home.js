@@ -130,14 +130,19 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 	;
 }
 
-function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg) {
+function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, imageRoot) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
 	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
 	vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
     vm.Customer = CurrentCustomer;
-	vm.AvailableCustomers = MyOrg.xp.Customers;
+    vm.AvailableCustomers = MyOrg.xp.Customers;
+
+    vm.ImageBaseUrl = imageRoot;
+    vm.GetValveImageUrl = function (img) {
+        return vm.ImageBaseUrl + "Valves/" + img;
+    };
 
 	if (!vm.IsServiceOrg) {
 	    if (!vm.Customer || vm.Customer.id != MyOrg.ID) {
@@ -657,7 +662,7 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 	var vm = this;
 	vm.tagNumber = TagNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
-	if(typeof vm.serialNumber != 'object') {
+	if(typeof vm.tagNumber != 'object') {
 		$state.go('home.noresults', {}, {reload:true});
 	}
 	vm.PartQuantity = function(partId) {

@@ -171,7 +171,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 		CurrentOrder.GetCurrentCustomer()
 		.then(function(cust) {
 	        if (cust) {
-                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "catalogID": cust.id})
+                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "catalogID": cust.id}, "all")
                     .then(function(matches) {
 						if (matches.Items.length == 1) {
                        	    result = matches.Items[0];

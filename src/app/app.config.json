@@ -18,5 +18,6 @@
 		"awsRegion":"us-east-2",
 		"bucket": "ordercloudtest",
 		"location": "https://s3.us-east-2.amazonaws.com/ordercloudtest/"
-	}
+	},
+	"imageRoot": "https://weirwebhooks.azurewebsites.net/Content/Images/"
 }

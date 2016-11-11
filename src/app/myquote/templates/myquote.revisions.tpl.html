@@ -55,7 +55,7 @@
             <td>{{quote.xp.ReviewerName}}</td>
             <td>{{revisions.GetStatusLabel(quote.xp.Status) + " " + (quote.xp.StatusDate | weirdate)}}</td>
 
-            <td><button class="btn btn-primary" ng-click="revisions.View(quote.ID)">{{revisions.labels.View}}</button></td>
+            <td><button class="btn btn-primary" ng-click="revisions.View(quote.ID, quote.xp.Active)">{{revisions.labels.View}}</button></td>
         </tr>
         </tbody>
     </table>

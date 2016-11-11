@@ -934,7 +934,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $exceptionHandler, $r
         $state.go("quotes.revised");
     }
     function _gotoRevisions() {
-        $state.go("revisions", { quoteID: vm.Quote.ID });
+        $state.go("revisions", { quoteID: vm.Quote.xp.OriginalOrderID });
     }
 
     vm.gotoQuotes = _gotoQuotes;
@@ -1099,11 +1099,12 @@ function QuoteRevisionsController(WeirService, $state, $sce, $exceptionHandler, 
         }
         return "";
     }
-    function view(revID) {
-        if (revID == vm.QuoteID) {
-            $state.go("myquote.detail");
+    function view(revID, active) {
+        if (active) {
+            // Current order should be this one
+            $state.go("myquote.revised");
         } else {
-            $state.go("myquote.readonly", { quoteID: vm.QuoteID });
+            $state.go("myquote.readonly", { quoteID: revID });
         }
     }
 

@@ -5,7 +5,7 @@ angular.module('orderCloud')
 	.controller('InReviewQuotesCtrl', InReviewQuotesController)
 ;
 
-function QuotesConfig($stateProvider, buyerid) {
+function QuotesConfig($stateProvider,  buyerid) {
 	$stateProvider
 		.state('quotes', {
 			parent: 'base',
@@ -56,8 +56,12 @@ function QuotesConfig($stateProvider, buyerid) {
 				Quotes: function(WeirService) {
 				    return WeirService.FindQuotes([WeirService.OrderStatus.RevisedQuote]);
 				},
-				CurrentOrderId: function (CurrentOrder) {
-				    return CurrentOrder.GetID();
+				CurrentOrderId: function ($q, CurrentOrder) {
+				    var d = $q.defer();
+				    CurrentOrder.GetID()
+                    .then(function (id) { d.resolve(id); })
+                    .catch(function (e) { d.resolve(null); });
+				    return d.promise;
 				}
 			}
 		})
@@ -70,8 +74,12 @@ function QuotesConfig($stateProvider, buyerid) {
 				Quotes: function(WeirService) {
 				    return WeirService.FindQuotes([WeirService.OrderStatus.ConfirmedQuote]);
 				},
-				CurrentOrderId: function (CurrentOrder) {
-				    return CurrentOrder.GetID();
+				CurrentOrderId: function ($q, CurrentOrder) {
+				    var d = $q.defer();
+				    CurrentOrder.GetID()
+                    .then(function (id) { d.resolve(id); })
+                    .catch(function (e) { d.resolve(null); });
+				    return d.promise;
 				}
 			}
 		})
@@ -107,7 +115,7 @@ function QuotesController($sce, $state, WeirService, Customer, MyOrg) {
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrder, Quotes, CurrentOrderId) {
+function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, CurrentOrderId) {
 	var vm = this;
 	vm.Quotes = Quotes;
 	vm.CurrentOrderId = CurrentOrderId;
@@ -121,7 +129,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, CurrentOrd
 	            WeirService.SetQuoteAsCurrentOrder(quoteId)
                     .then(function () {
                         $rootScope.$broadcast('SwitchCart');
-                        if (status == WeirService.OrderStatus.RevisedQuote) {
+                        if (status == WeirService.OrderStatus.RevisedQuote.id) {
                             $state.go('myquote.revised');
                         } else {
                             $state.go('myquote.detail');
@@ -202,16 +210,3 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
-
-function ConfirmedQuotesController(WeirService, $state, $sce, Quotes ) {
-	var vm = this;
-	vm.Quotes = Quotes;
-	
-	var labels = {
-		en: {
-		},
-		fr: {
-		}
-	};
-}
-

@@ -577,6 +577,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $sc
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
     buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder) {
     var vm = this;
+	QuoteShareService.Quote.xp = typeof(QuoteShareService.Quote.xp) == 'undefined' ? {} : QuoteShareService.Quote.xp;
     vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
     vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;

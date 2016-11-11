@@ -1,10 +1,10 @@
 <div>
    <div class="row" style="padding-top:20px;">
         <div class="col-md-8">
-            <h3><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></h3>
-            <h3><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h3>
-            <h3><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' style="margin-left:1em;" maxlength="20" ng-model='myquote.Quote.xp.Name' /></h3>
-	        <h3><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h3>
+            <h4><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></h4>
+            <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
+            <h4><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' style="margin-left:1em;" maxlength="20" ng-model='myquote.Quote.xp.Name' /></h4>
+	        <h4><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h4>
         </div>
 
         <div class="col-md-4">

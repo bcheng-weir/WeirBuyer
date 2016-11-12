@@ -77,9 +77,14 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
                 if (refreshToken) {
                     TokenRefresh.Refresh(refreshToken)
                         .then(function(token) {
-                            OrderCloud.BuyerID.Set(buyerid);
                             OrderCloud.Auth.SetToken(token.access_token);
-                            $state.go('home');
+                            OrderCloud.Buyers.List().then(function (buyers) {
+                                if (buyers && buyers.Items.length > 0) {
+                                    var buyer = buyers.Items[0];
+                                    OrderCloud.BuyerID.Set(buyer.ID);
+                                    $state.go('home');
+                                }
+                            });
                         })
                         .catch(function () {
                             toastr.error('Your token has expired, please log in again.');
@@ -148,14 +153,12 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
         OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
                 vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : angular.noop();
-                // OrderCloud.BuyerID.Set(buyerid);
                 OrderCloud.Auth.SetToken(data['access_token']);
                 OrderCloud.Buyers.List().then(function (buyers) {
                     if (buyers && buyers.Items.length > 0) {
                         var buyer = buyers.Items[0];
                         OrderCloud.BuyerID.Set(buyer.ID);
                         $state.go('home');
-                        // $state.go('home.serial');
                     }
                 }); 
             })

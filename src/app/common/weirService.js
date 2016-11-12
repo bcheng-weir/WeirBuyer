@@ -454,6 +454,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
     function addPartToQuote(part) {
         var deferred = $q.defer();
         var currentOrder = {};
+		var customer = CurrentOrder.GetCurrentCustomer(); // Will this appropriately change?
 
         CurrentOrder.Get()
             .then(function(order) {
@@ -471,7 +472,17 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 }
             })
             .catch(function() {
-                OrderCloud.Orders.Create({ID: randomQuoteID(), xp:{Status:"DR"}})
+	            var cart = {
+	            	"ID": randomQuoteID(),
+		            "Type": "Standard",
+		            xp: {
+			            "Type": "Quote",
+			            "CustomerID": customer.id,
+			            "CustomerName": customer.name,
+			            "Status": "DR"
+		            }
+	            };
+	            OrderCloud.Orders.Create(cart)
                     .then(function(order) {
                         CurrentOrder.Set(order.ID);
                         addLineItem(order);
@@ -521,7 +532,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 addLineItems(order);
             })
             .catch(function() {
-	            OrderCloud.Orders.Create({ID: randomQuoteID(), xp:{Status:"DR"}})
+	            OrderCloud.Orders.Create({ID: randomQuoteID(), xp:{Type:"Quote",Status:"DR"}})
                     .then(function(order) {
                         CurrentOrder.Set(order.ID);
                         addLineItems(order);
@@ -660,57 +671,57 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
     function findCart(customer) {
         var deferred = $q.defer();
         OrderCloud.Me.Get()
-        .then(function(user) {
-            var filter = {
-               "FromUserId": user.ID,
-               "xp.Type": "Quote",
-               "xp.CustomerID": customer.id,
-               "xp.Status": "DR"
-           };
-           OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
-           .then(function(results) {
-               if (results.Items.length > 0) {
-                   var ct = results.Items[0];
-                   CurrentOrder.Set(ct.ID);
-                   deferred.resolve(ct);
-               } else {
-                   var cart = {
-                       "Type": "Standard",
-                       xp: {
-                           "Type": "Quote",
-                           "CustomerID": customer.id,
-                           "CustomerName": customer.name,
-                           "Status": "DR"
-                       }
-                   }
-                   OrderCloud.Orders.Create(cart)
-                   .then(function(ct) {
-                        CurrentOrder.Set(ct.ID);
-                       deferred.resolve(ct);
-                   })
-                   .catch(function(ex) {
-                       deferred.reject(ex);
-                   })
-               }
-           });
-       })
-       .catch(function(ex) {
-           d.reject(ex);
-        });
-	return deferred.promise;
+	        .then(function(user) {
+                var filter = {
+                    "FromUserId": user.ID,
+                    "xp.Type": "Quote",
+					"xp.CustomerID": customer.id,
+					"xp.Status": "DR"
+				};
+				OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
+					.then(function(results) {
+						if (results.Items.length > 0) {
+							var ct = results.Items[0];
+							CurrentOrder.Set(ct.ID);
+							deferred.resolve(ct);
+						} else {
+							var cart = {
+								"Type": "Standard",
+								xp: {
+									"Type": "Quote",
+									"CustomerID": customer.id,
+									"CustomerName": customer.name,
+									"Status": "DR"
+								}
+							};
+							OrderCloud.Orders.Create(cart)
+								.then(function(ct) {
+									CurrentOrder.Set(ct.ID);
+									deferred.resolve(ct);
+								})
+								.catch(function(ex) {
+									deferred.reject(ex);
+								});
+                        }
+                    });
+			})
+			.catch(function(ex) {
+	            d.reject(ex);
+			});
+		return deferred.promise;
     }
 
     function findQuotes(statuses, resolveSharedId) {
 	    var quotes = [];
-            var queue = [];
-            var deferred = $q.defer();
+        var queue = [];
+        var deferred = $q.defer();
 
 	    if (statuses && statuses.length) {
 	        var filter = {
 	    	    "xp.Type": "Quote"
 	        };
-		var statusFilter = statuses[0].id;
-		for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;
+			var statusFilter = statuses[0].id;
+			for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;
                 filter["xp.Status"] = statusFilter;
 
                 var d = $q.defer();
@@ -725,17 +736,17 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                         d.resolve();
                     });
 
-            d.promise.then(function() {
-                // resolveCustomers(quotes).then( function() {
-		        resolveUsers(quotes, resolveSharedId).then(function() {
-                                deferred.resolve(quotes);
-	                });
-	        // });
-	    });
+                d.promise.then(function() {
+                    // resolveCustomers(quotes).then( function() {
+		            resolveUsers(quotes, resolveSharedId).then(function() {
+                        deferred.resolve(quotes);
+		            });
+	                // });
+	            });
         } else {
              deferred.resolve(quotes);
         }
-	return deferred.promise;
+		return deferred.promise;
     }
 
     function resolveUsers(quotes, resolveSharedId) {

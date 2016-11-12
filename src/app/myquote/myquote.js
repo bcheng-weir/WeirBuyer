@@ -393,7 +393,6 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, QuoteShareService) {
 	var vm = this;
 	vm.LineItems = QuoteShareService.LineItems;
-	console.log(vm.LineItems);
 	var labels = {
 		en: {
             Customer: "Customer; ",

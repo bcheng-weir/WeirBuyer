@@ -207,13 +207,21 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
                     }
                     if (valid) {
                         scope.invalidExtension = false;
-                        scope.$apply(function() {
+
+                        FileReader.ReadAsDataUrl(event.target.files[0], scope)
+                            .then(function(f) {
+                                afterSelection(event.target.files[0], fileName);
+                            });
+                        file_input.assign(scope, event.target.files[0]);
+
+                        //scope.$apply();
+                        /*scope.$apply(function() {
                             FileReader.ReadAsDataUrl(event.target.files[0], scope)
                                 .then(function(f) {
                                     afterSelection(event.target.files[0], fileName);
                                 });
                             file_input.assign(scope, event.target.files[0]);
-                        });
+                        });*/
                     }
                     else {
                         scope.$apply(function() {
@@ -329,13 +337,20 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
                     }
                     if (valid) {
                         scope.invalidExtension = false;
-                        scope.$apply(function() {
+
+                        FileReader.ReadAsDataUrl(event.target.files[0], scope)
+                            .then(function(f) {
+                                afterSelection(event.target.files[0], fileName);
+                            });
+                        file_input.assign(scope, event.target.files[0]);
+
+                        /*scope.$apply(function() {
                             FileReader.ReadAsDataUrl(event.target.files[0], scope)
                                 .then(function(f) {
                                     afterSelection(event.target.files[0], fileName);
                                 });
                             file_input.assign(scope, event.target.files[0]);
-                        });
+                        });*/
                     }
                     else {
                         scope.$apply(function() {

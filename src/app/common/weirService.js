@@ -451,7 +451,6 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
         return weirGroup;
     }
 
-
     function addPartToQuote(part) {
         var deferred = $q.defer();
         var currentOrder = {};
@@ -472,7 +471,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 }
             })
             .catch(function() {
-                OrderCloud.Orders.Create({ID: randomQuoteID()})
+                OrderCloud.Orders.Create({ID: randomQuoteID(), xp:{Status:"DR"}})
                     .then(function(order) {
                         CurrentOrder.Set(order.ID);
                         addLineItem(order);
@@ -522,7 +521,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 addLineItems(order);
             })
             .catch(function() {
-                OrderCloud.Orders.Create({ID: randomQuoteID()})
+	            OrderCloud.Orders.Create({ID: randomQuoteID(), xp:{Status:"DR"}})
                     .then(function(order) {
                         CurrentOrder.Set(order.ID);
                         addLineItems(order);
@@ -835,11 +834,11 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 	   });
     }
     function createQuoteNumber(prefix) {
-	// var timeoffset = 1476673277652;
+		// var timeoffset = 1476673277652;
         var now = new Date();
-	var testVal = (now.getTime().toString());
+		var testVal = (now.getTime().toString());
         var quoteNum = prefix + "-" + testVal;
-	return quoteNum;
+		return quoteNum;
     }
 
     function setQuoteAsCurrentOrder(quoteId) {

@@ -108,10 +108,10 @@ function CurrentOrderService($q, $localForage, OrderCloud, appname) {
         var dfd = $q.defer();
         $localForage.getItem(CustomerStorageName)
             .then(function(customer) {
-                if (customer)
+                if (customer) {
                     dfd.resolve(customer);
-                else {
-        	    $localForage.removeItem(CustomerStorageName);
+                } else {
+        	        $localForage.removeItem(CustomerStorageName);
                     dfd.resolve(null);
                 }
             })

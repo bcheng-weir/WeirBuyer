@@ -121,6 +121,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
         }
 	    return localeOfUser;
     }
+
     function navlabels(){
         var navLabels = {
             en: {
@@ -157,7 +158,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
             }
         };
         return navLabels;
-    };
+    }
 
     function selectLocaleResources(resource) {
 	    var tmp = resource[getLocale()];
@@ -790,29 +791,29 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
         angular.forEach(quotes, function(quote) {
             if (quote.xp.CustomerID && orgIds.indexOf(quote.xp.CustomerID) < 0) orgIds.push(quote.xp.CustomerID);
         });
-	var queue = [];
-	angular.forEach(orgIds, function(id) {
-	    queue.push((function() {
-	        var d = $q.defer();
-	        getCustomerCategory(id).then(
-	            function(org) { d.resolve(); }
-	        ).catch(function(ex) { d.resolve(); });
-	            return d.promise;
-	    })());
-	});
-        $q.all(queue).then(function() {
-            angular.forEach(quotes, function(quote) {
-                if (quote.xp.CustomerID) {
-                    var org = customers[quote.xp.CustomerID];
-                    if (org) {
-                        quote.tmp = quote.tmp || {};
-                        quote.tmp.Customer = org;
-                    }
-                }
-            });
-            deferred.resolve(quotes);
-	});
-	return deferred.promise;
+		var queue = [];
+		angular.forEach(orgIds, function(id) {
+		    queue.push((function() {
+		        var d = $q.defer();
+		        getCustomerCategory(id).then(
+		            function(org) { d.resolve(); }
+		        ).catch(function(ex) { d.resolve(); });
+		            return d.promise;
+		    })());
+		});
+	        $q.all(queue).then(function() {
+	            angular.forEach(quotes, function(quote) {
+	                if (quote.xp.CustomerID) {
+	                    var org = customers[quote.xp.CustomerID];
+	                    if (org) {
+	                        quote.tmp = quote.tmp || {};
+	                        quote.tmp.Customer = org;
+	                    }
+	                }
+	            });
+	            deferred.resolve(quotes);
+		});
+		return deferred.promise;
     }
 
     function updateQuote(quoteId, data, assignQuoteNumber, prefix) {
@@ -844,6 +845,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 				}
 	   });
     }
+
     function createQuoteNumber(prefix) {
 		// var timeoffset = 1476673277652;
         var now = new Date();

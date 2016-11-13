@@ -30,11 +30,11 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 				},
 				SerialNumbers: function(WeirService, OrderCloud, CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer()
-					.then(function(cust) {
-					    if (cust) {
-					        return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": cust.id});
-					    } else {
-					       return { Items: []};
+						.then(function(cust) {
+					        if (cust) {
+					            return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": cust.id});
+					        } else {
+								return { Items: []};
 					    }
 					});
 				},
@@ -125,9 +125,7 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 			templateUrl: 'home/templates/home.noresults.tpl.html',
 			controller: 'NoResultCtrl',
 			controllerAs: 'noResult'
-		})
-
-	;
+		});
 }
 
 function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, imageRoot) {
@@ -148,12 +146,12 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 	    if (!vm.Customer || vm.Customer.id != MyOrg.ID) {
 	        vm.Customer = {id: MyOrg.ID, name: MyOrg.Name};
 	        CurrentOrder.SetCurrentCustomer(vm.Customer)
-                    .then(function() {
-	        CurrentOrder.Get();
+                .then(function() {
+					CurrentOrder.Get();
                 })
- 	        .catch(function() {
-	            WeirService.FindCart(vm.Customer);
-	        });
+				.catch(function() {
+	                WeirService.FindCart(vm.Customer);
+	            });
 	    }
 	}
 

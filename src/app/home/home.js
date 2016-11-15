@@ -181,19 +181,22 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 		        }
 			}
 	    }
-	    if (newCust && (!vm.Customer || newCust.id != vm.Customer.id)) {
+		if (newCust) {  // && (!vm.Customer || newCust.id != vm.Customer.id) This commented portion prevents a new cart from being started by the same customer. Need to test.
 		    vm.Customer = newCust;
-		    CurrentOrder.SetCurrentCustomer(vm.Customer)
-	            .then(function() {
-		            vm.serialNumberList.length = 0;
-		            WeirService.FindCart(vm.Customer)
-		                .then(function() {
-                            OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": vm.Customer.id})
-                                .then(function(results) {
-									vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
-								});
-		                });
-	            });
+		    CurrentOrder.Remove()
+			    .then(function() {
+				    return CurrentOrder.SetCurrentCustomer(vm.Customer);
+			    })
+			    .then(function() {
+				    vm.serialNumberList.length = 0;
+				    WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
+					    .then(function() {
+						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": vm.Customer.id})
+							    .then(function(results) {
+								    vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
+							    });
+					    });
+			    });
 	    }
 	    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
 		$rootScope.$broadcast('OC:RemoveOrder');

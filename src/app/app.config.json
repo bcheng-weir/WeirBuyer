@@ -7,7 +7,7 @@
 	"environment": "prod",
 	"anonymous": false,
 	"base": {
-		"left": true,
+		"left": false,
 		"right": false,
 		"top": true,
 		"bottom": true

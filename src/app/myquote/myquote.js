@@ -476,7 +476,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $scope, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, buyerid, OCGeography) {
 	var vm = this;
-	var activeAddress = function(address) { return !address.xp.inactive; };
+	var activeAddress = function(address) { return address.xp.active == true; };
 	vm.addresses = Underscore.sortBy(Addresses.Items, function(address) {
 		return address.xp.primary;
 	}).filter(activeAddress).reverse();

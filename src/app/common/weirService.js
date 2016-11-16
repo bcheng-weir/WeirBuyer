@@ -136,10 +136,11 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 YourAccount: "Your Account",
                 Account: "Account",
                 Search: "Search",
+	            Current: "Current",
                 SavedQuotes: "Saved",
-                ReviewQuotes: "Quotes submitted for review",
-                RevisedQuotes: "Revised Quotes",
-                ConfirmedQuotes: "Confirmed Quotes",
+                ReviewQuotes: "Submitted for review",
+                RevisedQuotes: "Revised",
+                ConfirmedQuotes: "Confirmed",
                 language: true
             },
             fr: {
@@ -152,6 +153,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 YourAccount: "**Votre compte",
                 Account: "Compte",
                 Search: "Rechercher",
+	            Current: $sce.trustAsHtml("Current"),
                 SavedQuotes: $sce.trustAsHtml("Sauv&eacute;"),
                 ReviewQuotes: "**Cotation soumis pour examen",
                 RevisedQuotes: $sce.trustAsHtml("**Cotation r&eacute;vis&eacute;es"),

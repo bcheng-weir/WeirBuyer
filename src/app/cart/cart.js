@@ -113,7 +113,7 @@ function CartController($q, $rootScope, $timeout, OrderCloud, LineItemHelpers, O
     });
 }
 
-function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderCloud, LineItemHelpers, CurrentOrder, Underscore) {
+function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderCloud, LineItemHelpers, CurrentOrder, Underscore, WeirService) {
     var vm = this;
     vm.LineItems = {};
     vm.Order = null;
@@ -130,6 +130,18 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
     };
 
     vm.getLI();
+
+	var labels = {
+		en: {
+			view: "View ",
+			oneItem: "1 item in your ",
+			moreItems: " items in your "
+		},
+		fr: {
+
+		}
+	};
+	vm.labels = labels[WeirService.Locale()];
 
     vm.checkForExpress = function() {
         var expressCheckout = false;
@@ -154,7 +166,6 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
     };
 
     vm.goToCart = function() {
-        //$state.go('cart', {}, {reload: true});
         $state.go('myquote.detail', {}, {reload: true});
     };
 

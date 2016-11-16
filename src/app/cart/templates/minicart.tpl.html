@@ -18,6 +18,10 @@
                 <i class="badge">{{minicart.TotalItems}}</i>
                 <i ng-if="!minicart.$ocMedia('max-width:767px')" class="caret"></i>
             </span>
+            <br>
+            <span>
+                <a href="#" ng-click="minicart.goToCart()">{{minicart.Order.labels.view}}</a>
+            </span>
         </div>
         <!--<div class="btn btn-default">{{order.Subtotal | currency}}</div>-->
     </div>
@@ -26,11 +30,16 @@
         <div class="panel-heading">
             <div class="panel-title">
             <!--<ng-pluralize count="minicart.LineItems.Meta.TotalCount"-->
-                <ng-pluralize count="minicart.TotalItems"
+                <!--<ng-pluralize count="minicart.TotalItems"
                           when="{
                      'one': '1 item in your quote',
                      'other': '{} items in your quote'}">
-            </ng-pluralize>
+            </ng-pluralize>-->
+                <ng-pluralize count="minicart.TotalItems"
+                              when="{
+                     'one': minicart.labels.oneItem+' '+minicart.Order.xp.Type,
+                     'other': '{} '+minicart.labels.moreItems+' '+minicart.Order.xp.Type}">
+                </ng-pluralize>
             </div>
         </div>
         <div class="minicart-body">
@@ -58,7 +67,7 @@
         <div class="panel-footer">
             <div class="row">
                 <div ng-class="{'col-xs-6': minicart.checkForCheckout(), 'col-xs-12': !minicart.checkForCheckout()}">
-                    <button class="btn btn-info btn-block" ng-click="minicart.goToCart()">Quote</button>
+                    <button class="btn btn-info btn-block" ng-click="minicart.goToCart()">{{minicart.Order.xp.Type}}</button>
                 </div>
                 <!--<div class="col-xs-6"  ng-if="minicart.checkForCheckout()">
                     <button class="btn btn-success btn-block" ui-sref="checkout">Checkout</button>

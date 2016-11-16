@@ -16,7 +16,7 @@
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
 		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
                     <ul uib-dropdown-menu>
-                        <li><a href="" ui-sref="myquote.detail">Current</a></li>
+                        <li><a href="" ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
                         <li><a href="" ui-sref="quotes.saved" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
                         <li><a href="" ui-sref="quotes.inreview" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
                         <li><a href="" ui-sref="quotes.revised" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>

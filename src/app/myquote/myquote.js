@@ -801,7 +801,10 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                    resolve: {
                        Quote: function () {
                            return vm.Quote;
-                       }
+                       },
+	                   WithPO: function() {
+							return withPO;
+	                   }
                    }
                })
                .closed.then(function () {
@@ -1039,7 +1042,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote) {
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Quote) {
+function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Quote, WithPO) {
     var vm = this;
     vm.Quote = Quote;
 
@@ -1057,7 +1060,27 @@ function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Q
 		    MessageText3: $sce.trustAsHtml("We will also send you a detailed order confirmation document via email")
 		}
 	};
-	vm.labels = WeirService.LocaleResources(labels);
+
+	var labelsPending = {
+		en: {
+			Title: "Thank you. Your order has been submitted pending your PO.",
+			MessageText1: "We have sent you a confirmation email.",
+			MessageText2: "When we have received your PO we will confirm your order.",
+			MessageText3: "If your order needs to be revised we will email you an updated quote."
+		},
+		fr: {
+			Title: $sce.trustAsHtml("Thank you. Your order has been submitted pending your PO."),
+			MessageText1: $sce.trustAsHtml("We have sent you a confirmation email."),
+			MessageText2: $sce.trustAsHtml("When we have received your PO we will confirm your order."),
+			MessageText3: $sce.trustAsHtml("If your order needs to be revised we will email you an updated quote.")
+		}
+	}
+
+	if(WithPO) {
+		vm.labels = WeirService.LocaleResources(labels);
+	} else {
+		vm.labels = WeirService.LocaleResources(labelsPending);
+	}
 }
 
 function ChooseSubmitController($uibModalInstance, $state, $sce, WeirService, QuoteShareService) {

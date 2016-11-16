@@ -770,15 +770,19 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 		    data = {
 			    xp: {
 				    Status: WeirService.OrderStatus.SubmittedWithPO.id,
-				    Type: "Order"
+				    StatusDate: new Date(),
+				    Type: "Order",
+				    Revised: false
 			    }
 		    };
 	    } else {
 		    data = {
 			    xp: {
 				    Status: WeirService.OrderStatus.SubmittedPendingPO.id,
+				    StatusDate: new Date(),
 				    Type: "Order",
-				    PendingPO: true
+				    PendingPO: true,
+				    Revised: false
 			    }
 		    };
 	    }
@@ -836,7 +840,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     function _submitForReview() {
 	    var data = {
 		    xp: {
-			    Status: WeirService.OrderStatus.Submitted.id
+			    Status: WeirService.OrderStatus.Submitted.id,
+			    StatusDate: new Date(),
+			    Revised: false
 		    }
 	    };
 	    WeirService.UpdateQuote(vm.Quote.ID, data)

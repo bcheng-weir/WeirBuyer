@@ -16,7 +16,8 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 		RejectedRevisedOrder: {id: "RR", label: "Rejected Revised Order", desc: "Weir have shared revised order and customer has rejected revision (this would display as a status in the list view of quotes rather than in the navigation)"},
 		ConfirmedOrder: {id: "CO", label: "Confirmed Order", desc: "1, Weir have reviewed order and confirmed all details are OK 2, Customer has accepted revised order"},
 		Despatched: {id: "DP", label: "Despatched", desc: "Order marked as despatched"},
-		Invoiced: {id: "IV", label: "Invoiced", desc: "Order marked as invoiced"}
+		Invoiced: {id: "IV", label: "Invoiced", desc: "Order marked as invoiced"},
+		Review: {id: "RE", label: "Under review", desc: "Order or Quote has been submitted to Weir, but a change or additional information is needed"}
 		/*Shared: {id: "SH", label: "Shared", desc: "Shopper quote has been shared with a buyer"}, //Should this be an XP?
 		 Approved: {id: "AP", label: "Approved", desc: "Shopper quote has been shared with a buyer and approved"},
 		 Rejected: {id: "RJ", label: "Rejected", desc: "Shopper quote has been shared with a buyer and then rejected"},
@@ -723,7 +724,8 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 
 	    if (statuses && statuses.length) {
 	        var filter = {
-	    	    "xp.Type": "Quote"
+	    	    "xp.Type": "Quote",
+		        "xp.Active": "true"
 	        };
 			var statusFilter = statuses[0].id;
 			for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;

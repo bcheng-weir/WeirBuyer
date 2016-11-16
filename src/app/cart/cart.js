@@ -113,7 +113,7 @@ function CartController($q, $rootScope, $timeout, OrderCloud, LineItemHelpers, O
     });
 }
 
-function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderCloud, LineItemHelpers, CurrentOrder, Underscore, WeirService) {
+function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, OrderCloud, LineItemHelpers, CurrentOrder, Underscore, WeirService) {
     var vm = this;
     vm.LineItems = {};
     vm.Order = null;
@@ -138,7 +138,9 @@ function MiniCartController($q, $state, $rootScope,$uibModal, $ocMedia, OrderClo
 			moreItems: " items in your "
 		},
 		fr: {
-
+			view: $sce.trustAsHtml("View "),
+			oneItem: $sce.trustAsHtml("1 item in your "),
+			moreItems: $sce.trustAsHtml(" items in your ")
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];

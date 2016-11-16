@@ -628,7 +628,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             PONeededHeader: "Please provide a Purchase Order to finalise your order",
             POUpload: "Upload PO document",
             POEntry: "Enter PO Number",
-            SubmitOrder: "Submit Order"
+            SubmitOrderAndEmail: "Submit Order & Email PO",
+	        SubmitOrderWithPO: "Submit Order with PO"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -662,8 +663,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             CommentSavedMsg: $sce.trustAsHtml("FR:Your quote has been updated"),
             PONeededHeader: $sce.trustAsHtml("FR:Please provide a Purchase Order to finalise your order"),
             POUpload: $sce.trustAsHtml("FR:Upload PO document"),
-            POEntry: $sce.trustAsHtml("FR:Enter PO Number"),
-            SubmitOrder: $sce.trustAsHtml("FR:Submit Order")
+	        SubmitOrderAndEmail: $sce.trustAsHtml("Submit Order & Email PO"),
+	        SubmitOrderWithPO: $sce.trustAsHtml("Submit Order with PO")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -729,7 +730,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             );
     }
 
-    function _submitOrder() {
+    // ToDo Accept a parameter withPO. It will be true or false.
+    function _submitOrder(withPO) {
         if (payment == null) {
             if (vm.PONumber) {
                 var data = {
@@ -742,7 +744,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                     .then(function (pmt) {
                         QuoteShareService.Payments.push(pmt);
                         payment = pmt;
-                        completeSubmit();
+                        completeSubmit(withPO);
                     })
             }
         } else if (!payment.xp || payment.xp.PONumber != vm.PONumber) {
@@ -755,21 +757,32 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                 .then(function (pmt) {
                     QuoteShareService.Payments[0] = pmt;
                     payment = pmt;
-                    completeSubmit();
+                    completeSubmit(withPO);
                 })
         } else {
-            completeSubmit();
+            completeSubmit(withPO);
         }
     }
 
-    function completeSubmit() {
-        var data = {
-            xp: {
-                Status: WeirService.OrderStatus.SubmittedWithPO.id,
-                Type: "Order"
-            }
-        };
-        WeirService.UpdateQuote(vm.Quote.ID, data)
+    function completeSubmit(withPO) {
+    	var data = {};
+    	if(withPO) {
+		    data = {
+			    xp: {
+				    Status: WeirService.OrderStatus.SubmittedWithPO.id,
+				    Type: "Order"
+			    }
+		    };
+	    } else {
+		    data = {
+			    xp: {
+				    Status: WeirService.OrderStatus.SubmittedPendingPO.id,
+				    Type: "Order",
+				    PendingPO: true
+			    }
+		    };
+	    }
+	    WeirService.UpdateQuote(vm.Quote.ID, data)
             .then(function (qt) {
                 OrderCloud.Orders.Submit(vm.Quote.ID);
             })
@@ -1054,19 +1067,19 @@ function ChooseSubmitController($uibModalInstance, $state, $sce, WeirService, Qu
     var labels = {
         en: {
             SubmitReview: "Submit quote for review",
-            SubmitReviewMessage: $sce.trustAsHtml("<p>Some text TBC to say that you can submit your quote to the Spares sales team if there are any items that you would like to be confirmed</p><p>Some terms and conditions copy should also be here</p><p>If you submit you are acknowledging these terms</p>"),
+            SubmitReviewMessage: $sce.trustAsHtml("<p>Please select Submit quote for review if;<br><br>1. There are items in your quote that you would like Weir to review and confirm.<br>2. You have items in your quote that are POA. Weir will review the quote and provide prices for the POA items.</p>"),
             SubmitReviewBtn: "Submit quote for review",
-            ConfirmPO: "Confirm order with Purchase Order",
-            ConfirmPOMessage: $sce.trustAsHtml("<p>Some text TBC to say that you can submit your order with a purchase order number and upload a copy of your purchase order document.</p><p>Some terms and conditions copy should also be here</p><p>If you submit you are acknowledging these terms</p>"),
-            ConfirmPOBtn: "Confirm Order with Purchase Order"
+            ConfirmPO: "Confirm Order",
+            ConfirmPOMessage: $sce.trustAsHtml("<p>If you select Confirm Order you will be able to confirm your order as follows;<br><br>1. Submit Order with PO – add your PO number or upload your PO document.<br>2. Submit Order & email PO – submit your order and email your PO (we’ll add it to the order for you).</p>"),
+            ConfirmPOBtn: "Confirm Order"
         },
         fr: {
             SubmitReview: $sce.trustAsHtml("FR: Submit quote for review"),
-            SubmitReviewMessage: $sce.trustAsHtml("<p>FR: Some text TBC to say that you can submit your quote to the Spares sales team if there are any items that you would like to be confirmed</p><p>Some terms and conditions copy should also be here</p><p>If you submit you are acknowledging these terms</p>"),
+            SubmitReviewMessage: $sce.trustAsHtml("<p>FR: Please select Submit quote for review if;<br><br>1. There are items in your quote that you would like Weir to review and confirm.<br>2. You have items in your quote that are POA. Weir will review the quote and provide prices for the POA items.</p>"),
             SubmitReviewBtn: $sce.trustAsHtml("FR: Submit quote for review"),
-            ConfirmPO: $sce.trustAsHtml("FR: Confirm order with Purchase Order"),
-            ConfirmPOMessage: $sce.trustAsHtml("<p>FR: Some text TBC to say that you can submit your order with a purchase order number and upload a copy of your purchase order document.</p><p>Some terms and conditions copy should also be here</p><p>If you submit you are acknowledging these terms</p>"),
-            ConfirmPOBtn: $sce.trustAsHtml("FR: Confirm Order with Purchase Order")
+            ConfirmPO: $sce.trustAsHtml("FR: Confirm Order"),
+            ConfirmPOMessage: $sce.trustAsHtml("<p>If you select Confirm Order you will be able to confirm your order as follows;<br><br>1. Submit Order with PO – add your PO number or upload your PO document.<br>2. Submit Order & email PO – submit your order and email your PO (we’ll add it to the order for you).</p>"),
+            ConfirmPOBtn: $sce.trustAsHtml("FR: Confirm Order")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1146,6 +1159,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, $exceptionHandler, 
     vm.GetStatusLabel = getStatusLabel;
     vm.View = view;
 }
+
 function ReadonlyQuoteController($sce, WeirService, Quote, ShippingAddress, LineItems, Payments) {
     var vm = this;
     vm.Quote = Quote;

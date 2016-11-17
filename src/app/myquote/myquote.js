@@ -174,7 +174,7 @@ function MyQuoteConfig($stateProvider, buyerid) {
     ;
 }
 
-function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot) {
+function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
@@ -229,25 +229,28 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 
 		WeirService.UpdateQuote(vm.Quote.ID, mods, assignQuoteNumber, vm.Customer.id)
 			.then(function(quote) {
-			    vm.Quote = quote;
-			    toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
-				var modalInstance = $uibModal.open({
-					animation: true,
-					ariaLabelledBy: 'modal-title',
-					ariaDescribedBy: 'modal-body',
-					templateUrl: 'modalConfirmation.html',
-					controller: 'ModalInstanceCtrl',
-					controllerAs: 'myQuote',
-					resolve: {
-						quote: function() {
-							return vm.Quote;
-						},
-						labels: function() {
-							return vm.labels;
+				if(assignQuoteNumber) {
+					vm.Quote = quote;
+					toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
+					var modalInstance = $uibModal.open({
+						animation: true,
+						ariaLabelledBy: 'modal-title',
+						ariaDescribedBy: 'modal-body',
+						templateUrl: 'modalConfirmation.html',
+						controller: 'ModalInstanceCtrl',
+						controllerAs: 'myQuote',
+						resolve: {
+							quote: function () {
+								return vm.Quote;
+							},
+							labels: function () {
+								return vm.labels;
+							}
 						}
-					}
-				});
-				modalInstance.result;
+					});
+					modalInstance.result;
+				}
+				return;
 			});
 	}
 	function _approve() {
@@ -286,7 +289,11 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	    }
 	}
 
-	function gotoDelivery() {
+	function gotoDelivery(dirty) {
+		if(dirty) {
+			save();
+		}
+
 		if (!$state.is("myquote.detail") || (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.Files && vm.Quote.xp.Files.length)) {
             $state.go("myquote.delivery");
 		} else {
@@ -453,7 +460,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 				$rootScope.$broadcast('SwitchCart', quoteNumber, itemid); //This kicks off an event in cart.js
 			})
 			.then(function() {
-				$state.reload();
+				//$state.reload($state.current, {}, {reload:true}); This is bugged: https://github.com/angular-ui/ui-router/issues/582
+				$state.transitionTo($state.current, $state.$current.params, { reload: true, inherit: true, notify: true });
 			})
 			.catch(function(ex){
 				$exceptionHandler(ex);
@@ -467,7 +475,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 				$rootScope.$broadcast('SwitchCart', quoteNumber, resp.ID);
 			})
 			.then(function() {
-				$state.reload();
+				//$state.reload($state.current, {}, {reload:true}); This is bugged: https://github.com/angular-ui/ui-router/issues/582
+				$state.transitionTo($state.current, $state.$current.params, { reload: true, inherit: true, notify: true });
 			})
 			.catch(function(ex) {
 				$exceptionHandler(ex);
@@ -528,7 +537,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 		OrderCloud.Orders.SetShippingAddress(QuoteID, Address, buyerid)
 			.then(function(order) {
 				$state.go($state.current, {}, {reload: true});
-				toastr.success("Shipping address set to " + order.ShippingAddressID,"Shipping Address Set");
+				toastr.success("Shipping address successfully selected.","Success!");
 			})
 			.catch(function(ex) {
 				$exceptionHandler(ex);
@@ -681,7 +690,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    $rootScope.$broadcast('SwitchCart', quoteNumber, itemid); //This kicks off an event in cart.js
 			})
 			.then(function () {
-			    $state.reload();
+				//$state.reload($state.current, {}, {reload:true}); This is bugged: https://github.com/angular-ui/ui-router/issues/582
+				$state.transitionTo($state.current, $state.$current.params, { reload: true, inherit: true, notify: true });
 			})
 			.catch(function (ex) {
 			    $exceptionHandler(ex);
@@ -694,7 +704,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    $rootScope.$broadcast('LineItemAddedToCart', quoteNumber, resp.ID);
 			})
 			.then(function () {
-			    $state.reload($state.current);
+				//$state.reload($state.current, {}, {reload:true}); This is bugged: https://github.com/angular-ui/ui-router/issues/582
+				$state.transitionTo($state.current, $state.$current.params, { reload: true, inherit: true, notify: true });
 			})
 			.catch(function (ex) {
 			    $exceptionHandler(ex);

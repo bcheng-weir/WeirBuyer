@@ -1,4 +1,4 @@
-<div>
+<form name="myForm">
    <div class="row" style="padding-top:20px;">
         <div class="col-md-8">
             <h4><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></h4>
@@ -10,7 +10,7 @@
         <div class="col-md-4">
             <h2 class="pull-right">
                 <button class="btn btn-default" ui-sref="home" ng-bind-html='detail.labels.AddNew'></button>
-                <button class="btn btn-success" ng-click="myquote.GotoDelivery()" ng-bind-html='detail.labels.DeliveryOptions'></button>
+                <button class="btn btn-success" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html='detail.labels.DeliveryOptions'></button>
             </h2>
         </div>
     </div>
@@ -79,4 +79,4 @@
             <p><textarea rows='4' cols='40' maxlength="1000" ng-model='myquote.Quote.Comments'></textarea></p>
         </div>
     </div>
-</div>
+</form>

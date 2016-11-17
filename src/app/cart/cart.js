@@ -135,12 +135,14 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
 		en: {
 			view: "View ",
 			oneItem: "1 item in your ",
-			moreItems: " items in your "
+			moreItems: " items in your ",
+            buttonLabel: "Quote"
 		},
 		fr: {
 			view: $sce.trustAsHtml("View "),
 			oneItem: $sce.trustAsHtml("1 item in your "),
-			moreItems: $sce.trustAsHtml(" items in your ")
+			moreItems: $sce.trustAsHtml(" items in your "),
+			buttonLabel: $sce.trustAsHtml("Quote")
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];

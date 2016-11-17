@@ -501,11 +501,11 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
             var li = {
                 ProductID: lineItem.ProductID,
                 Quantity: qty
-            }
+            };
             OrderCloud.LineItems.Patch(order.ID, lineItem.ID, li, buyerid)
                 .then(function(lineItem) {
                     deferred.resolve({Order: order, LineItem: lineItem});
-                })
+                });
         }
 
         function addLineItem(order) {

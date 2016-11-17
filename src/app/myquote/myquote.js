@@ -174,7 +174,7 @@ function MyQuoteConfig($stateProvider, buyerid) {
     ;
 }
 
-function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot) {
+function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
@@ -347,7 +347,8 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 	        RejectedMessage: "The revised quote has been rejected.",
 	        RejectedTitle: "Quote updated",
 	        ApprovedMessage: "The revised quote has been accepted",
-	        ApprovedTitle: "Quote updated"
+	        ApprovedTitle: "Quote updated",
+		    SubmitWithPO: "Submit Order with PO"
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Votre Cotation"),
@@ -372,7 +373,8 @@ function MyQuoteController($sce, $state, $document, $uibModal, $timeout, $window
 			RejectedMessage: $sce.trustAsHtml("FR: The revised quote has been rejected."),
 			RejectedTitle: $sce.trustAsHtml("FR: Quote updated"),
 			ApprovedMessage: $sce.trustAsHtml("FR: The revised quote has been accepted"),
-			ApprovedTitle: $sce.trustAsHtml("FR: Quote updated")
+			ApprovedTitle: $sce.trustAsHtml("FR: Quote updated"),
+			SubmitWithPO: $sce.trustAsHtml("Submit Order with PO")
 		}
 	};
 
@@ -474,7 +476,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $scope, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, buyerid, OCGeography) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, buyerid, OCGeography) {
 	var vm = this;
 	var activeAddress = function(address) { return address.xp.active == true; };
 	vm.addresses = Underscore.sortBy(Addresses.Items, function(address) {
@@ -590,6 +592,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown");
     vm.SubmittingToReview = false;
     vm.SubmittingWithPO = false;
+	if(vm.Quote.xp.PendingPO == true && vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) {
+		vm.SubmittingWithPO = true;
+	}
     // TODO: Also add condition that user has Buyer role
     var allowNextStatuses = [WeirService.OrderStatus.Draft.id, WeirService.OrderStatus.Saved.id];
     vm.ShowNextButton = (QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
@@ -682,7 +687,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    $exceptionHandler(ex);
 			});
     }
-
 
     function _updateLineItem(quoteNumber, item) {
         OrderCloud.LineItems.Update(quoteNumber, item.ID, item, buyerid)
@@ -887,8 +891,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.toReview = _gotoReview;
 }
 
-function RevisedQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder) {
+function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Underscore, OCGeography) {
     var vm = this;
     vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
@@ -1048,7 +1051,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote) {
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Quote, WithPO) {
+function SubmitConfirmController($sce, WeirService, Quote, WithPO) {
     var vm = this;
     vm.Quote = Quote;
 
@@ -1089,7 +1092,7 @@ function SubmitConfirmController($uibModalInstance, $state, $sce, WeirService, Q
 	}
 }
 
-function ChooseSubmitController($uibModalInstance, $state, $sce, WeirService, QuoteShareService) {
+function ChooseSubmitController($uibModalInstance, $sce, WeirService, QuoteShareService) {
     var vm = this;
     vm.Quote = QuoteShareService.Quote;
 
@@ -1125,7 +1128,7 @@ function ChooseSubmitController($uibModalInstance, $state, $sce, WeirService, Qu
     vm.confirmOrderWithPO = _confirmOrderWithPO;
 }
 
-function QuoteRevisionsController(WeirService, $state, $sce, $exceptionHandler, $rootScope, OrderCloud, QuoteShareService, QuoteID, Revisions, buyerid) {
+function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions) {
     var vm = this;
     vm.Revisions = Revisions;
     vm.QuoteID = QuoteID;

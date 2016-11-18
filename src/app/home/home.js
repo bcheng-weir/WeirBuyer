@@ -216,7 +216,10 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 			SearchMine: "Search your products",
 			SearchOr: "Or",
 			FilterEndUser: "Filter by end-user",
-			Select: "Select"
+			Select: "Select",
+			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
+			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+			PriceDisclaimer: "All prices stated do not include UK VAT or delivery"
 		},
 		fr: {
 		    SerialSearch: $sce.trustAsHtml("Rechercher par Num&eacute;ro de S&eacute;rie"),
@@ -225,9 +228,12 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 		    CustomerFilter: $sce.trustAsHtml("R&eacute;sultats filtr&eacute;s par: "),
 		    SelectCustomer: $sce.trustAsHtml("Renouveler la recherche filtr&eacute;e"),
 		    SearchMine: $sce.trustAsHtml("Rechercher votre produit"),
-			SearchOr: $sce.trustAsHtml("Ou"),
-			FilterEndUser: $sce.trustAsHtml("Filtrer par clients finaux"),
-			Select: $sce.trustAsHtml("S&eacute;lectionner")
+		    SearchOr: $sce.trustAsHtml("Ou"),
+		    FilterEndUser: $sce.trustAsHtml("Filtrer par clients finaux"),
+		    Select: $sce.trustAsHtml("S&eacute;lectionner"),
+		    ReplacementGuidance: $sce.trustAsHtml("TBD: Replacement guidance"),
+		    POAGuidance: $sce.trustAsHtml("TBD: POA guidance"),
+		    PriceDisclaimer: $sce.trustAsHtml("TBD: Price disclaimer")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

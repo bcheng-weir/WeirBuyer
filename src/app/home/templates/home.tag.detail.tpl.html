@@ -1,29 +1,29 @@
 <article>
     <div class="row">
         <div class="col-md-8">
-		<p><b><span ng-bind-html='tagDetail.labels.ResultsHeader'></span><span class="text-danger">{{tagDetail.tagNumber.Name}}</span></b></p>
-		<p><b><span ng-bind-html='tagDetail.labels.Tag'></span><span class="text-danger">{{tagDetail.tagNumber.xp.TagNumber}}</span></b></p>
-		<p><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger">{{tagDetail.tagNumber.xp.Customer}}</span></b></p>
-			<p><b><span ng-bind-html='tagDetail.labels.ManufDate'></span><span class="text-danger">{{tagDetail.tagNumber.xp.ManufactureDate}}</span></b></p>
+            <p><b><span ng-bind-html='tagDetail.labels.ResultsHeader'></span><span class="text-danger">{{tagDetail.tagNumber.Name}}</span></b></p>
+            <p><b><span ng-bind-html='tagDetail.labels.Tag'></span><span class="text-danger">{{tagDetail.tagNumber.xp.TagNumber}}</span></b></p>
+            <p><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger">{{tagDetail.tagNumber.xp.Customer}}</span></b></p>
+            <p><b><span ng-bind-html='tagDetail.labels.ManufDate'></span><span class="text-danger">{{tagDetail.tagNumber.xp.ManufactureDate}}</span></b></p>
         </div>
         <div class="col-md-4">
             <h2 class="pull-right">
-		    <button class="btn btn-default" ui-sref="home.tag" ng-bind-html='tagDetail.labels.SearchAgain'></button>
+                <button class="btn btn-default" ui-sref="home.tag" ng-bind-html='tagDetail.labels.SearchAgain'></button>
                 <button class="btn btn-primary" ng-if="tagDetail.searchNumbers" ui-sref="home.tag.results({numbers: tagDetail.searchNumbers})" ng-bind-html='tagDetail.labels.BackToResults'></button>
             </h2>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
-            <figure >
+            <figure>
                 <img ng-if="tagDetail.tagNumber.xp.ImageName" ng-src="{{home.GetValveImageUrl(tagDetail.tagNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em;display:block; margin-left:auto; margin-right:auto;" />
                 <div ng-if="!tagDetail.tagNumber.xp.ImageName" class="serial-image">
-                        <span>General Arrangement drawing of Valve Type</span>
-                    </div>
-</figure>
+                    <span>General Arrangement drawing of Valve Type</span>
+                </div>
+            </figure>
         </div>
         <div class="col-md-6">
-		<h3 ng-bind-html='tagDetail.labels.SpecHeader'></h3>
+            <h3 ng-bind-html='tagDetail.labels.SpecHeader'></h3>
             <table ng-if="tagDetail.tagNumber.xp.Specs.Type=='WCVUK'" class="table table-bordered oc-table-responsive weir-specs-table">
                 <tbody>
                     <tr>
@@ -36,7 +36,7 @@
                     </tr>
                     <tr>
                         <td>Valve quantity</td>
-			<td>{{tagDetail.tagNumber.xp.Quantity}}</td>
+                        <td>{{tagDetail.tagNumber.xp.Quantity}}</td>
                     </tr>
                     <tr>
                         <td>Size</td>
@@ -59,35 +59,35 @@
             <table ng-if="tagDetail.tagNumber.xp.Specs.Type=='WPIFR'" class="table table-bordered oc-table-responsive weir-specs-table">
                 <tbody>
                     <tr>
-			    <td ng-bind-html='tagDetail.labels.SerialNum'></td>
+                        <td ng-bind-html='tagDetail.labels.SerialNum'></td>
                         <td>{{tagDetail.tagNumber.Name}}</td>
                     </tr>
                     <tr>
-			    <td ng-bind-html='tagDetail.labels.ValveDesc'></td>
+                        <td ng-bind-html='tagDetail.labels.ValveDesc'></td>
                         <td>{{tagDetail.tagNumber.Description}}</td>
                     </tr>
                     <tr>
-			    <td ng-bind-html='tagDetail.labels.ValveQty'></td>
+                        <td ng-bind-html='tagDetail.labels.ValveQty'></td>
                         <td>{{tagDetail.tagNumber.xp.Quantity}}</td>
                     </tr>
                     <tr>
-			    <td ng-bind-html='tagDetail.labels.Pressure'></td>
+                        <td ng-bind-html='tagDetail.labels.Pressure'></td>
                         <td>{{tagDetail.tagNumber.xp.Specs.Pressure}}</td>
                     </tr>
                     <tr>
-			    <td ng-bind-html='tagDetail.labels.BackPressure'></td>
+                        <td ng-bind-html='tagDetail.labels.BackPressure'></td>
                         <td>{{tagDetail.tagNumber.xp.Specs.BackPressure}}</td>
                     </tr>
                     <tr>
-			    <td ng-bind-html='tagDetail.labels.Temp'></td>
+                        <td ng-bind-html='tagDetail.labels.Temp'></td>
                         <td>{{tagDetail.tagNumber.xp.Specs.Temperature}}</td>
                     </tr>
                     <tr>
-			    <td ng-bind-html='tagDetail.labels.Inlet'></td>
+                        <td ng-bind-html='tagDetail.labels.Inlet'></td>
                         <td>{{tagDetail.tagNumber.xp.Specs.Inlet}}</td>
                     </tr>
                     <tr>
-			    <td ng-bind-html='tagDetail.labels.Outlet'></td>
+                        <td ng-bind-html='tagDetail.labels.Outlet'></td>
                         <td>{{tagDetail.tagNumber.xp.Specs.Outlet}}</td>
                     </tr>
                 </tbody>
@@ -99,40 +99,47 @@
             <h3><span ng-bind-html='tagDetail.headers.PartList'><span class="text-danger">{{tagDetail.tagNumber.Name}}</span></h3>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
-                <tr>
-			<th ng-bind-html='tagDetail.headers.PartNum'></th>
-                    <th ng-bind-html='tagDetail.headers.PartDesc'></th>
-                    <th ng-bind-html='tagDetail.headers.PartQty'></th>
-                    <th ng-bind-html='tagDetail.headers.ReplSched'>t</th>
-                    <th ng-bind-html='tagDetail.headers.LeadTime'></th>
-                    <th ng-bind-html='tagDetail.headers.Price'></th>
-                    <th ng-bind-html='tagDetail.headers.Qty'></th>
-                    <th class="button-th"></th>
-                </tr>
+                    <tr>
+                        <th ng-bind-html='tagDetail.headers.PartNum'></th>
+                        <th ng-bind-html='tagDetail.headers.PartDesc'></th>
+                        <th ng-bind-html='tagDetail.headers.PartQty'></th>
+                        <th ng-bind-html='tagDetail.headers.ReplSched'>t</th>
+                        <th ng-bind-html='tagDetail.headers.LeadTime'></th>
+                        <th ng-bind-html='tagDetail.headers.Price'></th>
+                        <th ng-bind-html='tagDetail.headers.Qty'></th>
+                        <th class="button-th"></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="part in tagDetail.tagNumber.Parts">
-                    <td class="text-danger">{{part.Detail.Name}}</td>
-                    <td>{{part.Detail.Description}}</td>
-		    <td>{{tagDetail.PartQuantity(part.Detail.ID)}}</td>
-                    <td>{{part.Detail.xp.ReplacementSchedule}}</td>
-                    <td>{{part.Detail.xp.LeadTime}}</td>
-		    <td ng-switch on="part.Detail.StandardPriceSchedule.xp.Currency">
-			    <span ng-switch-when="USD">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'USD '}}</span>
-			    <span ng-switch-default>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'GBP '}}</span>
-			    <!-- <span ng-switch-default>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span> -->
-		    </td>
-		    <td>
-			    <form class="form-group">
-				    <input type="number" class="form-control" ng-model="part.Quantity" ng-min="0"
-				    ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" />
-			    </form>
-		    </td>
-                    <td class="button-td"><button class="btn btn-warning" ng-click="tagDetail.addPartToQuote(part)" ng-bind-html='tagDetail.headers.AddToQuote'></button></td>
-                </tr>
+                    <tr ng-repeat="part in tagDetail.tagNumber.Parts">
+                        <td class="text-danger">{{part.Detail.Name}}</td>
+                        <td>{{part.Detail.Description}}</td>
+                        <td>{{tagDetail.PartQuantity(part.Detail.ID)}}</td>
+                        <td>{{part.Detail.xp.ReplacementSchedule}}</td>
+                        <td>{{part.Detail.xp.LeadTime}}</td>
+                        <td ng-switch on="part.Detail.StandardPriceSchedule.xp.Currency">
+                            <span ng-switch-when="USD">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'USD '}}</span>
+                            <span ng-switch-default>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'GBP '}}</span>
+                            <!-- <span ng-switch-default>{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span> -->
+                        </td>
+                        <td>
+                            <form class="form-group">
+                                <input type="number" class="form-control" ng-model="part.Quantity" ng-min="0"
+                                       ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" />
+                            </form>
+                        </td>
+                        <td class="button-td"><button class="btn btn-warning" ng-click="tagDetail.addPartToQuote(part)" ng-bind-html='tagDetail.headers.AddToQuote'></button></td>
+                    </tr>
                 </tbody>
             </table>
-            <p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <p><span ng-bind-html='home.labels.ReplacementGuidance'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='home.labels.POAGuidance'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='tagDetail.headers.LeadTimeNotice'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='home.labels.PriceDisclaimer'></span></p>
         </div>
     </div>
 </article>

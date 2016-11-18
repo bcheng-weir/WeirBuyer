@@ -34,7 +34,7 @@ function CustomerConfig($stateProvider) {
             controllerAs: 'customerEdit',
             resolve: {
                 SelectedBuyer: function($stateParams, OrderCloud){
-                    return OrderCloud.Buyers.Get($stateParams.buyerid)
+                    return OrderCloud.Buyers.Get($stateParams.buyerid);
                 },
                 AddressList: function(OrderCloud, $stateParams, Parameters) {
                     var f = {

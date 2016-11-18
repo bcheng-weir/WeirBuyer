@@ -355,7 +355,8 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 	        RejectedTitle: "Quote updated",
 	        ApprovedMessage: "The revised quote has been accepted",
 	        ApprovedTitle: "Quote updated",
-		    SubmitWithPO: "Submit Order with PO"
+	        SubmitWithPO: "Submit Order with PO",
+	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery"
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Votre Cotation"),
@@ -381,7 +382,8 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 			RejectedTitle: $sce.trustAsHtml("FR: Quote updated"),
 			ApprovedMessage: $sce.trustAsHtml("FR: The revised quote has been accepted"),
 			ApprovedTitle: $sce.trustAsHtml("FR: Quote updated"),
-			SubmitWithPO: $sce.trustAsHtml("Submit Order with PO")
+			SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
+			PriceDisclaimer: $sce.trustAsHtml("FR - All prices stated do not include UK VAT or delivery")
 		}
 	};
 
@@ -400,6 +402,10 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 }
 
 function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, QuoteShareService) {
+    if ((QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) ||
+        (QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id)) {
+        $state.go("myquote.revised");
+    }
 	var vm = this;
 	vm.LineItems = QuoteShareService.LineItems;
 	var labels = {
@@ -521,7 +527,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	        BackToQuote: $sce.trustAsHtml("FR: Back to your quote"),
 	        InfoText1: $sce.trustAsHtml("FR: Delivery costs will be confirmed on order."),
 	        InfoText2: $sce.trustAsHtml("FR: Deliveries will be prepared for shipping based on your standard delivery instructions."),
-	        InfoText3: $sce.trustAsHtml("FR: Lead time for all orders will be based on the longest lead time from the list of spares requested.")
+	        InfoText3: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es")
 	    }
 	};
 
@@ -653,7 +659,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         fr: {
             Customer: $sce.trustAsHtml("Client "),
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
-            QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+            QuoteName: $sce.trustAsHtml("Nom de la cotation "),
             NextStep: $sce.trustAsHtml("FR: Next"),
             Submit: $sce.trustAsHtml("Submit quote or order"),
             BackToReview: $sce.trustAsHtml("Review quote"),
@@ -669,12 +675,12 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             Total: $sce.trustAsHtml("Total"),
             YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
             YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
-            CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
-            CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
+            CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
+            CommentsInstr: $sce.trustAsHtml("Veuillez ajouter tout commentaire ou instructions sp&eacute;cifiques pour cette cotation"),
             DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
             DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
             ChangeAddr: $sce.trustAsHtml("FR: Change address"),
-            Update: $sce.trustAsHtml("FR: Mettre à jour"),
+            Update: $sce.trustAsHtml("Mettre à jour"),
             WeirComment: $sce.trustAsHtml("** Commentaires"),
             AddComment: $sce.trustAsHtml("FR: Add"),
             CancelComment: $sce.trustAsHtml("FR: Cancel"),
@@ -963,7 +969,7 @@ function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Un
         fr: {
             Customer: $sce.trustAsHtml("Client "),
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
-            QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+            QuoteName: $sce.trustAsHtml("Nom de la cotation "),
             BackToQuotes: $sce.trustAsHtml("FR: Back to your Quotes"),
             SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
@@ -979,8 +985,7 @@ function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Un
             New: "New",
             YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
             YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
-            CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
-            CommentsInstr: $sce.trustAsHtml("FR: Please add any specific comments or instructions for this quote"),
+            CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
             DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
             ViewRevisions: $sce.trustAsHtml("FR: View Previous revisions")
         }

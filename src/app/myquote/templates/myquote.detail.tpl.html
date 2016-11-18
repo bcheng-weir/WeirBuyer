@@ -1,10 +1,10 @@
 <form name="myForm">
-   <div class="row" style="padding-top:20px;">
+    <div class="row" style="padding-top:20px;">
         <div class="col-md-8">
             <h4><span ng-bind-html='detail.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{myquote.Customer.name}}</span></h4>
-            <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
+            <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;" ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
             <h4><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' style="margin-left:1em;" maxlength="20" ng-model='myquote.Quote.xp.Name' /></h4>
-	        <h4><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h4>
+            <h4><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h4>
         </div>
 
         <div class="col-md-4">
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-   <div class="row">
+    <div class="row">
         <div class="col-md-12">
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead class="header-cell">
@@ -44,7 +44,8 @@
                             <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
                         </td>
-                        <td class="form-inline"><input type="number" class="form-control" ng-model="line.Quantity" ng-min="0"
+                        <td class="form-inline">
+                            <input type="number" class="form-control" ng-model="line.Quantity" ng-min="0"
                                    ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:50%" />
                             <button class="btn btn-default" ng-bind-html='detail.labels.Update' ng-click="detail.updateLineItem(myquote.Quote.ID,line)"></button>
                         </td>
@@ -63,8 +64,13 @@
             </table>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-8">
+            <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>
+        </div>
+    </div>
 
-   <div class="row">
+    <div class="row">
         <div class="col-md-6">
             <h4><span ng-bind-html='detail.labels.UploadHeader'></span></h4>
             <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>

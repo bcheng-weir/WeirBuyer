@@ -355,7 +355,8 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 	        RejectedTitle: "Quote updated",
 	        ApprovedMessage: "The revised quote has been accepted",
 	        ApprovedTitle: "Quote updated",
-		    SubmitWithPO: "Submit Order with PO"
+	        SubmitWithPO: "Submit Order with PO",
+	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery"
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Votre Cotation"),
@@ -381,7 +382,8 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 			RejectedTitle: $sce.trustAsHtml("FR: Quote updated"),
 			ApprovedMessage: $sce.trustAsHtml("FR: The revised quote has been accepted"),
 			ApprovedTitle: $sce.trustAsHtml("FR: Quote updated"),
-			SubmitWithPO: $sce.trustAsHtml("Submit Order with PO")
+			SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
+			PriceDisclaimer: $sce.trustAsHtml("FR - All prices stated do not include UK VAT or delivery")
 		}
 	};
 
@@ -400,6 +402,10 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 }
 
 function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, QuoteShareService) {
+    if ((QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) ||
+        (QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id)) {
+        $state.go("myquote.revised");
+    }
 	var vm = this;
 	vm.LineItems = QuoteShareService.LineItems;
 	var labels = {

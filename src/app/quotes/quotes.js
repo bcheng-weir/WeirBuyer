@@ -32,7 +32,10 @@ function QuotesConfig($stateProvider,  buyerid) {
 					return WeirService.FindQuotes([WeirService.OrderStatus.Saved], false);
 				},
                 CurrentOrderId: function(CurrentOrder) {
-					return CurrentOrder.GetID();
+					return CurrentOrder.GetID()
+						.catch(function() {
+							return {};
+						});
 				}
 			}
 		})

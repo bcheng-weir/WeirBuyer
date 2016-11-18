@@ -31,7 +31,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 		orderStatuses.Draft, orderStatuses.Saved, orderStatuses.Submitted, orderStatuses.RevisedQuote,
 		orderStatuses.RejectedQuote, orderStatuses.ConfirmedQuote, orderStatuses.SubmittedWithPO, orderStatuses.RevisedOrder,
 		orderStatuses.RejectedRevisedOrder, orderStatuses.ConfirmedOrder, orderStatuses.Despatched, orderStatuses.Invoiced,
-        orderStatuses.SubmittedPendingPO
+        orderStatuses.SubmittedPendingPO, orderStatuses.Review
 	];
     // TODO - add localized label/description, include locale in selection
     function getStatus(id) {

@@ -24,7 +24,8 @@
 			    <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
 		    </td>
                     <td>{{quote.xp.CustomerID}}</td>
-                    <td>{{quote.tmp.user.FirstName + ' ' + quote.tmp.user.LastName}}</td>
+                    <td>{{quote.xp.ReviewerName}}</td>
+                    <!--<td>{{quote.tmp.user.FirstName + ' ' + quote.tmp.user.LastName}}</td>-->
                     <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
                     <td>{{quote.xp.Expires | weirdate}}</td>
 		    <!-- <td class="button-td"><button class="btn btn-warning" ng-click="quotes.openQuote(quote.OrderID)" ng-bind-html='quote.labels.OpenQuote'></button></td> -->

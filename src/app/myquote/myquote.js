@@ -470,7 +470,10 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 	vm.updateLineItem = _updateLineItem;
 	function _updateLineItem(quoteNumber, item) {
-		OrderCloud.LineItems.Update(quoteNumber,item.ID,item,buyerid)
+		var patch = {
+			Quantity: item.Quantity
+		};
+		OrderCloud.LineItems.Patch(quoteNumber, item.ID, patch, buyerid)
 			.then(function(resp) {
 				$rootScope.$broadcast('SwitchCart', quoteNumber, resp.ID);
 			})
@@ -699,7 +702,10 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     }
 
     function _updateLineItem(quoteNumber, item) {
-        OrderCloud.LineItems.Update(quoteNumber, item.ID, item, buyerid)
+    	var patch = {
+		    Quantity: item.Quantity
+	    };
+        OrderCloud.LineItems.Patch(quoteNumber, item.ID, patch, buyerid)
 			.then(function (resp) {
 			    $rootScope.$broadcast('LineItemAddedToCart', quoteNumber, resp.ID);
 			})
@@ -852,14 +858,26 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
     }
 
-    function _submitForReview() {
-	    var data = {
-		    xp: {
-			    Status: WeirService.OrderStatus.Submitted.id,
-			    StatusDate: new Date(),
-			    Revised: false
-		    }
-	    };
+    function _submitForReview(dirty) {
+	    var data = {};
+	    if(dirty) {
+		    data = {
+			    xp: {
+				    Status: WeirService.OrderStatus.Submitted.id,
+				    StatusDate: new Date(),
+				    Revised: false,
+				    CommentsToWeir: vm.CommentsToWeir
+			    }
+		    };
+	    } else {
+	    	data = {
+			    xp: {
+				    Status: WeirService.OrderStatus.Submitted.id,
+				    StatusDate: new Date(),
+				    Revised: false
+			    }
+		    };
+	    }
 	    WeirService.UpdateQuote(vm.Quote.ID, data)
 		    .then(function (qt) {
 			    return OrderCloud.Orders.Submit(vm.Quote.ID);

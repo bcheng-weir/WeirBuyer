@@ -11,7 +11,6 @@
                     <th ng-bind-html='saved.labels.Total'></th>
                     <th ng-bind-html='saved.labels.Customer'>t</th>
                     <th ng-bind-html='saved.labels.Status'></th>
-                    <th ng-bind-html='saved.labels.ValidTo'></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,7 +26,6 @@
                         <td ng-if="quote.xp.CustomerID != quotes.MyOrg.ID ">{{quote.xp.CustomerName}}</td>
                         <td ng-if="quote.xp.CustomerID == quotes.MyOrg.ID ">{{saved.labels.OwnProduct}}</td>
                         <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
-                        <td>{{quote.xp.Expires | weirdate}}</td>
                         <td><button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status)" ng-bind-html="saved.labels.View"></button></td>
                     </tr>
                 </tbody>

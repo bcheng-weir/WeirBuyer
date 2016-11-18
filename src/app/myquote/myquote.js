@@ -646,7 +646,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             POUpload: "Upload PO document",
             POEntry: "Enter PO Number",
             SubmitOrderAndEmail: "Submit Order & Email PO",
-	        SubmitOrderWithPO: "Submit Order with PO"
+	        SubmitOrderWithPO: "Submit Order with PO",
+	        SerialNum: "Serial number",
+	        EmailPoMessage: "*Your order will be confirmed<br class='message-break'>following receipt of your PO."
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -681,7 +683,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             PONeededHeader: $sce.trustAsHtml("FR:Please provide a Purchase Order to finalise your order"),
             POUpload: $sce.trustAsHtml("FR:Upload PO document"),
 	        SubmitOrderAndEmail: $sce.trustAsHtml("Submit Order & Email PO"),
-	        SubmitOrderWithPO: $sce.trustAsHtml("Submit Order with PO")
+	        SubmitOrderWithPO: $sce.trustAsHtml("Submit Order with PO"),
+	        SerialNum: $sce.trustAsHtml("Serial number"),
+	        EmailPoMessage: $sce.trustAsHtml("*Your order will be confirmed<br>following receipt of your PO.")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1035,10 +1039,14 @@ function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService, q
 
     function gotoDelivery() {
 		$uibModalInstance.close();
-        $state.go("myquote.delivery");
+	    if($state.$current.name != "myquote.delivery") {
+            $state.go("myquote.delivery");
+	    }
     }
+
     function cancel() {
 		$uibModalInstance.close();
+	    $state.go("myquote.detail");
     }
 }
 

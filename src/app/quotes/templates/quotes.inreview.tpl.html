@@ -11,24 +11,20 @@
                     <th ng-bind-html='inreview.labels.Customer'>t</th>
                     <th ng-bind-html='inreview.labels.Approver'>t</th>
                     <th ng-bind-html='inreview.labels.Status'></th>
-                    <th ng-bind-html='inreview.labels.ValidTo'></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="quote in inreview.Quotes">
                     <td class="text-danger">{{quote.ID}}</td>
                     <td>{{quote.xp.RefNum}}</td>
-		    <td ng-switch on="quote.xp.Currency">
-			    <span ng-switch-when="EUR">{{quote.Total | currency:'&euro; '}}</span>
-			    <span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
-			    <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
-		    </td>
+                    <td ng-switch on="quote.xp.Currency">
+                        <span ng-switch-when="EUR">{{quote.Total | currency:'&euro; '}}</span>
+                        <span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
+                        <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
+                    </td>
                     <td>{{quote.xp.CustomerID}}</td>
                     <td>{{quote.xp.ReviewerName}}</td>
-                    <!--<td>{{quote.tmp.user.FirstName + ' ' + quote.tmp.user.LastName}}</td>-->
                     <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
-                    <td>{{quote.xp.Expires | weirdate}}</td>
-		    <!-- <td class="button-td"><button class="btn btn-warning" ng-click="quotes.openQuote(quote.OrderID)" ng-bind-html='quote.labels.OpenQuote'></button></td> -->
                 </tr>
                 </tbody>
             </table>

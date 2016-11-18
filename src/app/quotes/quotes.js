@@ -5,7 +5,7 @@ angular.module('orderCloud')
 	.controller('InReviewQuotesCtrl', InReviewQuotesController)
 ;
 
-function QuotesConfig($stateProvider,  buyerid) {
+function QuotesConfig($stateProvider, buyerid) {
 	$stateProvider
 		.state('quotes', {
 			parent: 'base',

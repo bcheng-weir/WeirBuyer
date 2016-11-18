@@ -1,17 +1,14 @@
 <article id="COMPONENT_MyQuote" class="container-fluid">
     <div class="panel-default">
         <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
-
             <div style="display:inline-block; float:left; text-align:left;">
                 <span ng-bind-html="myquote.labels.Status"/><br/>
                 <span style="font-weight:bold;">{{myquote.GetStatusLabel() + " " + (myquote.Quote.xp.StatusDate | weirdate)}}</span>
             </div>
-
             <div ng-if="application.$state.current.name=='myquote.revised'" style="display:inline-block; float:left; margin-left:1em;">
                 <span ng-bind-html="myquote.labels.OrderDate" /><br />
                 <span style="font-weight:bold;">{{(myquote.Quote.DateSubmitted | weirdate)}}</span>
             </div>
-
             <div style="display:inline-block; float:right; margin-left: 1em;" ng-click="myquote.Print()">
 				<a href="#"><img aria-hidden="true" ng-src="{{myquote.GetImageUrl('printer.png')}}"></img><br/><span ng-bind-html='myquote.labels.Print'></span></a>
             </div>
@@ -38,14 +35,13 @@
 			</div>
         </div>
     </div>
-	<ol class="nav nav-tabs nav-justified" ng-if="['myquote.readonly', 'myquote.revised'].indexOf(application.$state.current.name) == -1">
-		<li role="presentation" ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
-		<!--<li role="presentation" ui-sref-active="active" ui-sref="myquote.delivery" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>-->
-		<li role="presentation" ui-sref-active="active" ng-click="myquote.GotoDelivery()" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
-		<li role="presentation" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="myquote.review"><a href="#" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="myquote.buyerreview" ng-if="myquote.UserIsBuyer()"><a href="#" ng-bind-html='myquote.labels.SubmitQuoteOrOrder'></a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="myquote.submitquote"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
+	<ol class="nav nav-pills nav-justified" ng-if="['myquote.readonly', 'myquote.revised'].indexOf(application.$state.current.name) == -1">
+		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
+		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.delivery" ng-click="myquote.GotoDelivery(true)" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
+		<li role="presentation" class="quote-step" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
+		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.review"><a href="#" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
+		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.buyerreview" ng-if="myquote.UserIsBuyer()"><a href="#" ng-bind-html='myquote.labels.SubmitQuoteOrOrder'></a></li>
+		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.submitquote"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 	</ol>
 	<div ui-view id="printable">
 		<div id="modalMyquote" class="modal-quote-confirmation">

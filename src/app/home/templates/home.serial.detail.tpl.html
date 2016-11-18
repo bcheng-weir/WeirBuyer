@@ -112,7 +112,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="part in serialDetail.serialNumber.Parts">
-                        <td class="text-danger">{{part.Detail.Name}}</td>
+                        <td class="text-danger"><span>{{part.Detail.Name}}</span><span ng-if="part.Detail.xp.AlternatePartNumber">&nbsp;({{part.Detail.xp.AlternatePartNumber}})</span></td>
                         <td>{{part.Detail.Description}}</td>
                         <td>{{serialDetail.PartQuantity(part.Detail.ID)}}</td>
                         <td>{{part.Detail.xp.ReplacementSchedule}}</td>

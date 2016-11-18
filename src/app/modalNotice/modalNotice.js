@@ -9,7 +9,7 @@ function OrderCloudModalNoticeDirective() {
 function ModalNoticeController() {
 	var vm = this;
 
-	vm.openModal = function() {
+	vm.openModal = function(WeirService, $sce) {
 		$uibModal.open({
 			animation: true,
 			size: undefined,
@@ -24,4 +24,14 @@ function ModalNoticeController() {
 			}
 		});
 	}
+	var labels = {
+	    en: {
+	        SavedMessage: "Quote number has been saved to Your Quotes.",
+            ViewQuotesLink: "View Your Quotes"
+	    }, fr: {
+	        SavedMessage: $sce.trustAsHtml("FR: Quote number has been saved to Your Quotes."),
+	        ViewQuotesLink: $sce.trustAsHtml("FR: View Your Quotes")
+	    }
+	};
+	vm.labels = WeirService.LocaleResources(labels);
 }

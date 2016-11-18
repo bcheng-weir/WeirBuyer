@@ -17,8 +17,8 @@
             <div class="panel-title">
                 <ng-pluralize count="minicart.TotalItems"
                               when="{
-                     'one': minicart.labels.oneItem+' '+minicart.Order.xp.Type,
-                     'other': '{} '+minicart.labels.moreItems+' '+minicart.Order.xp.Type}">
+                     'one': (minicart.labels.oneItem + ' ' + ((minicart.Order.xp.Type == 'Quote') ? minicart.labels.quote : minicart.labels.order)),
+                     'other': '{} '+ (minicart.labels.moreItems + ' ' + ((minicart.Order.xp.Type == 'Quote') ? minicart.labels.quote : minicart.labels.order))}">
                 </ng-pluralize>
             </div>
         </div>

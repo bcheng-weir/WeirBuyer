@@ -190,19 +190,23 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 		CurrentOrder.GetCurrentCustomer()
 		.then(function(cust) {
 	        if (cust) {
-                OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": serialNumber, "catalogID": cust.id}, "all")
-                    .then(function(matches) {
-						if (matches.Items.length == 1) {
-                       	    result = matches.Items[0];
-                	        getParts(result.ID, deferred, result);
-		                } else if (matches.Items.length == 0) {
-			                //throw { message: "No matches found for serial number " + serialNumber};
-                            return deferred.resolve("No matches found for serial number " + serialNumber);
-		                } else {
-			                //throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
-                            return deferred.resolve("No matches found for serial number " + serialNumber);
-		                }
-                    });
+                        OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
+                                "xp.SN": serialNumber,
+                                "ParentID": cust.id
+                            }, null, cust.id.substring(0,5))
+                            .then(function (matches) {
+                                if (matches.Items.length == 1) {
+                                    result = matches.Items[0];
+                                    getParts(result.ID, deferred, result);
+                                } else if (matches.Items.length == 0) {
+                                    //throw { message: "No matches found for serial number " + serialNumber};
+                                    return deferred.resolve("No matches found for serial number " + serialNumber);
+                                } else {
+                                    //throw { message: "Data error: Serial number " + serialNumber + " is not unique"};
+                                    return deferred.resolve("No matches found for serial number " + serialNumber);
+                                }
+                            });
+
 	        } else {
                 throw { message: "Customer for search not set"};
 	        }
@@ -219,22 +223,25 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
         var result;
 		CurrentOrder.GetCurrentCustomer()
 			.then(function(cust) {
-	            if (cust) {
-                    OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": tagNumber, "catalogID": cust.id})
-                        .then(function(matches) {
-		                    if (matches.Items.length == 1) {
-                       	        result = matches.Items[0];
-                	            getParts(result.ID, deferred, result);
-		                    } else if (matches.Items.length == 0) {
-								//throw { message: "No matches found for tag number " + tagNumber};
+                if (cust) {
+                    OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
+                        "xp.TagNumber": tagNumber,
+                        "ParentID": cust.id
+                    }, null, cust.id.substring(0, 5))
+                        .then(function (matches) {
+                            if (matches.Items.length == 1) {
+                                result = matches.Items[0];
+                                getParts(result.ID, deferred, result);
+                            } else if (matches.Items.length == 0) {
+                                //throw { message: "No matches found for tag number " + tagNumber};
                                 return deferred.resolve("No matches found for tag number " + tagNumber);
-		                    } else {
-								//throw { message: "Data error: Tag number " + tagNumber + " is not unique"};
+                            } else {
+                                //throw { message: "Data error: Tag number " + tagNumber + " is not unique"};
                                 return deferred.resolve("Data error: Tag number " + tagNumber + " is not unique");
-		                    }
+                            }
                         });
-	            }
-			})
+                }
+            })
             .catch(function(ex) {
                 deferred.reject(ex);
             });
@@ -242,7 +249,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
     }
 
     function getParts(catId, deferred, result) {
-        OrderCloud.Me.ListProducts(null, 1, 100, null, null, null, catId)
+        OrderCloud.Me.ListProducts(null, 1, 100, null, null, null, catId, result.ParentID.substring(0,5))
             .then(function(products) {
                 result.Parts = [];
                 angular.forEach(products.Items, function(product) {
@@ -264,25 +271,28 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 	            if (cust) {
                     angular.forEach(serialNumbers, function(number) {
                         if (number) {
-            	            queue.push((function() {
-                	            var d = $q.defer();
-                	            OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.SN": number, "catalogID": cust.id})
-                    	            .then(function(matches) {
-										if (matches.Items.length == 1) {
-                        		            results.push({Number: number, Detail: matches.Items[0]});
-										} else {
-                                	        results.push({Number: number, Detail: null});
-										}
-                        	            d.resolve();
-                    	            })
-                    	            .catch(function(ex) {
-                        	            results.push({Number: number, Detail: null});
-                        	            d.resolve();
-                    	            });
-                	            return d.promise;
-            	            })());
-	                    }
-	                });
+                            queue.push((function () {
+                                var d = $q.defer();
+                                OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
+                                    "xp.SN": number,
+                                    "ParentID": cust.id
+                                }, null, cust.id.substring(0,5))
+                                    .then(function (matches) {
+                                        if (matches.Items.length == 1) {
+                                            results.push({Number: number, Detail: matches.Items[0]});
+                                        } else {
+                                            results.push({Number: number, Detail: null});
+                                        }
+                                        d.resolve();
+                                    })
+                                    .catch(function (ex) {
+                                        results.push({Number: number, Detail: null});
+                                        d.resolve();
+                                    });
+                                return d.promise;
+                            })());
+                        }
+                    });
                     $q.all(queue)
 	                    .then(function() {
                             deferred.resolve(results);
@@ -307,26 +317,30 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 	    if (cust) {
                 angular.forEach(tagNumbers, function(number) {
                     if (number) {
-            	        queue.push((function() {
-                	    var d = $q.defer();
-                	    OrderCloud.Categories.List(null, 1, 50, null, null, {"xp.TagNumber": number, "catalogID": cust.id})
-                    	    .then(function(matches) {
-				if (matches.Items.length == 1) {
-                        		results.push({Number: number, Detail: matches.Items[0]});
-				} else {
-                                	results.push({Number: number, Detail: null});
-				}
-                        	d.resolve();
-                    	    })
-                    	    .catch(function(ex) {
-                        	results.push({Number: number, Detail: null});
-                        	d.resolve();
-                    	    });
+                        queue.push((function () {
 
-                	    return d.promise;
-            	        })());
-	            }
-	        });
+                            var d = $q.defer();
+                            OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
+                                "xp.TagNumber": number,
+                                "ParentID": cust.id
+                            }, null, cust.id.substring(0, 5))
+                                .then(function (matches) {
+                                    if (matches.Items.length == 1) {
+                                        results.push({Number: number, Detail: matches.Items[0]});
+                                    } else {
+                                        results.push({Number: number, Detail: null});
+                                    }
+                                    d.resolve();
+                                })
+                                .catch(function (ex) {
+                                    results.push({Number: number, Detail: null});
+                                    d.resolve();
+                                });
+
+                            return d.promise;
+                        })());
+                    }
+                });
                 $q.all(queue).then(function() {
                     deferred.resolve(results);
                 });

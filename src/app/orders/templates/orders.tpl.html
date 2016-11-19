@@ -2,6 +2,18 @@
 	<div class="page-header">
 		<h3>Orders</h3>
 	</div>
+	<!--ng-if="['orders.submitted', 'orders.pending', 'orders.revised', 'orders.confirmed', 'orders.despatched', 'orders.invoiced'].indexOf(application.$state.current.name) > -1"-->
+	<div>
+		<ul class="nav nav-pills nav-justified">
+			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.submitted({filters:orders.FilterActions('orders.submitted')})"><a href="#" ng-bind-html='orders.labels.submitted'></a></li>
+			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.pending({filters:orders.FilterActions('orders.pending')})"><a href="#" ng-bind-html='orders.labels.pending'></a></li>
+			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.revised({filters:orders.FilterActions('orders.revised')})"><a href="#" ng-bind-html='orders.labels.revised'></a></li>
+			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.confirmed({filters:orders.FilterActions('orders.confirmed')})"><a href="#" ng-bind-html='orders.labels.confirmed'></a></li>
+			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.despatched({filters:orders.FilterActions('orders.despatched')})"><a href="#" ng-bind-html='orders.labels.despatched'></a></li>
+			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.invoiced({filters:orders.FilterActions('orders.invoiced')})"><a href="#" ng-bind-html='orders.labels.invoiced'></a></li>
+		</ul>
+	</div>
+	<hr>
 	<!--====== SEARCH/FILTERS ======-->
 	<form name="OrderSearchForm" class="form-inline" ng-submit="orders.search()">
 		<fieldset class="form-group">
@@ -18,7 +30,7 @@
             </span>
 		</fieldset>
 	</form>
-	<div class="row" uib-collapse="!orders.showFilters">
+	<!--<div class="row" uib-collapse="!orders.showFilters">
 		<hr>
 		<div class="col-md-6 col-lg-4">
 			<div class="form-group" ng-if="application.$ocMedia('max-width:767px')">
@@ -37,17 +49,6 @@
 			</div>
 		</div>
 		<hr>
-	</div>
-	<!--ng-if="['orders.submitted', 'orders.pending', 'orders.revised', 'orders.confirmed', 'orders.despatched', 'orders.invoiced'].indexOf(application.$state.current.name) > -1"-->
-	<div>
-		<ul class="nav nav-pills nav-justified">
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.submitted"><a href="#" ng-bind-html='orders.labels.submitted'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.pending"><a href="#" ng-bind-html='orders.labels.pending'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.revised"><a href="#" ng-bind-html='orders.labels.revised'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.confirmed"><a href="#" ng-bind-html='orders.labels.confirmed'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.despatched"><a href="#" ng-bind-html='orders.labels.despatched'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.invoiced"><a href="#" ng-bind-html='orders.labels.invoiced'></a></li>
-		</ul>
-	</div>
+	</div>-->
 	<div ui-view></div>
 </article>

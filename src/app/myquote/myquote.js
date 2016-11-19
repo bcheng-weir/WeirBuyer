@@ -777,6 +777,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                         payment = pmt;
                         completeSubmit(withPO);
                     })
+            } else {
+            	// email the PO later. Can we acutally submit without a PO?
+	            completeSubmit(withPO);
             }
         } else if (!payment.xp || payment.xp.PONumber != vm.PONumber) {
             var data = {
@@ -819,7 +822,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	    }
 	    WeirService.UpdateQuote(vm.Quote.ID, data)
             .then(function (qt) {
-                OrderCloud.Orders.Submit(vm.Quote.ID);
+                return OrderCloud.Orders.Submit(vm.Quote.ID);
             })
             .then(function (info) {
                 CurrentOrder.Set(null);

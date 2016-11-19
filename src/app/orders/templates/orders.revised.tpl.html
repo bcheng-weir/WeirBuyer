@@ -1,1 +1,38 @@
-Revised
+<!--====== LIST ======-->
+<div class="no-matches" ng-if="!orders.list.Items.length">
+    <b>No matches found.</b>
+</div>
+<div class="row" ng-if="orders.list.Items.length">
+    <div class="col-md-12">
+        <h3 ng-bind-html='orders.labels.Header'></h3>
+        <table class="table table-hover table-condensed oc-table-responsive">
+            <thead>
+            <tr>
+                <th ng-bind-html='orders.labels.OrderNum'></th>
+                <th ng-bind-html='orders.labels.OrderName'></th>
+                <th ng-bind-html='orders.labels.OrderRef'></th>
+                <th ng-bind-html='orders.labels.Total'></th>
+                <th ng-bind-html='orders.labels.Customer'>t</th>
+                <th ng-bind-html='orders.labels.Status'></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="order in orders.list.Items   ">
+                <td>{{order.ID}}</td>
+                <td>{{order.xp.Name}}</td>
+                <td>{{order.xp.RefNum}}</td>
+                <td ng-switch on="quote.xp.Currency">
+                    <span ng-switch-when="EUR">{{order.Total | currency:'&euro; '}}</span>
+                    <span ng-switch-when="GBP">{{order.Total | currency:'&#163; '}}</span>
+                    <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
+                </td>
+                <td ng-if="order.xp.CustomerID != orders.MyOrg.ID ">{{order.xp.CustomerName}}</td>
+                <td ng-if="order.xp.CustomerID == orders.MyOrg.ID ">{{orders.labels.OwnProduct}}</td>
+                <td>{{orders.getStatusLabel(order.xp.Status) + "; " + (order.xp.StatusDate | weirdate)}}</td>
+                <td><button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status)" ng-bind-html="orders.labels.View"></button></td>
+            </tr>
+            </tbody>
+        </table>
+        <p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>
+    </div>
+</div>

@@ -7,21 +7,16 @@
     <!--====== SEARCH/FILTERS ======-->
     <form name="AddressesSearchForm" class="form-inline" ng-submit="addresses.search()">
         <fieldset class="form-group">
-            <input type="search" placeholder="Search Addresses..." ng-model="addresses.parameters.search"
-                   class="form-control">
+            <input type="search" placeholder="Search Addresses..." ng-model="addresses.parameters.search" class="form-control">
         </fieldset>
         <fieldset class="form-group" ng-class="{'text-center':application.$ocMedia('max-width:767px')}">
 		<span ng-class="{'btn-group':addresses.searchResults}">
 			<button type="submit" class="btn btn-primary">Search</button>
-			<button ng-if="addresses.searchResults" ng-click="addresses.clearSearch()" type="button"
-                    class="btn btn-default"><i class="fa fa-times"></i></button>
+			<button ng-if="addresses.searchResults" ng-click="addresses.clearSearch()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
 		</span>
 		<span ng-class="{'btn-group':addresses.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
-			<button type="button" class="btn btn-default" ng-click="addresses.showFilters = !addresses.showFilters"><i
-                    class="fa fa-filter"></i> Filters
-			</button>
-			<button ng-if="addresses.filtersApplied" ng-click="addresses.clearFilters()" type="button"
-                    class="btn btn-default"><i class="fa fa-times"></i></button>
+			<button type="button" class="btn btn-default" ng-click="addresses.showFilters = !addresses.showFilters"><i class="fa fa-filter"></i> Filters</button>
+			<button ng-if="addresses.filtersApplied" ng-click="addresses.clearFilters()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
 		</span>
         </fieldset>
     </form>

@@ -10,14 +10,19 @@ function OrdersConfig($stateProvider, buyerid) {
 	        controller: 'OrdersCtrl',
 	        controllerAs: 'orders',
             url: '/orders?from&to&search&page&pageSize&searchOn&sortBy&filters&buyerid',
-            data: {componentName: 'Orders'},
+            data: {
+            	componentName: 'Orders'
+            },
             resolve: {
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
 	            Orders: function(OrderCloud, Parameters) {
                     return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 20, Parameters.searchOn, Parameters.sortBy, Parameters.filters, buyerid);
-				}
+				},
+	            MyOrg: function(OrderCloud) {
+		            return OrderCloud.Buyers.Get(buyerid);
+	            }
             }
         })
         .state('orders.submitted', {
@@ -52,10 +57,18 @@ function OrdersConfig($stateProvider, buyerid) {
 	    });
 }
 
-function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, WeirService) {
+function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, MyOrg, WeirService) {
     var vm = this;
     vm.list = Orders;
     vm.parameters = Parameters;
+	vm.MyOrg = MyOrg;
+	vm.getStatusLabel = function(id) {
+		var status = WeirService.LookupStatus(id);
+		if (status) {
+			return status.label;
+			// TODO: Address localization
+		}
+	};
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
 
     //Check if filters are applied
@@ -128,12 +141,20 @@ function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParamete
 
     var labels = {
     	en: {
+		    Header: vm.list.Items.length.toString() + " pending Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+		    View: "View",
 		    submitted: "Submitted with PO",
 		    pending: "Submitted pending PO",
 		    revised: "Revised",
 		    confirmed: "Confirmed",
 		    despatched: "Despatched",
-		    invoiced: "Invoiced"
+		    invoiced: "Invoiced",
+	        OrderNum: "Weir Order No.",
+		    OrderName: "Your Order Name",
+		    OrderRef: "Your Order ref;",
+		    Total: "Order value",
+		    Customer: "Customer",
+		    Status: "Status"
 	    },
 	    fr: {
 		    submitted: $sce.trustAsHtml("Submitted with PO"),
@@ -144,6 +165,21 @@ function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParamete
 		    invoiced: $sce.trustAsHtml("Invoiced")
 	    }
     };
-
     vm.labels = labels[WeirService.Locale()];
+	vm.FilterActions = _filterActions;
+	function _filterActions(action) {
+		var filter = {
+			"orders.submitted":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":"true"},
+			"orders.pending":{"xp.Type":"Order", "xp.PendingPO":"true", "xp.Active":"true"},
+			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id, "xp.Active":"true"},
+			"orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":"true"},
+			"orders.despatched":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.Despatched.id, "xp.Active":"true"},
+			"orders.invoiced":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.Invoiced.id, "xp.Active":"true"}
+		};
+		return JSON.stringify(filter[action]);
+		//$state.go(action, {filters:JSON.stringify(filter[action])},{reload:true});
+	}
+	vm.filters = function() {
+		return JSON.stringify({"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":"true"});
+	}
 }

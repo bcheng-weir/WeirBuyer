@@ -25,7 +25,7 @@ function customerPresearch() {
 function serialPreSearch() {
   return function(items, serial) {
     return items.filter(function(category, index, array) {
-	return category && category.xp && category.xp.SN && category.xp.SN.indexOf(serial) >= 0;
+	return category && category.xp && category.xp.SN && category.xp.SN.toLowerCase().indexOf(serial.toLowerCase()) >= 0;
     });
   };
 }
@@ -33,14 +33,14 @@ function serialPreSearch() {
 function tagPreSearch() {
   return function(items, tag) {
     return items.filter(function(category, index, array) {
-	return category && category.xp && category.xp.TagNumber && category.xp.TagNumber.indexOf(tag) >= 0;
+	return category && category.xp && category.xp.TagNumber && category.xp.TagNumber.toLowerCase().indexOf(tag.toLowerCase()) >= 0;
     });
   };
 }
 function partPreSearch() {
   return function(items, partno) {
     return items.filter(function(part, index, array) {
-	return part && part.Name && part.Name.indexOf(partno) >= 0;
+	return part && part.Name && part.Name.toLowerCase().indexOf(partno.toLowerCase()) >= 0;
     });
   };
 }

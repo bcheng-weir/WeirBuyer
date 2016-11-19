@@ -2,16 +2,16 @@
    <div class="row">
         <div class="col-md-12">
             <h3 ng-bind-html='saved.labels.Header'></h3>
-            <table class="table table-hover table-condensed oc-table-responsive ">
+            <table class="table table-hover table-condensed oc-table-responsive">
                 <thead>
-                <tr>
-		            <th ng-bind-html='saved.labels.QuoteNum'></th>
-                    <th ng-bind-html='saved.labels.QuoteName'></th>
-                    <th ng-bind-html='saved.labels.QuoteRef'></th>
-                    <th ng-bind-html='saved.labels.Total'></th>
-                    <th ng-bind-html='saved.labels.Customer'>t</th>
-                    <th ng-bind-html='saved.labels.Status'></th>
-                </tr>
+                    <tr>
+                        <th ng-bind-html='saved.labels.QuoteNum'></th>
+                        <th ng-bind-html='saved.labels.QuoteName'></th>
+                        <th ng-bind-html='saved.labels.QuoteRef'></th>
+                        <th ng-bind-html='saved.labels.Total'></th>
+                        <th ng-bind-html='saved.labels.Customer'>t</th>
+                        <th ng-bind-html='saved.labels.Status'></th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="quote in saved.Quotes">

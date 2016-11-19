@@ -2,30 +2,30 @@
    <div class="row">
         <div class="col-md-12">
             <h3><span ng-bind-html='inreview.labels.Header'></h3>
-            <table class="table table-bordered oc-table-responsive weir-results-table">
+            <table class="table table-hover table-condensed oc-table-responsive">
                 <thead>
-                <tr>
-		    <th ng-bind-html='inreview.labels.QuoteNum'></th>
-                    <th ng-bind-html='inreview.labels.QuoteRef'></th>
-                    <th ng-bind-html='inreview.labels.Total'></th>
-                    <th ng-bind-html='inreview.labels.Customer'>t</th>
-                    <th ng-bind-html='inreview.labels.Approver'>t</th>
-                    <th ng-bind-html='inreview.labels.Status'></th>
-                </tr>
+                    <tr>
+                        <th ng-bind-html='inreview.labels.QuoteNum'></th>
+                        <th ng-bind-html='inreview.labels.QuoteRef'></th>
+                        <th ng-bind-html='inreview.labels.Total'></th>
+                        <th ng-bind-html='inreview.labels.Customer'>t</th>
+                        <th ng-bind-html='inreview.labels.Approver'>t</th>
+                        <th ng-bind-html='inreview.labels.Status'></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="quote in inreview.Quotes">
-                    <td class="text-danger">{{quote.ID}}</td>
-                    <td>{{quote.xp.RefNum}}</td>
-                    <td ng-switch on="quote.xp.Currency">
-                        <span ng-switch-when="EUR">{{quote.Total | currency:'&euro; '}}</span>
-                        <span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
-                        <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
-                    </td>
-                    <td>{{quote.xp.CustomerID}}</td>
-                    <td>{{quote.xp.ReviewerName}}</td>
-                    <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
-                </tr>
+                    <tr ng-repeat="quote in inreview.Quotes">
+                        <td class="text-danger">{{quote.ID}}</td>
+                        <td>{{quote.xp.RefNum}}</td>
+                        <td ng-switch on="quote.xp.Currency">
+                            <span ng-switch-when="EUR">{{quote.Total | currency:'&euro; '}}</span>
+                            <span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
+                            <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
+                        </td>
+                        <td>{{quote.xp.CustomerID}}</td>
+                        <td>{{quote.xp.ReviewerName}}</td>
+                        <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
+                    </tr>
                 </tbody>
             </table>
             <p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>

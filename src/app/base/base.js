@@ -191,8 +191,20 @@ function BaseController($state, $rootScope, $ocMedia, $sce, Underscore, snapRemo
         if (n === o) return;
         _initDrawers(n);
     });
-}
 
+    vm.OrderAction = _actions;
+    function _actions(action) {
+        var filter = {
+            "orders.submitted":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":"true"},
+            "orders.pending":{"xp.Type":"Order", "xp.PendingPO":"true", "xp.Active":"true"},
+            "orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id, "xp.Active":"true"},
+            "orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":"true"},
+            "orders.despatched":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.Despatched.id, "xp.Active":"true"},
+            "orders.invoiced":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.Invoiced.id, "xp.Active":"true"}
+        };
+        $state.go(action, {filters:JSON.stringify(filter[action])},{reload:true});
+    }
+}
 
 function occomponents() {
     return function(components) {

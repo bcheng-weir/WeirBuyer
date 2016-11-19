@@ -28,11 +28,14 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 				CurrentCustomer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
-				SerialNumbers: function(WeirService, OrderCloud, CurrentOrder) {
+                MyOrg: function(OrderCloud) {
+                    return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
+                },
+				SerialNumbers: function(WeirService, OrderCloud, MyOrg, CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer()
 						.then(function(cust) {
 					        if (cust) {
-					            return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": cust.id});
+					            return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": cust.id }, null, MyOrg.xp.WeirGroup.label);
 					        } else {
 								return { Items: []};
 					    }
@@ -40,10 +43,8 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 				},
 				PartNumbers: function(OrderCloud) {
 					return OrderCloud.Me.ListProducts(null, 1, 100, null, null, null);
-				},
-				MyOrg: function(OrderCloud) {
-					return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
 				}
+
 			}
 		})
 		.state( 'home.serial', {
@@ -128,13 +129,16 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 		});
 }
 
-function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, imageRoot) {
+function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, toastr, imageRoot) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
 	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
 	vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
     vm.Customer = CurrentCustomer;
+    if(!MyOrg.xp.Customers){
+    	MyOrg.xp.Customers = [];
+	}
     vm.AvailableCustomers = MyOrg.xp.Customers;
 
     vm.ImageBaseUrl = imageRoot;
@@ -191,7 +195,7 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 				    vm.serialNumberList.length = 0;
 				    WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
 					    .then(function() {
-						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": vm.Customer.id})
+						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": vm.Customer.xp.WeirGroup.label})
 							    .then(function(results) {
 								    vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
 							    });
@@ -244,7 +248,7 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 
 }
 
-function SerialController(WeirService, $state, $sce, toastr ) {
+function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toastr ) {
 	var vm = this;
 	
 	var labels = {
@@ -300,6 +304,30 @@ function SerialController(WeirService, $state, $sce, toastr ) {
 	vm.goToArticle = function(article) {
 		$state.go('news', {id: article.ID});
 	};
+    vm.updateSerialList = function(input) {
+        if(input.length >= 3) {
+            var cust = $scope.home.Customer.id;
+            if (cust) {
+                var deferred = $q.defer();
+
+                OrderCloud.Me.ListCategories(null, 1, 20, null, null, {
+                    "ParentID": cust,
+                    "xp.SN": input + "*"
+                }, null, cust.substring(0,5)).then(function(newList){
+                    $scope.home.serialNumberList = newList.Items;
+                    deferred.resolve();
+                    return;
+                })
+                    .catch(function(ex) {
+                        deferred.resolve("No Tags with this id");
+                        return;
+                    });
+
+
+            }
+        }
+        else return;
+    };
 }
 
 function SerialResultsController(WeirService, $stateParams, $state, SerialNumberResults, $sce ) {
@@ -352,7 +380,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirService, SerialNumberDetail ) {
+function SerialDetailController( $stateParams, $rootScope, $scope, $state, $sce, WeirService, SerialNumberDetail ) {
 	var vm = this;
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
@@ -446,9 +474,10 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 				part.Quantity = null;
 			});
 	};
+
 }
 
-function PartController( $state, $sce, WeirService ) {
+function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService ) {
 	var vm = this;
 
 	vm.partNumbers = [null];
@@ -498,6 +527,27 @@ function PartController( $state, $sce, WeirService ) {
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+    vm.updatePartList = function(input) {
+        if(input.length >= 3) {
+            var cust = $scope.home.Customer.id;
+            if (cust) {
+                var deferred = $q.defer();
+
+                OrderCloud.Me.ListProducts(null, 1, 20, null, null, { "Name": input + "*" }, null, null).then(function(newList){
+                    $scope.home.partNumberList = newList.Items;
+                    deferred.resolve();
+                    return;
+                })
+                    .catch(function(ex) {
+                        deferred.resolve("No Tags with this id");
+                        return;
+                    });
+
+
+            }
+        }
+        else return;
+    };
 }
 
 function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults ) {
@@ -554,9 +604,8 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 	};
 }
 
-function TagController(WeirService, $state, $sce, toastr) {
+function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr) {
 	var vm = this;
-	
 	var labels = {
 		en: {
 			// WhereToFind: "where to find your serial number",
@@ -575,7 +624,30 @@ function TagController(WeirService, $state, $sce, toastr) {
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 	WeirService.SetLastSearchType(WeirService.SearchType.Tag);
+	vm.updateTagList = function(input) {
+		if(input.length >= 3) {
+			var cust = $scope.home.Customer.id;
+            if (cust) {
+                var deferred = $q.defer();
 
+                OrderCloud.Me.ListCategories(null, 1, 20, null, null, {
+                    "ParentID": cust,
+                    "xp.TagNumber": input + "*"
+                }, null, cust.substring(0,5)).then(function(newList){
+                    $scope.home.serialNumberList = newList.Items;
+                    deferred.resolve();
+                    return;
+				})
+                    .catch(function(ex) {
+                         deferred.resolve("No Tags with this id");
+                        return;
+                    });
+
+
+            }
+        }
+        else return;
+    };
 	vm.tags = [null];
 
 	vm.addTag = function() {

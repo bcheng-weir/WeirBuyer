@@ -2,43 +2,59 @@ angular.module('orderCloud')
     .config(OrdersConfig)
     .controller('OrdersCtrl', OrdersController);
 
-function OrdersConfig($stateProvider) {
+function OrdersConfig($stateProvider, buyerid) {
     $stateProvider
         .state('orders', {
             parent: 'base',
             templateUrl: 'orders/templates/orders.tpl.html',
-            controller: 'OrdersCtrl',
-            controllerAs: 'orders',
-            url: '/orders?from&to&search&page&pageSize&searchOn&sortBy&filters',
+	        controller: 'OrdersCtrl',
+	        controllerAs: 'orders',
+            url: '/orders?from&to&search&page&pageSize&searchOn&sortBy&filters&buyerid',
             data: {componentName: 'Orders'},
             resolve: {
-                UserType: function(OrderCloud) {
-                    return JSON.parse(atob(OrderCloud.Auth.ReadToken().split('.')[1])).usrtype;
-                },
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                OrderList: function(OrderCloud, Parameters, UserType) {
-                    return OrderCloud.Orders[UserType == 'admin' ? 'ListIncoming' : 'ListOutgoing'](Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters);
-                }
+	            Orders: function(OrderCloud, Parameters) {
+                    return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 20, Parameters.searchOn, Parameters.sortBy, Parameters.filters, buyerid);
+				}
             }
         })
-        .state('orders.detail', {
-            url: '/:orderid',
-            templateUrl: 'orders/templates/orders.detail.tpl.html',
-            controller: 'OrdersDetailCtrl',
-            controllerAs: 'ordersDetail',
-            resolve: {
-                SelectedOrder: function($stateParams, OrdersFactory) {
-                    return OrdersFactory.GetOrderDetails($stateParams.orderid);
-                }
-            }
-        });
+        .state('orders.submitted', {
+            url: '/submitted',
+            templateUrl: 'orders/templates/orders.submitted.tpl.html',
+	        parent: 'orders'
+        })
+        .state('orders.pending', {
+            url: '/pending',
+            templateUrl: 'orders/templates/orders.pending.tpl.html',
+	        parent: 'orders'
+        })
+	    .state('orders.revised', {
+		    url: '/revised',
+		    templateUrl: 'orders/templates/orders.revised.tpl.html',
+		    parent: 'orders'
+	    })
+	    .state('orders.confirmed', {
+		    url: '/confirmed',
+		    templateUrl: 'orders/templates/orders.confirmed.tpl.html',
+		    parent: 'orders'
+	    })
+	    .state('orders.despatched', {
+		    url: '/despatched',
+		    templateUrl: 'orders/templates/orders.despatched.tpl.html',
+		    parent: 'orders'
+	    })
+	    .state('orders.invoiced', {
+		    url: '/invoiced',
+		    templateUrl: 'orders/templates/orders.invoiced.tpl.html',
+		    parent: 'orders'
+	    });
 }
 
-function OrdersController($state, $ocMedia, OrderCloud, OrderCloudParameters, UserType, OrderList, Parameters) {
+function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, WeirService) {
     var vm = this;
-    vm.list = OrderList;
+    vm.list = Orders;
     vm.parameters = Parameters;
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
 
@@ -109,4 +125,25 @@ function OrdersController($state, $ocMedia, OrderCloud, OrderCloudParameters, Us
                 vm.list.Meta = data.Meta;
             });
     };
+
+    var labels = {
+    	en: {
+		    submitted: "Submitted with PO",
+		    pending: "Submitted pending PO",
+		    revised: "Revised",
+		    confirmed: "Confirmed",
+		    despatched: "Despatched",
+		    invoiced: "Invoiced"
+	    },
+	    fr: {
+		    submitted: $sce.trustAsHtml("Submitted with PO"),
+		    pending: $sce.trustAsHtml("Submitted pending PO"),
+		    revised: $sce.trustAsHtml("Revised"),
+		    confirmed: $sce.trustAsHtml("Confirmed"),
+		    despatched: $sce.trustAsHtml("Despatched"),
+		    invoiced: $sce.trustAsHtml("Invoiced")
+	    }
+    };
+
+    vm.labels = labels[WeirService.Locale()];
 }

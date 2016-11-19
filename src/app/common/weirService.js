@@ -67,6 +67,7 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 	    OrderStatusList: orderStatusList,
 	    LookupStatus: getStatus,
 	    FindQuotes: findQuotes,
+	    FindOrders: findOrders,
 	    CartHasItems: cartHasItems,
 	    UpdateQuote: updateQuote,
         SetQuoteAsCurrentOrder: setQuoteAsCurrentOrder,
@@ -142,7 +143,13 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 ReviewQuotes: "Submitted for review",
                 RevisedQuotes: "Revised",
                 ConfirmedQuotes: "Confirmed",
-                language: true
+                language: true,
+	            submitted: "Submitted with PO",
+	            pending: "Submitted pending PO",
+	            revised: "Revised",
+	            confirmed: "Confirmed",
+	            despatched: "Despatched",
+	            invoiced: "Invoiced"
             },
             fr: {
                 privacyTitle: $sce.trustAsHtml("D&eacute;claration de confidentialit&eacute;"),
@@ -159,7 +166,13 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
                 ReviewQuotes: "**Cotation soumis pour examen",
                 RevisedQuotes: $sce.trustAsHtml("**Cotation r&eacute;vis&eacute;es"),
                 ConfirmedQuotes: $sce.trustAsHtml("Cotation confirm&eacute;es"),
-                language: false
+                language: false,
+	            submitted: $sce.trustAsHtml("Submitted with PO"),
+	            pending: $sce.trustAsHtml("Submitted pending PO"),
+	            revised: $sce.trustAsHtml("Revised"),
+	            confirmed: $sce.trustAsHtml("Confirmed"),
+	            despatched: $sce.trustAsHtml("Despatched"),
+	            invoiced: $sce.trustAsHtml("Invoiced")
             }
         };
         return navLabels;
@@ -716,6 +729,45 @@ function WeirService( $q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Cur
 			});
 		return deferred.promise;
     }
+
+	function findOrders(statuses, resolveSharedId) {
+		var quotes = [];
+		var queue = [];
+		var deferred = $q.defer();
+
+		if (statuses && statuses.length) {
+			var filter = {
+				"xp.Type": "Order",
+				"xp.Active": "true"
+			};
+			var statusFilter = statuses[0].id;
+			for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;
+			filter["xp.Status"] = statusFilter;
+
+			var d = $q.defer();
+			OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
+				.then(function(results) {
+					angular.forEach(results.Items, function(quote) {
+						quotes.push(quote);
+					});
+					d.resolve();
+				})
+				.catch(function(ex) {
+					d.resolve();
+				});
+
+			d.promise.then(function() {
+				// resolveCustomers(quotes).then( function() {
+				resolveUsers(quotes, resolveSharedId).then(function() {
+					deferred.resolve(quotes);
+				});
+				// });
+			});
+		} else {
+			deferred.resolve(quotes);
+		}
+		return deferred.promise;
+	}
 
     function findQuotes(statuses, resolveSharedId) {
 	    var quotes = [];

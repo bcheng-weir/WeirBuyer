@@ -9,7 +9,6 @@
                 <span class="icon-bar"></span>
             </button>
         </div>
-
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="BASE_TOP_COLLAPSE">
             <ul class="nav navbar-nav navbar-right">
@@ -26,7 +25,12 @@
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
 		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourOrders"></span><span class="caret"></span></a>
                     <ul uib-dropdown-menu>
-                        <li>TBD</li>
+                        <li><a href="" ui-sref="orders.submitted" ng-bind-html="base.navlabels.submitted"></a></li>
+                        <li><a href="" ui-sref="orders.pending" ng-bind-html="base.navlabels.pending"></a></li>
+                        <li><a href="" ui-sref="orders.revised" ng-bind-html="base.navlabels.revised"></a></li>
+                        <li><a href="" ui-sref="orders.confirmed" ng-bind-html="base.navlabels.confirmed"></a></li>
+                        <li><a href="" ui-sref="orders.despatched" ng-bind-html="base.navlabels.despatched"></a></li>
+                        <li><a href="" ui-sref="orders.invoiced" ng-bind-html="base.navlabels.invoiced"></a></li>
                     </ul>
                 </li>
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">

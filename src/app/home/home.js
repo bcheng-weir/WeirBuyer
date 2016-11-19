@@ -618,15 +618,17 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 			EnterTag: "Enter Tag number",
 			AddMore: "Add more tag numbers   +",
 			ClearSearch: "Clear Search",
-			Search: "Search"
+			Search: "Search",
+			TagDisclaimer: "*Tag number data may be incomplete. For best results search by serial number or part number"
 		},
 		fr: {
 			// WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
 		    EnterTag: $sce.trustAsHtml("Entr&eacute;e un num&eacute;ro de tag"),
 		    AddMore: $sce.trustAsHtml("Ajouter plus de num&eacute;ro de tag   +"),
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
-		    Search: "Rechercher"
-		}
+		    Search: "Rechercher",
+		    TagDisclaimer: $sce.trustAsHtml("*Tag number data may be incomplete. For best results search by serial number or part number")
+	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 	WeirService.SetLastSearchType(WeirService.SearchType.Tag);

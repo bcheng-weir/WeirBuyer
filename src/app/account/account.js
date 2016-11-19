@@ -98,7 +98,7 @@ function AccountService($q, $uibModal, OrderCloud) {
 	return service;
 }
 
-function AccountController($exceptionHandler, toastr, AccountService, CurrentUser) {
+function AccountController($exceptionHandler, $state, toastr, AccountService, CurrentUser, WeirService, $sce, OrderCloud) {
 	var vm = this;
 	vm.profile = angular.copy(CurrentUser);
 	var currentProfile = CurrentUser;
@@ -120,9 +120,42 @@ function AccountController($exceptionHandler, toastr, AccountService, CurrentUse
 		vm.profile = currentProfile;
 		form.$setPristine(true);
 	};
+	vm.editAddresses = function () {
+	    $state.go('customers.edit', { buyerid: OrderCloud.BuyerID.Get() });
+	}
+
+	var labels = {
+	    en: {
+            Account: "Account",
+	        FirstName: "First Name",
+	        LastName: "Last Name",
+	        UserID: "User ID",
+	        Username: "Username",
+	        Email: "Email",
+	        Phone: "Phone",
+	        SaveChanges: "Save Changes",
+	        RevertChanges: "Revert Changes",
+	        ChangePassword: "Change Password",
+            Addresses: "Addresses"
+	    },
+	    fr: {
+	        Account: $sce.trustAsHtml("FR: Account"),
+	        FirstName: $sce.trustAsHtml("FR: First Name"),
+	        LastName: $sce.trustAsHtml("FR: Last Name"),
+	        UserID: $sce.trustAsHtml("FR: User ID"),
+	        Username: $sce.trustAsHtml("Nom d'utilisateur"),
+	        Email: $sce.trustAsHtml("FR: Email"),
+	        Phone: $sce.trustAsHtml("FR: Phone"),
+	        SaveChanges: $sce.trustAsHtml("FR: Save Changes"),
+	        RevertChanges: $sce.trustAsHtml("FR: Revert Changes"),
+	        ChangePassword: $sce.trustAsHtml("FR: Change Password"),
+	        Addresses: $sce.trustAsHtml("FR: Addresses")
+	    }
+	};
+	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function ConfirmPasswordController($uibModalInstance) {
+function ConfirmPasswordController($uibModalInstance, $sce, WeirService) {
 	var vm = this;
 
 	vm.submit = function() {
@@ -132,9 +165,23 @@ function ConfirmPasswordController($uibModalInstance) {
 	vm.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
 	};
+
+	var labels = {
+	    en: {
+	        PasswordConfirmPrompt: "Please confirm your password",
+	        Submit: "Submit",
+            Cancel: "Cancel"
+	    },
+	    fr: {
+	        ChangePassword: $sce.trustAsHtml("FR: Please confirm your password"),
+	        Submit: $sce.trustAsHtml("Soumettre"),
+	        Cancel: $sce.trustAsHtml("FR: Cancel")
+	}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function ChangePasswordController($state, $exceptionHandler, toastr, AccountService, CurrentUser) {
+function ChangePasswordController($state, $exceptionHandler, toastr, AccountService, CurrentUser, $sce, WeirService) {
 	var vm = this;
 	vm.currentUser = CurrentUser;
 
@@ -151,4 +198,24 @@ function ChangePasswordController($state, $exceptionHandler, toastr, AccountServ
 				$exceptionHandler(ex)
 			});
 	};
+
+	var labels = {
+	    en: {
+	        ChangePwdHeader: "Change Password",
+	        CurrentPwd: "Current Password",
+            Confirm: "Confirm Password",
+	        NewPwd: "New Password",
+	        Submit: "Submit",
+            BackToAcct: "Back to Account"
+	    },
+	    fr: {
+	        ChangePwdHeader: $sce.trustAsHtml("FR: Change Password"),
+	        CurrentPwd: $sce.trustAsHtml("FR: Current Password"),
+	        NewPwd: $sce.trustAsHtml("Nouveau mot de passe"),
+	        Confirm: $sce.trustAsHtml("Confirmer votre mot de passe"),
+	        Submit: $sce.trustAsHtml("Soumettre"),
+	        BackToAcct: $sce.trustAsHtml("FR: Back to Account")
+	    }
+	};
+	vm.labels = WeirService.LocaleResources(labels);
 }

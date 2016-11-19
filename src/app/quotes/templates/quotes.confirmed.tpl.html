@@ -1,4 +1,34 @@
 <ui-view>
-	Placeholder for Confirmed quotes
+	<div class="row">
+		<div class="col-md-12">
+			<h3 ng-bind-html='saved.labels.Header'></h3>
+			<p ng-bind-html='saved.labels.ConfirmedListMessage'></p>
+			<table class="table table-hover table-condensed oc-table-responsive ">
+				<thead>
+				<tr>
+					<th ng-bind-html='saved.labels.QuoteNum'></th>
+					<th ng-bind-html='saved.labels.QuoteName'></th>
+					<th ng-bind-html='saved.labels.QuoteRef'></th>
+					<th ng-bind-html='saved.labels.Total'></th>
+					<th ng-bind-html='saved.labels.Status'></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="quote in saved.Quotes">
+					<td>{{quote.ID}}</td>
+					<td>{{quote.xp.Name}}</td>
+					<td>{{quote.xp.RefNum}}</td>
+					<td ng-switch on="quote.xp.Currency">
+						<span ng-switch-when="EUR">{{quote.Total | currency:'&euro; '}}</span>
+						<span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
+						<span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
+					</td>
+					<td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
+					<td><button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status)" ng-bind-html="saved.labels.View"></button></td>
+				</tr>
+				</tbody>
+			</table>
+			<p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>
+		</div>
+	</div>
 </ui-view>
-

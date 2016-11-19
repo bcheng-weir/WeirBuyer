@@ -1,35 +1,35 @@
 <article id="COMPONENT_Account" ui-view class="container-fluid">
-	<h3 class="page-header">Account</h3>
+	<h3 class="page-header" ng-bind-html="account.labels.Account"></h3>
 	<form name="ProfileUpdateForm" ng-submit="account.update()" novalidate autocomplete="off">
 		<div class="row">
 			<div class="form-group col-sm-6">
-				<label>First Name</label>
+				<label ng-bind-html="account.labels.FirstName"></label>
 				<input type="text" ng-model="account.profile.FirstName" class="form-control" required/>
 			</div>
 			<div class="form-group col-sm-6">
-				<label>Last Name</label>
+				<label ng-bind-html="account.labels.LastName"></label>
 				<input type="text" ng-model="account.profile.LastName" class="form-control" required/>
 			</div>
 		</div>
 		<div class="form-group">
-			<label>User ID</label>
+			<label ng-bind-html="account.labels.UserID"></label>
 			<input type="text" ng-model="account.profile.ID" class="form-control" required/>
 		</div>
 		<div class="form-group">
-			<label>Username</label>
+			<label ng-bind-html="account.labels.Username"></label>
 			<input type="text" ng-model="account.profile.Username" class="form-control" required/>
 		</div>
 		<div class="form-group">
-			<label>Email</label>
+			<label ng-bind-html="account.labels.Email"></label>
 			<input type="email" ng-model="account.profile.Email" class="form-control" required/>
 		</div>
 		<div class="form-group">
-			<label>Phone</label>
+			<label ng-bind-html="account.labels.Phone"></label>
 			<input type="tel" ng-model="account.profile.Phone" class="form-control"/>
 		</div>
-		<button type="submit" class="btn btn-primary" ng-disabled="ProfileUpdateForm.$invalid || ProfileUpdateForm.$pristine">Save Changes</button>
-		<button type="button" class="btn btn-default" ng-disabled="ProfileUpdateForm.$pristine" ng-click="account.resetForm(ProfileUpdateForm)">Revert Changes</button>
-		<button type="button" class="btn btn-default" ui-sref=".changePassword">Change Password</button>
-		<button type="button" class="btn btn-default" ui-sref="customers.edit">Addresses</button>
+		<button type="submit" class="btn btn-primary" ng-disabled="ProfileUpdateForm.$invalid || ProfileUpdateForm.$pristine"  ng-bind-html="account.labels.SaveChanges"></button>
+		<button type="button" class="btn btn-default" ng-disabled="ProfileUpdateForm.$pristine" ng-click="account.resetForm(ProfileUpdateForm)"  ng-bind-html="account.labels.RevertChanges"></button>
+		<button type="button" class="btn btn-default" ui-sref=".changePassword"  ng-bind-html="account.labels.ChangePassword"></button>
+		<button type="button" class="btn btn-default" ng-click="account.editAddresses()"  ng-bind-html="account.labels.Addresses"></button>
 	</form>
 </article>

@@ -6,12 +6,6 @@
             <h4><span ng-bind-html='readonly.labels.QuoteName'></span><span class='text-danger' style="margin-left:1em;" maxlength="20">{{readonly.Quote.xp.Name}}</span></h4>
 	        <h4><span ng-bind-html='readonly.labels.YourReference'></span><span class='text-danger' style="margin-left:1em;" maxlength="50">{{readonly.Quote.xp.RefNum}}</span></h4>
         </div>
-
-        <!-- <div class="col-md-4">
-            <h2 class="pull-right">
-                <button class="btn btn-success" ng-click="readonly.GotoDelivery()" ng-bind-html='readonly.labels.DeliveryOptions'></button>
-            </h2>
-        </div> -->
     </div>
 
    <div class="row">
@@ -55,6 +49,11 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>
         </div>
     </div>
 

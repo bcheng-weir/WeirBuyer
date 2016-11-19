@@ -5,7 +5,7 @@ angular.module('orderCloud')
 	.controller('InReviewQuotesCtrl', InReviewQuotesController)
 ;
 
-function QuotesConfig($stateProvider,  buyerid) {
+function QuotesConfig($stateProvider, buyerid) {
 	$stateProvider
 		.state('quotes', {
 			parent: 'base',
@@ -32,7 +32,10 @@ function QuotesConfig($stateProvider,  buyerid) {
 					return WeirService.FindQuotes([WeirService.OrderStatus.Saved], false);
 				},
                 CurrentOrderId: function(CurrentOrder) {
-					return CurrentOrder.GetID();
+					return CurrentOrder.GetID()
+						.catch(function() {
+							return {};
+						});
 				}
 			}
 		})
@@ -43,7 +46,7 @@ function QuotesConfig($stateProvider,  buyerid) {
 			controllerAs: 'inreview',
 			resolve: {
 				Quotes: function(WeirService) {
-					return WeirService.FindQuotes([WeirService.OrderStatus.Submitted], true);
+					return WeirService.FindQuotes([WeirService.OrderStatus.Submitted,WeirService.OrderStatus.Review], true);
 				}
 			}
 		})
@@ -67,7 +70,7 @@ function QuotesConfig($stateProvider,  buyerid) {
 		})
 		.state( 'quotes.confirmed', {
 			url: '/confirmed',
-			templateUrl: 'quotes/templates/quotes.saved.tpl.html',
+			templateUrl: 'quotes/templates/quotes.confirmed.tpl.html',
 			controller: 'SavedQuotesCtrl',
 			controllerAs: 'saved',
 			resolve: {
@@ -77,9 +80,9 @@ function QuotesConfig($stateProvider,  buyerid) {
 				CurrentOrderId: function ($q, CurrentOrder) {
 				    var d = $q.defer();
 				    CurrentOrder.GetID()
-                    .then(function (id) { d.resolve(id); })
-                    .catch(function (e) { d.resolve(null); });
-				    return d.promise;
+                        .then(function (id) { d.resolve(id); })
+                        .catch(function (e) { d.resolve(null); });
+					return d.promise;
 				}
 			}
 		})
@@ -107,22 +110,26 @@ function QuotesController($sce, $state, WeirService, Customer, MyOrg) {
 		},
 		fr: {
 		    Saved: $sce.trustAsHtml("Sauv&eacute;"),
-		    InReview: "**Cotation soumis pour examen",
+		    InReview: $sce.trustAsHtml("**Cotation soumis pour examen"),
 		    Revised: $sce.trustAsHtml("**Cotation r&eacute;vis&eacute;es"),
-		    Confirmed: $sce.trustAsHtml("Cotation confirm&eacute;es"),
+		    Confirmed: $sce.trustAsHtml("Cotation confirm&eacute;es")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, CurrentOrderId) {
+function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, CurrentOrderId, CurrentOrder) {
 	var vm = this;
 	vm.Quotes = Quotes;
 	vm.CurrentOrderId = CurrentOrderId;
 	
 	function _reviewQuote(quoteId, status) {
 	    if (status == WeirService.OrderStatus.ConfirmedQuote.id) {
-	        $state.go('myquote.readonly', { quoteID: quoteId });
+			WeirService.SetQuoteAsCurrentOrder(quoteId)
+				.then(function() {
+					$rootScope.$broadcast('SwitchCart');
+					$state.go('myquote.readonly', { quoteID: quoteId });
+				});
 	    } else {
 	        var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
 	        if (gotoReview) {
@@ -151,7 +158,8 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, Cu
             ValidTo: "Valid until",
             OwnProduct: "Own product",
             View: "View",
-		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?"
+		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?",
+			ConfirmedListMessage: "You can convert confirmed quotes to orders. View the confirmed quote and select; Submit order with PO<br><br>Confirmed quotes are valid for 30 days from confirmation"
 		},
 		fr: {
 		    Header: $sce.trustAsHtml(Quotes.length.toString() + " cotation(s) sauv&eacute;e(s)"),
@@ -164,7 +172,8 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, Cu
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
             OwnProduct: $sce.trustAsHtml("Propre Produit"),
             View: $sce.trustAsHtml("FR: View"),
-            ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?")
+            ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?"),
+			ConfirmedListMessage: $sce.trustAsHtml("You can convert confirmed quotes to orders. View the confirmed quote and select; Submit order with PO<br><br>Confirmed quotes are valid for 30 days from confirmation")
 		}
 	};
 	if ($state.is('quotes.revised')) {

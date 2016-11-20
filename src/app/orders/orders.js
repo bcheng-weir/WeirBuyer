@@ -141,7 +141,13 @@ function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParamete
 
     var labels = {
     	en: {
-		    Header: vm.list.Items.length.toString() + " pending Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+    		SubmittedHeader: vm.list.Items.length.toString() + " submitted Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+		    PendingHeader: vm.list.Items.length.toString() + " pending Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+		    PendingNotice: "Orders submitted pending PO will not be confirmed until Weir have received a purchase order",
+		    RevisedHeader: vm.list.Items.length.toString() + " revised Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+		    ConfirmedHeader: vm.list.Items.length.toString() + " confirmed Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+		    DespatchedHeader: vm.list.Items.length.toString() + " despatched Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+		    InvoicedHeader: vm.list.Items.length.toString() + " invoiced Order" +  (vm.list.Items.length == 1 ? "" : "s"),
 		    View: "View",
 		    submitted: "Submitted with PO",
 		    pending: "Submitted pending PO",

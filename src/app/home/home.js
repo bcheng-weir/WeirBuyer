@@ -110,13 +110,13 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 		})
 
 		.state( 'home.tag.detail', {
-			url: '/:number?:searchNumbers',
+			url: '/:id?:number?:searchNumbers',
 			templateUrl: 'home/templates/home.tag.detail.tpl.html',
 			controller: 'TagDetailCtrl',
 			controllerAs: 'tagDetail',
 			resolve: {
-				TagNumberDetail: function( $stateParams, WeirService ) {
-					return WeirService.TagNumber($stateParams.number);
+			    TagNumberDetail: function ($stateParams, WeirService) {
+					return WeirService.GetValve($stateParams.id);
 				}
 			}
 		})
@@ -128,13 +128,14 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 		});
 }
 
-function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, imageRoot) {
+function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, imageRoot, SearchTypeService) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
 	console.log(vm.serialNumberList);
 	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
 	vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
+	vm.WeirGroup = MyOrg.xp.WeirGroup.label;
     vm.Customer = CurrentCustomer;
     if(!MyOrg.xp.Customers){
     	MyOrg.xp.Customers = [];
@@ -160,6 +161,7 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 	}
 
 	vm.selfsearch = false;
+	vm.searchall = SearchTypeService.IsGlobalSearch();
 	vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
 	vm.customerFilter = null;
 	vm.SelectCustomer = function() {
@@ -172,8 +174,15 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 		}
 		vm.SelectingCustomer = true;
 	};
-	vm.ClearFilter = function() { vm.customerFilter = null; $rootScope.$broadcast('OC:RemoveOrder', null, null); };
+	vm.ClearFilter = function () { vm.customerFilter = null; $rootScope.$broadcast('OC:RemoveOrder', null, null); };
 	vm.CustomerSelected = function() {
+	    if (vm.searchall) { // do NOT change the current customer. Scope of global search lasts only until they leave the current search screen
+	        SearchTypeService.SetGlobalSearchFlag(vm.searchall);
+		    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
+		    return;
+	    }
+	    var wasGlobal = SearchTypeService.IsGlobalSearch();
+	    SearchTypeService.SetGlobalSearchFlag(false);
 	    var newCust = null;
 	    if (vm.selfsearch) {
 	        newCust = {id: MyOrg.ID, name: MyOrg.Name};
@@ -185,7 +194,7 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 		        }
 			}
 	    }
-		if (newCust) {  // && (!vm.Customer || newCust.id != vm.Customer.id) This commented portion prevents a new cart from being started by the same customer. Need to test.
+		if (newCust && (!wasGlobal || !vm.Customer || newCust.id != vm.Customer.id)) { // This last portion could prevent a new cart from being started by the same customer. Need to test.
 		    vm.Customer = newCust;
 		    CurrentOrder.Remove()
 			    .then(function() {
@@ -217,29 +226,35 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 			PartSearch: "Search by part number",
 			TagSearch: "Search by Tag number",
 			CustomerFilter: "Results filtered by; ",
+            NoFilter: "Any customer",
 			SelectCustomer: "Reset search filter",
-			SearchMine: "Search your products",
+			SearchMine: "Search my valves",
+            SearchAll: "Search all valves",
 			SearchOr: "Or",
 			FilterEndUser: "Filter by end-user",
 			Select: "Select",
 			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
 			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery"
+			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
+            NotAvailable: "Not Available"
 		},
 		fr: {
 		    SerialSearch: $sce.trustAsHtml("Rechercher par Num&eacute;ro de S&eacute;rie"),
 		    PartSearch: $sce.trustAsHtml("Rechercher par R&eacute;f&eacute;rence de Pi&egrave;ce"),
 		    TagSearch: $sce.trustAsHtml("Rechercher par Num&eacute;ro de Tag"),
 		    CustomerFilter: $sce.trustAsHtml("R&eacute;sultats filtr&eacute;s par: "),
+		    NoFilter: $sce.trustAsHtml("FR: Any customer"),
 		    SelectCustomer: $sce.trustAsHtml("Renouveler la recherche filtr&eacute;e"),
 		    SearchMine: $sce.trustAsHtml("Rechercher votre produit"),
+		    SearchAll: $sce.trustAsHtml("Search all valves"),
 		    SearchOr: $sce.trustAsHtml("Ou"),
 		    FilterEndUser: $sce.trustAsHtml("Filtrer par clients finaux"),
 		    Select: $sce.trustAsHtml("S&eacute;lectionner"),
 		    ReplacementGuidance: $sce.trustAsHtml("TBD: Replacement guidance"),
 		    POAGuidance: $sce.trustAsHtml("TBD: POA guidance"),
-		    PriceDisclaimer: $sce.trustAsHtml("TBD: Price disclaimer")
-		}
+		    PriceDisclaimer: $sce.trustAsHtml("TBD: Price disclaimer"),
+		    NotAvailable: $sce.trustAsHtml("Not Available")
+	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
         var searchType = WeirService.GetLastSearchType();
@@ -252,88 +267,89 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 	} else if (searchType == WeirService.SearchType.Serial){
 	    $state.go('home.serial');
 	}
-
 }
 
-function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toastr ) {
-	var vm = this;
-	
-	var labels = {
-		en: {
-			WhereToFind: "where to find your serial number",
-			EnterSerial: "Enter Serial Number",
-			AddMore: "Add More Serial Numbers   +",
-			ClearSearch: "Clear Search",
-			Search: "Search"
-		},
-		fr: {
-			WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
-			EnterSerial: $sce.trustAsHtml("Entrer le Num&eacute;ro de S&eacute;rie"),
-			AddMore: $sce.trustAsHtml("Ajouter plus de Num&eacute;ro de S&eacute;rie   +"),
-			ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
-			Search: "Rechercher"
-		}
-	};
-	vm.labels = WeirService.LocaleResources(labels);
-	WeirService.SetLastSearchType(WeirService.SearchType.Serial);
+function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toastr, SearchTypeService) {
+    var vm = this;
 
-	vm.serialNumbers = [null];
+    var labels = {
+        en: {
+            WhereToFind: "where to find your serial number",
+            EnterSerial: "Enter Serial Number",
+            AddMore: "Add More Serial Numbers   +",
+            ClearSearch: "Clear Search",
+            Search: "Search"
+        },
+        fr: {
+            WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
+            EnterSerial: $sce.trustAsHtml("Entrer le Num&eacute;ro de S&eacute;rie"),
+            AddMore: $sce.trustAsHtml("Ajouter plus de Num&eacute;ro de S&eacute;rie   +"),
+            ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
+            Search: "Rechercher"
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
+    WeirService.SetLastSearchType(WeirService.SearchType.Serial);
 
-	vm.addSerialNumber = function() {
-		vm.serialNumbers.push(null);
-	};
+    vm.serialNumbers = [null];
 
-	vm.removeSerialNumber = function(index) {
-		vm.serialNumbers.splice(index, 1);
-	};
+    vm.addSerialNumber = function () {
+        vm.serialNumbers.push(null);
+    };
 
-	vm.searchSerialNumbers = function() {
-		if(!vm.serialNumbers[0] || vm.serialNumbers.length == 0) {
-			toastr.info("Please enter an item in the search box.", "Empty Search");
-		} else if (vm.serialNumbers.length == 1) {
-			$state.go('home.serial.detail', {number: vm.serialNumbers[0], searchNumbers:  vm.serialNumbers[0]});
-		} else {
-			$state.go('home.serial.results', {numbers: vm.serialNumbers.join(',')});
-		}
-	};
+    vm.removeSerialNumber = function (index) {
+        vm.serialNumbers.splice(index, 1);
+    };
 
-	vm.clearSearch = function() {
-		vm.serialNumbers = [null];
-	};
+    vm.searchSerialNumbers = function () {
+        if (!vm.serialNumbers[0] || vm.serialNumbers.length == 0) {
+            toastr.info("Please enter an item in the search box.", "Empty Search");
+        } else if (vm.serialNumbers.length == 1) {
+            $state.go('home.serial.detail', { number: vm.serialNumbers[0], searchNumbers: vm.serialNumbers[0] });
+        } else {
+            $state.go('home.serial.results', { numbers: vm.serialNumbers.join(',') });
+        }
+    };
 
-	vm.showClearSearch = function() {
-		var count = 0;
-		angular.forEach(vm.serialNumbers, function(number) {
-			if (number) count++;
-		});
-		return count > 0;
-	};
-	vm.goToArticle = function(article) {
-		$state.go('news', {id: article.ID});
-	};
-    vm.updateSerialList = function(input) {
-        if(input.length >= 3) {
+    vm.clearSearch = function () {
+        vm.serialNumbers = [null];
+    };
+
+    vm.showClearSearch = function () {
+        var count = 0;
+        angular.forEach(vm.serialNumbers, function (number) {
+            if (number) count++;
+        });
+        return count > 0;
+    };
+    vm.goToArticle = function (article) {
+        $state.go('news', { id: article.ID });
+    };
+    vm.updateSerialList = function (input) {
+        if (input.length >= 3) {
             var cust = $scope.home.Customer.id;
-            if (cust) {
-                var deferred = $q.defer();
-
-                OrderCloud.Me.ListCategories(null, 1, 20, null, null, {
+            if (SearchTypeService.IsGlobalSearch()) {
+                return OrderCloud.Me.ListCategories(null, 1, 20, null, "Name",
+                    { "xp.SN": input + "*" }, "all", cust.substring(0, 5))
+                    .then(function (newList) {
+                        $scope.home.serialNumberList = newList.Items;
+                    })
+                    .catch(function (ex) {
+                        console.log("Error: " + JSON.stringify(ex));
+                    });
+            } else if (cust) {
+                return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {
                     "ParentID": cust,
                     "xp.SN": input + "*"
-                }, null, cust.substring(0,5)).then(function(newList){
-                    $scope.home.serialNumberList = newList.Items;
-                    deferred.resolve();
-                    return;
-                })
-                    .catch(function(ex) {
-                        deferred.resolve("No Tags with this id");
-                        return;
+                }, null, cust.substring(0, 5))
+                    .then(function (newList) {
+                        $scope.home.serialNumberList = newList.Items;
+                    })
+                    .catch(function (ex) {
+                        console.log("Error: " + JSON.stringify(ex));
                     });
-
-
             }
         }
-        else return;
     };
 }
 
@@ -363,7 +379,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 
 	var labels = {
 		en: {
-			Customer: "Customer",
+			Customer: "Customer; ",
 			ResultsHeader: "Showing results for serial numbers; " + numFound.toString() + " of " + SerialNumberResults.length.toString() + " searched serial numbers found",
 			SerialNumber: "Serial Number",
 			TagNumber: "Tag number (if available)",
@@ -373,7 +389,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 			ViewDetails: "View details"
 		},
 		fr: {
-			Customer: "Client",
+			Customer: "Client: ",
 			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de s&eacute;rie: de " + numFound.toString() + " &agrave; " + SerialNumberResults.length.toString() + " num&eacute;ros de s&eacute;rie trouv&eacute;s."),
 			SerialNumber: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
 			TagNumber: $sce.trustAsHtml("Num&eacute;ro de Tag (si disponible)"),
@@ -534,27 +550,28 @@ function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService ) {
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
-    vm.updatePartList = function(input) {
-        if(input.length >= 3) {
-            var cust = $scope.home.Customer.id;
-            if (cust) {
-                var deferred = $q.defer();
+	vm.updatePartList = function (input) {
+	    if (input.length >= 3) {
+	        var cust = $scope.home.Customer.id;
+	        if (SearchTypeService.IsGlobalSearch()) {
+	        } else if (cust) {
+	            var deferred = $q.defer();
 
-                OrderCloud.Me.ListProducts(null, 1, 20, null, null, { "Name": input + "*" }, null, null).then(function(newList){
-                    $scope.home.partNumberList = newList.Items;
-                    deferred.resolve();
-                    return;
-                })
-                    .catch(function(ex) {
+	            OrderCloud.Me.ListProducts(null, 1, 20, null, null, { "Name": input + "*" }, null, null)
+                    .then(function (newList) {
+                        $scope.home.partNumberList = newList.Items;
+                        deferred.resolve();
+                        return;
+                    })
+                    .catch(function (ex) {
                         deferred.resolve("No Tags with this id");
                         return;
                     });
 
 
-            }
-        }
-        else return;
-    };
+	        }
+	    }
+	};
 }
 
 function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults ) {
@@ -611,7 +628,7 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 	};
 }
 
-function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr) {
+function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr, SearchTypeService) {
 	var vm = this;
 	var labels = {
 		en: {
@@ -635,27 +652,28 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 	WeirService.SetLastSearchType(WeirService.SearchType.Tag);
 	vm.updateTagList = function(input) {
 		if(input.length >= 3) {
-			var cust = $scope.home.Customer.id;
-            if (cust) {
-                var deferred = $q.defer();
-
+		    var cust = $scope.home.Customer.id;
+		    if (SearchTypeService.IsGlobalSearch()) {
+		        return OrderCloud.Me.ListCategories(null, 1, 20, null, "Name",
+                    { "xp.TagNumber": input + "*" }, "all", cust.substring(0, 5))
+                    .then(function (newList) {
+                        $scope.home.serialNumberList = newList.Items;
+                    })
+                    .catch(function (ex) {
+                        console.log("Error: " + JSON.stringify(ex));
+                    });
+		    } else  if (cust) {
                 OrderCloud.Me.ListCategories(null, 1, 20, null, null, {
                     "ParentID": cust,
                     "xp.TagNumber": input + "*"
                 }, null, cust.substring(0,5)).then(function(newList){
                     $scope.home.serialNumberList = newList.Items;
-                    deferred.resolve();
-                    return;
 				})
-                    .catch(function(ex) {
-                         deferred.resolve("No Tags with this id");
-                        return;
-                    });
-
-
+                .catch(function(ex) {
+                    console.log("Error: " + JSON.stringify(ex));
+                });
             }
         }
-        else return;
     };
 	vm.tags = [null];
 
@@ -670,8 +688,8 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 	vm.searchTags = function() {
 		if(!vm.tags[0] || vm.tags.length == 0) {
 			toastr.info("Please enter an item in the search box.", "Empty Search");
-		} else if (vm.tags.length == 1) {
-			$state.go('home.tag.detail', {number: vm.tags[0], searchNumbers: vm.tags[0]});
+		} else if (vm.tags.length == 1 && !SearchTypeService.IsGlobalSearch()) {
+			$state.go('home.tag.detail', {id: vm.tags[0].Detail.ID, number: vm.tags[0], searchNumbers: vm.tags[0]});
 		}
 		else {
 			$state.go('home.tag.results', {numbers: vm.tags.join(',')});
@@ -691,53 +709,62 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 	};
 }
 
-function TagResultsController(WeirService, $stateParams, $state, TagNumberResults, $sce ) {
-	var vm = this;
-	vm.tagNumberResults = TagNumberResults;
-	vm.searchNumbers = $stateParams.numbers;
-	var multiCust = false;
-	var cust = "";
-	var numFound = 0;
-	for(var i=0; i< TagNumberResults.length; i++) {
-		var tmp = TagNumberResults[i].Detail;
-		if (tmp) {
-			numFound++;
-			if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
-			    if (cust != "") {
-				multiCust = true;
-			    } else {
-				cust = tmp.xp.Customer;
-			    }
-			}
-		}
-	}
-	vm.MultipleCustomers = multiCust;
-	vm.Customer = cust;
+function TagResultsController(WeirService, $stateParams, $state, TagNumberResults, $sce) {
+    var vm = this;
+    vm.tagNumberResults = TagNumberResults;
+    vm.searchNumbers = $stateParams.numbers;
+    var multiCust = false;
+    var cust = "";
+    var numFound = 0;
+    var numQueried = 0;
+    var tag = "";
+    for (var i = 0; i < TagNumberResults.length; i++) {
+        var tmp = TagNumberResults[i].Detail;
+        if (tmp) {
+            if (tag != TagNumberResults[i].Number) {
+                tag = TagNumberResults[i].Number;
+                numFound++;
+                numQueried++;
+            }
+            if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
+                if (cust != "") {
+                    multiCust = true;
+                } else {
+                    cust = tmp.xp.Customer;
+                }
+            }
+        } else if (tag != TagNumberResults[i].Number) {
+            tag = TagNumberResults[i].Number;
+            numQueried++;
+        }
+    }
+    vm.MultipleCustomers = multiCust;
+    vm.Customer = cust;
 
-	var labels = {
-		en: {
-			Customer: "Customer",
-			ResultsHeader: "Showing results for tag numbers; " + numFound.toString() + " of " + TagNumberResults.length.toString() + " searched tag numbers found",
-			SerialNumber: "Serial Number",
-			TagNumber: "Tag number (if available)",
-			ValveDesc: "Valve description",
-			NoResultsMsg: "No results found for;",
-			SearchAgain: "Search again",
-			ViewDetails: "View details"
-		},
-		fr: {
-			Customer: "Client",
-			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les Num&eacute;ro de tag : de " + numFound.toString() + " &agrave; " + TagNumberResults.length.toString() + " Num&eacute;ros de tag trouv&eacute;s. "),
-			SerialNumber: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
-			TagNumber: $sce.trustAsHtml("Num&eacute;ro de tag (si disponible)"),
-			ValveDesc: "Description de la soupape",
-			NoResultsMsg: $sce.trustAsHtml("Pas de r&eacute;sultats trouv&eacute;s pour:"),
-			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
-			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
-		}
-	};
-	if(numFound == 0) $state.go('home.noresults');
-	vm.labels = WeirService.LocaleResources(labels);
+    var labels = {
+        en: {
+            Customer: "Customer; ",
+            ResultsHeader: "Showing results for tag numbers; " + numFound.toString() + " of " + numQueried.toString() + " searched tag numbers found",
+            SerialNumber: "Serial Number",
+            TagNumber: "Tag number (if available)",
+            ValveDesc: "Valve description",
+            NoResultsMsg: "No results found for;",
+            SearchAgain: "Search again",
+            ViewDetails: "View details"
+        },
+        fr: {
+            Customer: "Client: ",
+            ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les Num&eacute;ro de tag : de " + numFound.toString() + " &agrave; " + numQueried.toString() + " Num&eacute;ros de tag trouv&eacute;s. "),
+            SerialNumber: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
+            TagNumber: $sce.trustAsHtml("Num&eacute;ro de tag (si disponible)"),
+            ValveDesc: "Description de la soupape",
+            NoResultsMsg: $sce.trustAsHtml("Pas de r&eacute;sultats trouv&eacute;s pour:"),
+            SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
+            ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
+        }
+    };
+    if (numFound == 0) $state.go('home.noresults');
+    vm.labels = WeirService.LocaleResources(labels);
 }
 
 function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirService, TagNumberDetail ) {

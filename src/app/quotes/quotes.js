@@ -89,7 +89,7 @@ function QuotesConfig($stateProvider, buyerid) {
 	;
 }
 
-function QuotesController($sce, $state, WeirService, Customer, MyOrg) {
+function QuotesController($sce, WeirService, Customer, MyOrg) {
 	var vm = this;
 	vm.Customer = Customer;
 	vm.MyOrg = MyOrg;
@@ -118,7 +118,7 @@ function QuotesController($sce, $state, WeirService, Customer, MyOrg) {
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, CurrentOrderId, CurrentOrder) {
+function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, CurrentOrderId) {
 	var vm = this;
 	vm.Quotes = Quotes;
 	vm.CurrentOrderId = CurrentOrderId;

@@ -57,7 +57,7 @@ function OrdersConfig($stateProvider, buyerid) {
 	    });
 }
 
-function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, MyOrg, WeirService) {
+function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, MyOrg, WeirService) {
     var vm = this;
     vm.list = Orders;
     vm.parameters = Parameters;
@@ -160,7 +160,8 @@ function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParamete
 		    OrderRef: "Your Order ref;",
 		    Total: "Order value",
 		    Customer: "Customer",
-		    Status: "Status"
+		    Status: "Status",
+		    ReplaceCartMessage: "Continuing with this action will change your cart to this order. Are you sure you want to proceed?"
 	    },
 	    fr: {
 		    submitted: $sce.trustAsHtml("Submitted with PO"),
@@ -172,6 +173,7 @@ function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParamete
 	    }
     };
     vm.labels = labels[WeirService.Locale()];
+
 	vm.FilterActions = _filterActions;
 	function _filterActions(action) {
 		var filter = {
@@ -183,9 +185,30 @@ function OrdersController($state, $ocMedia, $sce, OrderCloud, OrderCloudParamete
 			"orders.invoiced":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.Invoiced.id, "xp.Active":"true"}
 		};
 		return JSON.stringify(filter[action]);
-		//$state.go(action, {filters:JSON.stringify(filter[action])},{reload:true});
 	}
-	vm.filters = function() {
-		return JSON.stringify({"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":"true"});
+
+	vm.ReviewOrder = _reviewOrder;
+	function _reviewOrder(orderId, status) {
+		if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id) {
+			WeirService.SetQuoteAsCurrentOrder(orderId)
+				.then(function() {
+					$rootScope.$broadcast('SwitchCart');
+					$state.go('myquote.readonly', { quoteID: orderId });
+				});
+		} else {
+			var gotoReview = (vm.CurrentOrderId != orderId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
+			if (gotoReview) {
+				WeirService.SetQuoteAsCurrentOrder(orderId)
+					.then(function () {
+						$rootScope.$broadcast('SwitchCart');
+						if (status == WeirService.OrderStatus.RevisedOrder.id) {
+							$state.go('myquote.revised');
+						} else {
+							$state.go('myquote.detail');
+						}
+					});
+			}
+		}
 	}
+
 }

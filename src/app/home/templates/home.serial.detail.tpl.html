@@ -4,7 +4,7 @@
             <p><b><span ng-bind-html='serialDetail.labels.ResultsHeader'></span><span class="text-danger">{{serialDetail.serialNumber.Name}}</span></b></p>
             <p><b><span ng-bind-html='serialDetail.labels.Tag'></span><span class="text-danger">{{serialDetail.serialNumber.xp.TagNumber}}</span></b></p>
             <p><b><span ng-bind-html='serialDetail.labels.Customer'></span><span class="text-danger">{{serialDetail.serialNumber.xp.Customer}}</span></b></p>
-            <p><b><span ng-bind-html='serialDetail.labels.ManufDate'></span><span class="text-danger">{{serialDetail.serialNumber.xp.ManufactureDate}}</span></b></p>
+            <p><b><span ng-bind-html='serialDetail.labels.DeliveryDate'></span><span class="text-danger">{{serialDetail.serialNumber.xp.DeliveredDate}}</span></b></p>
         </div>
         <div class="col-md-4">
             <h2 class="pull-right">
@@ -24,7 +24,7 @@
         </div>
         <div class="col-md-6">
             <h3 ng-bind-html='serialDetail.labels.SpecHeader'></h3>
-            <table ng-if="serialDetail.serialNumber.xp.Specs.Type=='WCVUK'" class="table table-bordered oc-table-responsive weir-specs-table">
+            <table ng-if="serialDetail.serialNumber.xp.Specs.Type=='WVCUK'" class="table table-bordered oc-table-responsive weir-specs-table">
                 <tbody>
                     <tr>
                         <td>Serial number</td>

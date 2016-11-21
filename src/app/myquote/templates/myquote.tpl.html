@@ -12,8 +12,8 @@
             <div style="display:inline-block; float:right; margin-left: 1em;" ng-click="myquote.Print()">
 				<a href="#"><img aria-hidden="true" ng-src="{{myquote.GetImageUrl('printer.png')}}"></img><br/><span ng-bind-html='myquote.labels.Print'></span></a>
             </div>
-            <div style="display:inline-block; float:right; margin-left: 1em;" ng-click="myquote.Download()">
-				<a href="#"><img aria-hidden="true" ng-src="{{myquote.GetImageUrl('download.png')}}"></img><br/><span ng-bind-html='myquote.labels.Download'></span></a>
+            <div style="display:inline-block; float:right; margin-left: 1em;" ng-csv="myquote.ToCsvJson" filename="{{myquote.CsvFilename}}"> <!-- ng-click="myquote.Download()"> -->
+				<img aria-hidden="true" ng-src="{{myquote.GetImageUrl('download.png')}}"></img><br/><span ng-bind-html='myquote.labels.Download'></span>
             </div>
             <div style="margin-left:1em; float:right;" ng-click="myquote.NoItemsMessage()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && !myquote.HasLineItems()">
 		   		<a href="#">

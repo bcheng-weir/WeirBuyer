@@ -174,7 +174,7 @@ function MyQuoteConfig($stateProvider, buyerid) {
     ;
 }
 
-function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot) {
+function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService) {
 	var vm = this;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
@@ -198,6 +198,12 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 	    $state.go("myquote.readonly", { quoteID: vm.Quote.ID });
 	}
 	vm.imageRoot = imageRoot;
+	function toCsv() {
+	    return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+	}
+	vm.ToCsvJson = toCsv;
+	vm.CsvFilename = vm.Quote.ID + ".csv";
+
 	function getStatusLabel() {
 	    if (vm.Quote.xp.Status) {
 	        var status = WeirService.LookupStatus(vm.Quote.xp.Status);
@@ -333,10 +339,24 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 	var labels = {
 	    en: {
 	        YourQuote: "Your Quote",
+	        QuoteNumber: "Quote number; ",
+	        QuoteName: "Add your quote name ",
+	        YourReference: "Your Reference No; ",
 	        DeliveryOptions: "Delivery Options",
 	        ReviewQuote: "Review Quote",
 	        SubmitQuote: "Submit Quote or Order",
-	        Save: "Save",
+            PONumber: "PO Number",
+            SerialNum: "Serial number",
+            TagNum: "Tag number (if available)",
+            PartNum: "Part number",
+            PartDesc: "Description of part",
+            RecRepl: "Recommended replacement",
+            LeadTime: "Lead time",
+            PricePer: "Price per item or set",
+            Quantity: "Quantity",
+            Total: "Total",
+            DeliveryAddress: "Delivery Address",
+            Save: "Save",
 	        Share: "Share",
 	        Download: "Download",
 	        Print: "Print",
@@ -360,9 +380,23 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Votre Cotation"),
+		    QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation"),
+		    QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+		    YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
 		    ReviewQuote: $sce.trustAsHtml("R&eacute;viser votre cotation"),
 			SubmitQuote: $sce.trustAsHtml("FR: Submit Quote or Order"),
+			PONumber: $sce.trustAsHtml("FR: PO Number"),
+			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
+			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
+			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
+			PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
+			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
+			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
+			Total: $sce.trustAsHtml("Total"),
+			DeliveryAddress: $sce.trustAsHtml("Delivery Address"),
 			Save: $sce.trustAsHtml("Sauvegarder"),
 			Share: $sce.trustAsHtml("Partager"),
 			Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
@@ -445,8 +479,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
-            Total: $sce.trustAsHtml("Total"),
-            UploadHeader: $sce.trustAsHtml("T&eacute;l&eacute;charger vos documents concernant vos conditions de services"),
+			Total: $sce.trustAsHtml("Total"),
+			UploadHeader: $sce.trustAsHtml("T&eacute;l&eacute;charger vos documents concernant vos conditions de services"),
             UploadInstruct: $sce.trustAsHtml("Veuillez t&eacute;l&eacute;charger tout type de document concernant vos soupapes ou vos pi&egrave;ces de rechanges. De ce fait, nous pouvons les utiliser comme r&eacute;f&eacute;rence pour cette cotation."),
             RefNumHeader: $sce.trustAsHtml("Ajouter votre num&eacute;ro de r&eacute;f&eacute;rence"),
             CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),

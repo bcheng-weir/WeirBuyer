@@ -21,7 +21,8 @@ angular.module('orderCloud', [
     'ordercloud-current-order',
     'ordercloud-address',
     'ordercloud-lineitems',
-    'ordercloud-geography'
+    'ordercloud-geography',
+    'ngCsv'
     ])
     .run(SetBuyerID)
     .config(Routing)

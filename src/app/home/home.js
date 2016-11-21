@@ -44,7 +44,6 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 				PartNumbers: function(OrderCloud) {
 					return OrderCloud.Me.ListProducts(null, 1, 100, null, null, null);
 				}
-
 			}
 		})
 		.state( 'home.serial', {
@@ -129,9 +128,10 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 		});
 }
 
-function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, toastr, imageRoot) {
+function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, imageRoot) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
+	console.log(vm.serialNumberList);
 	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
 	vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
@@ -195,7 +195,8 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 				    vm.serialNumberList.length = 0;
 				    WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
 					    .then(function() {
-						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": vm.Customer.xp.WeirGroup.label})
+						    //OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": vm.Customer.xp.WeirGroup.label})
+						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": MyOrg.xp.WeirGroup.label})
 							    .then(function(results) {
 								    vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
 							    });

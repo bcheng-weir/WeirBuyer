@@ -610,7 +610,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown");
     vm.SubmittingToReview = false;
     vm.SubmittingWithPO = false;
-	if(vm.Quote.xp.PendingPO == true && vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) {
+	// TODO: Updates so that the user can come back to a submited order, and submit with the PO. Might need to add extra code so that when just adding
+	// a PO, we do not re-submit the Order: simply add the PO and change the status.
+	if(vm.Quote.xp.PendingPO == true &&($state.$current.name == "myquote.submitquote") && (vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id || vm.Quote.xp.Type=="Order")) {
 		vm.SubmittingWithPO = true;
 	}
     // TODO: Also add condition that user has Buyer role

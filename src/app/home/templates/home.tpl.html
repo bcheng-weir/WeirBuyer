@@ -1,47 +1,9 @@
 <article id="COMPONENT_Home" class="container-fluid">
-	<div ng-if="home.WeirGroup=='WVCUK' && ['home.serial', 'home.part', 'home.tag'].indexOf(application.$state.current.name) > -1" style="margin-left: 1em; margin-bottom: 1em;">
-		<div ng-if="!home.SelectingCustomer">
-			<div class="row" style="font-weight: bold;">
-            <span ng-bind-html='home.labels.CustomerFilter'></span>
-                <span ng-if="!home.searchall">{{home.Customer.name}}</span>
-                <span ng-if="home.searchall">{{home.labels.NoFilter}}</span>
-            </div>
-			<div class="row"><a href="#" ng-click="home.SelectCustomer()" ng-bind-html="home.labels.SelectCustomer"></a></div>
-		</div>
-            <div ng-if="home.SelectingCustomer">
-                <div class="row"><span ng-bind-html="home.labels.SearchMine"></span><input type="checkbox" style="margin-left: 1em;" ng-model="home.selfsearch" ng-change="home.ClearFilter()" /></div>
-                <div class="row" ng-if="home.IsServiceOrg"><span ng-bind-html="home.labels.SearchAll"></span><input type="checkbox" style="margin-left: 1em;" ng-model="home.searchall" /></div>
-                <div ng-if="home.IsServiceOrg">
-                    <div class="row"><span ng-bind-html="home.labels.SearchOr"></span></div>
-                    <div class="row"><span ng-bind-html="home.labels.FilterEndUser"></span></div>
-                </div>
-                <div class="row col-md-3 input-group">
-                    <input type="text" class="form-control" style="width: 12em;" ng-disabled='home.selfsearch || home.searchall' ng-model="home.customerFilter" typeahead-min-length="3" uib-typeahead="cust.name for cust in home.AvailableCustomers | customerPresearch:$viewValue" />
-                    <button style="margin-left: 1em;" ng-disabled="!home.customerFilter && !home.selfsearch && !home.searchall" ng-click="home.CustomerSelected()" ng-bind-html="home.labels.Select"></button>
-                </div>
-            </div>
-	</div>
-    <div ng-if="home.WeirGroup=='WPIFR' && ['home.serial', 'home.part', 'home.tag'].indexOf(application.$state.current.name) > -1" class="row" style="margin-left: 1em; margin-bottom: 1em;">
-        <div ng-if="!home.SelectingCustomer">
-            <div class="row" style="font-weight: bold;">
-                <span ng-bind-html='home.labels.CustomerFilter'></span>
-                <span ng-if="home.searchall">{{home.labels.AllValves}}</span>
-                <span ng-if="home.selfsearch">{{home.labels.MyValves}}</span>
-            </div>
-            <div class="row"><a href="#" ng-click="home.SelectCustomer()" ng-bind-html="home.labels.SelectCustomer"></a></div>
-        </div>
-        <div ng-if="home.SelectingCustomer" class="col-md-6 input-group">
-            <span ><span ng-bind-html="home.labels.SearchMine"></span><input type="checkbox" style="margin-left: 1em;" ng-model="home.selfsearch" ng-change="home.searchall = !home.selfsearch" /></span>
-            <span style="margin-left: 4em;"><span ng-bind-html="home.labels.SearchAll"></span><input type="checkbox" style="margin-left: 1em;" ng-model="home.searchall" ng-change="home.selfsearch = !home.searchall" /></span>
-            <span style="margin-left: 4em;"><button ng-bind-html="home.labels.ApplyFilter" class="btn btn-primary" ng-click="home.SetGlobalSearch(home.searchall)"></button></span>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>This is a placeholder for the new landing / home page</h4>
         </div>
     </div>
-	<ul class="nav nav-tabs nav-justified" ng-if="home.Customer.id && ['home.serial', 'home.part', 'home.tag'].indexOf(application.$state.current.name) > -1">
-		<li role="presentation" ui-sref-active="active" ui-sref="home.serial"><a href="#" ng-bind-html='home.labels.SerialSearch'></a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="home.part"><a href="#" ng-bind-html='home.labels.PartSearch'></a></li>
-		<li role="presentation" ui-sref-active="active" ui-sref="home.tag"><a href="#" ng-bind-html='home.labels.TagSearch'></a></li>
-	</ul>
-	<div ui-view ng-if='home.Customer.id'></div>
 </article>
 
 

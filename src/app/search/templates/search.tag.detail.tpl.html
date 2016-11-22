@@ -3,21 +3,21 @@
         <div class="col-md-8">
             <p><b><span ng-bind-html='tagDetail.labels.ResultsHeader'></span><span class="text-danger">{{tagDetail.tagNumber.Name}}</span></b></p>
             <p><b><span ng-bind-html='tagDetail.labels.Tag'></span><span class="text-danger">{{tagDetail.tagNumber.xp.TagNumber}}</span></b></p>
-            <p ng-if="!home.searchall"><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger">{{tagDetail.tagNumber.xp.Customer}}</span></b></p>
-            <p ng-if="home.searchall"><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger" ng-bind-html="home.labels.NotAvailable"></span></b></p>
+            <p ng-if="!search.searchall"><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger">{{tagDetail.tagNumber.xp.Customer}}</span></b></p>
+            <p ng-if="search.searchall"><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger" ng-bind-html="search.labels.NotAvailable"></span></b></p>
             <p><b><span ng-bind-html='tagDetail.labels.DeliveryDate'></span><span class="text-danger">{{tagDetail.tagNumber.xp.DeliveredDate | weirfulldate}}</span></b></p>
         </div>
         <div class="col-md-4">
             <h2 class="pull-right">
-                <button class="btn btn-default" ui-sref="home.tag" ng-bind-html='tagDetail.labels.SearchAgain'></button>
-                <button class="btn btn-primary" ng-if="tagDetail.searchNumbers" ui-sref="home.tag.results({numbers: tagDetail.searchNumbers})" ng-bind-html='tagDetail.labels.BackToResults'></button>
+                <button class="btn btn-default" ui-sref="search.tag" ng-bind-html='tagDetail.labels.SearchAgain'></button>
+                <button class="btn btn-primary" ng-if="tagDetail.searchNumbers" ui-sref="search.tag.results({numbers: tagDetail.searchNumbers})" ng-bind-html='tagDetail.labels.BackToResults'></button>
             </h2>
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <figure>
-                <img ng-if="tagDetail.tagNumber.xp.ImageName" ng-src="{{home.GetValveImageUrl(tagDetail.tagNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em;display:block; margin-left:auto; margin-right:auto;" />
+                <img ng-if="tagDetail.tagNumber.xp.ImageName" ng-src="{{search.GetValveImageUrl(tagDetail.tagNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em;display:block; margin-left:auto; margin-right:auto;" />
                 <div ng-if="!tagDetail.tagNumber.xp.ImageName" class="serial-image">
                     <span>General Arrangement drawing of Valve Type</span>
                 </div>
@@ -137,10 +137,10 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-            <p><span ng-bind-html='home.labels.ReplacementGuidance'></span></p>
-            <p><span style="font-style:italic;" ng-bind-html='home.labels.POAGuidance'></span></p>
+            <p><span ng-bind-html='search.labels.ReplacementGuidance'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='search.labels.POAGuidance'></span></p>
             <p><span style="font-style:italic;" ng-bind-html='tagDetail.headers.LeadTimeNotice'></span></p>
-            <p><span style="font-style:italic;" ng-bind-html='home.labels.PriceDisclaimer'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='search.labels.PriceDisclaimer'></span></p>
         </div>
     </div>
 </article>

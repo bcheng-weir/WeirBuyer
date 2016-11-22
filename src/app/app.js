@@ -43,7 +43,7 @@ function DatePickerConfig(uibDatepickerConfig, uibDatepickerPopupConfig){
 
 function Routing($urlRouterProvider, $urlMatcherFactoryProvider, $locationProvider) {
     $urlMatcherFactoryProvider.strictMode(false);
-    $urlRouterProvider.otherwise('/home/serial');
+    $urlRouterProvider.otherwise('/home');
     $locationProvider.html5Mode(true);
 }
 

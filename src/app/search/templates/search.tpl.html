@@ -1,0 +1,47 @@
+<article id="COMPONENT_Search" class="container-fluid">
+	<div ng-if="search.WeirGroup=='WVCUK' && ['search.serial', 'search.part', 'search.tag'].indexOf(application.$state.current.name) > -1" style="margin-left: 1em; margin-bottom: 1em;">
+		<div ng-if="!search.SelectingCustomer">
+			<div class="row" style="font-weight: bold;">
+            <span ng-bind-html='search.labels.CustomerFilter'></span>
+                <span ng-if="!search.searchall">{{search.Customer.name}}</span>
+                <span ng-if="search.searchall">{{search.labels.NoFilter}}</span>
+            </div>
+			<div class="row"><a href="#" ng-click="search.SelectCustomer()" ng-bind-html="search.labels.SelectCustomer"></a></div>
+		</div>
+            <div ng-if="search.SelectingCustomer">
+                <div class="row"><span ng-bind-html="search.labels.SearchMine"></span><input type="checkbox" style="margin-left: 1em;" ng-model="search.selfsearch" ng-change="search.ClearFilter()" /></div>
+                <div class="row" ng-if="search.IsServiceOrg"><span ng-bind-html="search.labels.SearchAll"></span><input type="checkbox" style="margin-left: 1em;" ng-model="search.searchall" /></div>
+                <div ng-if="search.IsServiceOrg">
+                    <div class="row"><span ng-bind-html="search.labels.SearchOr"></span></div>
+                    <div class="row"><span ng-bind-html="search.labels.FilterEndUser"></span></div>
+                </div>
+                <div class="row col-md-3 input-group">
+                    <input type="text" class="form-control" style="width: 12em;" ng-disabled='search.selfsearch || search.searchall' ng-model="search.customerFilter" typeahead-min-length="3" uib-typeahead="cust.name for cust in search.AvailableCustomers | customerPresearch:$viewValue" />
+                    <button style="margin-left: 1em;" ng-disabled="!search.customerFilter && !search.selfsearch && !search.searchall" ng-click="search.CustomerSelected()" ng-bind-html="search.labels.Select"></button>
+                </div>
+            </div>
+	</div>
+    <div ng-if="search.WeirGroup=='WPIFR' && ['search.serial', 'search.part', 'search.tag'].indexOf(application.$state.current.name) > -1" class="row" style="margin-left: 1em; margin-bottom: 1em;">
+        <div ng-if="!search.SelectingCustomer">
+            <div class="row" style="font-weight: bold;">
+                <span ng-bind-html='search.labels.CustomerFilter'></span>
+                <span ng-if="search.searchall">{{search.labels.AllValves}}</span>
+                <span ng-if="search.selfsearch">{{search.labels.MyValves}}</span>
+            </div>
+            <div class="row"><a href="#" ng-click="search.SelectCustomer()" ng-bind-html="search.labels.SelectCustomer"></a></div>
+        </div>
+        <div ng-if="search.SelectingCustomer" class="col-md-6 input-group">
+            <span ><span ng-bind-html="search.labels.SearchMine"></span><input type="checkbox" style="margin-left: 1em;" ng-model="search.selfsearch" ng-change="search.searchall = !search.selfsearch" /></span>
+            <span style="margin-left: 4em;"><span ng-bind-html="search.labels.SearchAll"></span><input type="checkbox" style="margin-left: 1em;" ng-model="search.searchall" ng-change="search.selfsearch = !search.searchall" /></span>
+            <span style="margin-left: 4em;"><button ng-bind-html="search.labels.ApplyFilter" class="btn btn-primary" ng-click="search.SetGlobalSearch(search.searchall)"></button></span>
+        </div>
+    </div>
+	<ul class="nav nav-tabs nav-justified" ng-if="search.Customer.id && ['search.serial', 'search.part', 'search.tag'].indexOf(application.$state.current.name) > -1">
+		<li role="presentation" ui-sref-active="active" ui-sref="search.serial"><a href="#" ng-bind-html='search.labels.SerialSearch'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="search.part"><a href="#" ng-bind-html='search.labels.PartSearch'></a></li>
+		<li role="presentation" ui-sref-active="active" ui-sref="search.tag"><a href="#" ng-bind-html='search.labels.TagSearch'></a></li>
+	</ul>
+	<div ui-view ng-if='search.Customer.id'></div>
+</article>
+
+

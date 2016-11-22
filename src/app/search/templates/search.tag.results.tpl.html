@@ -1,8 +1,8 @@
 <article>
     <div class="row">
         <div class="col-md-8">
-			<p style="font-weight: bold;" ng-if='!home.searchall && !tagResults.MultipleCustomers' ><span ng-bind-html='tagResults.labels.Customer'></span>{{tagResults.Customer}}</p>
-			<p style="font-weight: bold;" ng-if='home.searchall || tagResults.MultipleCustomers'><span ng-bind-html='tagResults.labels.Customer'></span><span ng-bind-html="home.labels.NotAvailable"></span></p>
+			<p style="font-weight: bold;" ng-if='!search.searchall && !tagResults.MultipleCustomers' ><span ng-bind-html='tagResults.labels.Customer'></span>{{tagResults.Customer}}</p>
+			<p style="font-weight: bold;" ng-if='search.searchall || tagResults.MultipleCustomers'><span ng-bind-html='tagResults.labels.Customer'></span><span ng-bind-html="search.labels.NotAvailable"></span></p>
 		<p style="font-weight: bold;" ng-bind-html='tagResults.labels.ResultsHeader'></p>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
@@ -16,11 +16,11 @@
                 <tbody>
                     <tr ng-repeat="result in tagResults.tagNumberResults | searchresults:true">
                         <td class="text-danger">{{result.Detail.Name}}</td>
-                        <!--<td ng-if='!home.searchall'>{{result.Detail.xp.Customer}}</td>
-                        <td ng-if='home.searchall'><span ng-bind-html="home.labels.NotAvailable"></span></td> -->
+                        <!--<td ng-if='!search.searchall'>{{result.Detail.xp.Customer}}</td>
+                        <td ng-if='search.searchall'><span ng-bind-html="search.labels.NotAvailable"></span></td> -->
                         <td>{{result.Detail.xp.TagNumber}}</td>
 			<td ng-bind-html='result.Detail.Description'></td>
-			<td class="button-td"><button class="btn btn-warning" ui-sref="home.tag.detail({id: result.Detail.ID, number: result.Number, searchNumbers: tagResults.searchNumbers})" ng-bind-html='tagResults.labels.ViewDetails'></button></td>
+			<td class="button-td"><button class="btn btn-warning" ui-sref="search.tag.detail({id: result.Detail.ID, number: result.Number, searchNumbers: tagResults.searchNumbers})" ng-bind-html='tagResults.labels.ViewDetails'></button></td>
                     </tr>
                 </tbody>
             </table>
@@ -30,7 +30,7 @@
         </div>
         <div class="col-md-4">
             <h2>
-		    <button class="btn btn-primary" ui-sref="home.tag" ng-bind-html='tagResults.labels.SearchAgain'></button>
+		    <button class="btn btn-primary" ui-sref="search.tag" ng-bind-html='tagResults.labels.SearchAgain'></button>
             </h2>
         </div>
     </div>

@@ -164,11 +164,11 @@ function BaseController($state, $rootScope, $ocMedia, $sce, Underscore, snapRemo
         var searchType = WeirService.GetLastSearchType();
 	searchType = searchType || WeirService.SearchType.Serial;
 	if (searchType == WeirService.SearchType.Part) {
-	    $state.go('home.part');
+	    $state.go('search.part');
 	} else if (searchType == WeirService.SearchType.Tag) {
-	    $state.go('home.tag');
+	    $state.go('search.tag');
 	} else {
-	    $state.go('home.serial');
+	    $state.go('search.serial');
 	}
     };
 

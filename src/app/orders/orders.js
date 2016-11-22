@@ -2,7 +2,7 @@ angular.module('orderCloud')
     .config(OrdersConfig)
     .controller('OrdersCtrl', OrdersController);
 
-function OrdersConfig($stateProvider, buyerid) {
+function OrdersConfig($stateProvider) {
     $stateProvider
         .state('orders', {
             parent: 'base',
@@ -14,15 +14,18 @@ function OrdersConfig($stateProvider, buyerid) {
             	componentName: 'Orders'
             },
             resolve: {
+	            CurrentCustomer: function(CurrentOrder) {
+		            return CurrentOrder.GetCurrentCustomer();
+	            },
+	            MyOrg: function(OrderCloud, CurrentCustomer) {
+		            return OrderCloud.Buyers.Get(CurrentCustomer.id);
+	            },
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-	            Orders: function(OrderCloud, Parameters) {
-                    return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 20, Parameters.searchOn, Parameters.sortBy, Parameters.filters, buyerid);
-				},
-	            MyOrg: function(OrderCloud) {
-		            return OrderCloud.Buyers.Get(buyerid);
-	            }
+	            Orders: function(OrderCloud, Parameters, MyOrg) {
+                    return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 20, Parameters.searchOn, Parameters.sortBy, Parameters.filters, MyOrg.ID);
+				}
             }
         })
         .state('orders.submitted', {

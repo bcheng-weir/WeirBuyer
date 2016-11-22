@@ -28,8 +28,8 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 				CurrentCustomer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
-                MyOrg: function(OrderCloud) {
-                    return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
+                MyOrg: function(OrderCloud, CurrentCustomer) {
+                    return OrderCloud.Buyers.Get(CurrentCustomer.id);
                 },
 				SerialNumbers: function(WeirService, OrderCloud, MyOrg, CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer()
@@ -131,7 +131,6 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, imageRoot, SearchTypeService) {
 	var vm = this;
 	vm.serialNumberList = SerialNumbers.Items;
-	console.log(vm.serialNumberList);
 	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
 	vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);

@@ -117,7 +117,7 @@ function BaseController($state, $rootScope, $ocMedia, $sce, Underscore, snapRemo
     vm.organizationItems = ComponentList.buyerSpecific;
     vm.registrationAvailable = Underscore.filter(vm.organizationItems, function(item) { return item.StateRef == 'registration' }).length;
 
-    var vm = this;
+    //var vm = this; Is this supposed to happen twice?
     var navlabels = WeirService.navBarLabels();
     switch (WeirService.Locale()) {
         case 'fr':

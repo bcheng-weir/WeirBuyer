@@ -462,107 +462,71 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
         return deferred.promise;
     }
 
-    function partNumbers(partNumbers) {
-
+    function partNumbers(weirGroup, partNumbers) {
         var results = {
-		Parts: [],
-		Customer: ""
-	};
-	var categories = [];
+            Parts: [],
+            NumSearched: partNumbers.length
+        };
         var queue = [];
-	var q2 = [];
-	var q3 = [];
         var deferred = $q.defer();
 
-  	getParts(partNumbers);
+        getParts(weirGroup, partNumbers);
         $q.all(queue)
-	    .then(function() {
-	        getValvesForParts(results);
-	        $q.all(q2)
-		     .then(function() {
-	                 getCustomerForValves(categories);
-	                 $q.all(q3)
-			     .then(function() {
-	                         deferred.resolve(results);
-	                     });
-	              });
-                })
-		    .catch (function(ex) {
-			deferred.resolve(results);
-		     });
-	return deferred.promise;
+	    .then(function () {
+	        deferred.resolve(results);
+	    })
+		.catch(function (ex) {
+		    deferred.resolve(results);
+		});
+        return deferred.promise;
 
-	function getParts(partNumbers) {
-            angular.forEach(partNumbers, function(number) {
-	        if (number) {
-                    queue.push((function() {
+        function getParts(weirGroup, partNumbers) {
+            angular.forEach(partNumbers, function (number) {
+                if (number) {
+                    queue.push((function () {
                         var d = $q.defer();
-    
-                        OrderCloud.Me.ListProducts(null, 1, 50, null, null, {"Name": number})
-                            .then(function(products) {
-				if (products.Items.length == 0) {
-                                    results.Parts.push({Number: number, Detail: null});
-				} else {
-			            angular.forEach(products.Items, function(product) {
-			               var result = {Number: number, Detail: product};
-                                       results.Parts.push(result);
-			            });
-				}
-                                d.resolve();
+
+                        OrderCloud.Me.ListProducts(weirGroup, 1, 50, "ID", "Name", { "Name": number })
+                            .then(function (products) {
+                                if (products.Items.length == 0) {
+                                    if (weirGroup = "WVCUK") {
+                                        OrderCloud.Me.ListProducts(weirGroup, 1, 50, "ID", "Name", { "xp.AlternatePartNumber": number })
+                                            .then(function (products) {
+                                                if (products.Items.length == 0) {
+                                                    results.Parts.push({ Number: number, Detail: null });
+                                                } else {
+                                                    angular.forEach(products.Items, function (product) {
+                                                        var result = { Number: number, Detail: product };
+                                                        results.Parts.push(result);
+                                                    });
+                                                }
+                                                d.resolve();
+                                            })
+                                            .catch(function (ex) {
+                                                results.Parts.push({ Number: number, Detail: null });
+                                                d.resolve();
+                                            });
+                                    } else {
+                                        results.Parts.push({ Number: number, Detail: null });
+                                        d.resolve();
+                                    }
+                                } else {
+                                    angular.forEach(products.Items, function (product) {
+                                        var result = { Number: number, Detail: product };
+                                        results.Parts.push(result);
+                                    });
+                                    d.resolve();
+                                }
                             })
-                            .catch(function(ex) {
-                                results.Parts.push({Number: number, Detail: null});
+                            .catch(function (ex) {
+                                results.Parts.push({ Number: number, Detail: null });
                                 d.resolve();
                             });
                         return d.promise;
                     })());
-	        }
+                }
             });
-	}
-
-	function getValvesForParts(results) {
-	    angular.forEach(results.Parts, function(result) {
-		    if (result.Detail) {
-		        q2.push((function() {
-		            var d2 = $q.defer();
-		            var part = result.Detail;
-		            OrderCloud.Categories.ListProductAssignments(null, part.ID, 1, 50)
-		                .then(function(valveIds) {
-			             angular.forEach(valveIds.Items, function(entry) {
-				         if (categories.indexOf(entry) < 0) categories.push(entry);
-			         });
-			             d2.resolve();
-			        })
-		            .catch (function(ex) {
-			            d2.resolve();
-		            });
-			    return d2.promise;
-		        })());
-		    }
-	    });
-	}
-
-	function getCustomerForValves(valves) {
-	    var def3 = $q.defer();
-	    angular.forEach(valves, function(entry) {
-		q3.push((function() {
-		    var d3 = $q.defer();
-		    OrderCloud.Categories.Get(entry.CategoryID)
-		         .then(function(item) {
-			     if (!results.Customer) {
-				  results.Customer = item.xp.Customer;
-			     } else if (results.Customer != item.xp.Customer) {
-				results.Customer = "*";
-			     }
-			     d3.resolve();
-		          })
-			  .catch(function(ex) {
-			      d3.resolve();
-			   });
-			   return d3.promise;
-		        })());
-	    });
-	}
+        }
     }
 
     //var lastSearchType = "";

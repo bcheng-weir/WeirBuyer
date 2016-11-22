@@ -16,8 +16,8 @@
                 <tbody>
                     <tr ng-repeat="result in tagResults.tagNumberResults | searchresults:true">
                         <td class="text-danger">{{result.Detail.Name}}</td>
-                        <td ng-if='!home.searchall'>{{result.Detail.xp.Customer}}</td>
-                        <td ng-if='home.searchall'><span ng-bind-html="home.labels.NotAvailable"></span></td>
+                        <!--<td ng-if='!home.searchall'>{{result.Detail.xp.Customer}}</td>
+                        <td ng-if='home.searchall'><span ng-bind-html="home.labels.NotAvailable"></span></td> -->
                         <td>{{result.Detail.xp.TagNumber}}</td>
 			<td ng-bind-html='result.Detail.Description'></td>
 			<td class="button-td"><button class="btn btn-warning" ui-sref="home.tag.detail({id: result.Detail.ID, number: result.Number, searchNumbers: tagResults.searchNumbers})" ng-bind-html='tagResults.labels.ViewDetails'></button></td>

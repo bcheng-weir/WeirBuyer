@@ -5,7 +5,8 @@ angular.module( 'orderCloud' )
     .filter( 'partPreSearch', partPreSearch )
     .filter( 'serialnumber', serialnumber )
     .filter( 'searchresults', searchresults )
-    .filter( 'weirdate', weirdate )
+    .filter('weirdate', weirdate)
+    .filter('weirfulldate', weirfulldate)
 ;
 
 function serialnumber() {
@@ -128,6 +129,20 @@ function weirdate() {
 	} else {
 	   result = "--";
 	}
+        return result;
+    }
+}
+function weirfulldate() {
+    return function (date, locale) {
+        var result;
+        if (date) {
+            date = new Date(date);
+
+            var day = date.getDate();
+            result = day + '-' + getMonthText(date.getMonth(), locale) + '-' + date.getFullYear().toString();
+        } else {
+            result = "--";
+        }
         return result;
     }
 }

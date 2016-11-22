@@ -5,7 +5,7 @@
             <p><b><span ng-bind-html='tagDetail.labels.Tag'></span><span class="text-danger">{{tagDetail.tagNumber.xp.TagNumber}}</span></b></p>
             <p ng-if="!home.searchall"><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger">{{tagDetail.tagNumber.xp.Customer}}</span></b></p>
             <p ng-if="home.searchall"><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger" ng-bind-html="home.labels.NotAvailable"></span></b></p>
-            <p><b><span ng-bind-html='tagDetail.labels.DeliveryDate'></span><span class="text-danger">{{tagDetail.tagNumber.xp.DateDelivered | weirdate}}</span></b></p>
+            <p><b><span ng-bind-html='tagDetail.labels.DeliveryDate'></span><span class="text-danger">{{tagDetail.tagNumber.xp.DeliveredDate | weirfulldate}}</span></b></p>
         </div>
         <div class="col-md-4">
             <h2 class="pull-right">

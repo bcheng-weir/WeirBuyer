@@ -15,7 +15,7 @@ function LoginConfig($stateProvider) {
     ;
 }
 
-function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, clientid, buyerid, anonymous) {
+function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, CurrentOrder, clientid, buyerid, anonymous) {
     return {
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
@@ -81,7 +81,12 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
                             OrderCloud.Buyers.List().then(function (buyers) {
                                 if (buyers && buyers.Items.length > 0) {
                                     var buyer = buyers.Items[0];
+                                    buyerid = buyer.ID
                                     OrderCloud.BuyerID.Set(buyer.ID);
+                                    CurrentOrder.Remove()
+                                        .then(function () {
+                                            return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
+                                        });
                                     $state.go('home');
                                 }
                             });
@@ -96,7 +101,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
     }
 }
 
-function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, OrderCloud, LoginService, WeirService, TokenRefresh, buyerid) {
+function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
     var vm = this;
     vm.credentials = {
         Username: null,
@@ -157,10 +162,15 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
                 OrderCloud.Buyers.List().then(function (buyers) {
                     if (buyers && buyers.Items.length > 0) {
                         var buyer = buyers.Items[0];
+                        buyerid = buyer.ID
                         OrderCloud.BuyerID.Set(buyer.ID);
+                        CurrentOrder.Remove()
+                            .then(function () {
+                                return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
+                            });
                         $state.go('home');
                     }
-                }); 
+                });
             })
             .catch(function(ex) {
                 if(ex.status == 400) {

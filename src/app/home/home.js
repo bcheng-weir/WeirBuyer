@@ -28,18 +28,19 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 				CurrentCustomer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
-                MyOrg: function(OrderCloud) {
-                    return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
+				MyOrg: function (OrderCloud) {
+				    var buyerId = OrderCloud.BuyerID.Get();
+                    return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
                 },
 				SerialNumbers: function(WeirService, OrderCloud, MyOrg, CurrentOrder) {
-					return CurrentOrder.GetCurrentCustomer()
+					return (MyOrg) ? CurrentOrder.GetCurrentCustomer()
 						.then(function(cust) {
 					        if (cust) {
 					            return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": cust.id }, null, MyOrg.xp.WeirGroup.label);
 					        } else {
 								return { Items: []};
 					    }
-					});
+					}) : null;
 				},
 				PartNumbers: function(OrderCloud) {
 					return OrderCloud.Me.ListProducts(null, 1, 100, null, null, null);
@@ -160,8 +161,21 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 	    }
 	}
 
-	vm.selfsearch = false;
 	vm.searchall = SearchTypeService.IsGlobalSearch();
+	if (vm.WeirGroup == 'WPIFR') {
+	    vm.selfsearch = !vm.searchall;
+	} else {
+	    vm.selfsearch = (vm.Customer.id == MyOrg.ID);
+	}
+    // This function is used by WPIFR users - they select only own products or global search
+    // and their order / cart is always in the context of themselves, not any other specific customer
+	vm.SetGlobalSearch = function (isGlobal) {
+	    vm.selfsearch = !isGlobal;
+	    vm.searchall = isGlobal;
+	    SearchTypeService.SetGlobalSearchFlag(vm.searchall);
+	    vm.SelectingCustomer = false;
+	};
+
 	vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
 	vm.customerFilter = null;
 	vm.SelectCustomer = function() {
@@ -232,11 +246,14 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
             SearchAll: "Search all valves",
 			SearchOr: "Or",
 			FilterEndUser: "Filter by end-user",
+			AllValves: "All Valves",
+			MyValves: "My Valves",
 			Select: "Select",
 			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
 			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
 			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-            NotAvailable: "Not Available"
+			NotAvailable: "Not Available",
+            ApplyFilter: "OK"
 		},
 		fr: {
 		    SerialSearch: $sce.trustAsHtml("Rechercher par Num&eacute;ro de S&eacute;rie"),
@@ -249,12 +266,15 @@ function HomeController($sce, $state, $rootScope, OrderCloud, CurrentOrder, Weir
 		    SearchAll: $sce.trustAsHtml("Search all valves"),
 		    SearchOr: $sce.trustAsHtml("Ou"),
 		    FilterEndUser: $sce.trustAsHtml("Filtrer par clients finaux"),
+		    AllValves:  $sce.trustAsHtml("FR: All Valves"),
+		    MyValves: $sce.trustAsHtml("FR: My Valves"),
 		    Select: $sce.trustAsHtml("S&eacute;lectionner"),
 		    ReplacementGuidance: $sce.trustAsHtml("TBD: Replacement guidance"),
 		    POAGuidance: $sce.trustAsHtml("TBD: POA guidance"),
 		    PriceDisclaimer: $sce.trustAsHtml("TBD: Price disclaimer"),
-		    NotAvailable: $sce.trustAsHtml("Not Available")
-	}
+		    NotAvailable: $sce.trustAsHtml("Not Available"),
+		    ApplyFilter: "FR: OK"
+	    }
 	};
 	vm.labels = WeirService.LocaleResources(labels);
         var searchType = WeirService.GetLastSearchType();
@@ -689,7 +709,10 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 		if(!vm.tags[0] || vm.tags.length == 0) {
 			toastr.info("Please enter an item in the search box.", "Empty Search");
 		} else if (vm.tags.length == 1 && !SearchTypeService.IsGlobalSearch()) {
-			$state.go('home.tag.detail', {id: vm.tags[0].Detail.ID, number: vm.tags[0], searchNumbers: vm.tags[0]});
+		    WeirService.TagNumbers(vm.tags)
+                .then(function (results) {
+                    $state.go('home.tag.detail', { id: results[0].Detail.ID, number: vm.tags[0], searchNumbers: vm.tags[0] });
+                });
 		}
 		else {
 			$state.go('home.tag.results', {numbers: vm.tags.join(',')});

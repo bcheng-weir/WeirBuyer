@@ -3,6 +3,7 @@ angular.module('orderCloud')
 	.controller('QuotesCtrl', QuotesController)
 	.controller('SavedQuotesCtrl', SavedQuotesController)
 	.controller('InReviewQuotesCtrl', InReviewQuotesController)
+	.controller('RouteToQuoteCtrl', RouteToQuoteController)
 ;
 
 function QuotesConfig($stateProvider, buyerid) {
@@ -84,6 +85,15 @@ function QuotesConfig($stateProvider, buyerid) {
                         .catch(function (e) { d.resolve(null); });
 					return d.promise;
 				}
+			}
+		})
+		.state('quotes.goto', {
+			url:'/:quoteID',
+			controller: 'RouteToQuoteCtrl',
+			resolve: {
+				Quote: function ($stateParams, OrderCloud) {
+		            		return OrderCloud.Orders.Get($stateParams.quoteID);
+		        	}
 			}
 		})
 	;
@@ -218,4 +228,16 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+}
+function RouteToQuoteController($state, WeirService, toastr, Quote) {
+	if (Quote) {
+		WeirService.SetQuoteAsCurrentOrder(quote.ID)
+		.then(function() {
+			$rootScope.$broadcast('SwitchCart');
+			$state.go('myquote.detail');
+		});
+	} else {
+		toastr.error("Quote not found");
+		$state.go('quotes.saved');
+	}
 }

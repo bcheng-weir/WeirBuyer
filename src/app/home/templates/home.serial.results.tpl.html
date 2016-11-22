@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-md-8">
 		<b>
-			<p ng-if='!serialResults.MultipleCustomers'><span ng-bind-html='serialResults.labels.Customer'></span>; {{serialResults.Customer}}</p>
-			<p ng-if='serialResults.MultipleCustomers'><span ng-bind-html='serialResults.labels.Customer'></span>; TODO: Search criteria matched valves from different customers. Wlil be addressed in subsequent story.</p>
+			<p ng-if='!serialResults.MultipleCustomers && !home.searchall'><span ng-bind-html='serialResults.labels.Customer'></span> {{serialResults.Customer}}</p>
+			<p ng-if='home.searchall || serialResults.MultipleCustomers'><span ng-bind-html='serialResults.labels.Customer'></span><span ng-bind-html="home.labels.NotAvailable"></span></p>
 		<p ng-bind-html='serialResults.labels.ResultsHeader'></p>
 		</b>
             <table class="table table-bordered oc-table-responsive weir-results-table">
@@ -19,7 +19,8 @@
                 <tbody>
                     <tr ng-repeat="result in serialResults.serialNumberResults | searchresults:true">
                         <td class="text-danger">{{result.Detail.Name}}</td>
-			<!-- <td ng-if='serialResults.MultipleCustomers'>{{result.Detail.xp.Customer}}</td>-->
+                        <!-- <td ng-if='!home.searchall'>{{result.Detail.xp.Customer}}</td>
+                        <td ng-if='home.searchall'><span ng-bind-html="home.labels.NotAvailable"></span></td> -->
                         <td>{{result.Detail.xp.TagNumber}}</td>
 			<td ng-bind-html='result.Detail.Description'></td>
 			<td class="button-td"><button class="btn btn-warning" ui-sref="home.serial.detail({number: result.Number, searchNumbers: serialResults.searchNumbers})" ng-bind-html='serialResults.labels.ViewDetails'></button></td>

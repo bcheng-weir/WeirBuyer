@@ -1,16 +1,13 @@
 <article>
     <div class="row">
         <div class="col-md-8">
-		<b>
-			<p ng-if='!tagResults.MultipleCustomers'><span ng-bind-html='tagResults.labels.Customer'></span>; {{tagResults.Customer}}</p>
-			<p ng-if='tagResults.MultipleCustomers'><span ng-bind-html='tagResults.labels.Customer'></span>; TODO: Search criteria matched valves from different customers. Wlil be addressed in subsequent story.</p>
-		<p ng-bind-html='tagResults.labels.ResultsHeader'></p>
-		</b>
+			<p style="font-weight: bold;" ng-if='!home.searchall && !tagResults.MultipleCustomers' ><span ng-bind-html='tagResults.labels.Customer'></span>{{tagResults.Customer}}</p>
+			<p style="font-weight: bold;" ng-if='home.searchall || tagResults.MultipleCustomers'><span ng-bind-html='tagResults.labels.Customer'></span><span ng-bind-html="home.labels.NotAvailable"></span></p>
+		<p style="font-weight: bold;" ng-bind-html='tagResults.labels.ResultsHeader'></p>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
                     <tr>
 			    <th ng-bind-html='tagResults.labels.SerialNumber'></th>
-			    <!-- <th ng-if='tagResults.MultipleCustomers' ng-bind-html='tagResults.labels.Customer'></th> -->
 			    <th ng-bind-html='tagResults.labels.TagNumber'></th>
 			    <th ng-bind-html='tagResults.labels.ValveDesc'></th>
                         <th class="button-th"></th>
@@ -19,10 +16,11 @@
                 <tbody>
                     <tr ng-repeat="result in tagResults.tagNumberResults | searchresults:true">
                         <td class="text-danger">{{result.Detail.Name}}</td>
-			<!-- <td ng-if='tagResults.MultipleCustomers'>{{result.Detail.xp.Customer}}</td>-->
+                        <td ng-if='!home.searchall'>{{result.Detail.xp.Customer}}</td>
+                        <td ng-if='home.searchall'><span ng-bind-html="home.labels.NotAvailable"></span></td>
                         <td>{{result.Detail.xp.TagNumber}}</td>
 			<td ng-bind-html='result.Detail.Description'></td>
-			<td class="button-td"><button class="btn btn-warning" ui-sref="home.tag.detail({number: result.Number, searchNumbers: tagResults.searchNumbers})" ng-bind-html='tagResults.labels.ViewDetails'></button></td>
+			<td class="button-td"><button class="btn btn-warning" ui-sref="home.tag.detail({id: result.Detail.ID, number: result.Number, searchNumbers: tagResults.searchNumbers})" ng-bind-html='tagResults.labels.ViewDetails'></button></td>
                     </tr>
                 </tbody>
             </table>

@@ -177,6 +177,7 @@ function MyQuoteConfig($stateProvider, buyerid) {
 function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService) {
 	var vm = this;
 	vm.Quote = Quote;
+	console.log(vm.Quote);
 	vm.Customer = Customer;
 	vm.ShippingAddress = ShippingAddress;
 	vm.ImageBaseUrl = imageRoot;

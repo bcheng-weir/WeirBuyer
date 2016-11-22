@@ -198,7 +198,7 @@ function MyOrderEditController($scope, $q, $exceptionHandler, $state, toastr, Or
         $q.all(queue)
             .then(function() {
                 dfd.resolve();
-                OrderCloud.Orders.Update(orderid, vm.order)
+                OrderCloud.Orders.Patch(orderid, vm.order)
                     .then(function() {
                         toastr.success('Order Updated', 'Success');
                         $state.go('myOrders', {}, {reload: true});

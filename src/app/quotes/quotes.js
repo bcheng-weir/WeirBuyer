@@ -6,7 +6,7 @@ angular.module('orderCloud')
 	.controller('RouteToQuoteCtrl', RouteToQuoteController)
 ;
 
-function QuotesConfig($stateProvider, buyerid) {
+function QuotesConfig($stateProvider) {
 	$stateProvider
 		.state('quotes', {
 			parent: 'base',
@@ -15,11 +15,11 @@ function QuotesConfig($stateProvider, buyerid) {
 			controller: 'QuotesCtrl',
 			controllerAs: 'quotes',
 			resolve: {
-				Customer: function(CurrentOrder) {
+				CurrentCustomer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
-                MyOrg: function(OrderCloud) {
-					return OrderCloud.Buyers.Get(buyerid);
+				MyOrg: function(OrderCloud, CurrentCustomer) {
+					return OrderCloud.Buyers.Get(CurrentCustomer.id);
 				}
 			}
 		})
@@ -99,9 +99,9 @@ function QuotesConfig($stateProvider, buyerid) {
 	;
 }
 
-function QuotesController($sce, WeirService, Customer, MyOrg) {
+function QuotesController($sce, WeirService, CurrentCustomer, MyOrg) {
 	var vm = this;
-	vm.Customer = Customer;
+	vm.Customer = CurrentCustomer;
 	vm.MyOrg = MyOrg;
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);

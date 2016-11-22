@@ -596,40 +596,45 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
     function addPartToQuote(part) {
         var deferred = $q.defer();
         var currentOrder = {};
-		var customer = CurrentOrder.GetCurrentCustomer(); // Will this appropriately change?
+		var customer = null; //CurrentOrder.GetCurrentCustomer(); // Will this appropriately change?
 
-        CurrentOrder.Get()
-            .then(function(order) {
-                // order is the localforge order.
-                currentOrder = order;
-                return OrderCloud.LineItems.List(currentOrder.ID,null,null,null,null,null,null, buyerid);
-            })
-            .then(function(lineItems) {
-                // If the line items contains the current part, then update.
-                var elementPosition = lineItems.Items.map(function(x) {return x.ProductID;}).indexOf(part.Detail.ID);
-                if(elementPosition == -1) {
-                    addLineItem(currentOrder);
-                } else {
-                    updateLineItem(currentOrder, lineItems.Items[elementPosition]);
-                }
-            })
-            .catch(function() {
-	            var cart = {
-	            	"ID": randomQuoteID(),
-		            "Type": "Standard",
-		            xp: {
-			            "Type": "Quote",
-			            "CustomerID": customer.id,
-			            "CustomerName": customer.name,
-			            "Status": "DR"
-		            }
-	            };
-	            OrderCloud.Orders.Create(cart)
-                    .then(function(order) {
-                        CurrentOrder.Set(order.ID);
-                        addLineItem(order);
-                    })
-            });
+	    CurrentOrder.GetCurrentCustomer()
+		    .then(function(cust) {
+		    	customer = cust;
+			    return CurrentOrder.Get();
+		    })
+		    .then(function(order) {
+			    // order is the localforge order.
+			    currentOrder = order;
+			    return OrderCloud.LineItems.List(currentOrder.ID,null,null,null,null,null,null, buyerid);
+		    })
+		    .then(function(lineItems) {
+			    // If the line items contains the current part, then update.
+			    var elementPosition = lineItems.Items.map(function(x) {return x.ProductID;}).indexOf(part.Detail.ID);
+			    if(elementPosition == -1) {
+				    addLineItem(currentOrder);
+			    } else {
+				    updateLineItem(currentOrder, lineItems.Items[elementPosition]);
+			    }
+		    })
+		    .catch(function() {
+			    console.log(customer);
+			    var cart = {
+				    "ID": randomQuoteID(),
+				    "Type": "Standard",
+				    xp: {
+					    "Type": "Quote",
+					    "CustomerID": customer.id,
+					    "CustomerName": customer.name,
+					    "Status": "DR"
+				    }
+			    };
+			    OrderCloud.Orders.Create(cart,customer.id)
+				    .then(function(order) {
+					    CurrentOrder.Set(order.ID);
+					    addLineItem(order);
+				    })
+		    });
 
         function updateLineItem(order, lineItem) {
             // find the line item and update the quantity of the current order.
@@ -818,6 +823,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
                     "FromUserId": user.ID,
                     "xp.Type": "Quote",
 					"xp.CustomerID": customer.id,
+	                "xp.CustomerName": customer.name,
 					"xp.Status": "DR"
 				};
 				OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
@@ -1000,7 +1006,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
     function updateQuote(quoteId, data, assignQuoteNumber, prefix) {
         var deferred = $q.defer();
 	    //Some of the original quotes do not have the buyer id.
-	    data.xp.BuyerId = data.xp.buyerid ? data.xp.BuyerId : buyerid;
+	    data.xp.CustomerID = data.xp.CustomerID ? data.xp.CustomerID : buyerid;
 	    data.xp.Active = data.xp.Active ? data.xp.Active : true;
 		if (assignQuoteNumber) {
 			tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, 1);
@@ -1035,6 +1041,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 		return quoteNum;
     }
 
+    //ToDo this may need to be udpated.
     function setQuoteAsCurrentOrder(quoteId) {
         var deferred = $q.defer();
 

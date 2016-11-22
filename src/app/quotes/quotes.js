@@ -20,7 +20,7 @@ function QuotesConfig($stateProvider) {
 				},
 				MyOrg: function(OrderCloud, CurrentCustomer) {
 					return OrderCloud.Buyers.Get(CurrentCustomer.id);
-				},
+				}
 			}
 		})
 		.state( 'quotes.saved', {

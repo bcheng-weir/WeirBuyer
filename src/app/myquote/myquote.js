@@ -1167,7 +1167,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
-				return
+				return;
 			} else {
 				return item;
 			}
@@ -1596,7 +1596,7 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
-				return
+				return;
 			} else {
 				return item;
 			}
@@ -1736,7 +1736,7 @@ function SubmitController($sce, WeirService, $timeout, $window, Quote, ShippingA
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
-				return
+				return;
 			} else {
 				return item;
 			}

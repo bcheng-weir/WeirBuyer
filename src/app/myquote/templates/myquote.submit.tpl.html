@@ -1,0 +1,104 @@
+<article id="COMPONENT_Submit" class="container-fluid">
+    <div class="panel-default">
+        <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
+            <div style="display:inline-block; float:left; text-align:left;">
+                <span ng-bind-html="submit.labels.Status"/><br/>
+                <span style="font-weight:bold;">{{submit.GetStatusLabel() + " " + (submit.Quote.xp.StatusDate | weirdate)}}</span>
+            </div>
+            <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
+                <span ng-bind-html="submit.labels.OrderDate" /><br />
+                <span style="font-weight:bold;">{{(submit.Quote.DateSubmitted | weirdate)}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="padding-top:20px;">
+        <div class="col-md-8">
+            <h4><span ng-bind-html='submit.labels.Customer'></span><span class="text-danger" style="margin-left: 1em;">{{submit.Quote.xp.CustomerName}}</span></h4>
+            <h4><span ng-bind-html='submit.labels.QuoteNumber'></span><span class="text-danger" style="margin-left: 1em;">{{submit.Quote.ID}}</span></h4>
+            <h4><span ng-bind-html='submit.labels.QuoteName'></span><span class='text-danger' style="margin-left:1em;" maxlength="20">{{submit.Quote.xp.Name}}</span></h4>
+            <h4><span ng-bind-html='submit.labels.YourReference'></span><span class='text-danger' style="margin-left:1em;" maxlength="50">{{submit.Quote.xp.RefNum}}</span></h4>
+        </div>
+
+        <div class="col-md-4">
+            <h2 class="pull-right">
+                <button class="btn btn-success pull-right" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button>
+                <span ng-hide="submit.Quote.xp.Type=='Order'">
+                        <button class="btn btn-warning pull-right" ng-click="submit.submitOrder(false)" ng-bind-html='submit.labels.SubmitOrderAndEmail'></button>
+                        <br class="message-break"> <h6 class="email-message" ng-bind-html="submit.labels.EmailPoMessage"></h6>
+                </span>
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered oc-table-responsive weir-results-table">
+                <thead class="header-cell">
+                <tr>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='submit.labels.SerialNum'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='submit.labels.TagNum'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='submit.labels.PartNum'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='submit.labels.PartDesc'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='submit.labels.RecRepl'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='submit.labels.LeadTime'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='submit.labels.PricePer'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='submit.labels.Quantity'></h4></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="line in submit.LineItems">
+                    <td>{{line.xp.SN}}</td>
+                    <td>{{line.xp.TagNumber}}</td>
+                    <td>{{line.Product.Name}}</td>
+                    <td>{{line.Product.Description}}</td>
+                    <td>{{line.Product.xp.ReplacementSchedule}}</td>
+                    <td>{{line.Product.xp.LeadTime}}</td>
+                    <td ng-switch on="submit.Quote.xp.Currency" class='text-right'>
+                        <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
+                        <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
+                        <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
+                    </td>
+                    <td class="text-right">{{line.Quantity}}</td>
+                </tr>
+                <tr ng-if="submit.LineItems.length > 0">
+                    <td class="button-th" colspan="5"></td>
+                    <td style="font-weight:bold;" ng-bind-html='submit.labels.Total'></td>
+                    <td ng-switch on="submit.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
+                        <span ng-switch-when="EUR">{{submit.Quote.Total | currency:'&euro;'}}</span>
+                        <span ng-switch-when="GBP">{{submit.Quote.Total | currency:'&#163; '}}</span>
+                        <span ng-switch-default>{{submit.Quote.Total | currency:'&#163; '}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <p><span style="font-style:italic;" ng-bind-html='submit.labels.PriceDisclaimer'></span></p>
+        </div>
+    </div>
+
+    <div>
+        <div class="col-xs-3">
+            <h4 ng-bind-html="submit.labels.POEntry"></h4>
+            <p class="form-inline"><input type="text" class="form-control" ng-model="submit.PONumber" /></p>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <h4 ng-bind-html="submit.labels.PONeededHeader"></h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-9">
+                <h4 ng-bind-html="submit.labels.POUpload"></h4>
+                <h3><span ng-bind-html='submit.labels.UploadHeader'></span></h3>
+                <p><span ng-bind-html='submit.labels.UploadInstruct'></span></p>
+                <div class="panel panel-default">
+                    <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                    <p><ordercloud-po-upload model="submit.Quote" keyname="PODocument" label='{{submit.labels.DragAndDrop}}'></ordercloud-po-upload></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>

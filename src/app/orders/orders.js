@@ -208,27 +208,20 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 	}
 
 	vm.ReviewOrder = _reviewOrder;
-	function _reviewOrder(orderId, status) {
-		if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id) {
-			WeirService.SetQuoteAsCurrentOrder(orderId)
-				.then(function() {
-					$rootScope.$broadcast('SwitchCart');
-					$state.go('myquote.readonly', { quoteID: orderId });
-				});
+	function _reviewOrder(orderId, status, buyerId) {
+		if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id) {
+			$state.transitionTo('readonly', {quoteID: orderId, buyerID: buyerId});
+		} else if(status == WeirService.OrderStatus.RevisedOrder.id) {
+			$state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });
 		} else {
 			var gotoReview = (vm.CurrentOrderId != orderId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
 			if (gotoReview) {
 				WeirService.SetQuoteAsCurrentOrder(orderId)
 					.then(function () {
 						$rootScope.$broadcast('SwitchCart');
-						if (status == WeirService.OrderStatus.RevisedOrder.id) {
-							$state.go('myquote.revised');
-						} else {
-							$state.go('myquote.detail');
-						}
+						$state.transitionTo('myquote.detail');
 					});
 			}
 		}
 	}
-
 }

@@ -5,7 +5,7 @@
                 <span ng-bind-html="myquote.labels.Status"/><br/>
                 <span style="font-weight:bold;">{{myquote.GetStatusLabel() + " " + (myquote.Quote.xp.StatusDate | weirdate)}}</span>
             </div>
-            <div ng-if="application.$state.current.name=='myquote.revised'" style="display:inline-block; float:left; margin-left:1em;">
+            <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
                 <span ng-bind-html="myquote.labels.OrderDate" /><br />
                 <span style="font-weight:bold;">{{(myquote.Quote.DateSubmitted | weirdate)}}</span>
             </div>
@@ -25,17 +25,14 @@
             <div style="display:inline-block; float:right; margin-left: 0.5em;" ng-click="myquote.Save()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && myquote.HasLineItems()">
 				<a href="#"><img aria-hidden="true" ng-src="{{myquote.GetImageUrl('save.png')}}"></img><br/><span ng-bind-html='myquote.labels.Save'></span></a>
             </div>
-            <div ng-if="application.$state.current.name=='myquote.revised'" style="float:right;">
+            <div ng-if="application.$state.current.name=='revised'" style="float:right;">
                 <button class="btn btn-success" ng-click="myquote.Approve()" ng-bind-html="myquote.labels.Approve"></button>
                 <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="myquote.Reject()" ng-bind-html="myquote.labels.Reject"></button>
                 <button class="btn btn-default" style="margin-left:0.5em;" ng-click="myquote.Comments()" ng-bind-html="myquote.labels.Comments"></button>
             </div>
-			<div style="float:right" ng-if="myquote.Quote.xp.PendingPO">
-				<button class="btn btn-success" ui-sref="myquote.submitquote">{{myquote.labels.SubmitWithPO}}</button>
-			</div>
         </div>
     </div>
-	<ol class="nav nav-pills nav-justified" ng-if="['myquote.readonly', 'myquote.revised'].indexOf(application.$state.current.name) == -1">
+	<ol class="nav nav-pills nav-justified" ng-if="['readonly', 'revised'].indexOf(application.$state.current.name) == -1">
 		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
 		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.delivery" ng-click="myquote.GotoDelivery(true)" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 		<li role="presentation" class="quote-step" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>

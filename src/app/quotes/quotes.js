@@ -133,24 +133,18 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, Cu
 	vm.Quotes = Quotes;
 	vm.CurrentOrderId = CurrentOrderId;
 	
-	function _reviewQuote(quoteId, status) {
+	function _reviewQuote(quoteId, status, buyerId) {
 	    if (status == WeirService.OrderStatus.ConfirmedQuote.id) {
-			WeirService.SetQuoteAsCurrentOrder(quoteId)
-				.then(function() {
-					$rootScope.$broadcast('SwitchCart');
-					$state.go('myquote.readonly', { quoteID: quoteId });
-				});
-	    } else {
+		    $state.go('readonly', { quoteID: quoteId, buyerID: buyerId });
+	    } else if(status == WeirService.OrderStatus.RevisedQuote.id) {
+		    $state.go('revised', { quoteID: quoteId, buyerID: buyerId });
+		} else {
 	        var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
 	        if (gotoReview) {
 	            WeirService.SetQuoteAsCurrentOrder(quoteId)
                     .then(function () {
                         $rootScope.$broadcast('SwitchCart');
-                        if (status == WeirService.OrderStatus.RevisedQuote.id) {
-                            $state.go('myquote.revised');
-                        } else {
-                            $state.go('myquote.detail');
-                        }
+						$state.go('myquote.detail');
                     });
 	        }
 	    }
@@ -214,7 +208,8 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 		    OwnProduct: "Own product",
 		    Approver: "Approver",
             Status: "Status",
-            ValidTo: "Valid until"
+            ValidTo: "Valid until",
+			View: "View"
 		},
 		fr: {
 		    Header: $sce.trustAsHtml(Quotes.length.toString() + " cotation(s) dans l'examen"),
@@ -225,8 +220,8 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 		    OwnProduct: $sce.trustAsHtml("Propre Produit"),
 		    Approver: $sce.trustAsHtml("Approuv&eacute;"),
             Status: $sce.trustAsHtml("Statut"),
-            ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;")
-	
+            ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
+			View: $sce.trustAsHtml("View")
 	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

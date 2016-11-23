@@ -24,7 +24,7 @@
 						<span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
 					</td>
 					<td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
-					<td><button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status)" ng-bind-html="saved.labels.View"></button></td>
+					<td><button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.CustomerID)" ng-bind-html="saved.labels.View"></button></td>
 				</tr>
 				</tbody>
 			</table>

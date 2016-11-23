@@ -1,9 +1,33 @@
-<div>
+<article id="COMPONENT_Revised" class="container-fluid">
+    <div class="panel-default">
+        <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
+            <div style="display:inline-block; float:left; text-align:left;">
+                <span ng-bind-html="revised.labels.Status"/><br/>
+                <span style="font-weight:bold;">{{revised.GetStatusLabel() + " " + (revised.Quote.xp.StatusDate | weirdate)}}</span>
+            </div>
+            <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
+                <span ng-bind-html="revised.labels.OrderDate" /><br />
+                <span style="font-weight:bold;">{{(revised.Quote.DateSubmitted | weirdate)}}</span>
+            </div>
+            <div style="display:inline-block; float:right; margin-left: 1em;" ng-click="revised.Print()">
+                <a href="#"><img aria-hidden="true" ng-src="{{revised.GetImageUrl('printer.png')}}"></img><br/><span ng-bind-html='revised.labels.Print'></span></a>
+            </div>
+            <div style="display:inline-block; float:right; margin-left: 1em;" ng-csv="readonly.ToCsvJson" filename="{{revised.CsvFilename}}">
+                <img aria-hidden="true" ng-src="{{revised.GetImageUrl('download.png')}}"></img><br/><span ng-bind-html='revised.labels.Download'></span>
+            </div>
+            <div ng-if="application.$state.current.name=='revised'" style="float:right;">
+                <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
+                <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
+                <button class="btn btn-default" style="margin-left:0.5em;" ng-click="revised.Comments()" ng-bind-html="revised.labels.Comments"></button>
+            </div>
+        </div>
+    </div>
+
     <div class="row" style="padding-top:20px; padding-bottom:20px;">
         <div class="col-md-8">
-            <h4><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
-            <h4><span ng-bind-html='revised.labels.QuoteName'></span><span class="text-danger">{{myquote.Quote.xp.Name}}</span></h4>
-            <h4><span ng-bind-html='revised.labels.YourReference'></span><span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></h4>
+            <h4><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-danger"  ng-if="revised.Quote.xp.Status != 'DR'">{{revised.Quote.ID}}</span></h4>
+            <h4><span ng-bind-html='revised.labels.QuoteName'></span><span class="text-danger">{{revised.Quote.xp.Name}}</span></h4>
+            <h4><span ng-bind-html='revised.labels.YourReference'></span><span class="text-danger">{{revised.Quote.xp.RefNum}}</span></h4>
             <h4><a href="#" ng-click="revised.gotoRevisions()" ng-bind-html="revised.labels.ViewRevisions"></a></h4>
         </div>
 
@@ -112,34 +136,34 @@
             <!-- <p><b><span ng-bind-html='revised.labels.YourReference'></span><br>
                 <span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></b></p> -->
 	    <p><b><span>{{revised.labels.DeliveryAddress}}</span></b></p>
-            <div ng-if="myquote.ShippingAddress.Country=='FR'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                <span ng-if="myquote.ShippingAddress.Street2">{{myquote.ShippingAddress.Street2}}<br></span>
-                {{myquote.ShippingAddress.Zip}} {{myquote.ShippingAddress.City}}<br>
-                {{revised.country(myquote.ShippingAddress.Country)}}
+            <div ng-if="revised.ShippingAddress.Country=='FR'">
+                {{revised.ShippingAddress.CompanyName}}<br>
+                {{revised.ShippingAddress.Street1}}<br>
+                <span ng-if="revised.ShippingAddress.Street2">{{revised.ShippingAddress.Street2}}<br></span>
+                {{revised.ShippingAddress.Zip}} {{revised.ShippingAddress.City}}<br>
+                {{revised.country(revised.ShippingAddress.Country)}}
             </div>
-            <div ng-if="myquote.ShippingAddress.Country=='GB'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                <span ng-if="myquote.ShippingAddress.Street2">{{myquote.ShippingAddress.Street2}}<br></span>
-                {{myquote.ShippingAddress.City}}<br>
-                {{myquote.ShippingAddress.Zip}}<br>
-                {{revised.country(myquote.ShippingAddress.Country)}}
+            <div ng-if="revised.ShippingAddress.Country=='GB'">
+                {{revised.ShippingAddress.CompanyName}}<br>
+                {{revised.ShippingAddress.Street1}}<br>
+                <span ng-if="revised.ShippingAddress.Street2">{{revised.ShippingAddress.Street2}}<br></span>
+                {{revised.ShippingAddress.City}}<br>
+                {{revised.ShippingAddress.Zip}}<br>
+                {{revised.country(revised.ShippingAddress.Country)}}
             </div>
-            <div ng-if="myquote.ShippingAddress.Country!='GB' && myquote.ShippingAddress.Country!='FR'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                <span ng-if="myquote.ShippingAddress.Street2">{{myquote.ShippingAddress.Street2}}<br></span>
-                {{myquote.ShippingAddress.City}}, {{myquote.ShippingAddress.State}} {{myquote.ShippingAddress.Zip}}<br>
-                {{revised.country(myquote.ShippingAddress.Country)}}
+            <div ng-if="revised.ShippingAddress.Country!='GB' && revised.ShippingAddress.Country!='FR'">
+                {{revised.ShippingAddress.CompanyName}}<br>
+                {{revised.ShippingAddress.Street1}}<br>
+                <span ng-if="revised.ShippingAddress.Street2">{{revised.ShippingAddress.Street2}}<br></span>
+                {{revised.ShippingAddress.City}}, {{revised.ShippingAddress.State}} {{revised.ShippingAddress.Zip}}<br>
+                {{revised.country(revised.ShippingAddress.Country)}}
             </div>
         </div>
         <div class="col-md-6">
             <p><b><span ng-bind-html='revised.labels.YourAttachments'></span><br></b></p>
-            <p ng-repeat="fileName in myquote.Quote.xp.Files">{{fileName}}</p>
+            <p ng-repeat="fileName in revised.Quote.xp.Files">{{fileName}}</p>
             <p><b><span ng-bind-html='revised.labels.CommentsHeader'></span></b></p>
-            <p><textarea rows='4' cols='40' maxlength="1000" ng-model='myquote.Quote.Comments' readonly></textarea></p>
+            <p><textarea rows='4' cols='40' maxlength="1000" ng-model='revised.Quote.Comments' readonly></textarea></p>
         </div>
     </div>
 
@@ -178,7 +202,7 @@
                 <p><span ng-bind-html='revised.labels.UploadInstruct'></span></p>
                 <div class="panel panel-default">
                     <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
-                    <p><ordercloud-po-upload model="myquote.Quote" keyname="PODocument" label='{{revised.labels.DragAndDrop}}'></ordercloud-po-upload></p>
+                    <p><ordercloud-po-upload model="revised.Quote" keyname="PODocument" label='{{revised.labels.DragAndDrop}}'></ordercloud-po-upload></p>
                 </div>
             </div>
             <div class="col-md-3">
@@ -189,4 +213,4 @@
             </div>
         </div>
     </div>
-</div>
+</article>

@@ -15,22 +15,22 @@
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
 		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
                     <ul uib-dropdown-menu>
-                        <li><a href="" ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
-                        <li><a href="" ui-sref="quotes.saved" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
-                        <li><a href="" ui-sref="quotes.inreview" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
-                        <li><a href="" ui-sref="quotes.revised" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
-                        <li><a href="" ui-sref="quotes.confirmed" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
+                        <li><a ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
+                        <li><a ui-sref="quotes.saved" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
+                        <li><a ui-sref="quotes.inreview" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
+                        <li><a ui-sref="quotes.revised" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
+                        <li><a ui-sref="quotes.confirmed" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
                     </ul>
                 </li>
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
 		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourOrders"></span><span class="caret"></span></a>
                     <ul uib-dropdown-menu>
-                        <li><a href="" ng-click="base.OrderAction('orders.submitted')" ng-bind-html="base.navlabels.submitted"></a></li>
-                        <li><a href="" ng-click="base.OrderAction('orders.pending')" ng-bind-html="base.navlabels.pending"></a></li>
-                        <li><a href="" ng-click="base.OrderAction('orders.revised')" ng-bind-html="base.navlabels.revised"></a></li>
-                        <li><a href="" ng-click="base.OrderAction('orders.confirmed')" ng-bind-html="base.navlabels.confirmed"></a></li>
-                        <li><a href="" ng-click="base.OrderAction('orders.despatched')" ng-bind-html="base.navlabels.despatched"></a></li>
-                        <li><a href="" ng-click="base.OrderAction('orders.invoiced')" ng-bind-html="base.navlabels.invoiced"></a></li>
+                        <li><a ng-click="base.OrderAction('orders.submitted')" ng-bind-html="base.navlabels.submitted"></a></li>
+                        <li><a ng-click="base.OrderAction('orders.pending')" ng-bind-html="base.navlabels.pending"></a></li>
+                        <li><a ng-click="base.OrderAction('orders.revised')" ng-bind-html="base.navlabels.revised"></a></li>
+                        <li><a ng-click="base.OrderAction('orders.confirmed')" ng-bind-html="base.navlabels.confirmed"></a></li>
+                        <li><a ng-click="base.OrderAction('orders.despatched')" ng-bind-html="base.navlabels.despatched"></a></li>
+                        <li><a ng-click="base.OrderAction('orders.invoiced')" ng-bind-html="base.navlabels.invoiced"></a></li>
                     </ul>
                 </li>
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">

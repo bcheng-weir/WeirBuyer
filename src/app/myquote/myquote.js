@@ -15,6 +15,7 @@ angular.module('orderCloud')
 	.controller('SubmitConfirmCtrl', SubmitConfirmController)
 	.controller('SubmitConfirmOrderCtrl', SubmitConfirmOrderController)
 	.controller('ChooseSubmitCtrl', ChooseSubmitController)
+	.controller('SubmitCtrl',SubmitController)
 ;
 
 function QuoteShareService() {
@@ -141,11 +142,71 @@ function MyQuoteConfig($stateProvider) {
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
-		.state('myquote.revised', {
-		    url: '/revised',
+		.state('revised', {
+			parent: 'base',
+		    url: '/revised?quoteID&buyerID',
 		    templateUrl: 'myquote/templates/myquote.revised.tpl.html',
 		    controller: 'RevisedQuoteCtrl',
-		    controllerAs: 'revised'
+		    controllerAs: 'revised',
+			resolve: {
+				Quote: function ($stateParams, OrderCloud) {
+					return OrderCloud.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+				},
+				ShippingAddress: function (Quote, OrderCloud) {
+					if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, Quote.xp.CustomerID);
+					return null;
+				},
+				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote) {
+					//QuoteShareService.LineItems.length = 0;
+					var dfd = $q.defer();
+					OrderCloud.LineItems.List(Quote.ID)
+						.then(function (data) {
+							if (!data.Items.length) {
+								toastr.error('Your quote does not contain any line items.', 'Error');
+								dfd.resolve({ Items: [] });
+							} else {
+								LineItemHelpers.GetBlankProductInfo(data.Items);
+								LineItemHelpers.GetProductInfo(data.Items)
+									.then(function () { dfd.resolve(data); });
+							}
+						})
+						.catch(function () {
+							toastr.error('Your quote does not contain any line items.', 'Error');
+							dfd.resolve({ Items: [] });
+						});
+					return dfd.promise;
+				},
+				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers) {
+					// We can't have a quantity of 0 on a line item. With show previous line items
+					// Split the current order ID. If a rec exists, get, else do nothing.
+					var pieces = Quote.ID.split('-Rev');
+					if(pieces.length > 1) {
+						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
+						var dfd = $q.defer();
+						OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,Quote.xp.CustomerID)
+							.then(function(data) {
+								if (!data.Items.length) {
+									toastr.error('Previous quote does not contain any line items.', 'Error');
+									dfd.resolve({ Items: [] });
+								} else {
+									LineItemHelpers.GetBlankProductInfo(data.Items);
+									LineItemHelpers.GetProductInfo(data.Items)
+										.then(function () { dfd.resolve(data); });
+								}
+							})
+							.catch(function () {
+								toastr.error('Previous quote does not contain any line items.', 'Error');
+								dfd.resolve({ Items: [] });
+							});
+						return dfd.promise;
+					} else {
+						return null;
+					}
+				},
+				Payments: function ($stateParams, OrderCloud) {
+					return OrderCloud.Payments.List($stateParams.quoteID);
+				}
+			}
 		})
 		.state('revisions', {
 		    parent: 'base',
@@ -168,36 +229,137 @@ function MyQuoteConfig($stateProvider) {
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
-		.state('myquote.readonly', {
-		    url: '/readonly?quoteID',
+		.state('readonly', {
+			parent: 'base',
+		    url: '/readonly?quoteID&buyerID',
 		    templateUrl: 'myquote/templates/myquote.readonly.tpl.html',
 		    controller: 'ReadonlyQuoteCtrl',
 		    controllerAs: 'readonly',
 		    resolve: {
-		        Quote: function ($stateParams, OrderCloud) {
-		            return OrderCloud.Orders.Get($stateParams.quoteID);
-		        },
-		        ShippingAddress: function (Quote, OrderCloud) {
-		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, Quote.xp.CustomerID);
-		            return null;
-		        },
-		        LineItems: function ($q, $stateParams, OrderCloud, LineItemHelpers) {
-		            var dfd = $q.defer();
-		            OrderCloud.LineItems.List($stateParams.quoteID)
-                                .then(function (data) {
-                                    if (!data.Items.length) {
-                                        dfd.resolve({ Items: [] });
-                                    } else {
-                                        LineItemHelpers.GetProductInfo(data.Items)
-                                            .then(function () { dfd.resolve(data); });
-                                    }
-                                });
-		            return dfd.promise;
-		        },
-		        Payments: function ($stateParams, OrderCloud) {
-		            return OrderCloud.Payments.List($stateParams.quoteID);
-		        }
+			    Quote: function ($stateParams, OrderCloud) {
+				    return OrderCloud.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+			    },
+			    ShippingAddress: function (Quote, OrderCloud) {
+				    if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, Quote.xp.CustomerID);
+				    return null;
+			    },
+			    LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote) {
+				    //QuoteShareService.LineItems.length = 0;
+				    var dfd = $q.defer();
+				    OrderCloud.LineItems.List(Quote.ID)
+					    .then(function (data) {
+						    if (!data.Items.length) {
+							    toastr.error('Your quote does not contain any line items.', 'Error');
+							    dfd.resolve({ Items: [] });
+						    } else {
+							    LineItemHelpers.GetBlankProductInfo(data.Items);
+							    LineItemHelpers.GetProductInfo(data.Items)
+								    .then(function () { dfd.resolve(data); });
+						    }
+					    })
+					    .catch(function () {
+						    toastr.error('Your quote does not contain any line items.', 'Error');
+						    dfd.resolve({ Items: [] });
+					    });
+				    return dfd.promise;
+			    },
+			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers) {
+				    // We can't have a quantity of 0 on a line item. With show previous line items
+				    // Split the current order ID. If a rec exists, get, else do nothing.
+				    var pieces = Quote.ID.split('-Rev');
+				    if(pieces.length > 1) {
+					    var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
+					    var dfd = $q.defer();
+					    OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,Quote.xp.CustomerID)
+						    .then(function(data) {
+							    if (!data.Items.length) {
+								    toastr.error('Previous quote does not contain any line items.', 'Error');
+								    dfd.resolve({ Items: [] });
+							    } else {
+								    LineItemHelpers.GetBlankProductInfo(data.Items);
+								    LineItemHelpers.GetProductInfo(data.Items)
+									    .then(function () { dfd.resolve(data); });
+							    }
+						    })
+						    .catch(function () {
+							    toastr.error('Previous quote does not contain any line items.', 'Error');
+							    dfd.resolve({ Items: [] });
+						    });
+					    return dfd.promise;
+				    } else {
+					    return null;
+				    }
+			    },
+			    Payments: function ($stateParams, OrderCloud) {
+				    return OrderCloud.Payments.List($stateParams.quoteID);
+			    }
 		    }
+		})
+		.state('submit', {
+			parent: 'base',
+			url: '/submit?quoteID&buyerID',
+			templateUrl: 'myquote/templates/myquote.submit.tpl.html',
+			controller: 'SubmitCtrl',
+			controllerAs: 'submit',
+			resolve: {
+				Quote: function ($stateParams, OrderCloud) {
+					return OrderCloud.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+				},
+				ShippingAddress: function (Quote, OrderCloud) {
+					if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, Quote.xp.CustomerID);
+					return null;
+				},
+				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote) {
+					//QuoteShareService.LineItems.length = 0;
+					var dfd = $q.defer();
+					OrderCloud.LineItems.List(Quote.ID)
+						.then(function (data) {
+							if (!data.Items.length) {
+								toastr.error('Your quote does not contain any line items.', 'Error');
+								dfd.resolve({ Items: [] });
+							} else {
+								LineItemHelpers.GetBlankProductInfo(data.Items);
+								LineItemHelpers.GetProductInfo(data.Items)
+									.then(function () { dfd.resolve(data); });
+							}
+						})
+						.catch(function () {
+							toastr.error('Your quote does not contain any line items.', 'Error');
+							dfd.resolve({ Items: [] });
+						});
+					return dfd.promise;
+				},
+				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers) {
+					// We can't have a quantity of 0 on a line item. With show previous line items
+					// Split the current order ID. If a rec exists, get, else do nothing.
+					var pieces = Quote.ID.split('-Rev');
+					if(pieces.length > 1) {
+						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
+						var dfd = $q.defer();
+						OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,Quote.xp.CustomerID)
+							.then(function(data) {
+								if (!data.Items.length) {
+									toastr.error('Previous quote does not contain any line items.', 'Error');
+									dfd.resolve({ Items: [] });
+								} else {
+									LineItemHelpers.GetBlankProductInfo(data.Items);
+									LineItemHelpers.GetProductInfo(data.Items)
+										.then(function () { dfd.resolve(data); });
+								}
+							})
+							.catch(function () {
+								toastr.error('Previous quote does not contain any line items.', 'Error');
+								dfd.resolve({ Items: [] });
+							});
+						return dfd.promise;
+					} else {
+						return null;
+					}
+				},
+				Payments: function ($stateParams, OrderCloud) {
+					return OrderCloud.Payments.List($stateParams.quoteID);
+				}
+			}
 		})
     ;
 }
@@ -223,7 +385,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	    return (QuoteShareService.LineItems && QuoteShareService.LineItems.length);
 	};
 	vm.Readonly = function () {
-	    $state.go("myquote.readonly", { quoteID: vm.Quote.ID });
+	    $state.go("readonly", { quoteID: vm.Quote.ID, buyerID: vm.Quote.xp.CustomerID });
 	};
 	vm.imageRoot = imageRoot;
 	function toCsv() {
@@ -392,7 +554,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	        SaveSuccessMessage: "Your changes have been saved",
 	        NoItemsError: "Please add parts to quote before saving",
 	        CannotContinueNoItems: "Please add parts to quote before continuing",
-	        SaveBody: "Quote number " + vm.Quote.ID + " has been saved to Your Quotes.",
+	        SaveBody: "Your quote has been saved.",
 	        SaveFooter: "View Your Quotes",
 	        Approve: "Approve",
 	        Reject: "Reject",
@@ -433,7 +595,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 			SaveSuccessMessage: $sce.trustAsHtml("Vos modifications ont &eacute;t&eacute; enregistr&eacute;es"),
 			NoItemsError: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de sauvegarder"),
 			CannotContinueNoItems: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de continuer"),
-			SaveBody: $sce.trustAsHtml("FR: Quote number " + vm.Quote.ID + " has been saved to Your Quotes."),
+			SaveBody: $sce.trustAsHtml("FR: Your quote has been saved."),
 			SaveFooter: $sce.trustAsHtml("**Voir vos cotations"),
 			Approve: $sce.trustAsHtml("FR: Approve"),
 			Reject: $sce.trustAsHtml("FR: Reject"),
@@ -466,7 +628,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, OrderCloud, QuoteShareService) {
     if ((QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) ||
         (QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id)) {
-        $state.go("myquote.revised");
+        $state.go("revised", {quoteID: QuoteShareService.Quote.ID, buyerID: QuoteShareService.Quote.xp.CustomerID});
     }
 	var vm = this;
 	vm.LineItems = QuoteShareService.LineItems;
@@ -997,10 +1159,11 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.toReview = _gotoReview;
 }
 
-function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Underscore, OCGeography, LineItems, PreviousLineItems) {
+function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Underscore, OCGeography, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot) {
     var vm = this;
+	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
-    vm.LineItems = LineItems.Items; //QuoteShareService.LineItems;
+    vm.LineItems = LineItems.Items;
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
@@ -1012,10 +1175,10 @@ function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Un
 	} else {
 		vm.PreviousLineItems = [];
 	}
-    vm.Quote = QuoteShareService.Quote;
-    vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
+    vm.Quote = Quote;
+    vm.CommentsToWeir = Quote.xp.CommentsToWeir;
     vm.PONumber = "";
-    var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
+    var payment = (Payments.length > 0) ? Payments[0] : null;
     if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
     vm.country = function (c) {
         var result = Underscore.findWhere(OCGeography.Countries, { value: c });
@@ -1043,7 +1206,16 @@ function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Un
             YourReference: "Your Reference No; ",
             CommentsHeader: "Your comments or instructions",
             DeliveryAddress: "Delivery Address",
-            ViewRevisions: "View Previous revisions"
+            ViewRevisions: "View Previous revisions",
+	        Save: "Save",
+	        Share: "Share",
+	        Download: "Download",
+	        Print: "Print",
+	        Approve: "Approve",
+	        Reject: "Reject",
+	        Comments: "Comments",
+	        Status: "Status",
+	        OrderDate: "Order date;"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1066,7 +1238,16 @@ function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Un
             YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
             CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
             DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
-            ViewRevisions: $sce.trustAsHtml("FR: View Previous revisions")
+            ViewRevisions: $sce.trustAsHtml("FR: View Previous revisions"),
+	        Save: $sce.trustAsHtml("Save"),
+	        Share: $sce.trustAsHtml("Share"),
+	        Download: $sce.trustAsHtml("Download"),
+	        Print: $sce.trustAsHtml("Print"),
+	        Approve: $sce.trustAsHtml("Approve"),
+	        Reject: $sce.trustAsHtml("Reject"),
+	        Comments: $sce.trustAsHtml("Comments"),
+	        Status: $sce.trustAsHtml("Status"),
+	        OrderDate: $sce.trustAsHtml("Order date;")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1074,6 +1255,7 @@ function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Un
     function _gotoQuotes() {
         $state.go("quotes.revised");
     }
+
     function _gotoRevisions() {
         $state.go("revisions", { quoteID: vm.Quote.xp.OriginalOrderID });
     }
@@ -1105,8 +1287,72 @@ function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Un
 		}
 	}
 
+	function download() {
+		$timeout($window.print,1);
+	}
+	function print() {
+		$timeout($window.print,1);
+	}
+	function getStatusLabel() {
+		if (vm.Quote.xp.Status) {
+			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
+			if (status) {
+				return status.label;
+				// TODO: Address localization
+			}
+		}
+		return "";
+	}
+	function _approve() {
+		if (vm.Quote.xp.Status == 'RV') {
+			var mods = {
+				xp: {
+					StatusDate: new Date(),
+					Status: WeirService.OrderStatus.ConfirmedQuote.id
+				}
+			};
+			WeirService.UpdateQuote(vm.Quote.ID, mods)
+				.then(function (qte) {
+					toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
+				});
+		}
+	}
+	function _reject() {
+		if (vm.Quote.xp.Status == 'RV') {
+			var mods = {
+				xp: {
+					StatusDate: new Date(),
+					Status: WeirService.OrderStatus.RejectedQuote.id
+				}
+			};
+			WeirService.UpdateQuote(vm.Quote.ID, mods)
+				.then(function (qte) {
+					toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
+				});
+		}
+	}
+	function _comments() {
+		if (vm.Quote.Status == 'RV') {
+			console.log("Do something with comments ...");
+		}
+	}
+	function toCsv() {
+		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+	}
+	vm.ToCsvJson = toCsv;
+	vm.CsvFilename = vm.Quote.ID + ".csv";
+	vm.GetImageUrl = function(img) {
+		return vm.ImageBaseUrl + img;
+	};
+
     vm.gotoQuotes = _gotoQuotes;
     vm.gotoRevisions = _gotoRevisions;
+	vm.Download = download;
+	vm.Print = print;
+	vm.GetStatusLabel = getStatusLabel;
+	vm.Approve = _approve;
+	vm.Reject = _reject;
+	vm.Comments = _comments;
 }
 
 function ModalInstanceController($uibModalInstance, $state, quote, labels) {
@@ -1291,12 +1537,12 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
         }
         return "";
     }
-    function view(revID, active) {
+    function view(revID, active, buyerId) {
         if (active) {
-            // Current order should be this one
-            $state.go("myquote.revised");
+            // ToDo TEST: Current order should be this one. No altering revised quotes.
+	        $state.go("revised", {quoteID: revID, buyerID: buyerId});
         } else {
-            $state.go("myquote.readonly", { quoteID: revID });
+            $state.go("readonly", { quoteID: revID, buyerID: buyerId });
         }
     }
 
@@ -1340,12 +1586,29 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
     vm.View = view;
 }
 
-function ReadonlyQuoteController($sce, WeirService, Quote, ShippingAddress, LineItems, Payments) {
+function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore) {
     var vm = this;
+	vm.ImageBaseUrl = imageRoot;
+	vm.Zero = 0;
     vm.Quote = Quote;
     vm.ShippingAddress = ShippingAddress;
     vm.LineItems = LineItems ? LineItems.Items : [];
+	if(PreviousLineItems) {
+		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
+			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
+				return
+			} else {
+				return item;
+			}
+		});
+	} else {
+		vm.PreviousLineItems = [];
+	}
     vm.Payments = Payments;
+	vm.country = function (c) {
+		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
+		return result ? result.label : '';
+	};
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -1365,7 +1628,18 @@ function ReadonlyQuoteController($sce, WeirService, Quote, ShippingAddress, Line
             CommentsHeader: "Your comments or instructions",
             DeliveryOptions: "Delivery Options",
             DeliveryAddress: "Delivery Address",
-            WeirComment: "Comment"
+            WeirComment: "Comment",
+	        Save: "Save",
+	        Share: "Share",
+	        Download: "Download",
+	        Print: "Print",
+	        Approve: "Approve",
+	        Reject: "Reject",
+	        Comments: "Comments",
+	        Status: "Status",
+	        OrderDate: "Order date;",
+	        BackToQuotes: "Back to your Quotes",
+	        SubmitWithPO: "Submit Order with PO"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1385,9 +1659,312 @@ function ReadonlyQuoteController($sce, WeirService, Quote, ShippingAddress, Line
             CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
             DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
             DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
-            WeirComment: $sce.trustAsHtml("** Commentaires")
+            WeirComment: $sce.trustAsHtml("** Commentaires"),
+	        Save: $sce.trustAsHtml("Save"),
+	        Share: $sce.trustAsHtml("Share"),
+	        Download: $sce.trustAsHtml("Download"),
+	        Print: $sce.trustAsHtml("Print"),
+	        Approve: $sce.trustAsHtml("Approve"),
+	        Reject: $sce.trustAsHtml("Reject"),
+	        Comments: $sce.trustAsHtml("Comments"),
+	        Status: $sce.trustAsHtml("Status"),
+	        OrderDate: $sce.trustAsHtml("Order date;"),
+	        BackToQuotes: $sce.trustAsHtml("Back to your Quotes"),
+	        SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
 
+	vm.ToCsvJson = toCsv;
+	vm.CsvFilename = vm.Quote.ID + ".csv";
+	vm.GetImageUrl = function(img) {
+		return vm.ImageBaseUrl + img;
+	};
+	function download() {
+		$timeout($window.print,1);
+	}
+	function print() {
+		$timeout($window.print,1);
+	}
+	function getStatusLabel() {
+		if (vm.Quote.xp.Status) {
+			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
+			if (status) {
+				return status.label;
+				// TODO: Address localization
+			}
+		}
+		return "";
+	}
+	function download() {
+		$timeout($window.print,1);
+	}
+	function print() {
+		$timeout($window.print,1);
+	}
+	function getStatusLabel() {
+		if (vm.Quote.xp.Status) {
+			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
+			if (status) {
+				return status.label;
+				// TODO: Address localization
+			}
+		}
+		return "";
+	}
+	function toCsv() {
+		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+	}
+
+	function _gotoQuotes() {
+		$state.go("quotes.revised");
+	}
+	vm.Download = download;
+	vm.Print = print;
+	vm.GetStatusLabel = getStatusLabel;
+	vm.gotoQuotes = _gotoQuotes;
+}
+
+function SubmitController($sce, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore) {
+	var vm = this;
+	vm.ImageBaseUrl = imageRoot;
+	vm.Zero = 0;
+	vm.PONumber = "";
+	vm.Quote = Quote;
+	vm.ShippingAddress = ShippingAddress;
+	vm.LineItems = LineItems ? LineItems.Items : [];
+	if(PreviousLineItems) {
+		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
+			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
+				return
+			} else {
+				return item;
+			}
+		});
+	} else {
+		vm.PreviousLineItems = [];
+	}
+	vm.Payments = Payments;
+	var payment = (vm.Payments.length > 0) ? vm.Payments[0] : null;
+	if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
+	vm.country = function (c) {
+		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
+		return result ? result.label : '';
+	};
+	var labels = {
+		en: {
+			Customer: "Customer; ",
+			QuoteNumber: "Quote number; ",
+			QuoteName: "Quote name; ",
+			SerialNum: "Serial number",
+			TagNum: "Tag number (if available)",
+			PartNum: "Part number",
+			PartDesc: "Description of part",
+			RecRepl: "Recommended replacement",
+			LeadTime: "Lead time",
+			PricePer: "Price per item or set",
+			Quantity: "Quantity",
+			Total: "Total",
+			YourAttachments: "Your attachments",
+			YourReference: "Your Reference No; ",
+			CommentsHeader: "Your comments or instructions",
+			DeliveryOptions: "Delivery Options",
+			DeliveryAddress: "Delivery Address",
+			WeirComment: "Comment",
+			Save: "Save",
+			Share: "Share",
+			Download: "Download",
+			Print: "Print",
+			Approve: "Approve",
+			Reject: "Reject",
+			Comments: "Comments",
+			Status: "Status",
+			OrderDate: "Order date;",
+			BackToQuotes: "Back to your Quotes",
+			SubmitWithPO: "Submit Order with PO",
+			SubmitOrderAndEmail: "Submit Order & Email PO",
+			SubmitOrderWithPO: "Submit Order with PO",
+			EmailPoMessage: "*Your order will be confirmed<br class='message-break'>following receipt of your PO.",
+			POEntry: "Enter PO Number",
+			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
+			DragAndDrop: "Drag and drop files here to upload",
+			PONeededHeader: "Please provide a Purchase Order to finalise your order",
+			POUpload: "Upload PO document"
+		},
+		fr: {
+			Customer: $sce.trustAsHtml("Client "),
+			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
+			QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
+			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
+			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
+			PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
+			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
+			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
+			Total: $sce.trustAsHtml("Total"),
+			YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
+			YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
+			CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
+			DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
+			DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
+			WeirComment: $sce.trustAsHtml("** Commentaires"),
+			Save: $sce.trustAsHtml("Save"),
+			Share: $sce.trustAsHtml("Share"),
+			Download: $sce.trustAsHtml("Download"),
+			Print: $sce.trustAsHtml("Print"),
+			Approve: $sce.trustAsHtml("Approve"),
+			Reject: $sce.trustAsHtml("Reject"),
+			Comments: $sce.trustAsHtml("Comments"),
+			Status: $sce.trustAsHtml("Status"),
+			OrderDate: $sce.trustAsHtml("Order date;"),
+			BackToQuotes: $sce.trustAsHtml("Back to your Quotes"),
+			SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
+			SubmitOrderAndEmail: $sce.trustAsHtml("Submit Order & Email PO"),
+			SubmitOrderWithPO: $sce.trustAsHtml("Submit Order with PO"),
+			EmailPoMessage: $sce.trustAsHtml("*Your order will be confirmed<br class='message-break'>following receipt of your PO."),
+			POEntry: $sce.trustAsHtml("Enter PO Number"),
+			PriceDisclaimer: $sce.trustAsHtml("All prices stated do not include UK VAT or delivery"),
+			DragAndDrop: $sce.trustAsHtml("Drag and drop files here to upload"),
+			PONeededHeader: $sce.trustAsHtml("Please provide a Purchase Order to finalise your order"),
+			POUpload: $sce.trustAsHtml("Upload PO document")
+		}
+	};
+	vm.labels = WeirService.LocaleResources(labels);
+
+	vm.ToCsvJson = toCsv;
+	vm.CsvFilename = vm.Quote.ID + ".csv";
+	vm.GetImageUrl = function(img) {
+		return vm.ImageBaseUrl + img;
+	};
+	function download() {
+		$timeout($window.print,1);
+	}
+	function print() {
+		$timeout($window.print,1);
+	}
+	function getStatusLabel() {
+		if (vm.Quote.xp.Status) {
+			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
+			if (status) {
+				return status.label;
+				// TODO: Address localization
+			}
+		}
+		return "";
+	}
+	function download() {
+		$timeout($window.print,1);
+	}
+	function print() {
+		$timeout($window.print,1);
+	}
+	function getStatusLabel() {
+		if (vm.Quote.xp.Status) {
+			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
+			if (status) {
+				return status.label;
+				// TODO: Address localization
+			}
+		}
+		return "";
+	}
+	function toCsv() {
+		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+	}
+	function _gotoQuotes() {
+		$state.go("quotes.revised");
+	}
+	// ToDo Accept a parameter withPO. It will be true or false.
+	function _submitOrder(withPO) {
+		if (payment == null) {
+			if (vm.PONumber) {
+				var data = {
+					Type: "PurchaseOrder",
+					xp: {
+						PONumber: vm.PONumber
+					}
+				};
+				OrderCloud.Payments.Create(vm.Quote.ID, data, vm.Quote.xp.CustomerID)
+					.then(function (pmt) {
+						vm.Payments.push(pmt);
+						payment = pmt;
+						completeSubmit(withPO);
+					})
+			} else {
+				// email the PO later. Can we acutally submit without a PO?
+				completeSubmit(withPO);
+			}
+		} else if (!payment.xp || payment.xp.PONumber != vm.PONumber) {
+			var data = {
+				xp: {
+					PONumber: vm.PONumber
+				}
+			};
+			OrderCloud.Payments.Patch(vm.Quote.ID, payment.ID, data, vm.Quote.xp.CustomerID)
+				.then(function (pmt) {
+					vm.Payments[0] = pmt;
+					payment = pmt;
+					completeSubmit(withPO);
+				})
+		} else {
+			completeSubmit(withPO);
+		}
+	}
+	function completeSubmit(withPO) {
+		var data = {};
+		if(withPO) {
+			data = {
+				xp: {
+					Status: WeirService.OrderStatus.SubmittedWithPO.id,
+					StatusDate: new Date(),
+					Type: "Order",
+					Revised: false,
+					PendingPO: false
+				}
+			};
+		} else {
+			data = {
+				xp: {
+					Status: WeirService.OrderStatus.SubmittedPendingPO.id,
+					StatusDate: new Date(),
+					Type: "Order",
+					PendingPO: true,
+					Revised: false
+				}
+			};
+		}
+		WeirService.UpdateQuote(vm.Quote, data)
+			.then(function (info) {
+				CurrentOrder.Set(null);
+			})
+			.then(function () {
+				var modalInstance = $uibModal.open({
+					animation: true,
+					ariaLabelledBy: 'modal-title',
+					ariaDescribedBy: 'modal-body',
+					templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
+					size: 'lg',
+					controller: 'SubmitConfirmCtrl',
+					controllerAs: 'submitconfirm',
+					resolve: {
+						Quote: function () {
+							return vm.Quote;
+						},
+						WithPO: function() {
+							return withPO;
+						}
+					}
+				}).closed.then(function () {
+					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: vm.Quote.xp.CustomerID });
+				});
+			});
+	}
+
+	vm.Download = download;
+	vm.Print = print;
+	vm.GetStatusLabel = getStatusLabel;
+	vm.gotoQuotes = _gotoQuotes;
+	vm.submitOrder = _submitOrder;
 }

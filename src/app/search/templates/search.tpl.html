@@ -11,12 +11,12 @@
             <div ng-if="search.SelectingCustomer">
                 <div class="row"><span ng-bind-html="search.labels.SearchMine"></span><input type="checkbox" style="margin-left: 1em;" ng-model="search.selfsearch" ng-change="search.ClearFilter()" /></div>
                 <div class="row" ng-if="search.IsServiceOrg"><span ng-bind-html="search.labels.SearchAll"></span><input type="checkbox" style="margin-left: 1em;" ng-model="search.searchall" /></div>
-                <div ng-if="search.IsServiceOrg">
+                <div ng-if="search.IsServiceOrg && search.AvailableCustomers.length > 0">
                     <div class="row"><span ng-bind-html="search.labels.SearchOr"></span></div>
                     <div class="row"><span ng-bind-html="search.labels.FilterEndUser"></span></div>
                 </div>
                 <div class="row col-md-3 input-group">
-                    <input type="text" class="form-control" style="width: 12em;" ng-disabled='search.selfsearch || search.searchall' ng-model="search.customerFilter" typeahead-min-length="3" uib-typeahead="cust.name for cust in search.AvailableCustomers | customerPresearch:$viewValue" />
+                    <input ng-if="search.AvailableCustomers.length > 0" type="text" class="form-control" style="width: 12em;" ng-disabled='search.selfsearch || search.searchall' ng-model="search.customerFilter" typeahead-min-length="3" uib-typeahead="cust.name for cust in search.AvailableCustomers | customerPresearch:$viewValue" />
                     <button style="margin-left: 1em;" ng-disabled="!search.customerFilter && !search.selfsearch && !search.searchall" ng-click="search.CustomerSelected()" ng-bind-html="search.labels.Select"></button>
                 </div>
             </div>

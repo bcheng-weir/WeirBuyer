@@ -47,14 +47,14 @@ function QuotesConfig($stateProvider) {
 			controllerAs: 'inreview',
 			resolve: {
 				Quotes: function(WeirService) {
-					return WeirService.FindQuotes([WeirService.OrderStatus.Submitted,WeirService.OrderStatus.Review], true);
+					return WeirService.FindQuotes([WeirService.OrderStatus.Submitted,WeirService.OrderStatus.Review,WeirService.OrderStatus.RejectedQuote], true);
 				}
 			}
 		})
 		.state( 'quotes.revised', {
 			url: '/revised',
-		        templateUrl: 'quotes/templates/quotes.saved.tpl.html',
-		        controller: 'SavedQuotesCtrl',
+			templateUrl: 'quotes/templates/quotes.saved.tpl.html',
+			controller: 'SavedQuotesCtrl',
 			controllerAs: 'saved',
 			resolve: {
 				Quotes: function(WeirService) {

@@ -41,7 +41,7 @@ function QuoteHelperService($q, OrderCloud) {
     return service;
 }
 
-function MyQuoteConfig($stateProvider, buyerid) {
+function MyQuoteConfig($stateProvider) {
 	$stateProvider
 		.state('myquote', {
 		    parent: 'base',
@@ -50,18 +50,18 @@ function MyQuoteConfig($stateProvider, buyerid) {
 		    controller: 'MyQuoteCtrl',
 		    controllerAs: 'myquote',
 		    resolve: {
+			    Me: function (OrderCloud) {
+				    return OrderCloud.Me.Get();
+			    },
+			    Customer: function (CurrentOrder) {
+				    return CurrentOrder.GetCurrentCustomer();
+			    },
 		        Quote: function (CurrentOrder) {
 		            return CurrentOrder.Get();
 		        },
 		        ShippingAddress: function (Quote, OrderCloud) {
-		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, buyerid);
+		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, Quote.xp.CustomerID);
 		            return null;
-		        },
-		        Customer: function (CurrentOrder) {
-		            return CurrentOrder.GetCurrentCustomer();
-		        },
-		        Me: function (OrderCloud) {
-		            return OrderCloud.Me.Get();
 		        },
 		        LineItems: function ($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService) {
 		            QuoteShareService.LineItems.length = 0;
@@ -74,6 +74,7 @@ function MyQuoteConfig($stateProvider, buyerid) {
                                         toastr.error('Your quote does not contain any line items.', 'Error');
                                         dfd.resolve({ Items: [] });
                                     } else {
+	                                    LineItemHelpers.GetBlankProductInfo(data.Items);
                                         LineItemHelpers.GetProductInfo(data.Items)
                                             .then(function () { dfd.resolve(data); });
                                     }
@@ -85,8 +86,35 @@ function MyQuoteConfig($stateProvider, buyerid) {
                         });
 		            return dfd.promise;
 		        },
+			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers) {
+				    // We can't have a quantity of 0 on a line item. With show previous line items
+				    // Split the current order ID. If a rec exists, get, else do nothing.
+				    var pieces = Quote.ID.split('-Rev');
+				    if(pieces.length > 1) {
+					    var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
+					    var dfd = $q.defer();
+					    OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,Quote.xp.CustomerID)
+						    .then(function(data) {
+							    if (!data.Items.length) {
+								    toastr.error('Previous quote does not contain any line items.', 'Error');
+								    dfd.resolve({ Items: [] });
+							    } else {
+								    LineItemHelpers.GetBlankProductInfo(data.Items);
+								    LineItemHelpers.GetProductInfo(data.Items)
+									    .then(function () { dfd.resolve(data); });
+							    }
+						    })
+						    .catch(function () {
+							    toastr.error('Previous quote does not contain any line items.', 'Error');
+							    dfd.resolve({ Items: [] });
+						    });
+					    return dfd.promise;
+				    } else {
+					    return null;
+				    }
+			    },
 		        Payments: function (Quote, OrderCloud) {
-		            return OrderCloud.Payments.List(Quote.ID);
+		            return OrderCloud.Payments.List(Quote.ID,null,null,null,null,null,null,Quote.xp.CustomerID);
 		        }
 		    }
 		})
@@ -102,8 +130,8 @@ function MyQuoteConfig($stateProvider, buyerid) {
 			controller: 'QuoteDeliveryOptionCtrl',
 			controllerAs: 'delivery',
 			resolve: {
-				Addresses: function(OrderCloud) {
-					return OrderCloud.Addresses.List(null,null,null,null,null,null,buyerid);
+				Addresses: function(OrderCloud, Quote) {
+					return OrderCloud.Addresses.List(null,null,null,null,null,null,Quote.xp.CustomerID);
 				}
 			}
 		})
@@ -150,7 +178,7 @@ function MyQuoteConfig($stateProvider, buyerid) {
 		            return OrderCloud.Orders.Get($stateParams.quoteID);
 		        },
 		        ShippingAddress: function (Quote, OrderCloud) {
-		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, buyerid);
+		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, Quote.xp.CustomerID);
 		            return null;
 		        },
 		        LineItems: function ($q, $stateParams, OrderCloud, LineItemHelpers) {
@@ -174,10 +202,9 @@ function MyQuoteConfig($stateProvider, buyerid) {
     ;
 }
 
-function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService) {
+function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService) {
 	var vm = this;
 	vm.Quote = Quote;
-	console.log(vm.Quote);
 	vm.Customer = Customer;
 	vm.ShippingAddress = ShippingAddress;
 	vm.ImageBaseUrl = imageRoot;
@@ -197,7 +224,7 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 	};
 	vm.Readonly = function () {
 	    $state.go("myquote.readonly", { quoteID: vm.Quote.ID });
-	}
+	};
 	vm.imageRoot = imageRoot;
 	function toCsv() {
 	    return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
@@ -436,7 +463,7 @@ function MyQuoteController($scope, $sce, $state, $uibModal, $timeout, $window, t
 	vm.Comments = _comments;
 }
 
-function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, buyerid, OrderCloud, QuoteShareService) {
+function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, OrderCloud, QuoteShareService) {
     if ((QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) ||
         (QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id)) {
         $state.go("myquote.revised");
@@ -495,7 +522,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 	vm.deleteLineItem = _deleteLineItem;
 	function _deleteLineItem(quoteNumber, itemid) {
-		OrderCloud.LineItems.Delete(quoteNumber, itemid, buyerid)
+		OrderCloud.LineItems.Delete(quoteNumber, itemid, QuoteShareService.Quote.xp.CustomerID)
 			.then(function() {
 				// Testing. Should make another event for clarity. At this time I believe it just updates the cart items.
 				$rootScope.$broadcast('SwitchCart', quoteNumber, itemid); //This kicks off an event in cart.js
@@ -514,7 +541,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 		var patch = {
 			Quantity: item.Quantity
 		};
-		OrderCloud.LineItems.Patch(quoteNumber, item.ID, patch, buyerid)
+		OrderCloud.LineItems.Patch(quoteNumber, item.ID, patch, QuoteShareService.Quote.xp.CustomerID)
 			.then(function(resp) {
 				$rootScope.$broadcast('SwitchCart', quoteNumber, resp.ID);
 			})
@@ -529,7 +556,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, buyerid, OCGeography) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography) {
 	var vm = this;
 	var activeAddress = function(address) { return address.xp.active == true; };
 	vm.addresses = Underscore.sortBy(Addresses.Items, function(address) {
@@ -578,7 +605,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 
 	vm.setShippingAddress = _setShippingAddress;
 	function _setShippingAddress(QuoteID, Address) {
-		OrderCloud.Orders.SetShippingAddress(QuoteID, Address, buyerid)
+		OrderCloud.Orders.SetShippingAddress(QuoteID, Address, QuoteShareService.Quote.xp.CustomerID)
 			.then(function(order) {
 				$state.go($state.current, {}, {reload: true});
 				toastr.success("Shipping address successfully selected.","Success!");
@@ -604,17 +631,17 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 		var newAddressResults = {};
 		modalInstance.result
 			.then(function (address) {
-				return OrderCloud.Addresses.Create(address, buyerid);
+				return OrderCloud.Addresses.Create(address, QuoteShareService.Quote.xp.CustomerID);
 			})
 			.then(function(newAddress) {
 				newAddressResults.ID = newAddress.ID;
 				newAddressResults.Name = newAddress.AddressName;
-				return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, buyerid);
+				return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, QuoteShareService.Quote.xp.CustomerID);
 			})
-			.then(function(order) {
+			.then(function() {
 				return WeirService.AssignAddressToGroups(newAddressResults.ID);
 			})
-			.then(function(order) {
+			.then(function() {
 				$state.go($state.current, {}, {reload: true});
 				toastr.success("Shipping address set to " + newAddressResults.Name,"Shipping Address Set");
 			})
@@ -629,7 +656,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    buyerid, OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder) {
+    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder) {
     var vm = this;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
 	vm.LineItems = QuoteShareService.LineItems;
@@ -734,7 +761,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.labels = WeirService.LocaleResources(labels);
 
     function _deleteLineItem(quoteNumber, itemid) {
-        OrderCloud.LineItems.Delete(quoteNumber, itemid, buyerid)
+        OrderCloud.LineItems.Delete(quoteNumber, itemid, vm.Quote.xp.CustomerID)
 			.then(function () {
 			    // Testing. Should make another event for clarity. At this time I believe it just updates the cart items.
 			    $rootScope.$broadcast('SwitchCart', quoteNumber, itemid); //This kicks off an event in cart.js
@@ -752,7 +779,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     	var patch = {
 		    Quantity: item.Quantity
 	    };
-        OrderCloud.LineItems.Patch(quoteNumber, item.ID, patch, buyerid)
+        OrderCloud.LineItems.Patch(quoteNumber, item.ID, patch, vm.Quote.xp.CustomerID)
 			.then(function (resp) {
 			    $rootScope.$broadcast('LineItemAddedToCart', quoteNumber, resp.ID);
 			})
@@ -808,7 +835,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                         PONumber: vm.PONumber
                     }
                 };
-                OrderCloud.Payments.Create(vm.Quote.ID, data)
+                OrderCloud.Payments.Create(vm.Quote.ID, data, vm.Quote.xp.CustomerID)
                     .then(function (pmt) {
                         QuoteShareService.Payments.push(pmt);
                         payment = pmt;
@@ -824,7 +851,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                     PONumber: vm.PONumber
                 }
             };
-            OrderCloud.Payments.Patch(vm.Quote.ID, payment.ID, data)
+            OrderCloud.Payments.Patch(vm.Quote.ID, payment.ID, data, vm.Quote.xp.CustomerID)
                 .then(function (pmt) {
                     QuoteShareService.Payments[0] = pmt;
                     payment = pmt;
@@ -857,7 +884,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    }
 		    };
 	    }
-	    WeirService.UpdateQuote(vm.Quote.ID, data)
+	    WeirService.UpdateQuote(vm.Quote, data)
             .then(function (qt) {
                 return OrderCloud.Orders.Submit(vm.Quote.ID);
             })
@@ -970,9 +997,21 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.toReview = _gotoReview;
 }
 
-function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Underscore, OCGeography) {
+function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Underscore, OCGeography, LineItems, PreviousLineItems) {
     var vm = this;
-    vm.LineItems = QuoteShareService.LineItems;
+	vm.Zero = 0;
+    vm.LineItems = LineItems.Items; //QuoteShareService.LineItems;
+	if(PreviousLineItems) {
+		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
+			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
+				return
+			} else {
+				return item;
+			}
+		});
+	} else {
+		vm.PreviousLineItems = [];
+	}
     vm.Quote = QuoteShareService.Quote;
     vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
     vm.PONumber = "";
@@ -1038,6 +1077,33 @@ function RevisedQuoteController(WeirService, $state, $sce, QuoteShareService, Un
     function _gotoRevisions() {
         $state.go("revisions", { quoteID: vm.Quote.xp.OriginalOrderID });
     }
+
+	vm.ShowUpdated = function (item) {
+		// return true if qty <> xp.originalQty and qty > 0
+		if(item.xp) {
+			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && (item.Product.xp.LeadTime != item.xp.OriginalLeadTime));
+		} else {
+			return false;
+		}
+	};
+
+	vm.ShowRemoved = _showRemoved;
+	function _showRemoved(line) {
+		if(line.xp) {
+			return line.Quantity == 0 && line.xp.OriginalQty != 0;
+		} else {
+			return false;
+		}
+	}
+
+	vm.ShowNew = _showNew;
+	function _showNew(line) {
+		if(line.xp) {
+			return line.xp.OriginalQty==0;
+		} else {
+			return false;
+		}
+	}
 
     vm.gotoQuotes = _gotoQuotes;
     vm.gotoRevisions = _gotoRevisions;

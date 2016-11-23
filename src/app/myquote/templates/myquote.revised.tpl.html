@@ -1,7 +1,6 @@
 <div>
     <div class="row" style="padding-top:20px; padding-bottom:20px;">
         <div class="col-md-8">
-            <!-- <h3><span ng-bind-html='revised.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></h3> -->
             <h4><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-danger"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
             <h4><span ng-bind-html='revised.labels.QuoteName'></span><span class="text-danger">{{myquote.Quote.xp.Name}}</span></h4>
             <h4><span ng-bind-html='revised.labels.YourReference'></span><span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></h4>
@@ -46,10 +45,48 @@
                         <td class="form-inline">
                             <input  type="number" class="form-control" style="width:5em;" ng-model="line.Quantity" readonly />
                         </td>
-                        <td ng-if="line.xp.OriginalQty && line.xp.OriginalQty == 0 && line.Quantity !=0"><button class="btn btn-xs btn-success" disabled ng-bind-html="revised.labels.New"></button></td>
-                        <td ng-if="line.xp.OriginalQty && line.xp.OriginalQty!=0 && line.Quantity != 0 && line.Quantity != line.xp.OriginalQty"><button class="btn btn-xs btn-warning" disabled ng-bind-html="revised.labels.Updated"></button></td>
-                        <td ng-if="line.xp.OriginalQty && line.xp.OriginalQty!=0 && line.Quantity == 0"><button class="btn btn-xs btn-danger" disabled ng-bind-html="revised.labels.Removed"></button></td>
+                        <td style="border:0;width:100px;">
+                            <h4>
+                                <span class="label label-warning" ng-show="revised.ShowUpdated(line)" ng-bind-html="revised.labels.Updated"></span>
+                                <span class="label label-success" ng-show="revised.ShowNew(line)" ng-bind-html="revised.labels.New"></span>
+                            </h4>
+                        </td>
                     </tr>
+
+                    <!-- Show deleted items -->
+                    <tr ng-repeat="line in revised.PreviousLineItems">
+                        <td>{{line.xp.SN}}</td>
+                        <td>{{line.xp.TagNumber}}</td>
+                        <td>{{line.Product.Name}}</td>
+                        <td>{{line.Product.Description}}</td>
+                        <td>{{line.Product.xp.ReplacementSchedule}}</td>
+
+                        <td ng-if="revised.Quote.xp.Status!='RE'">{{line.Product.xp.LeadTime}}</td>
+                        <td ng-switch="myquote.Quote.xp.Currency" class='text-right' ng-if="revised.Quote.xp.Status!='RE'">
+                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
+                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
+                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
+                        </td>
+                        <td ng-if="revised.Quote.xp.Status!='RE'">
+                            {{revised.Zero}}
+                        </td>
+
+                        <td ng-if="revised.Quote.xp.Status=='RE'">
+                            <input type="text" class="form-control" ng-model="line.Product.xp.LeadTime" />
+                        </td>
+                        <td ng-if="revised.Quote.xp.Status=='RE'">
+                            <input type="" class="form-control" ng-model="line.UnitPrice" />
+                        </td>
+                        <td ng-if="revised.Quote.xp.Status=='RE'">
+                            <input type="number" class="form-control" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:50%" ng-model="revised.Zero" />
+                        </td>
+                        <td style="border:0;width:100px;">
+                            <h4>
+                                <span class="label label-danger" ng-bind-html="revised.labels.Removed"></span>
+                            </h4>
+                        </td>
+                    </tr>
+
                     <tr ng-if="revised.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='revised.labels.Total'></td>
@@ -63,6 +100,7 @@
             </table>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-8">
             <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>

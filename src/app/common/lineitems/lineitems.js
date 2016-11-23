@@ -9,6 +9,7 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         RemoveItem: _removeItem,
         UpdateQuantity: _updateQuantity,
         GetProductInfo: _getProductInfo,
+	    GetBlankProductInfo: _getBlankProductInfo,
         CustomShipping: _customShipping,
         UpdateShipping: _updateShipping,
         ListAll: _listAll
@@ -73,17 +74,40 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         var dfd = $q.defer();
         var queue = [];
         angular.forEach(productIDs, function (productid) {
-            queue.push(OrderCloud.Me.GetProduct(productid));
+            if(productid != "PLACEHOLDER") {
+                queue.push(OrderCloud.Products.Get(productid));
+            }
         });
         $q.all(queue)
             .then(function (results) {
                 angular.forEach(li, function (item) {
-                    item.Product = angular.copy(Underscore.where(results, {ID: item.ProductID})[0]);
+                    if(item.ProductID != "PLACEHOLDER") {
+                        item.Product = angular.copy(Underscore.where(results, {ID: item.ProductID})[0]);
+                    }
                 });
                 dfd.resolve(li);
             });
         return dfd.promise;
     }
+
+	function _getBlankProductInfo(LineItems) {
+		var li = LineItems || LineItems.Items;
+
+		angular.forEach(li, function(item) {
+			if(item.ProductID == "PLACEHOLDER") {
+				item.Product = {
+					"Name": item.xp.ProductName,
+					"Description": item.xp.Description,
+					"xp": {
+						"ReplacementSchedule": item.xp.ReplacementSchedule,
+						"LeadTime": item.xp.LeadTime
+					}
+				};
+			}
+		});
+
+		return li;
+	}
 
     function _customShipping(Order, LineItem) {
         var modalInstance = $uibModal.open({

@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-md-8">
             <b>
-                <p ng-if='!partResults.MultipleCustomers'><span ng-bind-html='partResults.labels.Customer'></span>; {{partResults.Customer}}</p>
-                <p ng-if='partResults.MultipleCustomers'><span ng-bind-html='partResults.labels.Customer'></span>; TODO: Search criteria matched valves from different customers. Wlil be addressed in subsequent story.</p>
+                <!-- <p ng-if='!partResults.MultipleCustomers'><span ng-bind-html='partResults.labels.Customer'></span>; {{partResults.Customer}}</p>
+                <p ng-if='partResults.MultipleCustomers'><span ng-bind-html='partResults.labels.Customer'></span>; TODO: Search criteria matched valves from different customers. Wlil be addressed in subsequent story.</p> -->
                 <p ng-bind-html='partResults.labels.ResultsHeader'></p>
             </b>
         </div>
@@ -29,7 +29,8 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="part in partResults.partNumberResults.Parts | searchresults:true">
-                        <td class="text-danger">{{part.Detail.Name}}</td>
+                        <td ng-if="!part.Detail.xp.AlternatePartNumber" class="text-danger">{{part.Detail.Name}}</td>
+                        <td ng-if="part.Detail.xp.AlternatePartNumber" class="text-danger">{{part.Detail.Name}} ({{part.Detail.xp.AlternatePartNumber}})</td>
                         <td>{{part.Detail.Description}}</td>
                         <td>{{part.Detail.xp.ReplacementSchedule}}</td>
                         <td>{{part.Detail.xp.LeadTime}}</td>

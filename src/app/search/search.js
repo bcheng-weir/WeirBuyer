@@ -31,19 +31,6 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 				MyOrg: function (OrderCloud) {
 				    var buyerId = OrderCloud.BuyerID.Get();
                     return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
-                },
-				SerialNumbers: function(WeirService, OrderCloud, MyOrg, CurrentOrder) {
-					return (MyOrg) ? CurrentOrder.GetCurrentCustomer()
-						.then(function(cust) {
-					        if (cust) {
-					            return OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "ParentID": cust.id }, null, MyOrg.xp.WeirGroup.label);
-					        } else {
-								return { Items: []};
-					    }
-					}) : null;
-				},
-				PartNumbers: function(OrderCloud) {
-					return OrderCloud.Me.ListProducts(null, 1, 100, null, null, null);
 				}
 			}
 		})
@@ -79,7 +66,13 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 			url: '/part',
 			templateUrl: 'search/templates/search.part.tpl.html',
 			controller: 'PartCtrl',
-			controllerAs: 'part'
+			controllerAs: 'part',
+			resolve: {
+			    MyOrg: function (OrderCloud) {
+			        var buyerId = OrderCloud.BuyerID.Get();
+			        return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
+			    }
+			}
 		})
 		.state( 'search.part.results', {
 			url: '/search?numbers',
@@ -87,8 +80,12 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 			controller: 'PartResultsCtrl',
 			controllerAs: 'partResults',
 			resolve: {
-				PartNumberResults: function( $stateParams, WeirService) {
-					return WeirService.PartNumbers($stateParams.numbers.split(','));
+			    MyOrg: function (OrderCloud) {
+			        var buyerId = OrderCloud.BuyerID.Get();
+			        return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
+			    },
+				PartNumberResults: function( $stateParams, WeirService, MyOrg) {
+					return WeirService.PartNumbers(MyOrg.xp.WeirGroup.label, $stateParams.numbers.split(','));
 				}
 			}
 		})
@@ -129,11 +126,8 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 		});
 }
 
-function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, SerialNumbers, PartNumbers, MyOrg, imageRoot, SearchTypeService) {
+function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, MyOrg, imageRoot, SearchTypeService) {
 	var vm = this;
-	vm.serialNumberList = SerialNumbers.Items;
-	console.log(vm.serialNumberList);
-	vm.partNumberList = PartNumbers.Items;
 	vm.searchType = WeirService.GetLastSearchType();
 	vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
 	vm.WeirGroup = MyOrg.xp.WeirGroup.label;
@@ -218,7 +212,6 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 				    vm.serialNumberList.length = 0;
 				    WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
 					    .then(function() {
-						    //OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": vm.Customer.xp.WeirGroup.label})
 						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": MyOrg.xp.WeirGroup.label})
 							    .then(function(results) {
 								    vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
@@ -252,7 +245,7 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
 			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
 			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-			NotAvailable: "Not Available",
+			NotAvailable: "N/A",
             ApplyFilter: "OK"
 		},
 		fr: {
@@ -272,7 +265,7 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 		    ReplacementGuidance: $sce.trustAsHtml("TBD: Replacement guidance"),
 		    POAGuidance: $sce.trustAsHtml("TBD: POA guidance"),
 		    PriceDisclaimer: $sce.trustAsHtml("TBD: Price disclaimer"),
-		    NotAvailable: $sce.trustAsHtml("Not Available"),
+		    NotAvailable: $sce.trustAsHtml("TBD: N/A"),
 		    ApplyFilter: "FR: OK"
 	    }
 	};
@@ -291,6 +284,7 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 
 function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toastr, SearchTypeService) {
     var vm = this;
+    vm.SerialNumberMatches = [];
 
     var labels = {
         en: {
@@ -352,7 +346,8 @@ function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toa
                 return OrderCloud.Me.ListCategories(null, 1, 20, null, "Name",
                     { "xp.SN": input + "*" }, "all", cust.substring(0, 5))
                     .then(function (newList) {
-                        $scope.search.serialNumberList = newList.Items;
+                        vm.SerialNumberMatches.length = 0;
+                        vm.SerialNumberMatches.push.apply(vm.SerialNumberMatches, newList.Items);
                     })
                     .catch(function (ex) {
                         console.log("Error: " + JSON.stringify(ex));
@@ -363,7 +358,8 @@ function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toa
                     "xp.SN": input + "*"
                 }, null, cust.substring(0, 5))
                     .then(function (newList) {
-                        $scope.search.serialNumberList = newList.Items;
+                        vm.SerialNumberMatches.length = 0;
+                        vm.SerialNumberMatches.push.apply(vm.SerialNumberMatches, newList.Items);
                     })
                     .catch(function (ex) {
                         console.log("Error: " + JSON.stringify(ex));
@@ -520,9 +516,11 @@ function SerialDetailController( $stateParams, $rootScope, $scope, $state, $sce,
 
 }
 
-function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService ) {
-	var vm = this;
+function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService, MyOrg ) {
+    var vm = this;
+    vm.PartMatches = [];
 
+	vm.WeirGroup = MyOrg.xp.WeirGroup.label;
 	vm.partNumbers = [null];
 	WeirService.SetLastSearchType(WeirService.SearchType.Part);
 
@@ -572,24 +570,26 @@ function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService ) {
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.updatePartList = function (input) {
 	    if (input.length >= 3) {
-	        var cust = $scope.search.Customer.id;
-	        if (SearchTypeService.IsGlobalSearch()) {
-	        } else if (cust) {
-	            var deferred = $q.defer();
-
-	            OrderCloud.Me.ListProducts(null, 1, 20, null, null, { "Name": input + "*" }, null, null)
-                    .then(function (newList) {
-                        $scope.search.partNumberList = newList.Items;
-                        deferred.resolve();
-                        return;
-                    })
-                    .catch(function (ex) {
-                        deferred.resolve("No Tags with this id");
-                        return;
-                    });
-
-
-	        }
+	        var results = [];
+	        OrderCloud.Me.ListProducts(vm.WeirGroup, 1, 20, "ID", "Name", { "Name": input + "*" }, null, null)
+                .then(function (newList) {
+                    results = newList.Items;
+                })
+                .then(function () {
+                    if (vm.WeirGroup == 'WVCUK') {
+                        OrderCloud.Me.ListProducts(vm.WeirGroup, 1, 20, "ID", "Name", { "xp.AlternatePartNumber": input + "*" }, null, null)
+                            .then(function (newList) {
+                                results.push.apply(results, newList.Items);
+                                vm.PartMatches.length = 0;
+                                vm.PartMatches.push.apply(vm.PartMatches, results);
+                            });
+                    } else {
+                        vm.PartMatches.length = 0;
+                        vm.PartMatches.push.apply(vm.PartMatches, results);
+                    }
+                })
+                .catch(function (ex) {
+                });
 	    }
 	};
 }
@@ -597,9 +597,7 @@ function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService ) {
 function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults ) {
 	var vm = this;
 	vm.partNumberResults = PartNumberResults;
-	if(vm.partNumberResults == null) $state.go('search.noresults');
-	vm.Customer = PartNumberResults.Customer;
-	vm.MultipleCustomers = (vm.Customer == "*");
+	if (!vm.partNumberResults || !vm.partNumberResults.Parts || vm.partNumberResults.Parts.length == 0) $state.go('search.noresults');
 	var numFound = 0;
 	angular.forEach(PartNumberResults.Parts, function(entry) {
 		if (entry.Detail) numFound++;
@@ -608,7 +606,7 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 	var labels = {
 		en: {
 			Customer: "Customer",
-			ResultsHeader: "Showing results for part numbers; " + numFound.toString() + " of " + PartNumberResults.Parts.length.toString() + " searched part numbers found",
+			ResultsHeader: "Showing results for part numbers; " + numFound.toString() + " of " + PartNumberResults.NumSearched.toString() + " searched part numbers found",
 			SearchAgain: "Search again",
 			PartNum: "Part number",
 			PartDesc: "Description of part",
@@ -621,7 +619,7 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 		},
 		fr: {
 			Customer: "Client",
-			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les r&eacute;f&eacute;rences de pi&egrave;ces: de " + numFound.toString() + " &agrave; " + PartNumberResults.Parts.length.toString() + " r&eacute;f&eacute;rences de pi&egrave;ces trouv&eacute;es."),
+			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les r&eacute;f&eacute;rences de pi&egrave;ces: de " + numFound.toString() + " &agrave; " + PartNumberResults.NumSearched.toString() + " r&eacute;f&eacute;rences de pi&egrave;ces trouv&eacute;es."),
 			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de pi&egrave;ce"),
 			PartDesc: $sce.trustAsHtml("Description de la pi&eacute;ce"),
@@ -649,7 +647,9 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 }
 
 function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr, SearchTypeService) {
-	var vm = this;
+    var vm = this;
+    vm.TagMatches = [];
+
 	var labels = {
 		en: {
 			// WhereToFind: "where to find your serial number",
@@ -677,7 +677,8 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 		        return OrderCloud.Me.ListCategories(null, 1, 20, null, "Name",
                     { "xp.TagNumber": input + "*" }, "all", cust.substring(0, 5))
                     .then(function (newList) {
-                        $scope.search.serialNumberList = newList.Items;
+                        vm.TagMatches.length = 0;
+                        vm.TagMatches.push.apply(vm.TagMatches, newList.Items);
                     })
                     .catch(function (ex) {
                         console.log("Error: " + JSON.stringify(ex));
@@ -687,8 +688,9 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
                     "ParentID": cust,
                     "xp.TagNumber": input + "*"
                 }, null, cust.substring(0,5)).then(function(newList){
-                    $scope.search.serialNumberList = newList.Items;
-				})
+                    vm.TagMatches.length = 0;
+                    vm.TagMatches.push.apply(vm.TagMatches, newList.Items);
+                })
                 .catch(function(ex) {
                     console.log("Error: " + JSON.stringify(ex));
                 });
@@ -711,7 +713,11 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 		} else if (vm.tags.length == 1 && !SearchTypeService.IsGlobalSearch()) {
 		    WeirService.TagNumbers(vm.tags)
                 .then(function (results) {
-                    $state.go('search.tag.detail', { id: results[0].Detail.ID, number: vm.tags[0], searchNumbers: vm.tags[0] });
+                    if (results && results.length > 0 && results[0].Detail) {
+                        $state.go('search.tag.detail', { id: results[0].Detail.ID, number: vm.tags[0], searchNumbers: vm.tags[0] });
+                    } else {
+                        $state.go('search.noresults');
+                    }
                 });
 		}
 		else {

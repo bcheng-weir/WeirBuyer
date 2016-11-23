@@ -40,8 +40,17 @@ function tagPreSearch() {
 }
 function partPreSearch() {
   return function(items, partno) {
-    return items.filter(function(part, index, array) {
-	return part && part.Name && part.Name.toLowerCase().indexOf(partno.toLowerCase()) >= 0;
+      return items.filter(function (part, index, array) {
+          if (!part) return false;
+          if (part.Name && part.Name.toLowerCase().indexOf(partno.toLowerCase()) >= 0) {
+              part.DisplayName = part.Name;
+              return true;
+          }
+          if (part.xp && part.xp.AlternatePartNumber && part.xp.AlternatePartNumber.toLowerCase().indexOf(partno.toLowerCase()) >= 0) {
+              part.DisplayName = part.xp.AlternatePartNumber;
+              return true;
+          }
+          return false;
     });
   };
 }

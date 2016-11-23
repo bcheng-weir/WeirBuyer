@@ -1,5 +1,5 @@
 <article id="COMPONENT_Search" class="container-fluid">
-	<div ng-if="search.WeirGroup=='WVCUK' && ['search.serial', 'search.part', 'search.tag'].indexOf(application.$state.current.name) > -1" style="margin-left: 1em; margin-bottom: 1em;">
+	<div ng-if="search.WeirGroup=='WVCUK' && ['search.serial', 'search.tag'].indexOf(application.$state.current.name) > -1" style="margin-left: 1em; margin-bottom: 1em;">
 		<div ng-if="!search.SelectingCustomer">
 			<div class="row" style="font-weight: bold;">
             <span ng-bind-html='search.labels.CustomerFilter'></span>
@@ -21,7 +21,7 @@
                 </div>
             </div>
 	</div>
-    <div ng-if="search.WeirGroup=='WPIFR' && ['search.serial', 'search.part', 'search.tag'].indexOf(application.$state.current.name) > -1" class="row" style="margin-left: 1em; margin-bottom: 1em;">
+    <div ng-if="search.WeirGroup=='WPIFR' && ['search.serial', 'search.tag'].indexOf(application.$state.current.name) > -1" class="row" style="margin-left: 1em; margin-bottom: 1em;">
         <div ng-if="!search.SelectingCustomer">
             <div class="row" style="font-weight: bold;">
                 <span ng-bind-html='search.labels.CustomerFilter'></span>

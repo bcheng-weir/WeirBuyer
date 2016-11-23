@@ -6,7 +6,7 @@
                     <label ng-if="$index == 0 && part.partNumbers.length <= 1" ng-bind-html='part.labels.EnterPart'></label>
 		    <label ng-if="$index == 0 && part.partNumbers.length > 1" ng-bind-html='part.labels.EnterParts'></label>
                     <div class="input-group col-md-12">
-                        <input type="text" class="form-control" ng-model="part.partNumbers[$index]" ng-change="part.updatePartList(part.partNumbers[$index])" typeahead-min-length="3" uib-typeahead="part.Name for part in search.partNumberList | partPreSearch:$viewValue" />
+                        <input type="text" class="form-control" ng-model="part.partNumbers[$index]" ng-change="part.updatePartList(part.partNumbers[$index])" typeahead-min-length="3" uib-typeahead="p.DisplayName as (p.DisplayName + ' - ' + p.Description) for p in part.PartMatches | partPreSearch:$viewValue" />
                         <span class="input-group-addon" ng-if="part.partNumbers.length > 1" ng-click="part.removePartNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
 		    <span class="fa fa-minus text-danger form-control-feedback" ng-if="part.partNumbers.length > 1" ng-click="part.removePartNumber($index)"></span>

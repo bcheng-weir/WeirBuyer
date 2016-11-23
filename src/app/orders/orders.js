@@ -164,15 +164,32 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		    Total: "Order value",
 		    Customer: "Customer",
 		    Status: "Status",
-		    ReplaceCartMessage: "Continuing with this action will change your cart to this order. Are you sure you want to proceed?"
+		    ReplaceCartMessage: "Continuing with this action will change your cart to this order. Are you sure you want to proceed?",
+		    Revisions: "Revisions"
 	    },
 	    fr: {
+		    SubmittedHeader: $sce.trustAsHtml(vm.list.Items.length.toString() + " submitted Order" +  (vm.list.Items.length == 1 ? "" : "s")),
+		    PendingHeader: $sce.trustAsHtml(vm.list.Items.length.toString() + " pending Order" +  (vm.list.Items.length == 1 ? "" : "s")),
+		    PendingNotice: $sce.trustAsHtml("Orders submitted pending PO will not be confirmed until Weir have received a purchase order"),
+		    RevisedHeader: $sce.trustAsHtml(vm.list.Items.length.toString() + " revised Order" +  (vm.list.Items.length == 1 ? "" : "s")),
+		    ConfirmedHeader: $sce.trustAsHtml(vm.list.Items.length.toString() + " confirmed Order" +  (vm.list.Items.length == 1 ? "" : "s")),
+		    DespatchedHeader: $sce.trustAsHtml(vm.list.Items.length.toString() + " despatched Order" +  (vm.list.Items.length == 1 ? "" : "s")),
+		    InvoicedHeader: $sce.trustAsHtml(vm.list.Items.length.toString() + " invoiced Order" +  (vm.list.Items.length == 1 ? "" : "s")),
+		    View: $sce.trustAsHtml("View"),
 		    submitted: $sce.trustAsHtml("Submitted with PO"),
 		    pending: $sce.trustAsHtml("Submitted pending PO"),
 		    revised: $sce.trustAsHtml("Revised"),
 		    confirmed: $sce.trustAsHtml("Confirmed"),
 		    despatched: $sce.trustAsHtml("Despatched"),
-		    invoiced: $sce.trustAsHtml("Invoiced")
+		    invoiced: $sce.trustAsHtml("Invoiced"),
+		    OrderNum: $sce.trustAsHtml("Weir Order No."),
+		    OrderName: $sce.trustAsHtml("Your Order Name"),
+		    OrderRef: $sce.trustAsHtml("Your Order ref;"),
+		    Total: $sce.trustAsHtml("Order value"),
+		    Customer: $sce.trustAsHtml("Customer"),
+		    Status: $sce.trustAsHtml("Status"),
+		    ReplaceCartMessage: $sce.trustAsHtml("Continuing with this action will change your cart to this order. Are you sure you want to proceed?"),
+		    Revisions: $sce.trustAsHtml("Revisions")
 	    }
     };
     vm.labels = labels[WeirService.Locale()];

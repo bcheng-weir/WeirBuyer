@@ -47,7 +47,10 @@
                 <td ng-if="order.xp.CustomerID != orders.MyOrg.ID ">{{order.xp.CustomerName}}</td>
                 <td ng-if="order.xp.CustomerID == orders.MyOrg.ID ">{{orders.labels.OwnProduct}}</td>
                 <td>{{orders.getStatusLabel(order.xp.Status) + "; " + (order.xp.StatusDate | weirdate)}}</td>
-                <td><button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status)" ng-bind-html="orders.labels.View"></button></td>
+                <td>
+                    <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status)" ng-bind-html="orders.labels.View"></button>
+                    <a ui-sref="revisions({quoteID:order.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="orders.labels.Revisions"></a>
+                </td>
             </tr>
             </tbody>
         </table>

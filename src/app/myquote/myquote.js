@@ -458,6 +458,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	        WeirService.UpdateQuote(vm.Quote, mods)
             .then(function (qte) {
                 toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
+	            $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: vm.Quote.xp.CustomerID });
             });
 	    }
 	}
@@ -473,6 +474,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	        WeirService.UpdateQuote(vm.Quote, mods)
             .then(function (qte) {
                 toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
+	            $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: vm.Quote.xp.CustomerID });
             });
         }
 	}
@@ -1157,7 +1159,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.toReview = _gotoReview;
 }
 
-function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Underscore, OCGeography, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot) {
+function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Underscore, OCGeography, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr) {
     var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1215,7 +1217,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 	        Reject: "Reject",
 	        Comments: "Comments",
 	        Status: "Status",
-	        OrderDate: "Order date;"
+	        OrderDate: "Order date;",
+	        RejectedMessage: "The revised quote has been rejected.",
+	        RejectedTitle: "Quote updated",
+	        ApprovedMessage: "The revised quote has been accepted",
+	        ApprovedTitle: "Quote updated"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1247,7 +1253,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 	        Reject: $sce.trustAsHtml("Reject"),
 	        Comments: $sce.trustAsHtml("Comments"),
 	        Status: $sce.trustAsHtml("Status"),
-	        OrderDate: $sce.trustAsHtml("Order date;")
+	        OrderDate: $sce.trustAsHtml("Order date;"),
+	        RejectedMessage: $sce.trustAsHtml("The revised quote has been rejected."),
+	        RejectedTitle: $sce.trustAsHtml("Quote updated"),
+	        ApprovedMessage: $sce.trustAsHtml("The revised quote has been accepted"),
+	        ApprovedTitle: $sce.trustAsHtml("Quote updated")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1314,6 +1324,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 			WeirService.UpdateQuote(vm.Quote, mods)
 				.then(function (qte) {
 					toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
+					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: vm.Quote.xp.CustomerID });
 				});
 		}
 	}
@@ -1328,6 +1339,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 			WeirService.UpdateQuote(vm.Quote, mods)
 				.then(function (qte) {
 					toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
+					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: vm.Quote.xp.CustomerID });
 				});
 		}
 	}
@@ -1711,7 +1723,7 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	vm.gotoQuotes = _gotoQuotes;
 }
 
-function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud) {
+function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, toastr) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;

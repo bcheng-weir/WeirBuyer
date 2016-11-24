@@ -841,9 +841,11 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	}
     // TODO: Also add condition that user has Buyer role
     var allowNextStatuses = [WeirService.OrderStatus.Draft.id, WeirService.OrderStatus.Saved.id];
-    vm.ShowNextButton = (QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
-                            ((vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) ||
-                            (vm.Quote.FromUserID == QuoteShareService.Me.ID && (allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1)));
+	// TODO a user could have multiple rolls or groups. look for the usermembership in the buyers group.
+    vm.ShowNextButton = allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1;
+					//(QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
+                            //((vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) ||
+                            //(vm.Quote.FromUserID == QuoteShareService.Me.ID && (allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1)));
     var labels = {
         en: {
             Customer: "Customer; ",

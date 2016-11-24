@@ -803,7 +803,8 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 									"Type": "Quote",
 									"CustomerID": customer.id,
 									"CustomerName": customer.name,
-									"Status": "DR"
+									"Status": "DR",
+									"Active": true
 								}
 							};
 							OrderCloud.Orders.Create(cart)

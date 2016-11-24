@@ -209,12 +209,12 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 				    return CurrentOrder.SetCurrentCustomer(vm.Customer);
 			    })
 			    .then(function() {
-				    vm.serialNumberList.length = 0;
+				    //vm.serialNumberList.length = 0;
 				    WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
 					    .then(function() {
 						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": MyOrg.xp.WeirGroup.label})
 							    .then(function(results) {
-								    vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
+								    //vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
 							    });
 					    });
 			    });

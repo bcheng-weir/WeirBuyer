@@ -163,7 +163,7 @@
             <p><b><span ng-bind-html='revised.labels.YourAttachments'></span><br></b></p>
             <p ng-repeat="fileName in revised.Quote.xp.Files">{{fileName}}</p>
             <p><b><span ng-bind-html='revised.labels.CommentsHeader'></span></b></p>
-            <p><textarea rows='4' cols='40' maxlength="1000" ng-model='revised.Quote.Comments' readonly></textarea></p>
+            <p><span ng-bind-html='revised.Quote.Comments'></span></p>
         </div>
     </div>
 
@@ -176,7 +176,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <textarea rows="5" cols="100" maxlength="1000" ng-model="revised.CommentsToWeir"></textarea>
+                <span ng-bind-html="revised.CommentsToWeir"></span>
             </div>
         </div>
         <div class="row">

@@ -20,7 +20,7 @@
                 <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="readonly.Reject()" ng-bind-html="readonly.labels.Reject"></button>
                 <button class="btn btn-default" style="margin-left:0.5em;" ng-click="readonly.Comments()" ng-bind-html="readonly.labels.Comments"></button>
             </div>
-            <div style="float:right" ng-if="readonly.Quote.xp.PendingPO || readonly.Quote.xp.Status=='CQ'">
+            <div style="float:right" ng-if="readonly.Quote.xp.Status=='SE' || readonly.Quote.xp.Status=='CQ'">
                 <button class="btn btn-success" ui-sref="submit({quoteID:readonly.Quote.ID, buyerID:readonly.Quote.xp.CustomerID})">{{readonly.labels.SubmitWithPO}}</button>
             </div>
         </div>
@@ -79,11 +79,9 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-            <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='readonly.labels.PriceDisclaimer'></span></p>
         </div>
     </div>
-
-    <hr />
 
     <div class="row">
         <div class="col-md-6">
@@ -116,7 +114,7 @@
             <p ng-repeat="fileName in readonly.Quote.xp.Files">{{fileName}}</p>
             <p><b><span ng-bind-html='readonly.labels.CommentsHeader'></span></b></p>
             <p>
-                <textarea rows='4' cols='40' maxlength="1000" ng-model='readonly.Quote.Comments' readonly></textarea>
+                <span ng-bind-html='readonly.Quote.Comments'></span>
             </p>
         </div>
     </div>
@@ -127,7 +125,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <textarea rows="5" cols="100" maxlength="1000" readonly ng-model="readonly.CommentsToWeir"></textarea>
+            <span ng-bind-html="readonly.CommentsToWeir"></span>
         </div>
     </div>
 

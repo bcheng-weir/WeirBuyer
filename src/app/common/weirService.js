@@ -967,29 +967,29 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 		return deferred.promise;
     }
 
-    function updateQuote(quoteId, data, assignQuoteNumber, prefix) {
+    function updateQuote(quote, data, assignQuoteNumber, prefix) {
         var deferred = $q.defer();
 		if (assignQuoteNumber) {
-			tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, 1);
+			tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, 1);
 		} else {
-			OrderCloud.Orders.Patch(quoteId, data)
+			OrderCloud.Orders.Patch(quote.ID, data)
 				.then(function(quote) { deferred.resolve(quote)})
-				.catch(function(ex) { d.deferred.reject(ex); });
+				.catch(function(ex) { deferred.reject(ex); });
 		}
 			return deferred.promise;
     }
 
-    function tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, trycount) {
+    function tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount) {
         var newQuoteId=createQuoteNumber(prefix);
         data.ID = newQuoteId;
-		OrderCloud.Orders.Patch(quoteId, data)
+		OrderCloud.Orders.Patch(quote.ID, data)
 			.then(function(quote) { CurrentOrder.Set(newQuoteId); return quote;})
 			.then(function(quote) { deferred.resolve(quote)})
 			.catch(function(ex) {
                 if(trycount > 4) {
-		            d.deferred.reject(ex);
+		            deferred.reject(ex);
 				} else {
-					tryQuoteSaveWithQuoteNumber(deferred, quoteId, data, prefix, trycount+1);
+					tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount+1);
 				}
 	   });
     }
@@ -1020,7 +1020,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 		    	deferred.resolve();
 		    })
 		    .catch(function(ex) {
-		    	d.deferred.reject(ex);
+		    	deferred.reject(ex);
 		    });
 
 	    return deferred.promise;

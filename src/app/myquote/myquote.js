@@ -195,7 +195,6 @@ function MyQuoteConfig($stateProvider) {
 								}
 							})
 							.catch(function () {
-								toastr.error('Previous quote does not contain any line items.', 'Error');
 								dfd.resolve({ Items: [] });
 							});
 						return dfd.promise;
@@ -282,7 +281,6 @@ function MyQuoteConfig($stateProvider) {
 							    }
 						    })
 						    .catch(function () {
-							    toastr.error('Previous quote does not contain any line items.', 'Error');
 							    dfd.resolve({ Items: [] });
 						    });
 					    return dfd.promise;
@@ -348,7 +346,6 @@ function MyQuoteConfig($stateProvider) {
 								}
 							})
 							.catch(function () {
-								toastr.error('Previous quote does not contain any line items.', 'Error');
 								dfd.resolve({ Items: [] });
 							});
 						return dfd.promise;
@@ -367,6 +364,7 @@ function MyQuoteConfig($stateProvider) {
 function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService) {
 	var vm = this;
 	vm.Quote = Quote;
+	console.log(vm.Quote);
 	vm.Customer = Customer;
 	vm.ShippingAddress = ShippingAddress;
 	vm.ImageBaseUrl = imageRoot;
@@ -423,7 +421,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 		    assignQuoteNumber = true;
 		}
 
-		WeirService.UpdateQuote(vm.Quote.ID, mods, assignQuoteNumber, vm.Customer.id)
+		WeirService.UpdateQuote(vm.Quote, mods, assignQuoteNumber, vm.Customer.id)
 			.then(function(quote) {
 				if(assignQuoteNumber) {
 					vm.Quote = quote;
@@ -457,7 +455,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	                Status: WeirService.OrderStatus.ConfirmedQuote.id
 	            }
 	        };
-	        WeirService.UpdateQuote(vm.Quote.ID, mods)
+	        WeirService.UpdateQuote(vm.Quote, mods)
             .then(function (qte) {
                 toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
             });
@@ -472,7 +470,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	                Status: WeirService.OrderStatus.RejectedQuote.id
 	            }
 	        };
-	        WeirService.UpdateQuote(vm.Quote.ID, mods)
+	        WeirService.UpdateQuote(vm.Quote, mods)
             .then(function (qte) {
                 toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
             });
@@ -1086,7 +1084,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                     CommentsToWeir: vm.CommentsToWeir
                 }
             };
-            WeirService.UpdateQuote(quote.ID, data)
+            WeirService.UpdateQuote(quote, data)
                 .then(function (d) {
                     QuoteShareService.Quote.xp.CommentsToWeir = vm.CommentsToWeir;
                     toastr.success(vm.labels.CommentSavedMsg);
@@ -1117,7 +1115,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    }
 		    };
 	    }
-	    WeirService.UpdateQuote(vm.Quote.ID, data)
+	    WeirService.UpdateQuote(vm.Quote, data)
 		    .then(function (qt) {
 			    return OrderCloud.Orders.Submit(vm.Quote.ID);
 		    })
@@ -1176,9 +1174,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 		vm.PreviousLineItems = [];
 	}
     vm.Quote = Quote;
+	vm.ShippingAddress = ShippingAddress;
     vm.CommentsToWeir = Quote.xp.CommentsToWeir;
     vm.PONumber = "";
-    var payment = (Payments.length > 0) ? Payments[0] : null;
+	vm.Payments = Payments.Items;
+    var payment = (vm.Payments.length > 0) ? vm.Payments[0] : null;
     if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
     vm.country = function (c) {
         var result = Underscore.findWhere(OCGeography.Countries, { value: c });
@@ -1311,7 +1311,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 					Status: WeirService.OrderStatus.ConfirmedQuote.id
 				}
 			};
-			WeirService.UpdateQuote(vm.Quote.ID, mods)
+			WeirService.UpdateQuote(vm.Quote, mods)
 				.then(function (qte) {
 					toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
 				});
@@ -1325,7 +1325,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 					Status: WeirService.OrderStatus.RejectedQuote.id
 				}
 			};
-			WeirService.UpdateQuote(vm.Quote.ID, mods)
+			WeirService.UpdateQuote(vm.Quote, mods)
 				.then(function (qte) {
 					toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
 				});
@@ -1586,7 +1586,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
     vm.View = view;
 }
 
-function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore) {
+function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, QuoteToCsvService) {
     var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1604,7 +1604,7 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	} else {
 		vm.PreviousLineItems = [];
 	}
-    vm.Payments = Payments;
+    vm.Payments = Payments.Items;
 	vm.country = function (c) {
 		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
 		return result ? result.label : '';
@@ -1639,7 +1639,8 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	        Status: "Status",
 	        OrderDate: "Order date;",
 	        BackToQuotes: "Back to your Quotes",
-	        SubmitWithPO: "Submit Order with PO"
+	        SubmitWithPO: "Submit Order with PO",
+	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1671,6 +1672,7 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	        OrderDate: $sce.trustAsHtml("Order date;"),
 	        BackToQuotes: $sce.trustAsHtml("Back to your Quotes"),
 	        SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
+	        PriceDisclaimer: $sce.trustAsHtml("All prices stated do not include UK VAT or delivery")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1696,24 +1698,8 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 		}
 		return "";
 	}
-	function download() {
-		$timeout($window.print,1);
-	}
-	function print() {
-		$timeout($window.print,1);
-	}
-	function getStatusLabel() {
-		if (vm.Quote.xp.Status) {
-			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
-			if (status) {
-				return status.label;
-				// TODO: Address localization
-			}
-		}
-		return "";
-	}
 	function toCsv() {
-		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, vm.labels);
 	}
 
 	function _gotoQuotes() {
@@ -1725,7 +1711,7 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	vm.gotoQuotes = _gotoQuotes;
 }
 
-function SubmitController($sce, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore) {
+function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1744,7 +1730,7 @@ function SubmitController($sce, WeirService, $timeout, $window, Quote, ShippingA
 	} else {
 		vm.PreviousLineItems = [];
 	}
-	vm.Payments = Payments;
+	vm.Payments = Payments.Items;
 	var payment = (vm.Payments.length > 0) ? vm.Payments[0] : null;
 	if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
 	vm.country = function (c) {
@@ -1937,9 +1923,6 @@ function SubmitController($sce, WeirService, $timeout, $window, Quote, ShippingA
 		}
 		WeirService.UpdateQuote(vm.Quote, data)
 			.then(function (info) {
-				CurrentOrder.Set(null);
-			})
-			.then(function () {
 				var modalInstance = $uibModal.open({
 					animation: true,
 					ariaLabelledBy: 'modal-title',

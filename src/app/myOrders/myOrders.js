@@ -174,7 +174,7 @@ function MyOrderEditController($scope, $q, $exceptionHandler, $state, toastr, Or
     vm.updateBillingAddress = function() {
         vm.order.BillingAddressID = null;
         vm.order.BillingAddress.ID = null;
-        OrderCloud.Orders.Update(orderid, vm.order)
+        OrderCloud.Orders.Patch(orderid, vm.order)
             .then(function() {
                 OrderCloud.Orders.SetBillingAddress(orderid, vm.order.BillingAddress)
                     .then(function() {

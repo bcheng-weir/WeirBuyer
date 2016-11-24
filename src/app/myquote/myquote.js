@@ -418,6 +418,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
 		    mods.xp.Status = WeirService.OrderStatus.Saved.id;
+			mods.xp.Active = true;
 		    assignQuoteNumber = true;
 		}
 

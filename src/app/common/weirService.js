@@ -91,21 +91,21 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 	    var buyerAssignment = {
 		    AddressID: addressId,
 		    UserID: null,
-		    UserGroupID: "Buyer",
+		    UserGroupID: "Buyers",
 		    IsShipping: true,
 		    IsBilling: true
 	    };
 	    var shopperAssignment = {
 		    AddressID: addressId,
 		    UserID: null,
-		    UserGroupID: "Shopper",
+		    UserGroupID: "Shoppers",
 		    IsShipping: true,
 		    IsBilling: true
 	    };
 	    var adminAssignment = {
 		    AddressID: addressId,
 		    UserID: null,
-		    UserGroupID: "Weir Admin",
+		    UserGroupID: "BuyerAdmin",
 		    IsShipping: true,
 		    IsBilling: true
 	    };

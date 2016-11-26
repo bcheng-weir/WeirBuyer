@@ -1134,7 +1134,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    CommentsToWeir: [
 					    {
 						    date: new Date(),
-						    by: "First Last",
+						    by: QuoteShareService.Me.FirstName + " " + QuoteShareService.Me.LastName,
 						    val: vm.CommentsToWeir
 					    }
 				    ]

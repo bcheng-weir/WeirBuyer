@@ -148,6 +148,9 @@ function MyQuoteConfig($stateProvider) {
 		    controller: 'RevisedQuoteCtrl',
 		    controllerAs: 'revised',
 			resolve: {
+				Me: function(OrderCloud) {
+					return OrderCloud.Me.Get();
+				},
 				Quote: function ($stateParams, OrderCloud) {
 					return OrderCloud.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
 				},
@@ -234,6 +237,9 @@ function MyQuoteConfig($stateProvider) {
 		    controller: 'ReadonlyQuoteCtrl',
 		    controllerAs: 'readonly',
 		    resolve: {
+				Me: function(OrderCloud) {
+					return OrderCloud.Me.Get();
+				},
 			    Quote: function ($stateParams, OrderCloud) {
 				    return OrderCloud.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
 			    },
@@ -1192,7 +1198,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.toReview = _gotoReview;
 }
 
-function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Underscore, OCGeography, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr) {
+function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me) {
     var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1219,6 +1225,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
         var result = Underscore.findWhere(OCGeography.Countries, { value: c });
         return result ? result.label : '';
     };
+	vm.ShowCommentBox = false;
+	vm.CommentToWeir = "";
+
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -1229,8 +1238,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
             TagNum: "Tag number (if available)",
             PartNum: "Part number",
             PartDesc: "Description of part",
-            RecRepl: "Recommended replacement",
-            LeadTime: "Lead time / availability",
+            RecRepl: "Recommended replacement (yrs)",
+            LeadTime: "Lead time / availability (days)",
             PricePer: "Price per item",
             Quantity: "Quantity",
             Total: "Total",
@@ -1254,7 +1263,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 	        RejectedMessage: "The revised quote has been rejected.",
 	        RejectedTitle: "Quote updated",
 	        ApprovedMessage: "The revised quote has been accepted",
-	        ApprovedTitle: "Quote updated"
+	        ApprovedTitle: "Quote updated",
+	        Comment: "Comment",
+	        AddedComment: " added a comment - ",
+	        Add: "Add",
+	        Cancel: "Cancel"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1265,8 +1278,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
             PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
             PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
-            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
-            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute; (yrs)"),
+            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (days)"),
             PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
             Quantity: $sce.trustAsHtml("Quantit&eacute;"),
             Total: $sce.trustAsHtml("Total"),
@@ -1290,7 +1303,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 	        RejectedMessage: $sce.trustAsHtml("The revised quote has been rejected."),
 	        RejectedTitle: $sce.trustAsHtml("Quote updated"),
 	        ApprovedMessage: $sce.trustAsHtml("The revised quote has been accepted"),
-	        ApprovedTitle: $sce.trustAsHtml("Quote updated")
+	        ApprovedTitle: $sce.trustAsHtml("Quote updated"),
+	        Comment: $sce.trustAsHtml("Comment"),
+	        AddedComment: $sce.trustAsHtml(" added a comment - "),
+	        Add: $sce.trustAsHtml("Add"),
+	        Cancel: $sce.trustAsHtml("Cancel")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1329,6 +1346,23 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 			return false;
 		}
 	}
+
+	vm.AddNewComment = function() {
+		var comment = {
+			date: new Date(),
+			by: Me.FirstName + " " + Me.LastName,
+			val: vm.CommentToWeir
+		};
+		vm.Quote.xp.CommentsToWeir.push(comment);
+		OrderCloud.Orders.Patch(vm.Quote.ID, {xp:{CommentsToWeir: vm.Quote.xp.CommentsToWeir}}, vm.Quote.xp.CustomerID)
+			.then(function(order) {
+				vm.CommentToWeir = "";
+				$state.go($state.current,{}, {reload:true});
+			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
+			})
+	};
 
 	function download() {
 		$timeout($window.print,1);
@@ -1631,7 +1665,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
     vm.View = view;
 }
 
-function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, QuoteToCsvService) {
+function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, QuoteToCsvService, Me) {
     var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1750,6 +1784,7 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	function _gotoQuotes() {
 		$state.go("quotes.revised");
 	}
+
 	vm.Download = download;
 	vm.Print = print;
 	vm.GetStatusLabel = getStatusLabel;

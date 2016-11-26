@@ -53,7 +53,7 @@
         <div class="col-md-5">
             <div class="pull-right">
                 <button class="btn btn-primary" ui-sref="myquote.detail"><i class="fa fa-angle-left" aria-hidden="true"></i> {{delivery.labels.BackToQuote}}</button>
-                <button class="btn btn-success" style="margin-left: 1em;" ui-sref="myquote.review">{{delivery.labels.ReviewQuote}} <i class="fa fa-angle-right" aria-hidden="true"></i></button>
+                <button class="btn btn-success" style="margin-left: 1em;" ng-click="myquote.Next()" >{{delivery.labels.ReviewQuote}} <i class="fa fa-angle-right" aria-hidden="true"></i></button>
             </div>
             <div class="row">
                 <div class="col-md-8 pull-right">

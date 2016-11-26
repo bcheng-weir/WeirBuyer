@@ -4,7 +4,7 @@
 		<b>
 			<p ng-if='!serialResults.MultipleCustomers && !search.searchall'><span ng-bind-html='serialResults.labels.Customer'></span> {{serialResults.Customer}}</p>
 			<p ng-if='search.searchall || serialResults.MultipleCustomers'><span ng-bind-html='serialResults.labels.Customer'></span><span ng-bind-html="search.labels.NotAvailable"></span></p>
-		<p ng-bind-html='serialResults.labels.ResultsHeader'></p>
+		    <p ng-bind-html='serialResults.labels.ResultsHeader'></p>
 		</b>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>

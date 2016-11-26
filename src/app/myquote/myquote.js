@@ -97,7 +97,6 @@ function MyQuoteConfig($stateProvider) {
 					    OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,Quote.xp.CustomerID)
 						    .then(function(data) {
 							    if (!data.Items.length) {
-								    toastr.error('Previous quote does not contain any line items.', 'Error');
 								    dfd.resolve({ Items: [] });
 							    } else {
 								    LineItemHelpers.GetBlankProductInfo(data.Items);
@@ -424,10 +423,10 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 
 		WeirService.UpdateQuote(vm.Quote, mods, assignQuoteNumber, vm.Customer.id)
 			.then(function(quote) {
+				toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
 				if(assignQuoteNumber) {
 					vm.Quote = quote;
-					toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
-					var modalInstance = $uibModal.open({
+					/*var modalInstance = $uibModal.open({
 						animation: true,
 						ariaLabelledBy: 'modal-title',
 						ariaDescribedBy: 'modal-body',
@@ -443,7 +442,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 							}
 						}
 					});
-					modalInstance.result;
+					modalInstance.result;*/
 				}
 				return;
 			});
@@ -525,6 +524,20 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	}
 	function print() {
 		$timeout($window.print,1);
+	}
+	function _next() {
+		// ToDo combine gotoDelivery() and next(), iot handle the "workflow" in one spot.
+		var goto = {
+			"myquote.detail":"myquote.delivery",
+			"myquote.delivery":"myquote.review",
+			"myquote.review":"myquote.submitquote"
+		};
+		var isValidForReview = function () {
+			return vm.Quote.ShippingAddressID != null && vm.HasLineItems();
+		};
+		if(isValidForReview()) {
+			$state.go(goto[$state.current.name]);
+		}
 	}
 
 	var labels = {
@@ -624,6 +637,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	vm.Approve = _approve;
 	vm.Reject = _reject;
 	vm.Comments = _comments;
+	vm.Next = _next;
 }
 
 function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, OrderCloud, QuoteShareService) {
@@ -819,12 +833,13 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder) {
+    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer) {
     var vm = this;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
+	if( (typeof(QuoteShareService.Quote.xp.CommentsToWeir) == 'undefined') || QuoteShareService.Quote.xp.CommentsToWeir == null) QuoteShareService.Quote.xp.CommentsToWeir = [];
 	vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
-    vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
+    vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir && QuoteShareService.Quote.xp.CommentsToWeir.length ? QuoteShareService.Quote.xp.CommentsToWeir[0].val : ""; //ToDo comments to weir is now an array. at this point we just keep modifying comment[0];
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
     if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
@@ -835,7 +850,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown");
     vm.SubmittingToReview = false;
     vm.SubmittingWithPO = false;
-	// TODO: Updates so that the user can come back to a submited order, and submit with the PO. Might need to add extra code so that when just adding
+	// TODO: Updates so that the user can come back to a submitted order, and submit with the PO. Might need to add extra code so that when just adding
 	// a PO, we do not re-submit the Order: simply add the PO and change the status.
 	if(vm.Quote.xp.PendingPO == true &&($state.$current.name == "myquote.submitquote") && (vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id || vm.Quote.xp.Type=="Order")) {
 		vm.SubmittingWithPO = true;
@@ -1035,7 +1050,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    Status: WeirService.OrderStatus.SubmittedWithPO.id,
 				    StatusDate: new Date(),
 				    Type: "Order",
-				    Revised: false
+				    Revised: false,
+				    CommentsToWeir: []
 			    }
 		    };
 	    } else {
@@ -1045,10 +1061,12 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    StatusDate: new Date(),
 				    Type: "Order",
 				    PendingPO: true,
-				    Revised: false
+				    Revised: false,
+				    CommentsToWeir: []
 			    }
 		    };
 	    }
+
 	    WeirService.UpdateQuote(vm.Quote, data)
             .then(function (qt) {
                 return OrderCloud.Orders.Submit(vm.Quote.ID);
@@ -1081,21 +1099,25 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
            });
     }
 
+    //ToDo remove this button.
     function _saveWeirComment() {
-        var quote = QuoteShareService.Quote;
-        if (vm.CommentsToWeir && (vm.CommentsToWeir != quote.xp.CommentsToWeir)) {
-            var data = {
-                xp: {
-                    CommentsToWeir: vm.CommentsToWeir
-                }
+    	//ToDo: make this an array of objects. date is datetime-stamp, by is who made the comment (first and last name), value is the comment
+        //var quote = QuoteShareService.Quote;
+        if (vm.CommentsToWeir) {
+        	var newComment = {
+            	id: new Date(),
+	            by: "First Last",
+	            val: vm.CommentsToWeir
             };
-            WeirService.UpdateQuote(quote, data)
-                .then(function (d) {
-                    QuoteShareService.Quote.xp.CommentsToWeir = vm.CommentsToWeir;
-                    toastr.success(vm.labels.CommentSavedMsg);
-                });
+
+	        OrderCloud.Orders.Patch(QuoteShareService.Quote.ID, {xp:{CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
+		        .then(function(quote) {
+		        	QuoteShareService.Quote = quote;
+			        toastr.success(vm.labels.CommentSavedMsg);
+		        });
         }
     }
+
     function _cancelWeirComment() {
         vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
     }
@@ -1108,7 +1130,14 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    Status: WeirService.OrderStatus.Submitted.id,
 				    StatusDate: new Date(),
 				    Revised: false,
-				    CommentsToWeir: vm.CommentsToWeir
+				    CommentsToWeir: vm.CommentsToWeir,
+				    CommentsToWeir: [
+					    {
+						    date: new Date(),
+						    by: "First Last",
+						    val: vm.CommentsToWeir
+					    }
+				    ]
 			    }
 		    };
 	    } else {
@@ -1116,7 +1145,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    xp: {
 				    Status: WeirService.OrderStatus.Submitted.id,
 				    StatusDate: new Date(),
-				    Revised: false
+				    Revised: false,
+				    CommentsToWeir: []
 			    }
 		    };
 	    }
@@ -1317,11 +1347,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 		return "";
 	}
 	function _approve() {
-		if (vm.Quote.xp.Status == 'RV') {
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id || vm.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id) {
 			var mods = {
 				xp: {
 					StatusDate: new Date(),
-					Status: WeirService.OrderStatus.ConfirmedQuote.id
+					Status: vm.Quote.xp.Type == "Quote" ? WeirService.OrderStatus.ConfirmedQuote.id : WeirService.OrderStatus.ConfirmedOrder.id
 				}
 			};
 			WeirService.UpdateQuote(vm.Quote, mods)
@@ -1332,11 +1362,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Un
 		}
 	}
 	function _reject() {
-		if (vm.Quote.xp.Status == 'RV') {
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id || vm.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id) {
 			var mods = {
 				xp: {
 					StatusDate: new Date(),
-					Status: WeirService.OrderStatus.RejectedQuote.id
+					Status: vm.Quote.xp.Type == "Quote" ? WeirService.OrderStatus.RejectedQuote.id : WeirService.OrderStatus.RejectedRevisedOrder.id
 				}
 			};
 			WeirService.UpdateQuote(vm.Quote, mods)

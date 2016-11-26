@@ -97,7 +97,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <h3><span ng-bind-html='serialDetail.headers.PartList'><span class="text-danger">{{serialDetail.serialNumber.Name}}</span></h3>
+            <h3><span ng-bind-html='serialDetail.headers.PartList'></span><span class="text-danger" ng-bind-html="serialDetail.serialNumber.Name"></span></h3>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
                     <tr>

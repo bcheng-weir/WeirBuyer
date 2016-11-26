@@ -13,7 +13,7 @@
 				<a href="#"><img aria-hidden="true" ng-src="{{myquote.GetImageUrl('printer.png')}}"></img><br/><span ng-bind-html='myquote.labels.Print'></span></a>
             </div>
             <div style="display:inline-block; float:right; margin-left: 1em;" ng-csv="myquote.ToCsvJson" filename="{{myquote.CsvFilename}}"> <!-- ng-click="myquote.Download()"> -->
-				<img aria-hidden="true" ng-src="{{myquote.GetImageUrl('download.png')}}"></img><br/><span ng-bind-html='myquote.labels.Download'></span>
+				<a href=""><img aria-hidden="true" ng-src="{{myquote.GetImageUrl('download.png')}}"></img><br/><span ng-bind-html='myquote.labels.Download'></span></a>
             </div>
             <div style="margin-left:1em; float:right;" ng-click="myquote.NoItemsMessage()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && !myquote.HasLineItems()">
 		   		<a href="#">
@@ -36,9 +36,12 @@
 		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
 		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.delivery" ng-click="myquote.GotoDelivery(true)" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 		<li role="presentation" class="quote-step" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
-		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.review"><a href="#" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
+		<li role="presentation" class="quote-step" ui-sref-active="active" ng-if="myquote.Quote.ShippingAddressID==null"><a href="" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
+		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.review" ng-if="myquote.Quote.ShippingAddressID!=null"><a href="" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
 		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.buyerreview" ng-if="myquote.UserIsBuyer()"><a href="#" ng-bind-html='myquote.labels.SubmitQuoteOrOrder'></a></li>
-		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.submitquote"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
+
+		<li role="presentation" class="quote-step" ui-sref-active="active" ng-if="myquote.Quote.ShippingAddressID==null"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
+		<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.submitquote" ng-if="myquote.Quote.ShippingAddressID!=null"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 	</ol>
 	<div ui-view id="printable">
 		<div id="modalMyquote" class="modal-quote-confirmation">

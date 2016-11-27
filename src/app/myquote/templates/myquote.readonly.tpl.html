@@ -13,7 +13,7 @@
                 <a href="#"><img aria-hidden="true" ng-src="{{readonly.GetImageUrl('printer.png')}}"></img><br/><span ng-bind-html='readonly.labels.Print'></span></a>
             </div>
             <div style="display:inline-block; float:right; margin-left: 1em;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
-                <img aria-hidden="true" ng-src="{{readonly.GetImageUrl('download.png')}}"></img><br/><span ng-bind-html='readonly.labels.Download'></span>
+                <a href=""><img aria-hidden="true" ng-src="{{readonly.GetImageUrl('download.png')}}"></img><br/><span ng-bind-html='readonly.labels.Download'></span></a>
             </div>
             <div ng-if="application.$state.current.name=='revised'" style="float:right;">
                 <button class="btn btn-success" ng-click="readonly.Approve()" ng-bind-html="readonly.labels.Approve"></button>
@@ -118,15 +118,32 @@
             </p>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            <h4 ng-bind-html="readonly.labels.WeirComment"></h4>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <span ng-bind-html="readonly.Quote.xp.CommentsToWeir"></span>
-        </div>
-    </div>
 
+    <br>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs">
+                        <li class="active comments"><a href="#" id="Comments" ng-bind-html="readonly.labels.Comments"></a></li>
+                    </ul>
+                </div>
+            </div>
+            <br>
+            <div class="row" ng-repeat="comment in readonly.Quote.xp.CommentsToWeir"> <!-- ng-repeat comment in comments to weir -->
+                <div class="col-lg-12">
+                    <div>
+                        <span ng-bind-html="comment.by"></span>
+                        <span ng-bind-html="readonly.labels.AddedComment"></span>
+                        <span ng-bind-html="comment.date"></span>
+                    </div>
+                    <br>
+                    <div>
+                        <span ng-bind-html="comment.val"></span>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
 </article>

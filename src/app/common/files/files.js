@@ -133,6 +133,12 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
         var file_input = $parse('file');
         var file_control = angular.element(element.find('input'))[0];
         var el = element;
+	    var orderid = null;
+	    if(scope.model.xp.OriginalOrderID == null) {
+		    orderid = scope.model.ID;
+	    } else {
+		    orderid = scope.model.xp.OriginalOrderID
+	    }
         scope.fileStore = fileStore;
         scope.invalidExtension = false;
 
@@ -141,12 +147,12 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
         };
 
         scope.get = function(fileName) {
-            FilesService.Get(scope.model.ID + fileName);
+            FilesService.Get(orderid + fileName);
         };
 
         scope.remove = function(fileName) {
             console.log(fileName);
-            FilesService.Delete(scope.model.ID + fileName)
+            FilesService.Delete(orderid + fileName)
                 .then(function(fileData) {
                     var index = scope.model.xp[scope.keyname].indexOf(fileName);
                     if(index > -1) {
@@ -159,8 +165,21 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
                 })
         };
 
+        /*scope.GetFileUrl = function(fileName) {
+	        var encodedFileName = encodeURIComponent(fileName);
+	        var orderid = null;
+	        if(scope.model.xp.OriginalOrderID == null) {
+		        orderid = scope.model.ID;
+	        } else {
+		        orderid = scope.model.xp.OriginalOrderID
+	        }
+
+	        return scope.fileStore.location + orderid + encodedFileName;
+        };*/
+
         function afterSelection(file, fileName) {
-            var uniqueFileName = scope.model.ID + fileName;
+	        var uniqueFileName = orderid + fileName;
+
             FilesService.Upload(file, uniqueFileName)
                 .then(function(fileData) {
                     if (!scope.model.xp) scope.model.xp = {};
@@ -262,6 +281,13 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
         var file_input = $parse('file');
         var file_control = angular.element(element.find('input'))[0];
         var el = element;
+	    var orderid = null;
+	    if(scope.model.xp.OriginalOrderID == null) {
+		    orderid = scope.model.ID;
+	    } else {
+		    orderid = scope.model.xp.OriginalOrderID
+	    }
+
         scope.fileStore = fileStore;
         scope.invalidExtension = false;
 
@@ -270,7 +296,7 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
         };
 
         scope.get = function(fileName) {
-            FilesService.Get(scope.model.ID + fileName);
+            FilesService.Get(orderid + fileName);
         };
 
         scope.remove = function(fileName) {
@@ -287,8 +313,15 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
                 })
         };
 
+	    scope.GetFileUrl = function(fileName) {
+		    var encodedFileName = encodeURIComponent(fileName);
+
+		    return scope.fileStore.location + orderid + encodedFileName;
+	    };
+
         function afterSelection(file, fileName) {
-            var uniqueFileName = scope.model.ID + fileName;
+	        var uniqueFileName = orderid + fileName;
+
             FilesService.Upload(file, uniqueFileName)
                 .then(function(fileData) {
                     if (!scope.model.xp) scope.model.xp = {};

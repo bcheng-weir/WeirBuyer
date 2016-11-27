@@ -110,7 +110,9 @@
         </div>
         <div class="col-xs-6">
             <p><b><span ng-bind-html='review.labels.YourAttachments'></span><br></b></p>
-            <p ng-repeat="fileName in myquote.Quote.xp.Files">{{fileName}}</p>
+            <p ng-repeat="fileName in review.Quote.xp.Files">
+                <a href="{{review.fileStore.location}}{{review.Quote.ID}}{{fileName}}" target="_blank">{{fileName}}</a>
+            </p>
             <p><b><span ng-bind-html='review.labels.CommentsHeader'></span></b></p>
             <p><textarea rows='4' cols='40' maxlength="1000" ng-model='myquote.Quote.Comments'
 		    ng-readonly="review.Step!='Review'"></textarea></p>

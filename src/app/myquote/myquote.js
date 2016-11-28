@@ -380,7 +380,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	QuoteShareService.Quote = Quote;
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
-	QuoteShareService.Payments.push.apply(QuoteShareService.Payments, Payments.Items);
+	QuoteShareService.Payments = Payments.Items;
 	vm.GetImageUrl = function(img) {
 	    return vm.ImageBaseUrl + img;
 	};

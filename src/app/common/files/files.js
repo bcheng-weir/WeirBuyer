@@ -114,7 +114,7 @@ function FilesService($q,fileStore,FileReader) {
     return service;
 }
 
-function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buyerid, OrderCloud, fileStore) {
+function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService, buyerid, OrderCloud, fileStore, WeirService) {
     var directive = {
         scope: {
             model: '=',
@@ -142,6 +142,18 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
         scope.fileStore = fileStore;
         scope.invalidExtension = false;
 
+	    var labels = {
+	    	en: {
+	    		SelectFiles: "Or select files to upload",
+			    Invalid: "Invalid File Type"
+		    },
+		    fr: {
+			    SelectFiles: $sce.trustAsHtml("Or select files to upload"),
+			    Invalid: $sce.trustAsHtml("Invalid File Type")
+		    }
+	    };
+	    scope.labels = WeirService.LocaleResources(labels);
+
         scope.upload = function() {
             $('#orderCloudUpload').click();
         };
@@ -164,18 +176,6 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
                     }
                 })
         };
-
-        /*scope.GetFileUrl = function(fileName) {
-	        var encodedFileName = encodeURIComponent(fileName);
-	        var orderid = null;
-	        if(scope.model.xp.OriginalOrderID == null) {
-		        orderid = scope.model.ID;
-	        } else {
-		        orderid = scope.model.xp.OriginalOrderID
-	        }
-
-	        return scope.fileStore.location + orderid + encodedFileName;
-        };*/
 
         function afterSelection(file, fileName) {
 	        var uniqueFileName = orderid + fileName;
@@ -262,7 +262,7 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
     return directive;
 }
 
-function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, FilesService, buyerid, OrderCloud, fileStore) {
+function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, FilesService, buyerid, OrderCloud, fileStore, WeirService) {
     var directive = {
         scope: {
             model: '=',
@@ -287,13 +287,24 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
 	    } else {
 		    orderid = scope.model.xp.OriginalOrderID
 	    }
-
         scope.fileStore = fileStore;
         scope.invalidExtension = false;
 
         scope.upload = function() {
             $('#orderCloudUpload').click();
         };
+
+	    var labels = {
+		    en: {
+			    SelectFiles: "Or select files to upload",
+			    Invalid: "Invalid File Type"
+		    },
+		    fr: {
+			    SelectFiles: $sce.trustAsHtml("Or select files to upload"),
+			    Invalid: $sce.trustAsHtml("Invalid File Type")
+		    }
+	    };
+	    scope.labels = WeirService.LocaleResources(labels);
 
         scope.get = function(fileName) {
             FilesService.Get(orderid + fileName);

@@ -1,0 +1,14 @@
+<div class="source-list-modal" role="dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p ng-bind-html="newQuote.labels.NQBody"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="newQuote.continue()" ng-bind-html='newQuote.labels.ContinueBtn'></button>
+                <button type="button" class="btn btn-primary" ng-click="newQuote.cancel()" ng-bind-html='newQuote.labels.CancelBtn'></button>
+            </div>
+        </div><!-- /.modal-content -->
+</div><!-- /.modal -->

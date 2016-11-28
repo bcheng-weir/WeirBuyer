@@ -1,6 +1,7 @@
 angular.module('orderCloud')
     .config(BaseConfig)
     .controller('BaseCtrl', BaseController)
+    .controller('NewQuoteCtrl', NewQuoteModalController)
     .filter('occomponents', occomponents)
 ;
 
@@ -108,14 +109,16 @@ function BaseConfig($stateProvider, $injector) {
 }
 
 
-function BaseController($state, $rootScope, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base) {
+function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
     vm.currentUser = CurrentUser;
     vm.catalogItems = ComponentList.nonSpecific;
     vm.organizationItems = ComponentList.buyerSpecific;
-    vm.registrationAvailable = Underscore.filter(vm.organizationItems, function(item) { return item.StateRef == 'registration' }).length;
+    vm.registrationAvailable = Underscore.filter(vm.organizationItems, function (item) {
+        return item.StateRef == 'registration'
+    }).length;
 
     //var vm = this; Is this supposed to happen twice?
     var navlabels = WeirService.navBarLabels();
@@ -128,48 +131,48 @@ function BaseController($state, $rootScope, $ocMedia, $sce, Underscore, snapRemo
             break;
     }
     if (WeirService.Locale() == "fr") {
-            // defaultErrorMessageResolver.setI18nFileRootPath('/bower_components/angular-auto-validate/dist/lang');
-	    // defaultErrorMessageResolver.setCulture('fr-FR');
-	    // defaultErrorMessageResolver.getErrorMessages('fr-FR').then(function (errorMessages) {
-	    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
-		errorMessages['customPassword'] = $sce.trustAsHtml("Mot de passe doit comporter au moins huit caract$eacute;res et inclure au moins une lettre et un chiffre");
-		//regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
-		errorMessages['positiveInteger'] = $sce.trustAsHtml("S\'il vous pla$icirc;t entrer un entier positif");
-		//regex positiveInteger = ^[0-9]*[1-9][0-9]*$
-		errorMessages['ID_Name'] = $sce.trustAsHtml("Seuls les caract&eacute;res alphanum&eacute;riques, des traits d'union et de soulignement sont autoris&eacute;s");
-		//regex ID_Name = ([A-Za-z0-9\-\_]+)
-		errorMessages['confirmpassword'] = 'Vos mots de passe ne correspondent pas';
-		errorMessages['noSpecialChars'] = $sce.trustAsHtml("Seuls les caract$eacute;res alphanum$eacute;riques sont autoris$eacute;s'");
-		errorMessages['wholenumber'] = $sce.trustAsHtml("S'il vous pla&icirc;t entrer un nombre entier");
-	    });
+        // defaultErrorMessageResolver.setI18nFileRootPath('/bower_components/angular-auto-validate/dist/lang');
+        // defaultErrorMessageResolver.setCulture('fr-FR');
+        // defaultErrorMessageResolver.getErrorMessages('fr-FR').then(function (errorMessages) {
+        defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+            errorMessages['customPassword'] = $sce.trustAsHtml("Mot de passe doit comporter au moins huit caract$eacute;res et inclure au moins une lettre et un chiffre");
+            //regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
+            errorMessages['positiveInteger'] = $sce.trustAsHtml("S\'il vous pla$icirc;t entrer un entier positif");
+            //regex positiveInteger = ^[0-9]*[1-9][0-9]*$
+            errorMessages['ID_Name'] = $sce.trustAsHtml("Seuls les caract&eacute;res alphanum&eacute;riques, des traits d'union et de soulignement sont autoris&eacute;s");
+            //regex ID_Name = ([A-Za-z0-9\-\_]+)
+            errorMessages['confirmpassword'] = 'Vos mots de passe ne correspondent pas';
+            errorMessages['noSpecialChars'] = $sce.trustAsHtml("Seuls les caract$eacute;res alphanum$eacute;riques sont autoris$eacute;s'");
+            errorMessages['wholenumber'] = $sce.trustAsHtml("S'il vous pla&icirc;t entrer un nombre entier");
+        });
     } else {
-	    defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
-		errorMessages['customPassword'] = 'Password must be at least eight characters long and include at least one letter and one number';
-		//regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
-		errorMessages['positiveInteger'] = 'Please enter a positive integer';
-		//regex positiveInteger = ^[0-9]*[1-9][0-9]*$
-		errorMessages['ID_Name'] = 'Only Alphanumeric characters, hyphens and underscores are allowed';
-		//regex ID_Name = ([A-Za-z0-9\-\_]+)
-		errorMessages['confirmpassword'] = 'Your passwords do not match';
-		errorMessages['noSpecialChars'] = 'Only Alphanumeric characters are allowed';
-		errorMessages['wholenumber'] = 'Please enter a whole number';
-	    });
+        defaultErrorMessageResolver.getErrorMessages().then(function (errorMessages) {
+            errorMessages['customPassword'] = 'Password must be at least eight characters long and include at least one letter and one number';
+            //regex for customPassword = ^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!$%@#£€*?&]{8,}$
+            errorMessages['positiveInteger'] = 'Please enter a positive integer';
+            //regex positiveInteger = ^[0-9]*[1-9][0-9]*$
+            errorMessages['ID_Name'] = 'Only Alphanumeric characters, hyphens and underscores are allowed';
+            //regex ID_Name = ([A-Za-z0-9\-\_]+)
+            errorMessages['confirmpassword'] = 'Your passwords do not match';
+            errorMessages['noSpecialChars'] = 'Only Alphanumeric characters are allowed';
+            errorMessages['wholenumber'] = 'Please enter a whole number';
+        });
     }
 
     vm.snapOptions = {
         disable: (!base.left && base.right) ? 'left' : ((base.left && !base.right) ? 'right' : 'none')
     };
 
-    vm.sendToSearch = function() {
+    vm.sendToSearch = function () {
         var searchType = WeirService.GetLastSearchType();
-	searchType = searchType || WeirService.SearchType.Serial;
-	if (searchType == WeirService.SearchType.Part) {
-	    $state.go('search.part');
-	} else if (searchType == WeirService.SearchType.Tag) {
-	    $state.go('search.tag');
-	} else {
-	    $state.go('search.serial');
-	}
+        searchType = searchType || WeirService.SearchType.Serial;
+        if (searchType == WeirService.SearchType.Part) {
+            $state.go('search.part');
+        } else if (searchType == WeirService.SearchType.Tag) {
+            $state.go('search.tag');
+        } else {
+            $state.go('search.serial');
+        }
     };
 
     function _isMobile() {
@@ -187,7 +190,7 @@ function BaseController($state, $rootScope, $ocMedia, $sce, Underscore, snapRemo
 
     _initDrawers(_isMobile());
 
-    $rootScope.$watch(_isMobile, function(n, o) {
+    $rootScope.$watch(_isMobile, function (n, o) {
         if (n === o) return;
         _initDrawers(n);
     });
@@ -195,15 +198,104 @@ function BaseController($state, $rootScope, $ocMedia, $sce, Underscore, snapRemo
     vm.OrderAction = _actions;
     function _actions(action) {
         var filter = {
-            "orders.submitted":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":"true"},
-            "orders.pending":{"xp.Type":"Order", "xp.PendingPO":"true", "xp.Active":"true"},
-            "orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id, "xp.Active":"true"},
-            "orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":"true"},
-            "orders.despatched":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.Despatched.id, "xp.Active":"true"},
-            "orders.invoiced":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.Invoiced.id, "xp.Active":"true"}
+            "orders.submitted": {
+                "xp.Type": "Order",
+                "xp.Status": WeirService.OrderStatus.SubmittedWithPO.id,
+                "xp.Active": "true"
+            },
+            "orders.pending": {"xp.Type": "Order", "xp.PendingPO": "true", "xp.Active": "true"},
+            "orders.revised": {
+                "xp.Type": "Order",
+                "xp.Status": WeirService.OrderStatus.RevisedOrder.id,
+                "xp.Active": "true"
+            },
+            "orders.confirmed": {
+                "xp.Type": "Order",
+                "xp.Status": WeirService.OrderStatus.ConfirmedOrder.id,
+                "xp.Active": "true"
+            },
+            "orders.despatched": {
+                "xp.Type": "Order",
+                "xp.Status": WeirService.OrderStatus.Despatched.id,
+                "xp.Active": "true"
+            },
+            "orders.invoiced": {
+                "xp.Type": "Order",
+                "xp.Status": WeirService.OrderStatus.Invoiced.id,
+                "xp.Active": "true"
+            }
         };
-        $state.go(action, {filters:JSON.stringify(filter[action])},{reload:true});
+        $state.go(action, {filters: JSON.stringify(filter[action])}, {reload: true});
     }
+
+    vm.newQuote = function () {
+        //check if the current order status is unsubmitted/draft mode
+        CurrentOrder.Get().then(function (resultOrder) {
+            if (resultOrder.Status == "Unsubmitted" && resultOrder.xp.Status == "DR") {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    ariaDescribedBy: 'modal-body',
+                    templateUrl: 'base/templates/base.top.newquoteconfirm.tpl.html',
+                    controller: 'NewQuoteCtrl',
+                    controllerAs: 'newQuote',
+                    size: 'lg'
+                });
+                modalInstance.result.then(
+                    function (val) {
+                        if (val == "Unsubmitted") {
+                            $rootScope.$broadcast('search.ClearFilter');
+                            $rootScope.$broadcast('search.selfsearch', false);
+                            $rootScope.$broadcast('search.searchall', false);
+                            $rootScope.$broadcast('OC:RemoveOrder');
+                            CurrentOrder.Remove().then(function () {
+                                $state.go('search', {}, {reload: true});
+                            });
+                        } else {
+                            return;
+                        }
+                    });
+            }
+            else {
+                $rootScope.$broadcast('search.ClearFilter');
+                $rootScope.$broadcast('search.selfsearch', false);
+                $rootScope.$broadcast('search.searchall', false);
+                $rootScope.$broadcast('OC:RemoveOrder');
+                CurrentOrder.Remove().then(function () {
+                    $state.go('search', {}, {reload: true});
+                });
+            }
+        })
+            .catch(function () {
+                $state.go('search', {}, {reload: true});
+            });
+    };
+}
+
+function NewQuoteModalController($uibModalInstance, WeirService) {
+    var vm = this;
+
+    vm.continue = function () {
+        $uibModalInstance.close("Unsubmitted");
+    };
+
+    vm.cancel = function () {
+        $uibModalInstance.close("");
+    };
+    var labels = {
+        en: {
+            NQHeader: "",
+            NQBody: "If you are currently creating a quote or order, please save your changes before creating a new quote",
+            ContinueBtn: "Continue",
+            CancelBtn: "Cancel"
+        },
+        fr: {
+            NQHeader: "",
+            NQBody: "Si vous créez actuellement une soumission ou une commande, enregistrez vos modifications avant de créer une nouvelle soumission",
+            ContinueBtn: "Continuer",
+            CancelBtn: "Annuler"
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
 }
 
 function occomponents() {

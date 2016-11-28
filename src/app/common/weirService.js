@@ -610,7 +610,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
                 ProductID: lineItem.ProductID,
                 Quantity: qty
             };
-            OrderCloud.LineItems.Patch(order.ID, lineItem.ID, li, buyerid)
+            OrderCloud.LineItems.Patch(order.ID, lineItem.ID, li, order.xp.CustomerID)
                 .then(function(lineItem) {
                     deferred.resolve({Order: order, LineItem: lineItem});
                 });
@@ -626,7 +626,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
                 }
             };
 
-            OrderCloud.LineItems.Create(order.ID, li)
+            OrderCloud.LineItems.Create(order.ID, li, order.xp.CustomerID)
                 .then(function(lineItem) {
                     deferred.resolve({Order: order, LineItem: lineItem});
                 })
@@ -685,6 +685,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
     }
 
     function quickQuote(parts) {
+    	//TODO - This needs to be tested.
         var deferred = $q.defer();
 
         CurrentOrder.Get()
@@ -692,7 +693,10 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
                 addLineItems(order);
             })
             .catch(function() {
-                OrderCloud.Orders.Create({ID: randomQuoteID()})
+            	CurrentOrder.GetCurrentCustomer()
+		            .then(function(customer) {
+			            return OrderCloud.Orders.Create({ID: randomQuoteID(), xp: {CustomerID:customer.id, CustomerName: customer.name}}, customer.id)
+		            })
                     .then(function(order) {
                         CurrentOrder.Set(order.ID);
                         addLineItems(order);

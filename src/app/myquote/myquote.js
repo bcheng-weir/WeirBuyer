@@ -380,7 +380,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	QuoteShareService.Quote = Quote;
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
-	QuoteShareService.Payments.push.apply(QuoteShareService.Payments, Payments.Items);
+	QuoteShareService.Payments = Payments.Items;
 	vm.GetImageUrl = function(img) {
 	    return vm.ImageBaseUrl + img;
 	};
@@ -1058,6 +1058,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    StatusDate: new Date(),
 				    Type: "Order",
 				    Revised: false,
+				    PONumber: vm.PONumber,
 				    CommentsToWeir: []
 			    }
 		    };
@@ -1069,6 +1070,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    Type: "Order",
 				    PendingPO: true,
 				    Revised: false,
+				    PONumber: "Pending",
 				    CommentsToWeir: []
 			    }
 		    };
@@ -1108,7 +1110,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 
     //ToDo remove this button.
     function _saveWeirComment() {
-    	//ToDo: make this an array of objects. date is datetime-stamp, by is who made the comment (first and last name), value is the comment
         //var quote = QuoteShareService.Quote;
         if (vm.CommentsToWeir) {
         	var newComment = {
@@ -1137,7 +1138,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    Status: WeirService.OrderStatus.Submitted.id,
 				    StatusDate: new Date(),
 				    Revised: false,
-				    CommentsToWeir: vm.CommentsToWeir,
 				    CommentsToWeir: [
 					    {
 						    date: new Date(),
@@ -1988,6 +1988,7 @@ function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $stat
 					StatusDate: new Date(),
 					Type: "Order",
 					Revised: false,
+					PONumber: vm.PONumber,
 					PendingPO: false
 				}
 			};
@@ -1998,6 +1999,7 @@ function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $stat
 					StatusDate: new Date(),
 					Type: "Order",
 					PendingPO: true,
+					PONumber: "Pending",
 					Revised: false
 				}
 			};

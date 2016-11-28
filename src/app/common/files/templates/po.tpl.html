@@ -6,9 +6,9 @@
         <button type="button" class="btn btn-default" ng-click="remove(model.xp[keyname])" ng-if="model.xp[keyname]"><i class="fa fa-trash text-danger"></i></button>
     </p>
     <p>
-        <button type="button" class="btn btn-default" ng-click="upload()">Or select files to upload</button>
+        <button class="btn btn-default" ng-disabled="model.xp.Status=='DR'" ng-click="upload()" ng-bind-html="labels.SelectFiles"></button>
         <!--<button type="button" class="btn btn-default" ng-click="remove()" ng-if="model.xp[keyname].URL"><i class="fa fa-trash text-danger"></i></button>-->
     </p>
     <input class="ng-hide" name="upload" type="file" id="orderCloudUpload" />
-    <span class="help-block error-msg" ng-show="invalidExtension">Invalid File Type</span>
+    <span class="help-block error-msg" ng-show="invalidExtension" ng-bind-html="labels.Invalid"></span>
 </div>

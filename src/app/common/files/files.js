@@ -57,7 +57,7 @@ function fileReader($q) {
     return service;
 }
 
-function FilesService($q,fileStore,FileReader) {
+function FilesService($q,fileStore) {
     var service = {
         Get: _get,
         Upload: _upload,
@@ -114,7 +114,7 @@ function FilesService($q,fileStore,FileReader) {
     return service;
 }
 
-function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buyerid, OrderCloud, fileStore) {
+function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService, OrderCloud, fileStore, WeirService) {
     var directive = {
         scope: {
             model: '=',
@@ -142,6 +142,18 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
         scope.fileStore = fileStore;
         scope.invalidExtension = false;
 
+	    var labels = {
+	    	en: {
+	    		SelectFiles: "Or select files to upload",
+			    Invalid: "Invalid File Type"
+		    },
+		    fr: {
+			    SelectFiles: $sce.trustAsHtml("Or select files to upload"),
+			    Invalid: $sce.trustAsHtml("Invalid File Type")
+		    }
+	    };
+	    scope.labels = WeirService.LocaleResources(labels);
+
         scope.upload = function() {
             $('#orderCloudUpload').click();
         };
@@ -160,22 +172,10 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
                         var xp = {"xp": {
                             "Files": scope.model.xp[scope.keyname]
                         }};
-                        return OrderCloud.Orders.Patch(scope.model.ID,xp,buyerid);
+                        return OrderCloud.Orders.Patch(scope.model.ID,xp,scope.model.xp.CustomerID);
                     }
                 })
         };
-
-        /*scope.GetFileUrl = function(fileName) {
-	        var encodedFileName = encodeURIComponent(fileName);
-	        var orderid = null;
-	        if(scope.model.xp.OriginalOrderID == null) {
-		        orderid = scope.model.ID;
-	        } else {
-		        orderid = scope.model.xp.OriginalOrderID
-	        }
-
-	        return scope.fileStore.location + orderid + encodedFileName;
-        };*/
 
         function afterSelection(file, fileName) {
 	        var uniqueFileName = orderid + fileName;
@@ -188,7 +188,7 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
                     var xp = {"xp": {
                         "Files": scope.model.xp[scope.keyname]
                     }};
-                    return OrderCloud.Orders.Patch(scope.model.ID,xp,buyerid);
+                    return OrderCloud.Orders.Patch(scope.model.ID,xp,scope.model.xp.CustomerID);
                 });
         }
 
@@ -262,7 +262,7 @@ function ordercloudFileUpload($parse, Underscore, FileReader, FilesService, buye
     return directive;
 }
 
-function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, FilesService, buyerid, OrderCloud, fileStore) {
+function ordercloudPoUpload($parse, $exceptionHandler, $sce, Underscore, FileReader, FilesService, OrderCloud, fileStore, WeirService) {
     var directive = {
         scope: {
             model: '=',
@@ -287,7 +287,6 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
 	    } else {
 		    orderid = scope.model.xp.OriginalOrderID
 	    }
-
         scope.fileStore = fileStore;
         scope.invalidExtension = false;
 
@@ -295,13 +294,25 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
             $('#orderCloudUpload').click();
         };
 
+	    var labels = {
+		    en: {
+			    SelectFiles: "Or select files to upload",
+			    Invalid: "Invalid File Type"
+		    },
+		    fr: {
+			    SelectFiles: $sce.trustAsHtml("Or select files to upload"),
+			    Invalid: $sce.trustAsHtml("Invalid File Type")
+		    }
+	    };
+	    scope.labels = WeirService.LocaleResources(labels);
+
         scope.get = function(fileName) {
             FilesService.Get(orderid + fileName);
         };
 
         scope.remove = function(fileName) {
             console.log(fileName);
-            FilesService.Delete(scope.model.ID + fileName)
+            FilesService.Delete(orderid + fileName)
                 .then(function(fileData) {
                     if(scope.model.xp[scope.keyname]) {
                         scope.model.xp[scope.keyname] = null;
@@ -309,7 +320,7 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
                             "PODocument": null
                         }};
                     }
-                    return OrderCloud.Orders.Patch(scope.model.ID,xp,buyerid);
+                    return OrderCloud.Orders.Patch(orderid,xp,scope.model.xp.CustomerID);
                 })
         };
 
@@ -329,7 +340,7 @@ function ordercloudPoUpload($parse, $exceptionHandler, Underscore, FileReader, F
                     var xp = {"xp": {
                         "PODocument": fileName
                     }};
-                    return OrderCloud.Orders.Patch(scope.model.ID,xp,buyerid);
+                    return OrderCloud.Orders.Patch(scope.model.ID,xp,scope.model.xp.CustomerID);
                 })
                 .catch(function(ex){
                     $exceptionHandler(ex);

@@ -710,15 +710,6 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 	vm.searchTags = function() {
 		if(!vm.tags[0] || vm.tags.length == 0) {
 			toastr.info("Please enter an item in the search box.", "Empty Search");
-		} else if (vm.tags.length == 1 && !SearchTypeService.IsGlobalSearch()) {
-		    WeirService.TagNumbers(vm.tags)
-                .then(function (results) {
-                    if (results && results.length > 0 && results[0].Detail) {
-                        $state.go('search.tag.detail', { id: results[0].Detail.ID, number: vm.tags[0], searchNumbers: vm.tags[0] });
-                    } else {
-                        $state.go('search.noresults');
-                    }
-                });
 		}
 		else {
 			$state.go('search.tag.results', {numbers: vm.tags.join(',')});

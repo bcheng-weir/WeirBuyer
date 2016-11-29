@@ -1,6 +1,8 @@
 angular.module('orderCloud')
     .config(OrdersConfig)
-    .controller('OrdersCtrl', OrdersController);
+    .controller('OrdersCtrl', OrdersController)
+	.controller('RouteToOrderCtrl', RouteToOrderController)
+;
 
 function OrdersConfig($stateProvider) {
     $stateProvider
@@ -57,7 +59,27 @@ function OrdersConfig($stateProvider) {
 		    url: '/invoiced',
 		    templateUrl: 'orders/templates/orders.invoiced.tpl.html',
 		    parent: 'orders'
-	    });
+	    })
+		.state('orders.goto', {
+		    url: '/:orderID',
+		    controller: 'RouteToOrderCtrl',
+		    resolve: {
+		        Order: function ($q, appname, $localForage, $stateParams, OrderCloud) {
+		            var d = $q.defer();
+		            var storageName = appname + '.routeto';
+		            $localForage.setItem(storageName, { state: 'orders', id: $stateParams.orderID })
+                        .then(function() {
+                            OrderCloud.Orders.Get($stateParams.orderID)
+                            .then(function (order) {
+                                $localForage.removeItem(storageName);
+                                d.resolve(order);
+                            });
+                        });
+		            return d.promise;
+		        }
+		    }
+		})
+    ;
 }
 
 function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, MyOrg, WeirService) {
@@ -224,4 +246,33 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 			}
 		}
 	}
+}
+function RouteToOrderController($rootScope, $state, WeirService, toastr, Order) {
+    if (Order) {
+        var type = Order.xp.Type;
+        if (type == "Order") {
+            reviewOrder(Order.ID, Order.xp.Status, Order.xp.CustomerID);
+        } else {
+            $state.go('quotes.goto', { quoteID: Order.ID });
+        }
+    } else {
+        toastr.error("Order not found");
+        $state.go('orders.submitted');
+    }
+    function reviewOrder(orderId, status, buyerId) {
+        if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id) {
+            $state.transitionTo('readonly', { quoteID: orderId, buyerID: buyerId });
+        } else if (status == WeirService.OrderStatus.RevisedOrder.id) {
+            $state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });
+        } else {
+            var gotoReview = (vm.CurrentOrderId != orderId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
+            if (gotoReview) {
+                WeirService.SetQuoteAsCurrentOrder(orderId)
+					.then(function () {
+					    $rootScope.$broadcast('SwitchCart');
+					    $state.transitionTo('myquote.detail');
+					});
+            }
+        }
+    }
 }

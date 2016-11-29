@@ -91,9 +91,19 @@ function QuotesConfig($stateProvider) {
 			url:'/:quoteID',
 			controller: 'RouteToQuoteCtrl',
 			resolve: {
-				Quote: function ($stateParams, OrderCloud) {
-		            		return OrderCloud.Orders.Get($stateParams.quoteID);
-		        	}
+			    Quote: function ($q, appname, $localForage, $stateParams, OrderCloud) {
+			        var storageName = appname + '.routeto';
+			        var d = $q.defer();
+			        $localForage.setItem(storageName, { state: 'quotes', id: $stateParams.quoteID })
+                        .then(function () {
+                            OrderCloud.Orders.Get($stateParams.quoteID)
+                                .then(function (quote) {
+                                    $localForage.removeItem(storageName);
+                                    d.resolve(quote);
+                                });
+                        });
+			        return d.promise;
+			    }
 			}
 		})
 	;
@@ -226,13 +236,27 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
-function RouteToQuoteController($state, WeirService, toastr, Quote) {
-	if (Quote) {
-		WeirService.SetQuoteAsCurrentOrder(quote.ID)
-		.then(function() {
-			$rootScope.$broadcast('SwitchCart');
-			$state.go('myquote.detail');
-		});
+function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote) {
+    if (Quote) {
+        var status = Quote.xp.Status;
+        var type = Quote.xp.Type;
+        if (type == "Order") {
+            $state.go('orders.goto', { orderID: Quote.ID });
+        } else if (status == WeirService.OrderStatus.RevisedQuote.id) {
+            if (Quote.xp.Active) {
+                $state.go('revised', { quoteID: Quote.ID, buyerID: Quote.xp.CustomerID });
+            } else {
+                $state.go('readonly', { quoteID: Quote.ID, buyerID: Quote.xp.CustomerID });
+            }
+        } else if ([WeirService.OrderStatus.Submitted.id, WeirService.OrderStatus.Review.id, WeirService.OrderStatus.RejectedQuote.id].indexOf(status) > -1) {
+            $state.go('readonly', { quoteID: Quote.ID, buyerID: Quote.xp.CustomerID });
+        } else { // DR, SV, CQ?
+            WeirService.SetQuoteAsCurrentOrder(Quote.ID)
+            .then(function () {
+                $rootScope.$broadcast('SwitchCart');
+                $state.go('myquote.detail');
+            });
+        }
 	} else {
 		toastr.error("Quote not found");
 		$state.go('quotes.saved');

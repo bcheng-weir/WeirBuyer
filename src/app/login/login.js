@@ -15,13 +15,36 @@ function LoginConfig($stateProvider) {
     ;
 }
 
-function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, CurrentOrder, clientid, buyerid, anonymous) {
+function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, CurrentOrder, clientid, buyerid, anonymous, appname, $localForage) {
     return {
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
         RememberMe: _rememberMe,
-        Logout: _logout
+        Logout: _logout,
+        RouteAfterLogin: _routeAfterLogin
     };
+
+    function _routeAfterLogin() {
+        var storageName = appname + '.routeto';
+        $localForage.getItem(storageName)
+        .then(function (rte) {
+            $localForage.removeItem(storageName);
+            if (rte && rte.state) {
+                if (rte.state == 'orders') {
+                    $state.go('orders.goto', { orderID: rte.id });
+                } else if (rte.state == 'quotes') {
+                    $state.go('quotes.goto', { quoteID: rte.id });
+                } else {
+                    $state.go('home');
+                }
+            } else {
+                $state.go('home');
+            }
+        })
+        .catch(function () {
+            $state.go('home');
+        });
+    }
 
     function _sendVerificationCode(email) {
         var deferred = $q.defer();
@@ -87,7 +110,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
                                         .then(function () {
                                             return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
                                         });
-                                    $state.go('home');
+                                    _routeAfterLogin();
                                 }
                             });
                         })
@@ -168,7 +191,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
                             .then(function () {
                                 return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
                             });
-                        $state.go('home');
+                        LoginService.RouteAfterLogin();
                     }
                 });
             })

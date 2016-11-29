@@ -1206,14 +1206,29 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
     vm.LineItems = LineItems.Items;
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
-			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
-				return;
+			if(item.ProductID == "PLACEHOLDER") {
+				var found = false;
+				angular.forEach(LineItems.Items, function(value, key) {
+					if(value.xp.SN == item.xp.SN) {
+						found = true;
+						return;
+					}
+				});
+				if(found) {
+					return;
+				} else {
+					return item;
+				}
 			} else {
-				return item;
+				if (Underscore.findWhere(LineItems.Items, {ProductID:item.ProductID})) {
+					return;
+				} else {
+					return item;
+				}
 			}
 		});
 	} else {
-		vm.PreviousLineItems = [];
+		vm.PreviousLineItems = null;
 	}
     vm.Quote = Quote;
 	vm.ShippingAddress = ShippingAddress;
@@ -1313,13 +1328,19 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
     };
     vm.labels = WeirService.LocaleResources(labels);
 
-    function _gotoQuotes() {
-        $state.go("quotes.revised");
-    }
+	function _gotoQuotes() {
+		if(vm.Quote.xp.Type == "Quote") {
+			$state.go("quotes.revised");
+		} else {
+			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
+		}
+	}
 
-    function _gotoRevisions() {
-        $state.go("revisions", { quoteID: vm.Quote.xp.OriginalOrderID });
-    }
+	function _gotoRevisions() {
+		if(vm.Quote.xp.OriginalOrderID) {
+			$state.go("revisions", { quoteID: vm.Quote.xp.OriginalOrderID });
+		}
+	}
 
 	vm.ShowUpdated = function (item) {
 		// return true if qty <> xp.originalQty and qty > 0
@@ -1342,7 +1363,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.ShowNew = _showNew;
 	function _showNew(line) {
 		if(line.xp) {
-			return line.xp.OriginalQty==0;
+			//return line.xp.OriginalQty==0;
+			return line.xp.OriginalQty==0 || (vm.Quote.ID.indexOf("Rev") !== -1 && line.xp.OriginalQty==null); //Second part matches items added in admin search.
 		} else {
 			return false;
 		}
@@ -1666,7 +1688,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
     vm.View = view;
 }
 
-function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, QuoteToCsvService, Me) {
+function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, QuoteToCsvService, Me) {
     var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1720,7 +1742,8 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	        OrderDate: "Order date;",
 	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order with PO",
-	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery"
+	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
+	        ViewRevisions: "View Previous revisions"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1752,7 +1775,8 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	        OrderDate: $sce.trustAsHtml("Order date;"),
 	        BackToQuotes: $sce.trustAsHtml("Back to your Quotes"),
 	        SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
-	        PriceDisclaimer: $sce.trustAsHtml("All prices stated do not include UK VAT or delivery")
+	        PriceDisclaimer: $sce.trustAsHtml("All prices stated do not include UK VAT or delivery"),
+	        ViewRevisions: $sce.trustAsHtml("View Previous revisions")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1783,13 +1807,24 @@ function ReadonlyQuoteController($sce, WeirService, $timeout, $window, Quote, Sh
 	}
 
 	function _gotoQuotes() {
-		$state.go("quotes.revised");
+		if(vm.Quote.xp.Type == "Quote") {
+			$state.go("quotes.revised");
+		} else {
+			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
+		}
+	}
+
+	function _gotoRevisions() {
+		if(vm.Quote.xp.OriginalOrderID) {
+			$state.go("revisions", { quoteID: vm.Quote.xp.OriginalOrderID });
+		}
 	}
 
 	vm.Download = download;
 	vm.Print = print;
 	vm.GetStatusLabel = getStatusLabel;
 	vm.gotoQuotes = _gotoQuotes;
+	vm.gotoRevisions = _gotoRevisions;
 }
 
 function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, toastr) {
@@ -1941,7 +1976,11 @@ function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $stat
 		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
 	}
 	function _gotoQuotes() {
-		$state.go("quotes.revised");
+		if(vm.Quote.xp.Type == "Quote") {
+			$state.go("quotes.revised");
+		} else {
+			$state.go("orders.revised");
+		}
 	}
 	// ToDo Accept a parameter withPO. It will be true or false.
 	function _submitOrder(withPO) {

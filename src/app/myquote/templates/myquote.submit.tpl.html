@@ -52,7 +52,10 @@
                     <td>{{line.Product.Name}}</td>
                     <td>{{line.Product.Description}}</td>
                     <td>{{line.Product.xp.ReplacementSchedule}}</td>
-                    <td>{{line.Product.xp.LeadTime}}</td>
+                    <td>
+                        <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
+                        <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
+                    </td>
                     <td ng-switch on="submit.Quote.xp.Currency" class='text-right'>
                         <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
                         <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>

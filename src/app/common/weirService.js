@@ -797,7 +797,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 	                "xp.CustomerName": customer.name,
 					"xp.Status": "DR"
 				};
-				OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
+		        OrderCloud.Orders.ListOutgoing(null, null, null, 1, 100, null, null, filter, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
 					.then(function(results) {
 						if (results.Items.length > 0) {
 							var ct = results.Items[0];
@@ -846,7 +846,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 			filter["xp.Status"] = statusFilter;
 
 			var d = $q.defer();
-			OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
+			OrderCloud.Orders.ListOutgoing(null, null, null, 1, 100, null, null, filter, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
 				.then(function(results) {
 					angular.forEach(results.Items, function(quote) {
 						quotes.push(quote);
@@ -885,7 +885,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
                 filter["xp.Status"] = statusFilter;
 
                 var d = $q.defer();
-                OrderCloud.Me.ListOutgoingOrders(null, 1, 50, null, null, filter)
+		        OrderCloud.Orders.ListOutgoing(null, null, null, 1, 100, null, null, filter, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
                     .then(function(results) {
                         angular.forEach(results.Items, function(quote) {
                             quotes.push(quote);

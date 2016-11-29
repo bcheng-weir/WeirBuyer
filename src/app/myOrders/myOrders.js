@@ -25,7 +25,7 @@ function MyOrdersConfig($stateProvider) {
         })
         .state('myOrders.edit', {
             url: '/:orderid/edit',
-            templateUrl: 'myOrders/templates/MyorderEdit.tpl.html',
+            templateUrl: 'myOrders/templates/myOrderEdit.tpl.html',
             controller: 'MyOrderEditCtrl',
             controllerAs: 'myOrderEdit',
             resolve: {

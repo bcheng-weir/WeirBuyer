@@ -1,5 +1,6 @@
 angular.module( 'orderCloud' )
     .service('SearchTypeService', SearchTypeService)
+    .service('UserGroupsService', UserGroupsService)
     .factory('WeirService', WeirService)
 ;
 function SearchTypeService() {
@@ -12,6 +13,40 @@ function SearchTypeService() {
         SetLastSearchType: function (val) { lastSearchType = val; }
     };
     return svc;
+}
+
+function UserGroupsService($q, OrderCloud) {
+    var groups = null;
+    function _isUserInGroup(groupList) {
+        var d = $q.defer();
+        var isInGroup = false;
+        if (!groups) {
+            OrderCloud.Me.ListUserGroups()
+            .then(function (results) {
+                groups = [];
+                for (var i = 0; i < results.Items.length; i++) {
+                    var id = results.Items[i].ID;
+                    groups.push(id);
+                    if (groupList.indexOf(id) > -1) isInGroup = true;
+                }
+                d.resolve(isInGroup);
+            })
+        } else {
+            for (var i = 0; i < groups.length; i++) {
+                if (groupList.indexOf(groups[i]) > -1) isInGroup = true;
+            }
+            d.resolve(isInGroup);
+        }
+        return d.promise;
+    }
+    return {
+        IsUserInGroup: _isUserInGroup,
+        Groups: {
+            Buyers: 'Buyers',
+            Shoppers: 'Shoppers',
+            BuyerAdmin: 'BuyerAdmin'
+        }
+    }
 }
 
 function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, CurrentOrder, Underscore, buyerid, SearchTypeService) {

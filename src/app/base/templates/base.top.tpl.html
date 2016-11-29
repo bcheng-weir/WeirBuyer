@@ -69,6 +69,9 @@
 			<li class="brand-nav">
 				<a ui-sref="brands({brandId:2})">About Hopkinsons</a>
 			</li>
+            <li class="newQuote">
+                <a href="#" ng-click="base.newQuote()" ng-bind-html="base.navlabels.newQuote"></a>
+            </li>
 			<li class="active">
 			<a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
 			</li>

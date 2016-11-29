@@ -143,6 +143,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
         var navLabels = {
             en: {
                 privacyTitle: "Privacy Statement",
+                newQuote: "New Quote",
                 cookieTitle: "Cookie Policy",
                 termsTitle: "Terms of Use",
                 contactTitle: "Contact",
@@ -166,6 +167,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
             },
             fr: {
                 privacyTitle: $sce.trustAsHtml("D&eacute;claration de confidentialit&eacute;"),
+                newQuote: "Nouveau Quote",
                 cookieTitle: "Politique de Cookie",
                 termsTitle: "Conditions d'utilisation",
                 contactTitle: "Contact",

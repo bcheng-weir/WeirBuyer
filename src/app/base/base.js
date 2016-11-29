@@ -203,7 +203,11 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
                 "xp.Status": WeirService.OrderStatus.SubmittedWithPO.id,
                 "xp.Active": true
             },
-            "orders.pending": {"xp.Type": "Order", "xp.PendingPO": true, "xp.Active": true},
+            "orders.pending": {
+                "xp.Type": "Order",
+	            "xp.PendingPO": true,
+	            "xp.Active": true
+            },
             "orders.revised": {
                 "xp.Type": "Order",
                 "xp.Status": WeirService.OrderStatus.RevisedOrder.id,

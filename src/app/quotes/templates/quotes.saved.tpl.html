@@ -9,7 +9,6 @@
                         <th ng-bind-html='saved.labels.QuoteName'></th>
                         <th ng-bind-html='saved.labels.QuoteRef'></th>
                         <th ng-bind-html='saved.labels.Total'></th>
-                        <th ng-bind-html='saved.labels.Customer'>t</th>
                         <th ng-bind-html='saved.labels.Status'></th>
                     </tr>
                 </thead>
@@ -23,11 +22,9 @@
                             <span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
-                        <td ng-if="quote.xp.CustomerID != quotes.MyOrg.ID ">{{quote.xp.CustomerName}}</td>
-                        <td ng-if="quote.xp.CustomerID == quotes.MyOrg.ID ">{{saved.labels.OwnProduct}}</td>
                         <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
                         <td>
-                            <button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.CustomerID)" ng-bind-html="saved.labels.View"></button>
+                            <button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
                             <a ui-sref="revisions({quoteID:quote.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="saved.labels.Revisions" ng-if="quote.xp.Status!='SV'"></a>
                         </td>
                     </tr>

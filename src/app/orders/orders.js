@@ -187,7 +187,16 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		    Customer: "Customer",
 		    Status: "Status",
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this order. Are you sure you want to proceed?",
-		    Revisions: "Revisions"
+		    Revisions: "Revisions",
+		    PONumber: "Your PO number",
+		    Reviewer: "Reviewer",
+		    OrderDate: "Order date",
+		    ContractNum: "Weir Contract number",
+		    ConfirmedBy: "Confirmed by",
+		    DateConfirmed: "Date confirmed",
+		    DateDespatched: "Date despatched",
+		    DateInvoiced: "Date invoiced",
+		    EstDelivery: "Estimated delivery date"
 	    },
 	    fr: {
 		    SubmittedHeader: $sce.trustAsHtml(vm.list.Items.length.toString() + " submitted Order" +  (vm.list.Items.length == 1 ? "" : "s")),
@@ -211,7 +220,16 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		    Customer: $sce.trustAsHtml("Customer"),
 		    Status: $sce.trustAsHtml("Status"),
 		    ReplaceCartMessage: $sce.trustAsHtml("Continuing with this action will change your cart to this order. Are you sure you want to proceed?"),
-		    Revisions: $sce.trustAsHtml("Revisions")
+		    Revisions: $sce.trustAsHtml("Revisions"),
+		    PONumber: $sce.trustAsHtml("Your PO number"),
+		    Reviewer: $sce.trustAsHtml("Reviewer"),
+		    OrderDate: $sce.trustAsHtml("Order Date"),
+		    ContractNum: $sce.trustAsHtml("Weir Contract number"),
+		    ConfirmedBy: $sce.trustAsHtml("Confirmed by"),
+		    DateConfirmed: $sce.trustAsHtml("Date confirmed"),
+		    DateDespatched: $sce.trustAsHtml("Date despatched"),
+		    DateInvoiced: $sce.trustAsHtml("Date invoiced"),
+		    EstDelivery: $sce.trustAsHtml("Estimated delivery date")
 	    }
     };
     vm.labels = labels[WeirService.Locale()];
@@ -221,7 +239,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		var filter = {
 			"orders.submitted":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true},
 			"orders.pending":{"xp.Type":"Order", "xp.PendingPO":true, "xp.Active":true},
-			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id, "xp.Active":true},
+			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id+"|"+WeirService.OrderStatus.RejectedRevisedOrder, "xp.Active":true},
 			"orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":true},
 			"orders.despatched":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.Despatched.id, "xp.Active":true},
 			"orders.invoiced":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.Invoiced.id, "xp.Active":true}
@@ -251,7 +269,7 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order) 
     if (Order) {
         var type = Order.xp.Type;
         if (type == "Order") {
-            reviewOrder(Order.ID, Order.xp.Status, Order.xp.CustomerID);
+            reviewOrder(Order.ID, Order.xp.Status, OrderCloud.BuyerID.Get());
         } else {
             $state.go('quotes.goto', { quoteID: Order.ID });
         }

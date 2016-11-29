@@ -17,6 +17,7 @@
                 </th>
                 <th ng-bind-html='orders.labels.OrderName'></th>
                 <th ng-bind-html='orders.labels.OrderRef'></th>
+                <th ng-bind-html='orders.labels.PONumber'></th>
                 <th scope="col">
                     <a href="#" role="button" ng-click="orders.updateSort('Total')">
                         {{orders.labels.Total}}
@@ -24,13 +25,8 @@
                         <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!Total'"></i>
                     </a>
                 </th>
-                <th scope="col">
-                    <a href="#" role="button" ng-click="orders.updateSort('FromUserFirstName')">
-                        {{orders.labels.Customer}}
-                        <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'FromUserFirstName'"></i>
-                        <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!FromUserFirstName'"></i>
-                    </a>
-                </th>
+                <th ng-bind-html='orders.labels.Reviewer'></th>
+                <th ng-bind-html='orders.labels.OrderDate'></th>
                 <th ng-bind-html='orders.labels.Status'></th>
             </tr>
             </thead>
@@ -39,16 +35,17 @@
                 <td>{{order.ID}}</td>
                 <td>{{order.xp.Name}}</td>
                 <td>{{order.xp.RefNum}}</td>
+                <td>{{order.xp.PONumber}}</td>
                 <td ng-switch on="quote.xp.Currency">
                     <span ng-switch-when="EUR">{{order.Total | currency:'&euro; '}}</span>
                     <span ng-switch-when="GBP">{{order.Total | currency:'&#163; '}}</span>
                     <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
                 </td>
-                <td ng-if="order.xp.CustomerID != orders.MyOrg.ID ">{{order.xp.CustomerName}}</td>
-                <td ng-if="order.xp.CustomerID == orders.MyOrg.ID ">{{orders.labels.OwnProduct}}</td>
+                <td>{{order.xp.ReviewerName}}</td>
+                <td>{{order.DateSubmitted}}</td>
                 <td>{{orders.getStatusLabel(order.xp.Status) + "; " + (order.xp.StatusDate | weirdate)}}</td>
                 <td>
-                    <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.CustomerID)" ng-bind-html="orders.labels.View"></button>
+                    <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
                     <a ui-sref="revisions({quoteID:order.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="orders.labels.Revisions"></a>
                 </td>
             </tr>

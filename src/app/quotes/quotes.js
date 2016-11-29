@@ -47,7 +47,7 @@ function QuotesConfig($stateProvider) {
 			controllerAs: 'inreview',
 			resolve: {
 				Quotes: function(WeirService) {
-					return WeirService.FindQuotes([WeirService.OrderStatus.Submitted,WeirService.OrderStatus.Review,WeirService.OrderStatus.RejectedQuote], true);
+					return WeirService.FindQuotes([WeirService.OrderStatus.Submitted,WeirService.OrderStatus.Review], true);
 				}
 			}
 		})
@@ -58,7 +58,7 @@ function QuotesConfig($stateProvider) {
 			controllerAs: 'saved',
 			resolve: {
 				Quotes: function(WeirService) {
-				    return WeirService.FindQuotes([WeirService.OrderStatus.RevisedQuote]);
+				    return WeirService.FindQuotes([WeirService.OrderStatus.RevisedQuote,WeirService.OrderStatus.RejectedQuote]);
 				},
 				CurrentOrderId: function ($q, CurrentOrder) {
 				    var d = $q.defer();
@@ -217,6 +217,7 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
             Customer: "Customer",
 		    OwnProduct: "Own product",
 		    Approver: "Approver",
+			Reviewer: "Reviewer",
             Status: "Status",
             ValidTo: "Valid until",
 			View: "View"
@@ -229,6 +230,7 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 		    Customer: $sce.trustAsHtml("Client"),
 		    OwnProduct: $sce.trustAsHtml("Propre Produit"),
 		    Approver: $sce.trustAsHtml("Approuv&eacute;"),
+			Reviewer: $sce.trustAsHtml("Reviewer"),
             Status: $sce.trustAsHtml("Statut"),
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 			View: $sce.trustAsHtml("View")
@@ -236,7 +238,7 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
-function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote) {
+function RouteToQuoteController($rootScope, $state, OrderCloud, WeirService, toastr, Quote) {
     if (Quote) {
         var status = Quote.xp.Status;
         var type = Quote.xp.Type;
@@ -244,12 +246,12 @@ function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote) 
             $state.go('orders.goto', { orderID: Quote.ID });
         } else if (status == WeirService.OrderStatus.RevisedQuote.id) {
             if (Quote.xp.Active) {
-                $state.go('revised', { quoteID: Quote.ID, buyerID: Quote.xp.CustomerID });
+                $state.go('revised', { quoteID: Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
             } else {
-                $state.go('readonly', { quoteID: Quote.ID, buyerID: Quote.xp.CustomerID });
+                $state.go('readonly', { quoteID: Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
             }
         } else if ([WeirService.OrderStatus.Submitted.id, WeirService.OrderStatus.Review.id, WeirService.OrderStatus.RejectedQuote.id].indexOf(status) > -1) {
-            $state.go('readonly', { quoteID: Quote.ID, buyerID: Quote.xp.CustomerID });
+            $state.go('readonly', { quoteID: Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
         } else { // DR, SV, CQ?
             WeirService.SetQuoteAsCurrentOrder(Quote.ID)
             .then(function () {

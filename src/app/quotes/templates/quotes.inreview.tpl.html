@@ -8,8 +8,7 @@
                         <th ng-bind-html='inreview.labels.QuoteNum'></th>
                         <th ng-bind-html='inreview.labels.QuoteRef'></th>
                         <th ng-bind-html='inreview.labels.Total'></th>
-                        <th ng-bind-html='inreview.labels.Customer'>t</th>
-                        <th ng-bind-html='inreview.labels.Approver'>t</th>
+                        <th ng-bind-html='inreview.labels.Reviewer'>t</th>
                         <th ng-bind-html='inreview.labels.Status'></th>
                         <th></th>
                     </tr>
@@ -23,11 +22,10 @@
                             <span ng-switch-when="GBP">{{quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
-                        <td>{{quote.xp.CustomerID}}</td>
                         <td>{{quote.xp.ReviewerName}}</td>
                         <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
                         <td>
-                            <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.CustomerID})" role="button" class="btn btn-primary" ng-bind-html="inreview.labels.View"></a>
+                            <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="inreview.labels.View"></a>
                         </td>
                     </tr>
                 </tbody>

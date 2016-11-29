@@ -589,6 +589,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 				    "ID": randomQuoteID(),
 				    "Type": "Standard",
 				    xp: {
+				    	"BuyerID":OrderCloud.BuyerID.Get(),
 					    "Type": "Quote",
 					    "CustomerID": customer.id,
 					    "CustomerName": customer.name,
@@ -596,7 +597,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 					    "Active": true
 				    }
 			    };
-			    OrderCloud.Orders.Create(cart,customer.id)
+			    OrderCloud.Orders.Create(cart)
 				    .then(function(order) {
 					    CurrentOrder.Set(order.ID);
 					    addLineItem(order);
@@ -610,7 +611,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
                 ProductID: lineItem.ProductID,
                 Quantity: qty
             };
-            OrderCloud.LineItems.Patch(order.ID, lineItem.ID, li, order.xp.CustomerID)
+            OrderCloud.LineItems.Patch(order.ID, lineItem.ID, li, OrderCloud.BuyerID.Get())
                 .then(function(lineItem) {
                     deferred.resolve({Order: order, LineItem: lineItem});
                 });
@@ -626,7 +627,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
                 }
             };
 
-            OrderCloud.LineItems.Create(order.ID, li, order.xp.CustomerID)
+            OrderCloud.LineItems.Create(order.ID, li, OrderCloud.BuyerID.Get())
                 .then(function(lineItem) {
                     deferred.resolve({Order: order, LineItem: lineItem});
                 })
@@ -646,7 +647,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
                 addLineItems(order);
             })
             .catch(function() {
-	            OrderCloud.Orders.Create({ID: randomQuoteID(), xp:{Type:"Quote",Status:"DR"}})
+	            OrderCloud.Orders.Create({ID: randomQuoteID(), xp:{Type:"Quote",Status:"DR",BuyerID:OrderCloud.BuyerID.Get()}})
                     .then(function(order) {
                         CurrentOrder.Set(order.ID);
                         addLineItems(order);
@@ -695,7 +696,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
             .catch(function() {
             	CurrentOrder.GetCurrentCustomer()
 		            .then(function(customer) {
-			            return OrderCloud.Orders.Create({ID: randomQuoteID(), xp: {CustomerID:customer.id, CustomerName: customer.name}}, customer.id)
+			            return OrderCloud.Orders.Create({ID: randomQuoteID(), xp: {CustomerID:customer.id,CustomerName:customer.name,BuyerID:OrderCloud.BuyerID.Get()}})
 		            })
                     .then(function(order) {
                         CurrentOrder.Set(order.ID);
@@ -807,6 +808,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 							var cart = {
 								"Type": "Standard",
 								xp: {
+									"BuyerID":OrderCloud.BuyerID.Get(),
 									"Type": "Quote",
 									"CustomerID": customer.id,
 									"CustomerName": customer.name,

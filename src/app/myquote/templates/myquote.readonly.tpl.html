@@ -21,7 +21,7 @@
                 <button class="btn btn-default" style="margin-left:0.5em;" ng-click="readonly.Comments()" ng-bind-html="readonly.labels.Comments"></button>
             </div>
             <div style="float:right" ng-if="readonly.Quote.xp.Status=='SE' || readonly.Quote.xp.Status=='CQ'">
-                <button class="btn btn-success" ui-sref="submit({quoteID:readonly.Quote.ID, buyerID:readonly.Quote.xp.CustomerID})">{{readonly.labels.SubmitWithPO}}</button>
+                <button class="btn btn-success" ui-sref="submit({quoteID:readonly.Quote.ID, buyerID:readonly.Quote.xp.BuyerID})">{{readonly.labels.SubmitWithPO}}</button>
             </div>
         </div>
     </div>

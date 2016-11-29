@@ -369,7 +369,6 @@ function MyQuoteConfig($stateProvider) {
 function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService) {
 	var vm = this;
 	vm.Quote = Quote;
-	console.log(vm.Quote);
 	vm.Customer = Customer;
 	vm.ShippingAddress = ShippingAddress;
 	vm.ImageBaseUrl = imageRoot;
@@ -745,7 +744,13 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	vm.addresses = Underscore.sortBy(Addresses.Items, function(address) {
 		return address.xp.primary;
 	}).filter(activeAddress).reverse();
-	//vm.customShipping = false;
+
+	//if the QuoteShareService.Quote.ShippingAddressID is null, set it to the vm.addresses[0] if the vm.addresses.length > 0
+	if(QuoteShareService.Quote.ShippingAddressID == null && vm.addresses.length > 0) {
+		//function _setShippingAddress(QuoteID, Address) {
+		_setShippingAddress(QuoteShareService.Quote.ID, vm.addresses[0]);
+	}
+
 	vm.country = function(c) {
 		var result = Underscore.findWhere(OCGeography.Countries, {value:c});
 		return result ? result.label : '';

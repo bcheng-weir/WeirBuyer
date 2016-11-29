@@ -193,6 +193,7 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
                             vm.LineItems.Items = [].concat(vm.LineItems.Items, result.Items);
                             vm.LineItems.Meta = result.Meta;
                         });
+                        LineItemHelpers.GetBlankProductInfo(vm.LineItems.Items);
                         dfd.resolve(LineItemHelpers.GetProductInfo(vm.LineItems.Items.reverse()));
                     });
                 Underscore.map(vm.LineItems.Items, function(value, key){

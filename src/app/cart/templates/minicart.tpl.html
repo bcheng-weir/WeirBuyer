@@ -28,7 +28,8 @@
                     <td>{{lineItem.Quantity}}</td>
                     <td>
                         <a href="#">{{lineItem.Product.Name}}</a><br>
-                        <small class="text-muted">{{lineItem.ProductID}}</small>
+                        <small class="text-muted" ng-show="lineItem.ProductID=='PLACEHOLDER'">{{lineItem.xp.SN}}</small>
+                        <small class="text-muted" ng-hide="lineItem.ProductID=='PLACEHOLDER'">{{lineItem.ProductID}}</small>
                         </br>
                     </td>
                     <td ng-switch on="minicart.Order.xp.Currency" style="padding-right: 25px;">

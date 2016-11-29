@@ -837,7 +837,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 		if (statuses && statuses.length) {
 			var filter = {
 				"xp.Type": "Order",
-				"xp.Active": "true"
+				"xp.Active": true
 			};
 			var statusFilter = statuses[0].id;
 			for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;
@@ -876,7 +876,7 @@ function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, Curr
 	    if (statuses && statuses.length) {
 	        var filter = {
 	    	    "xp.Type": "Quote",
-		        "xp.Active": "true"
+		        "xp.Active": true
 	        };
 			var statusFilter = statuses[0].id;
 			for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;

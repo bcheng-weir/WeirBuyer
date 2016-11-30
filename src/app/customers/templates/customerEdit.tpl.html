@@ -3,7 +3,7 @@
     <b>{{customerEdit.labels.EditCustomer}}:</b> {{customerEdit.buyerName}}
 </h3>
 <form ng-submit="customerEdit.Submit()" name="CustomerEditForm" novalidate>
-    <div class="row">
+    <!--<div class="row">
         <div class="form-group col-md-6">
             <label for="buyer_id">{{customerEdit.labels.ID}}</label>
             <input id="buyer_id" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ng-model="customerEdit.buyer.ID" class="form-control">
@@ -43,7 +43,7 @@
     <div class="form-group">
         <button class="btn btn-primary" type="submit" ng-disabled="CustomerEditForm.$invalid || customerEdit.checkForPrimary()">{{customerEdit.labels.Save}}</button>
         <button class="btn btn-default" ui-sref="^" type="button">{{customerEdit.labels.Cancel}}</button>
-    </div>
+    </div>-->
         <!--TODO: The Address Edit state should also include Address Assignments-->
     <!--====== LIST ======-->
     <div class="page-header">

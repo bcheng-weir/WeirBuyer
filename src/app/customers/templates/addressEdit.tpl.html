@@ -58,17 +58,17 @@
 			<input id="addressPhoneInput" name="addressPhoneInput" type="text" class="form-control" ng-model="customerAddressEdit.address.Phone"/>
 		</div>
 	</div>
-	<div class="row">
+	<!--<div class="row">
 		<div class="col-sm-6 form-group">
 			<label for="addressPrimaryInput">{{customerAddressEdit.labels.Primary}}</label>
 			<input id="addressPrimaryInput" name="addressPrimaryInput" type="checkbox" ng-model="customerAddressEdit.address.xp.primary" />
 		</div>
-	</div>
+	</div>-->
 	<div class="form-group">
 		<button type="submit" class="btn btn-primary" ng-disabled="AddressEditForm.$invalid">{{customerAddressEdit.labels.Save}}</button>
 		<button type="button" class="btn btn-default" ui-sref="^">{{customerAddressEdit.labels.Cancel}}</button>
 		<!--<button type="button" class="btn btn-default" ng-click="customerAddressEdit.Delete()" ng-disabled="customerAddressEdit.address.xp.primary"><i class="fa fa-trash text-danger"></i></button>-->
-		<button type="button" class="btn btn-default" ng-click="customerAddressEdit.Delete()" ng-disabled="customerAddressEdit.address.xp.primary">{{customerAddressEdit.labels.SetInactive}}</button>
+		<!--<button type="button" class="btn btn-default" ng-click="customerAddressEdit.Delete()" ng-disabled="customerAddressEdit.address.xp.primary">{{customerAddressEdit.labels.SetInactive}}</button>-->
 	</div>
 	<!--TODO: The Address Edit state should also include Address Assignments-->
 </form>

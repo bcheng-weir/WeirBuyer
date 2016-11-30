@@ -934,7 +934,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             Submit: $sce.trustAsHtml("Submit quote or order"),
             BackToReview: $sce.trustAsHtml("Review quote"),
             BackToDelivery: $sce.trustAsHtml("FR: Back to delivery"),
-            SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
             PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
             PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
@@ -965,6 +964,17 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
+
+	vm.GetFileUrl = function(fileName) {
+		var encodedFileName = encodeURIComponent(fileName);
+		var orderid = null;
+		if(vm.Quote.xp.OriginalOrderID == null) {
+			orderid = vm.Quote.ID;
+		} else {
+			orderid = vm.Quote.xp.OriginalOrderID
+		}
+		return vm.fileStore.location + orderid + encodedFileName;
+	};
 
     function _deleteLineItem(quoteNumber, itemid) {
         OrderCloud.LineItems.Delete(quoteNumber, itemid, OrderCloud.BuyerID.Get())
@@ -1218,7 +1228,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.toReview = _gotoReview;
 }
 
-function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me) {
+function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me, fileStore) {
     var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1262,6 +1272,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
     };
 	vm.ShowCommentBox = false;
 	vm.CommentToWeir = "";
+	vm.fileStore = fileStore;
 
     var labels = {
         en: {
@@ -1346,6 +1357,17 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
+
+	vm.GetFileUrl = function(fileName) {
+		var encodedFileName = encodeURIComponent(fileName);
+		var orderid = null;
+		if(vm.Quote.xp.OriginalOrderID == null) {
+			orderid = vm.Quote.ID;
+		} else {
+			orderid = vm.Quote.xp.OriginalOrderID
+		}
+		return vm.fileStore.location + orderid + encodedFileName;
+	};
 
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {
@@ -1708,8 +1730,10 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
     vm.View = view;
 }
 
-function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, QuoteToCsvService, Me) {
+function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, Me, fileStore) {
     var vm = this;
+	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
     vm.Quote = Quote;
@@ -1800,6 +1824,17 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
+
+	vm.GetFileUrl = function(fileName) {
+		var encodedFileName = encodeURIComponent(fileName);
+		var orderid = null;
+		if(vm.Quote.xp.OriginalOrderID == null) {
+			orderid = vm.Quote.ID;
+		} else {
+			orderid = vm.Quote.xp.OriginalOrderID
+		}
+		return vm.fileStore.location + orderid + encodedFileName;
+	};
 
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";

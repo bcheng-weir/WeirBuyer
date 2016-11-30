@@ -164,7 +164,9 @@
         </div>
         <div class="col-md-6">
             <p><b><span ng-bind-html='revised.labels.YourAttachments'></span><br></b></p>
-            <p ng-repeat="fileName in revised.Quote.xp.Files">{{fileName}}</p>
+            <p ng-repeat="fileName in revised.Quote.xp.Files">
+                <a href="{{readonly.GetFileUrl(fileName)}}" target="_blank">{{fileName}}</a>
+            </p>
             <p><b><span ng-bind-html='revised.labels.CommentsHeader'></span></b></p>
             <p><span ng-bind-html='revised.Quote.Comments'></span></p>
         </div>

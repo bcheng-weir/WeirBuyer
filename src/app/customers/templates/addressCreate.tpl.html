@@ -58,12 +58,12 @@
             <input id="addressPhoneInput" type="text" class="form-control" ng-model="customerAddressCreate.address.Phone"/>
         </div>
     </div>
-    <div class="row">
+    <!--<div class="row">
         <div class="col-sm-6 form-group">
             <label for="addressPrimaryInput">{{customerAddressCreate.labels.Primary}}</label>
             <input id="addressPrimaryInput" type="checkbox" ng-model="customerAddressCreate.address.xp.primary" />
         </div>
-    </div>
+    </div>-->
     <div class="form-group">
         <button type="submit" class="btn btn-primary" ng-disabled="AddressCreateForm.$invalid">{{customerAddressCreate.labels.Save}}</button>
         <button type="button" class="btn btn-default" ui-sref="^">{{customerAddressCreate.labels.Cancel}}</button>

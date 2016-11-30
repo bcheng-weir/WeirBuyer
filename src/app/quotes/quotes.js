@@ -19,7 +19,7 @@ function QuotesConfig($stateProvider) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
 				MyOrg: function(OrderCloud, CurrentCustomer) {
-					return OrderCloud.Buyers.Get(CurrentCustomer.id);
+					return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
 				}
 			}
 		})

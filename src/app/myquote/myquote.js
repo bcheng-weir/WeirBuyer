@@ -1681,12 +1681,13 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
         }
         return "";
     }
-    function view(revID, active, buyerId) {
-        if (active) {
+    function view(quote) {
+    	// Catch orders that are despatched, invoiced, or confirmed. they are read only
+        if (quote.xp.Active && quote.xp.Status != WeirService.OrderStatus.Despatched.id && quote.xp.Status != WeirService.OrderStatus.Invoiced.id && quote.xp.Status != WeirService.OrderStatus.ConfirmedOrder.id) {
             // ToDo TEST: Current order should be this one. No altering revised quotes.
-	        $state.go("revised", {quoteID: revID, buyerID: buyerId});
+	        $state.go("revised", {quoteID: quote.ID, buyerID: quote.xp.BuyerID});
         } else {
-            $state.go("readonly", { quoteID: revID, buyerID: buyerId });
+            $state.go("readonly", { quoteID: quote.ID, buyerID: quote.xp.BuyerID });
         }
     }
 

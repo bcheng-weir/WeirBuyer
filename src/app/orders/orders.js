@@ -283,14 +283,11 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
         } else if (status == WeirService.OrderStatus.RevisedOrder.id) {
             $state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });
         } else {
-            var gotoReview = (vm.CurrentOrderId != orderId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
-            if (gotoReview) {
-                WeirService.SetQuoteAsCurrentOrder(orderId)
-					.then(function () {
-					    $rootScope.$broadcast('SwitchCart');
-					    $state.transitionTo('myquote.detail');
-					});
-            }
+            WeirService.SetQuoteAsCurrentOrder(orderId)
+                .then(function () {
+                    $rootScope.$broadcast('SwitchCart');
+                    $state.transitionTo('myquote.detail');
+                });
         }
     }
 }

@@ -115,6 +115,12 @@ function MyQuoteConfig($stateProvider) {
 			    },
 		        Payments: function (Quote, OrderCloud) {
 		            return OrderCloud.Payments.List(Quote.ID,null,null,null,null,null,null,OrderCloud.BuyerID.Get());
+		        },
+		        IsBuyer: function (UserGroupsService) {
+                    return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Buyers])
+		        },
+		        IsShopper: function (UserGroupsService) {
+		            return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Shoppers])
 		        }
 		    }
 		})
@@ -366,8 +372,10 @@ function MyQuoteConfig($stateProvider) {
     ;
 }
 
-function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService) {
-	var vm = this;
+function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer, IsShopper) {
+    var vm = this;
+    vm.IsBuyer = IsBuyer;
+    vm.IsShopper = IsShopper;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
 	vm.ShippingAddress = ShippingAddress;

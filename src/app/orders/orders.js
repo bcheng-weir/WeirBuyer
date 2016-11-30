@@ -19,8 +19,8 @@ function OrdersConfig($stateProvider) {
 	            CurrentCustomer: function(CurrentOrder) {
 		            return CurrentOrder.GetCurrentCustomer();
 	            },
-	            MyOrg: function(OrderCloud, CurrentCustomer) {
-		            return OrderCloud.Buyers.Get(CurrentCustomer.id);
+	            MyOrg: function(OrderCloud) {
+		            return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
 	            },
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
@@ -265,7 +265,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		}
 	}
 }
-function RouteToOrderController($rootScope, $state, WeirService, toastr, Order) {
+function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, OrderCloud) {
     if (Order) {
         var type = Order.xp.Type;
         if (type == "Order") {

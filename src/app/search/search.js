@@ -29,6 +29,7 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
 				MyOrg: function (OrderCloud) {
+					//TODO remove. this is in $rootscope.
 				    var buyerId = OrderCloud.BuyerID.Get();
                     return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
 				}

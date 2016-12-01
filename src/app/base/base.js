@@ -71,6 +71,10 @@ function BaseConfig($stateProvider, $injector) {
                     });
                 return dfd.promise;
             },
+            MyOrg: function($q, OrderCloud) {
+                var buyerId = OrderCloud.BuyerID.Get();
+                return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
+            },
             AnonymousUser: function($q, OrderCloud, CurrentUser) {
                 CurrentUser.Anonymous = angular.isDefined(JSON.parse(atob(OrderCloud.Auth.ReadToken().split('.')[1])).orderid);
             },
@@ -109,10 +113,12 @@ function BaseConfig($stateProvider, $injector) {
 }
 
 
-function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base) {
+function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base, MyOrg) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
+    $rootScope.currentUser = CurrentUser; //Globally available.
+    $rootScope.myOrg = MyOrg;
     vm.currentUser = CurrentUser;
     vm.catalogItems = ComponentList.nonSpecific;
     vm.organizationItems = ComponentList.buyerSpecific;

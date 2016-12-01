@@ -4,6 +4,7 @@ angular.module('ordercloud-search')
     .directive('ordercloudSearch', OrdercloudSearch)
     .controller('ordercloudSearchCtrl', OrdercloudSearchController)
     .factory('TrackSearch', TrackSearchService )
+    .factory('SearchProducts', SearchProductsService)
 ;
 
 function OrdercloudSearch () {
@@ -118,3 +119,44 @@ function TrackSearchService() {
     return service;
 }
 
+function SearchProductsService(OrderCloud, $rootScope, CurrentOrder) {
+    var service = {
+        GetSerialNumbers: _getSerialNumbers,
+        GetTagNumbers: _getTagNumbers,
+        GetPartNumbers: _getPartNumbers,
+	    ImpersonateGetPartNumbers: _impersonateGetPartNumbers
+    };
+
+    function _getSerialNumbers(lookForThisPartialSerialNumber) {
+    	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.SN": lookForThisPartialSerialNumber+"*", "ParentID":$rootScope.myOrg.ID}, null, $rootScope.myOrg.xp.WeirGroup.label)
+            .then(function(response) {
+                return response.Items.map(function(item) {
+                    return item.xp.SN;
+                })
+            });
+    }
+
+    function _getTagNumbers(lookForThisPartialTagNumber) {
+        return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.TagNumber": lookForThisPartialTagNumber+"*", "ParentID":$rootScope.myOrg.ID}, null, $rootScope.myOrg.xp.WeirGroup.label)
+            .then(function(response) {
+                return response.Items.map(function(item) {
+                    return item.xp.TagNumber;
+                })
+            });
+    }
+
+    function _getPartNumbers(lookForThisPartialPartNumber) {
+        return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"Name": lookForThisPartialPartNumber+"*"})
+            .then(function(response) {
+                return response.Items.map(function(item) {
+                    return item.Name;
+                })
+            });
+    }
+
+    function _impersonateGetPartNumbers(lookForThisPartialPartNumber) {
+
+    }
+
+    return service;
+}

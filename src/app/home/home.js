@@ -46,8 +46,10 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 		})
 }
 
-function HomeController($sce, $state, $rootScope, $stateParams, WeirService,$cookieStore, OrderCloud) {
+function HomeController($sce, $state, $rootScope, WeirService, SearchProducts) {
     var vm = this;
+    vm.CurrentUser = $rootScope.currentUser;
+	vm.CurrentUserOrg = $rootScope.myOrg;
     var labels = {
         en: {
             Search : "Search centre",
@@ -110,6 +112,14 @@ function HomeController($sce, $state, $rootScope, $stateParams, WeirService,$coo
     //using a repeater to display these in a div.
     vm.BrandUK = [{title: vm.labels.Batley, description: vm.labels.BatleyMsg, url: vm.labels.Batley.replace(" ", "-").replace("®", "").toLowerCase()}, {title: vm.labels.Blakeborough, description: vm.labels.BlakeboroughMsg, url: vm.labels.Blakeborough.replace("®", "").toLowerCase()}, {title: vm.labels.Hopkinsons, description: vm.labels.HopkinsonsMsg, url: vm.labels.Hopkinsons.replace("®", "").toLowerCase()}];
     vm.BrandFR = [{title: vm.labels.SarasinRSBD, description: vm.labels.SarasinRSBDMsg}];
+	vm.SearchProducts = function(val) {
+		var options = {
+			"Serial number": "GetSerialNumbers",
+			"Part number": "GetPartNumbers",
+			"Tag number": "GetTagNumbers"
+		}
+		return SearchProducts[options[vm.selectedItem]](val);
+	};
 
     vm.Search = function(searchType, searchParam){
         //assumption is that this is a singular search bar. Only querying for a single item at a time.

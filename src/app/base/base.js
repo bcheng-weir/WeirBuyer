@@ -117,7 +117,7 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
-    $rootScope.currentUser = CurrentUser; //Globally available.
+    $rootScope.currentUser = CurrentUser;
     $rootScope.myOrg = MyOrg;
     vm.currentUser = CurrentUser;
     vm.catalogItems = ComponentList.nonSpecific;
@@ -240,40 +240,40 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
 
     vm.newQuote = function () {
         //check if the current order status is unsubmitted/draft mode
-        CurrentOrder.Get().then(function (resultOrder) {
-            if (resultOrder.Status == "Unsubmitted" && resultOrder.xp.Status == "DR") {
-                var modalInstance = $uibModal.open({
-                    animation: true,
-                    ariaDescribedBy: 'modal-body',
-                    templateUrl: 'base/templates/base.top.newquoteconfirm.tpl.html',
-                    controller: 'NewQuoteCtrl',
-                    controllerAs: 'newQuote',
-                    size: 'lg'
-                });
-                modalInstance.result.then(
-                    function (val) {
-                        if (val == "Unsubmitted") {
-                            $rootScope.$broadcast('search.ClearFilter');
-                            $rootScope.$broadcast('search.selfsearch', false);
-                            $rootScope.$broadcast('search.searchall', false);
-                            $rootScope.$broadcast('OC:RemoveOrder');
-                            CurrentOrder.Remove().then(function () {
-                                $state.go('search', {}, {reload: true});
-                            });
-                        } else {
-                            return;
-                        }
+        CurrentOrder.Get()
+            .then(function (resultOrder) {
+                if (resultOrder.Status == "Unsubmitted" && resultOrder.xp.Status == WeirService.OrderStatus.Draft.id) {
+                    var modalInstance = $uibModal.open({
+                        animation: true,
+                        ariaDescribedBy: 'modal-body',
+                        templateUrl: 'base/templates/base.top.newquoteconfirm.tpl.html',
+                        controller: 'NewQuoteCtrl',
+                        controllerAs: 'newQuote',
+                        size: 'lg'
                     });
-            }
-            else {
-                $rootScope.$broadcast('search.ClearFilter');
-                $rootScope.$broadcast('search.selfsearch', false);
-                $rootScope.$broadcast('search.searchall', false);
-                $rootScope.$broadcast('OC:RemoveOrder');
-                CurrentOrder.Remove().then(function () {
-                    $state.go('search', {}, {reload: true});
-                });
-            }
+                    modalInstance.result.then(
+                        function (val) {
+                            if (val == "Unsubmitted") {
+                                $rootScope.$broadcast('search.ClearFilter');
+                                $rootScope.$broadcast('search.selfsearch', false);
+                                $rootScope.$broadcast('search.searchall', false);
+                                $rootScope.$broadcast('OC:RemoveOrder');
+                                CurrentOrder.Remove().then(function () {
+                                    $state.go('search', {}, {reload: true});
+                                });
+                            } else {
+                                return;
+                            }
+                        });
+                } else {
+                    $rootScope.$broadcast('search.ClearFilter');
+                    $rootScope.$broadcast('search.selfsearch', false);
+                    $rootScope.$broadcast('search.searchall', false);
+                    $rootScope.$broadcast('OC:RemoveOrder');
+                    CurrentOrder.Remove().then(function () {
+                        $state.go('search', {}, {reload: true});
+                    });
+                }
         })
             .catch(function () {
                 $state.go('search', {}, {reload: true});
@@ -291,6 +291,7 @@ function NewQuoteModalController($uibModalInstance, WeirService) {
     vm.cancel = function () {
         $uibModalInstance.close("");
     };
+
     var labels = {
         en: {
             NQHeader: "",

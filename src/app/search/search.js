@@ -70,6 +70,7 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 			controllerAs: 'part',
 			resolve: {
 			    MyOrg: function (OrderCloud) {
+			    	//ToDo - remove. use $rootscope. this is teh org of the current loggedin user.
 			        var buyerId = OrderCloud.BuyerID.Get();
 			        return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
 			    }
@@ -82,6 +83,7 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 			controllerAs: 'partResults',
 			resolve: {
 			    MyOrg: function (OrderCloud) {
+				    //ToDo - remove. use $rootscope. this is teh org of the current loggedin user.
 			        var buyerId = OrderCloud.BuyerID.Get();
 			        return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
 			    },
@@ -107,7 +109,6 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 				}
 			}
 		})
-
 		.state( 'search.tag.detail', {
 			url: '/:id?:number?:searchNumbers',
 			templateUrl: 'search/templates/search.tag.detail.tpl.html',
@@ -211,13 +212,14 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 			    })
 			    .then(function() {
 				    //vm.serialNumberList.length = 0;
-				    WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
+				    return WeirService.FindCart(vm.Customer);
+				    /*WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
 					    .then(function() {
 						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": MyOrg.xp.WeirGroup.label})
 							    .then(function(results) {
 								    //vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
 							    });
-					    });
+					    });*/
 			    });
 	    }
 	    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;

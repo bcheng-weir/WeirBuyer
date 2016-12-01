@@ -114,10 +114,10 @@ function HomeController($sce, $state, $rootScope, WeirService, SearchProducts) {
     vm.BrandFR = [{title: vm.labels.SarasinRSBD, description: vm.labels.SarasinRSBDMsg}];
 	vm.SearchProducts = function(val) {
 		var options = {
-			"Serial number": "GetSerialNumbers",
-			"Part number": "GetPartNumbers",
-			"Tag number": "GetTagNumbers"
-		}
+			"Serial number": "GetAllSerialNumbers",
+			"Part number": "GetAllPartNumbers",
+			"Tag number": "GetAllTagNumbers"
+		};
 		return SearchProducts[options[vm.selectedItem]](val);
 	};
 

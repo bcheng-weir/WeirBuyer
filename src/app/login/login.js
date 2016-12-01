@@ -138,12 +138,14 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
     vm.rememberStatus = false;
     var labels = {
         en: {
-            LoginLabel: "Login",
+            LoginLabel: "Please enter your login details",
             UsernameLabel: "Username",
             PasswordLabel: "Password",
             BackToLoginLabel: "Back to Login",
             ForgotPasswordLabel: "Forgot Password",
             NewPasswordLabel: "New Password",
+            RememberMe: "Remember Me",
+            WorldWide: "Go to global website",
             ConfirmPasswordLabel: "Confirm Password",
             ResetPasswordMessage: "Your password has been reset.",
             ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
@@ -152,11 +154,13 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
             BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter."
         },
         fr: {
-            LoginLabel: "S'identifier",
+            LoginLabel: "Veuillez saisir vos identifiants",
             UsernameLabel: "Nom d'utilisateur",
             PasswordLabel: "Mot de passe",
             BackToLoginLabel: "Retourner &agrave; l'identification",
             ForgotPasswordLabel: "Mot de passe oubli&eacute;",
+            RememberMe: "Souviens-toi de moi",
+            WorldWide: "Accéder au site global",
             NewPasswordLabel: "Nouveau mot de passe",
             ConfirmPasswordLabel: "Confirmer votre mot de passe",
             ResetPasswordMessage: "Votre mot de passe a &eacute;t&eacute; chang&eacute;",
@@ -177,6 +181,8 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
             vm.navlabels = navlabels.en;
             break;
     }
+    vm.languageOfUser = WeirService.Locale();
+
     vm.submit = function() {
         OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
@@ -185,7 +191,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
                 OrderCloud.Buyers.List().then(function (buyers) {
                     if (buyers && buyers.Items.length > 0) {
                         var buyer = buyers.Items[0];
-                        buyerid = buyer.ID
+                        buyerid = buyer.ID;
                         OrderCloud.BuyerID.Set(buyer.ID);
                         CurrentOrder.Remove()
                             .then(function () {

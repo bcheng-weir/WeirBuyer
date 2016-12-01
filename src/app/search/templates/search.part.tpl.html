@@ -11,7 +11,7 @@
                     </div>
 		    <span class="fa fa-minus text-danger form-control-feedback" ng-if="part.partNumbers.length > 1" ng-click="part.removePartNumber($index)"></span>
                 </div>
-		<button type="button" class="btn btn-link" ng-click="part.addPartNumber()"><span ng-bind-html='part.labels.AddMore'></span><i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-link" ng-click="part.addPartNumber()" ng-bind-html='part.labels.AddMore'><i class="fa fa-plus"></i></button>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default" ng-show="part.showClearSearch()" ng-click="part.clearSearch()" ng-bind-html='part.labels.ClearSearch'></button>
                     <button type="submit" class="btn btn-primary" ng-bind-html='part.labels.Search'></button>

@@ -38,7 +38,9 @@
                 <td>{{order.xp.ReviewerName}}</td>
                 <td>{{order.xp.StatusDate}}</td>
                 <td>{{order.xp.DeliveryDate}}</td>
-                <td><button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button></td>
+                <td>
+                    <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
+                </td>
             </tr>
             </tbody>
         </table>

@@ -30,7 +30,7 @@ function QuotesConfig($stateProvider) {
 			controllerAs: 'saved',
 			resolve: {
 				Quotes: function(WeirService) {
-					return WeirService.FindQuotes([WeirService.OrderStatus.Saved], false);
+					return WeirService.FindQuotes([WeirService.OrderStatus.Saved,WeirService.OrderStatus.Draft], false);
 				},
                 CurrentOrderId: function(CurrentOrder) {
 					return CurrentOrder.GetID()

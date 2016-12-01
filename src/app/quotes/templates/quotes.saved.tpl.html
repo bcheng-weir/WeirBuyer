@@ -25,7 +25,7 @@
                         <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
                         <td>
                             <button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
-                            <a ui-sref="revisions({quoteID:quote.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="saved.labels.Revisions" ng-if="quote.xp.Status!='SV'"></a>
+                            <!--<a ui-sref="revisions({quoteID:quote.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="saved.labels.Revisions" ng-if="quote.xp.Status!='SV'"></a>-->
                         </td>
                     </tr>
                 </tbody>

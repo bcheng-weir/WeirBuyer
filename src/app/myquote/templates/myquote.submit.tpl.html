@@ -56,9 +56,9 @@
                         <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
                         <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
                     </td>
-                    <td ng-switch on="submit.Quote.xp.Currency" class='text-right'>
-                        <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
-                        <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
+                    <td ng-switch on="submit.BuyerID | weirGroupFromBuyersID" class='text-right'>
+                        <span ng-switch-when="WPIFR">{{line.UnitPrice | currency:'&euro; '}}</span>
+                        <span ng-switch-when="WVCUK">{{line.UnitPrice | currency:'&#163; '}}</span>
                         <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
                     </td>
                     <td class="text-right">{{line.Quantity}}</td>
@@ -66,9 +66,9 @@
                 <tr ng-if="submit.LineItems.length > 0">
                     <td class="button-th" colspan="5"></td>
                     <td style="font-weight:bold;" ng-bind-html='submit.labels.Total'></td>
-                    <td ng-switch on="submit.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
-                        <span ng-switch-when="EUR">{{submit.Quote.Total | currency:'&euro;'}}</span>
-                        <span ng-switch-when="GBP">{{submit.Quote.Total | currency:'&#163; '}}</span>
+                    <td ng-switch on="submit.BuyerID | weirGroupFromBuyersID" class='text-right' style="font-weight:bold;">
+                        <span ng-switch-when="WPIFR">{{submit.Quote.Total | currency:'&euro;'}}</span>
+                        <span ng-switch-when="WVCUK">{{submit.Quote.Total | currency:'&#163; '}}</span>
                         <span ng-switch-default>{{submit.Quote.Total | currency:'&#163; '}}</span>
                     </td>
                 </tr>

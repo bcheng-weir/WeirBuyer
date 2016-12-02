@@ -61,9 +61,9 @@
                             <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
                             <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
                         </td>
-                        <td ng-switch on="readonly.Quote.xp.Currency" class='text-right'>
-                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
-                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
+                        <td ng-switch on="readonly.BuyerID | weirGroupFromBuyersID" class='text-right'>
+                            <span ng-switch-when="WPIFR">{{line.UnitPrice | currency:'&euro; '}}</span>
+                            <span ng-switch-when="WVCUK">{{line.UnitPrice | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
                         </td>
                         <td class="text-right">{{line.Quantity}}</td>
@@ -71,9 +71,9 @@
                     <tr ng-if="readonly.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='readonly.labels.Total'></td>
-                        <td ng-switch on="readonly.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="EUR">{{readonly.Quote.Total | currency:'&euro;'}}</span>
-                            <span ng-switch-when="GBP">{{readonly.Quote.Total | currency:'&#163; '}}</span>
+                        <td ng-switch on="readonly.BuyerID | weirGroupFromBuyersID" class='text-right' style="font-weight:bold;">
+                            <span ng-switch-when="WPIFR">{{readonly.Quote.Total | currency:'&euro;'}}</span>
+                            <span ng-switch-when="WVCUK">{{readonly.Quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{readonly.Quote.Total | currency:'&#163; '}}</span>
                         </td>
                     </tr>
@@ -115,9 +115,8 @@
         </div>
         <div class="col-md-6">
             <p><b><span ng-bind-html='readonly.labels.YourAttachments'></span><br></b></p>
-            <!--<p ng-repeat="fileName in readonly.Quote.xp.Files">{{fileName}}</p>-->
             <p ng-repeat="fileName in readonly.Quote.xp.Files">
-                <a href="{{readonly.GetFileUrl(fileName)}}" target="_blank">{{fileName}}</a>
+                <a href="" ng-click="revised.GetFile(fileName)" target="_blank">{{fileName}}</a>
             </p>
             <p><b><span ng-bind-html='readonly.labels.CommentsHeader'></span></b></p>
             <p>

@@ -18,7 +18,7 @@ function QuotesConfig($stateProvider) {
 				CurrentCustomer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
 				},
-				MyOrg: function(OrderCloud, CurrentCustomer) {
+				MyOrg: function(OrderCloud) {
 					return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
 				}
 			}
@@ -203,7 +203,6 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, Cu
 	vm.ReviewQuote = _reviewQuote;
 }
 
-
 function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 	var vm = this;
 	vm.Quotes = Quotes;
@@ -238,6 +237,7 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
+
 function RouteToQuoteController($rootScope, $state, OrderCloud, WeirService, toastr, Quote) {
     if (Quote) {
         var status = Quote.xp.Status;

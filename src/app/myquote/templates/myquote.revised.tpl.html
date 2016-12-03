@@ -173,9 +173,9 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-12">
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <ul class="nav nav-tabs">
                         <li class="active comments"><a href="#" id="Comments" ng-bind-html="revised.labels.Comments"></a></li>
                     </ul>
@@ -183,7 +183,7 @@
             </div>
             <br>
             <div class="row" ng-repeat="comment in revised.Quote.xp.CommentsToWeir"> <!-- ng-repeat comment in comments to weir -->
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <div>
                         <span ng-bind-html="comment.by"></span>
                         <span ng-bind-html="revised.labels.AddedComment"></span>
@@ -197,12 +197,12 @@
                 </div>
             </div>
             <div class="row" ng-hide="revised.ShowCommentBox">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <button class="btn btn-lg btn-default" ng-bind-html="revised.labels.Comment" ng-click="revised.ShowCommentBox=true"></button>
                 </div>
             </div>
             <div class="row" ng-show="revised.ShowCommentBox">
-                <div class="col-lg-12">
+                <div class="col-md-12">
                     <textarea cols="100" rows="6" ng-model="revised.CommentToWeir"></textarea>
                     <br>
                     <button class="btn btn-lg btn-primary" ng-bind-html="revised.labels.Add" ng-click="revised.AddNewComment()"></button>

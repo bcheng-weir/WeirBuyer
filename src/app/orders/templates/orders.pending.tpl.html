@@ -33,9 +33,9 @@
                 <td>{{order.ID}}</td>
                 <td>{{order.xp.Name}}</td>
                 <td>{{order.xp.RefNum}}</td>
-                <td ng-switch on="quote.xp.Currency">
-                    <span ng-switch-when="EUR">{{order.Total | currency:'&euro; '}}</span>
-                    <span ng-switch-when="GBP">{{order.Total | currency:'&#163; '}}</span>
+                <td ng-switch on="orders.Customer.id | weirGroupFromBuyersID">
+                    <span ng-switch-when="WPIFR">{{order.Total | currency:'&euro; '}}</span>
+                    <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
                     <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
                 </td>
                 <td>{{orders.getStatusLabel(order.xp.Status) + "; " + (order.xp.StatusDate | weirdate)}}</td>

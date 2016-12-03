@@ -39,9 +39,9 @@
                         <td>{{line.Product.Description}}</td>
                         <td>{{line.Product.xp.ReplacementSchedule}}</td>
                         <td>{{line.Product.xp.LeadTime}}</td>
-                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right'>
-                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
-                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
+                        <td ng-switch on="myquote.Customer.id | weirGroupFromBuyersID" class='text-right'>
+                            <span ng-switch-when="WPIFR">{{line.UnitPrice | currency:'&euro; '}}</span>
+                            <span ng-switch-when="WVCUK">{{line.UnitPrice | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
                         </td>
                         <td class="form-inline">
@@ -54,9 +54,9 @@
                     <tr ng-if="detail.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='detail.labels.Total'></td>
-                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="EUR">{{myquote.Quote.Total | currency:'&euro;'}}</span>
-                            <span ng-switch-when="GBP">{{myquote.Quote.Total | currency:'&#163; '}}</span>
+                        <td ng-switch on="myquote.Customer.id | weirGroupFromBuyersID" class='text-right' style="font-weight:bold;">
+                            <span ng-switch-when="WPIFR">{{myquote.Quote.Total | currency:'&euro; '}}</span>
+                            <span ng-switch-when="WVCUK">{{myquote.Quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{myquote.Quote.Total | currency:'&#163; '}}</span>
                         </td>
                     </tr>

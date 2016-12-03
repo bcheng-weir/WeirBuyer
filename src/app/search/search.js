@@ -522,7 +522,6 @@ function SerialDetailController( $stateParams, $rootScope, $scope, $state, $sce,
 function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService, MyOrg ) {
     var vm = this;
     vm.PartMatches = [];
-
 	vm.WeirGroup = MyOrg.xp.WeirGroup.label;
 	vm.partNumbers = [null];
 	WeirService.SetLastSearchType(WeirService.SearchType.Part);
@@ -591,8 +590,7 @@ function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService, MyO
                         vm.PartMatches.push.apply(vm.PartMatches, results);
                     }
                 })
-                .catch(function (ex) {
-                });
+                .catch(function (ex) {});
 	    }
 	};
 }

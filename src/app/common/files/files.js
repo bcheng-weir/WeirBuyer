@@ -144,11 +144,11 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
 
 	    var labels = {
 	    	en: {
-	    		SelectFiles: "Or select files to upload",
+	    		SelectFiles: "Select file to upload",
 			    Invalid: "Invalid File Type"
 		    },
 		    fr: {
-			    SelectFiles: $sce.trustAsHtml("Or select files to upload"),
+			    SelectFiles: $sce.trustAsHtml("Select file to upload"),
 			    Invalid: $sce.trustAsHtml("Invalid File Type")
 		    }
 	    };
@@ -159,7 +159,13 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
         };
 
         scope.get = function(fileName) {
-            FilesService.Get(orderid + fileName);
+            FilesService.Get(orderid + fileName)
+                .then(function(fileData) {
+                    console.log(fileData);
+                    var file = new Blob([fileData.Body], {type: fileData.ContentType});
+                    var fileURL = URL.createObjectURL(file);
+                    window.open(fileURL, "_blank");
+                });
         };
 
         scope.remove = function(fileName) {
@@ -296,18 +302,24 @@ function ordercloudPoUpload($parse, $exceptionHandler, $sce, Underscore, FileRea
 
 	    var labels = {
 		    en: {
-			    SelectFiles: "Or select files to upload",
+			    SelectFiles: "Select PO file to upload.",
 			    Invalid: "Invalid File Type"
 		    },
 		    fr: {
-			    SelectFiles: $sce.trustAsHtml("Or select files to upload"),
+			    SelectFiles: $sce.trustAsHtml("Sélectionner le fichier PO à importer"),
 			    Invalid: $sce.trustAsHtml("Invalid File Type")
 		    }
 	    };
 	    scope.labels = WeirService.LocaleResources(labels);
 
         scope.get = function(fileName) {
-            FilesService.Get(orderid + fileName);
+            FilesService.Get(orderid + fileName)
+                .then(function(fileData) {
+                    console.log(fileData);
+                    var file = new Blob([fileData.Body], {type: fileData.ContentType});
+                    var fileURL = URL.createObjectURL(file);
+                    window.open(fileURL, "_blank");
+                });
         };
 
         scope.remove = function(fileName) {

@@ -82,11 +82,12 @@ function OrdersConfig($stateProvider) {
     ;
 }
 
-function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, MyOrg, WeirService) {
+function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, MyOrg, WeirService, CurrentCustomer) {
     var vm = this;
     vm.list = Orders;
     vm.parameters = Parameters;
 	vm.MyOrg = MyOrg;
+	vm.Customer = CurrentCustomer;
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);
 		if (status) {

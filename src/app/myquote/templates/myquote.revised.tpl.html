@@ -64,9 +64,9 @@
                             <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
                             <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
                         </td>
-                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right'>
-                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
-                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
+                        <td ng-switch on="revised.BuyerID | weirGroupFromBuyersID" class='text-right'>
+                            <span ng-switch-when="WPIFR">{{line.UnitPrice | currency:'&euro; '}}</span>
+                            <span ng-switch-when="WVCUK">{{line.UnitPrice | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
                         </td>
                         <td class="form-inline">
@@ -117,9 +117,9 @@
                     <tr ng-if="revised.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='revised.labels.Total'></td>
-                        <td ng-switch on="myquote.Quote.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="EUR">{{revised.Quote.Total | currency:'&euro; '}}</span>
-                            <span ng-switch-when="GBP">{{revised.Quote.Total | currency:'&#163; '}}</span>
+                        <td ng-switch on="revised.BuyerID | weirGroupFromBuyersID" class='text-right' style="font-weight:bold;">
+                            <span ng-switch-when="WPIFR">{{revised.Quote.Total | currency:'&euro;'}}</span>
+                            <span ng-switch-when="WVCUK">{{revised.Quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{revised.Quote.Total | currency:'&#163; '}}</span>
                         </td>
                     </tr>
@@ -165,7 +165,10 @@
         <div class="col-md-6">
             <p><b><span ng-bind-html='revised.labels.YourAttachments'></span><br></b></p>
             <p ng-repeat="fileName in revised.Quote.xp.Files">
-                <a href="{{readonly.GetFileUrl(fileName)}}" target="_blank">{{fileName}}</a>
+                <a href="" ng-click="revised.GetFile(fileName)" target="_blank">{{fileName}}</a>
+            </p>
+            <p ng-if="revised.Quote.xp.PODocument!=null">
+                <a href="" ng-click="revised.GetFile(revised.Quote.xp.PODocument)" target="_blank">{{revised.Quote.xp.PODocument}}</a>
             </p>
             <p><b><span ng-bind-html='revised.labels.CommentsHeader'></span></b></p>
             <p><span ng-bind-html='revised.Quote.Comments'></span></p>

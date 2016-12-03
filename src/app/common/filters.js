@@ -7,6 +7,7 @@ angular.module( 'orderCloud' )
     .filter( 'searchresults', searchresults )
     .filter('weirdate', weirdate)
     .filter('weirfulldate', weirfulldate)
+	.filter('weirGroupFromBuyersID', weirGroupFromBuyersID)
 ;
 
 function serialnumber() {
@@ -154,4 +155,14 @@ function weirfulldate() {
         }
         return result;
     }
+}
+
+function weirGroupFromBuyersID() {
+	return function (currentBuyerID) {
+		if(currentBuyerID) {
+			return currentBuyerID.substring(0, 5);
+		} else {
+			return currentBuyerID;
+		}
+	}
 }

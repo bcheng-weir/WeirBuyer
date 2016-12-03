@@ -124,13 +124,13 @@ function MyQuoteConfig($stateProvider) {
 		        }
 		    }
 		})
-		.state( 'myquote.detail', {
+		.state('myquote.detail', {
 			url: '/detail',
 			templateUrl: 'myquote/templates/myquote.detail.tpl.html',
 			controller: 'MyQuoteDetailCtrl',
 			controllerAs: 'detail'
 		})
-		.state( 'myquote.delivery', {
+		.state('myquote.delivery', {
 			url: '/delivery',
 			templateUrl: 'myquote/templates/myquote.delivery.tpl.html',
 			controller: 'QuoteDeliveryOptionCtrl',
@@ -141,7 +141,7 @@ function MyQuoteConfig($stateProvider) {
 				}
 			}
 		})
-		.state( 'myquote.review', {
+		.state('myquote.review', {
 			url: '/review',
 			templateUrl: 'myquote/templates/myquote.review.tpl.html',
 			controller: 'ReviewQuoteCtrl',
@@ -688,7 +688,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             CommentsInstr: "Please add any specific comments or instructions for this quote",
 		    DeliveryOptions: "Delivery Options",
 			Update: "Update",
-			DragAndDrop: "Drag and drop files here to upload"
+			DragAndDrop: "Save your draft before uploading documents."
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client"),
@@ -711,7 +711,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             CommentsInstr: $sce.trustAsHtml("Veuillez ajouter tout commentaire ou instructions sp&eacute;cifiques pour cette cotation"),
             DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
 			Update: $sce.trustAsHtml("Mettre &agrave; jour"),
-			DragAndDrop: $sce.trustAsHtml("FR: Drag and drop files here to upload")
+			DragAndDrop: $sce.trustAsHtml("Enregistrez votre ébauche avant de télécharger des documents.")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -858,7 +858,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore) {
+    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore, FilesService) {
     var vm = this;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
 	if( (typeof(QuoteShareService.Quote.xp.CommentsToWeir) == 'undefined') || QuoteShareService.Quote.xp.CommentsToWeir == null) QuoteShareService.Quote.xp.CommentsToWeir = [];
@@ -965,15 +965,16 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     };
     vm.labels = WeirService.LocaleResources(labels);
 
-	vm.GetFileUrl = function(fileName) {
-		var encodedFileName = encodeURIComponent(fileName);
-		var orderid = null;
-		if(vm.Quote.xp.OriginalOrderID == null) {
-			orderid = vm.Quote.ID;
-		} else {
-			orderid = vm.Quote.xp.OriginalOrderID
-		}
-		return vm.fileStore.location + orderid + encodedFileName;
+	vm.GetFile = function(fileName) {
+		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
+
+		FilesService.Get(orderid + fileName)
+			.then(function(fileData) {
+				console.log(fileData);
+				var file = new Blob([fileData.Body], {type: fileData.ContentType});
+				var fileURL = URL.createObjectURL(file);
+				window.open(fileURL, "_blank");
+			});
 	};
 
     function _deleteLineItem(quoteNumber, itemid) {
@@ -1228,11 +1229,13 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.toReview = _gotoReview;
 }
 
-function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me, fileStore) {
+function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography,
+	Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me, fileStore, FilesService) {
     var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
     vm.LineItems = LineItems.Items;
+	vm.BuyerID = OrderCloud.BuyerID.Get();
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if(item.ProductID == "PLACEHOLDER") {
@@ -1358,15 +1361,15 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
     };
     vm.labels = WeirService.LocaleResources(labels);
 
-	vm.GetFileUrl = function(fileName) {
-		var encodedFileName = encodeURIComponent(fileName);
-		var orderid = null;
-		if(vm.Quote.xp.OriginalOrderID == null) {
-			orderid = vm.Quote.ID;
-		} else {
-			orderid = vm.Quote.xp.OriginalOrderID
-		}
-		return vm.fileStore.location + orderid + encodedFileName;
+	vm.GetFile = function(fileName) {
+		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
+		FilesService.Get(orderid + fileName)
+			.then(function(fileData) {
+				console.log(fileData);
+				var file = new Blob([fileData.Body], {type: fileData.ContentType});
+				var fileURL = URL.createObjectURL(file);
+				window.open(fileURL, "_blank");
+			});
 	};
 
 	function _gotoQuotes() {
@@ -1387,7 +1390,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		// return true if qty <> xp.originalQty and qty > 0
 		if(item.xp) {
 			//return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && (item.Product.xp.LeadTime != item.xp.OriginalLeadTime));
-			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime != item.xp.OriginalLeadTime)));
+			//return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime != item.xp.OriginalLeadTime)));
+			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
 		} else {
 			return false;
 		}
@@ -1732,7 +1736,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, Me, fileStore) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, Me, fileStore, OrderCloud, FilesService) {
     var vm = this;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
@@ -1740,6 +1744,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
     vm.Quote = Quote;
     vm.ShippingAddress = ShippingAddress;
     vm.LineItems = LineItems ? LineItems.Items : [];
+	vm.BuyerID = OrderCloud.BuyerID.Get();
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
@@ -1826,15 +1831,15 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
     };
     vm.labels = WeirService.LocaleResources(labels);
 
-	vm.GetFileUrl = function(fileName) {
-		var encodedFileName = encodeURIComponent(fileName);
-		var orderid = null;
-		if(vm.Quote.xp.OriginalOrderID == null) {
-			orderid = vm.Quote.ID;
-		} else {
-			orderid = vm.Quote.xp.OriginalOrderID
-		}
-		return vm.fileStore.location + orderid + encodedFileName;
+	vm.GetFile = function(fileName) {
+		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
+		FilesService.Get(orderid + fileName)
+			.then(function(fileData) {
+				console.log(fileData);
+				var file = new Blob([fileData.Body], {type: fileData.ContentType});
+				var fileURL = URL.createObjectURL(file);
+				window.open(fileURL, "_blank");
+			});
 	};
 
 	vm.ToCsvJson = toCsv;
@@ -1883,7 +1888,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.gotoRevisions = _gotoRevisions;
 }
 
-function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, toastr) {
+function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
+                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1891,6 +1897,7 @@ function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $stat
 	vm.Quote = Quote;
 	vm.ShippingAddress = ShippingAddress;
 	vm.LineItems = LineItems ? LineItems.Items : [];
+	vm.BuyerID = OrderCloud.BuyerID.Get();
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {

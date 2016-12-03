@@ -25,9 +25,20 @@
   }
 }
 
-#BASE_TOP,
+#BASE_TOP {
+  flex: 0 1 auto;
+  .navbar {
+    margin: 0;
+    border-radius: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+  }
+}
+
+
 #BASE_BOTTOM {
-  flex:0 1 auto;
+  position: absolute;
+  bottom: 0px;
   .navbar {
     margin:0;
     border-radius:0;
@@ -113,6 +124,7 @@
 .brandImage{
   background-image: url('../../../../src/assets/hero-image.jpg') !important;
 }
+
 .footer-logo-band {
   border-top: 1px solid #b3bbc1;
   padding: 20px 0;

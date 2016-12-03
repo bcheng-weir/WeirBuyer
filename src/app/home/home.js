@@ -78,26 +78,26 @@ function HomeController($sce, $state, $rootScope, WeirService, SearchProducts) {
             TagNumber: "Tag number"
         },
         fr: {
-            Search : "Centre de recherche",
-            PlatformMsg1 : "Planifiez à l'avance les arrêts, les réparations ou les pannes. Créez et enregistrez rapidement des devis pour les pièces de rechange pour vos vannes. Consultez les listes de pièces détachées pour vos vannes et soumettez vos commandes. Toutes les soumissions soumises et les commandes seront vérifiées et confirmées par votre équipe existante de soupape.",
-            PlatformMsg2Header : "Comment utiliser la plate-forme",
-            PlatformMsg2 : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dui massa, vestibulum in malesuada vehicula, porttitor at turpis. Nulla facilisi. Vestibulum eu imperdiet nisl.",
-            DetailsSearchHeader : "Chercher",
-            DeatilsSearchMsg : "Recherche par numéro de série Weir, numéro de pièce Weir ou votre numéro de tag. Parcourez la recherche de résultats et visualisez les pièces associées associées.",
-            DetailsQuoteHeader : "Citation",
-            DetailsQuoteMsg : "Créez votre devis pour vos pièces de rechange et consultez les prix et les délais. Vous pouvez également enregistrer et partager vos devis avec votre propre référence",
-            DetailsDetailsHeader : "Détails",
-            DetailsDetailsMsg : "Envoyez une documentation de référence et des commentaires à votre devis ou votre commande afin de nous aider à vous donner le meilleur prix adapté à vos besoins.",
-            DetailsSubmitHeader : "Soumettre",
-            DetailsSubmitMsg : "Vous pouvez soumettre votre devis afin que nous puissions vérifier et confirmer votre devis avant de passer votre commande.",
-            OrderMsg : "Votre confirmation de commande vous sera envoyée par e-mail et Weir mettra à jour l'ordre de la plate-forme avec le numéro de contrat",
-            Brands: "Marques",
-            BrandsMsg: "Explorez les marques du groupe Weir à l'aide de leurs pages de marque individuelles ci-dessous.",
-            SerialNumber: "Numéro de série",
-            PartNumber: "Numéro de pièce",
-            TagNumber: "Numéro du tag",
-            SarasinRSBD: "Sarasin RSBD®",
-            SarasinRSBDMsg: "Lorem...."
+            Search : $sce.trustAsHtml("Centre de recherche"),
+            PlatformMsg1 : $sce.trustAsHtml("Planifiez à l'avance les arrêts, les réparations ou les pannes. Créez et enregistrez rapidement des devis pour les pièces de rechange pour vos vannes. Consultez les listes de pièces détachées pour vos vannes et soumettez vos commandes. Toutes les soumissions soumises et les commandes seront vérifiées et confirmées par votre équipe existante de soupape."),
+            PlatformMsg2Header : $sce.trustAsHtml("Comment utiliser la plate-forme"),
+            PlatformMsg2 : $sce.trustAsHtml("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dui massa, vestibulum in malesuada vehicula, porttitor at turpis. Nulla facilisi. Vestibulum eu imperdiet nisl."),
+            DetailsSearchHeader : $sce.trustAsHtml("Chercher"),
+            DeatilsSearchMsg : $sce.trustAsHtml("Recherche par numéro de série Weir, numéro de pièce Weir ou votre numéro de tag. Parcourez la recherche de résultats et visualisez les pièces associées associées."),
+            DetailsQuoteHeader : $sce.trustAsHtml("Citation"),
+            DetailsQuoteMsg : $sce.trustAsHtml("Créez votre devis pour vos pièces de rechange et consultez les prix et les délais. Vous pouvez également enregistrer et partager vos devis avec votre propre référence"),
+            DetailsDetailsHeader : $sce.trustAsHtml("Détails"),
+            DetailsDetailsMsg : $sce.trustAsHtml("Envoyez une documentation de référence et des commentaires à votre devis ou votre commande afin de nous aider à vous donner le meilleur prix adapté à vos besoins."),
+            DetailsSubmitHeader : $sce.trustAsHtml("Soumettre"),
+            DetailsSubmitMsg : $sce.trustAsHtml("Vous pouvez soumettre votre devis afin que nous puissions vérifier et confirmer votre devis avant de passer votre commande."),
+            OrderMsg : $sce.trustAsHtml("Votre confirmation de commande vous sera envoyée par e-mail et Weir mettra à jour l'ordre de la plate-forme avec le numéro de contrat"),
+            Brands: $sce.trustAsHtml("Marques"),
+            BrandsMsg: $sce.trustAsHtml("Explorez les marques du groupe Weir à l'aide de leurs pages de marque individuelles ci-dessous."),
+            SerialNumber: $sce.trustAsHtml("Numéro de série"),
+            PartNumber: $sce.trustAsHtml("Numéro de pièce"),
+            TagNumber: $sce.trustAsHtml("Numéro du tag"),
+            SarasinRSBD:"Sarasin RSBD®",
+            SarasinRSBDMsg: $sce.trustAsHtml("Lorem....")
         }
     };
     vm.LanguageUsed = WeirService.Locale();
@@ -110,8 +110,8 @@ function HomeController($sce, $state, $rootScope, WeirService, SearchProducts) {
         vm.selectedItem = label;
     };
     //using a repeater to display these in a div.
-    vm.BrandUK = [{title: vm.labels.Batley, description: vm.labels.BatleyMsg, url: vm.labels.Batley.replace(" ", "-").replace("®", "").toLowerCase()}, {title: vm.labels.Blakeborough, description: vm.labels.BlakeboroughMsg, url: vm.labels.Blakeborough.replace("®", "").toLowerCase()}, {title: vm.labels.Hopkinsons, description: vm.labels.HopkinsonsMsg, url: vm.labels.Hopkinsons.replace("®", "").toLowerCase()}];
-    vm.BrandFR = [{title: vm.labels.SarasinRSBD, description: vm.labels.SarasinRSBDMsg}];
+    if(vm.LanguageUsed == 'en' ) vm.BrandUK = [{title: vm.labels.Batley, description: vm.labels.BatleyMsg, url: "0"}, {title: vm.labels.Blakeborough, description: vm.labels.BlakeboroughMsg, url: "1"}, {title: vm.labels.Hopkinsons, description: vm.labels.HopkinsonsMsg, url: "2"}];
+    if(vm.LanguageUsed == 'fr' ) vm.BrandFR = [{title: vm.labels.SarasinRSBD, description: vm.labels.SarasinRSBDMsg, url: "3"}];
 	vm.SearchProducts = function(val) {
 		var options = {
 			"Serial number": "GetAllSerialNumbers",

@@ -119,6 +119,7 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
     vm.right = base.right;
     $rootScope.currentUser = CurrentUser;
     $rootScope.myOrg = MyOrg;
+    vm.OrganizationUsed = MyOrg;
     vm.currentUser = CurrentUser;
     vm.catalogItems = ComponentList.nonSpecific;
     vm.organizationItems = ComponentList.buyerSpecific;

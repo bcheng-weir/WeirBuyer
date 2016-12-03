@@ -61,14 +61,17 @@
 	<div class="panel-body clearfix">
 		<ul class="nav nav-pills">
 			<li class="brand-nav">
-				<a ui-sref="brands({brandId:0})">About Batley</a>
+				<a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})">About Batley</a>
 			</li>
 			<li class="brand-nav">
-				<a ui-sref="brands({brandId:1})">About Blakeborough</a>
+				<a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})">About Blakeborough</a>
 			</li>
 			<li class="brand-nav">
-				<a ui-sref="brands({brandId:2})">About Hopkinsons</a>
+				<a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})">About Hopkinsons</a>
 			</li>
+            <li class="brand-nav">
+                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">About Sarasin</a>
+            </li>
             <li class="newQuote">
                 <a href="#" ng-click="base.newQuote()" ng-bind-html="base.navlabels.newQuote"></a>
             </li>

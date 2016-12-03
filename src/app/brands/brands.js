@@ -31,21 +31,21 @@ function BrandController(Parameters, WeirService) {
     var labels = {
         en: {
             Batley: "Batley Valve®",
-            AboutBatley: "About Batley® Valve",
+            AboutBatley: "About Batley\<sup\>®\</sup\> Valve",
             BatleyMsg: "Weir manufactures an extensive range of butterfly valves for isolation and control applications under the Batley Valve® brand.",
             BatleyTitle: "A leading standard in global process sectors",
             Blakeborough: "Blakeborough®",
-            AboutBlakeborough: "About Blakeborough® Valve",
+            AboutBlakeborough: "About Blakeborough\<sup\>®\</sup\> Valve",
             BlakeboroughTitle: "A leading standard in global process sectors",
             BlakeboroughMsg: "The Blakeborough® brand has been at the forefront of designing and manufacturing control, choke and steam conditioning valves for more than 70 years.",
             Hopkinsons: "Hopkinsons®",
-            AboutHopkinsons: "About Hopkinsons® Valve",
+            AboutHopkinsons: "About Hopkinsons\<sup\>®\</sup\> Valve",
             HopkinsonsTitle: "A leading standard in global process sectors",
             HopkinsonsMsg: "Established over 160 years ago, the Hopkinsons® brand is renowned for long and dependable service life, generation after generation."
         },
         fr: {
             SarasinRSBD: "Sarasin RSBD®",
-            AboutSarasinRSBD: "About Hopkinsons® Valve",
+            AboutSarasinRSBD: "About SarasinRSBD\<sup\>®\</sup\> Valve",
             SarasinRSBDTitle: "A leading standard in global process sectors",
             SarasinRSBDMsg: "Established over 160 years ago, the Hopkinsons® brand is renowned for long and dependable service life, generation after generation."
         }

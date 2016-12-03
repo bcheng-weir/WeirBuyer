@@ -1,20 +1,37 @@
 <main id="COMPONENT_Login" ng-switch="login.form" style="background-image: url('../../../../src/assets/hero-image.jpg'); background-size: cover;">
     <!-- items below login-->
-    <div class="login">
-        <div class="container loginHeader" >
-            <div class="pull-left">
-                <ul class="menu">
-                    <li><a href="" >{{login.labels.WorldWide}}</a></li>
-                </ul>
+    <div class="row">
+        <!--Header -->
+        <div class="row">
+            <div class="container loginHeader">
+                <div clas="row">
+                    <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-5">
+                                        <ul class="menu">
+                                            <li><a href="" >{{login.labels.WorldWide}}</a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <a class="logo" href="/"><img src="../src/assets/logo.jpg"></a>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <div class="language">
+                                            <ul class="menu">
+                                                <li><a ng-click="login.setCookie('en')">English</a></li>
+                                                <li><a ng-click="login.setCookie('fr')">Francais</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                </div>
             </div>
-            <a class="logo" href="/"><img src="../src/assets/logo.jpg"></a>
-            <div class="language pull-right">
-                <ul class="menu">
-                    <li><a ng-click="login.setCookie('en')">English</a></li>
-                    <li><a ng-click="login.setCookie('fr')">Francais</a></li>
-                </ul>
-            </div>
-        </div>
+     </div>
+
 
 
     <!-- login section -->
@@ -74,29 +91,38 @@
                 </div>
             </div>
         </div>
-
     </section>
+    </div>
 
     <!-- items below login-->
-    <footer>
-        <nav class="navbar navbar-fixed-bottom">
+    <footer class="bottomFooter">
+        <div class="footer-logo-band footer-nav">
             <div class="container">
                 <ul class="menu">
                     <li>
-                        <a href="" ui-sref="terms-of-use">{{login.navlabels.termsTitle}}</a>
+                        <a ui-sref="terms-of-use">{{login.navlabels.termsTitle}}</a>
                     </li>
                     <li>
-                        <a href="" ui-sref="cookie-policy">{{login.navlabels.cookieTitle}}</a>
+                        <a  ui-sref="cookie-policy">{{login.navlabels.cookieTitle}}</a>
                     </li>
                     <li>
-                        <a href=""ui-sref="privacy-statement">{{login.navlabels.privacyTitle}}</a>
+                        <a  ui-sref="privacy-statement">{{login.navlabels.privacyTitle}}</a>
                     </li>
                     <li>
-                        <a href="" ui-sref="privacy-statement"ui-sref="contact-us">{{login.navlabels.contactTitle}}</a>
+                        <a ui-sref="contact-us">{{login.navlabels.contactTitle}}</a>
                     </li>
                 </ul>
             </div>
-            </nav>
+        </div>
+        <div class="footer-logo-band">
+            <div class="container">
+                <div class="hidden-xs" style="float:left">
+                    <a href="https://www.global.weir/"><img alt="Weir logo" src="https://www.global.weir/assets/template/img/footer/Weir-Site-Home-footer.jpg"></a>
+                </div>
+                <div class="footer-mob">
+                    <p>© 2016 The Weir Group PLC, 1 West Regent Street, Glasgow, G2 1RW. Company Number 2934.</p>
+                </div>
+            </div>
+        </div>
     </footer>
-    </div>
 </main>

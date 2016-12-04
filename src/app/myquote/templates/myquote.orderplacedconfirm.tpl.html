@@ -1,11 +1,14 @@
-<div class="source-list-modal">
-    <div class="modal-header" style="padding-bottom: 0px;">
-	    <span style="font-weight: bold;" ng-bind-html="submitconfirm.labels.Title"></span>
-    </div>
-    </div>
-    <div class="modal-body" style="margin-top: -5px;" >
-        <p ng-if="submitconfirm.labels.MessageText1" ng-bind-html="submitconfirm.labels.MessageText1"></p>
-        <p ng-if="submitconfirm.labels.MessageText2" ng-bind-html="submitconfirm.labels.MessageText2" style="font-weight: bold;"></p>
-        <p ng-if="submitconfirm.labels.MessageText3" ng-bind-html="submitconfirm.labels.MessageText3"></p>
+<div class="source-list-modal" role="dialog">
+    <div class="modal-content">
+        <div class="modal-header" style="padding-bottom: 5px;">
+	        <span style="font-weight: bold;" ng-bind-html="submitconfirm.labels.Title"></span>
+        </div>
+        <div class="modal-body" style="margin-top: -5px;" >
+            <p ng-if="submitconfirm.labels.MessageText1" ng-bind-html="submitconfirm.labels.MessageText1"></p>
+            <p ng-if="submitconfirm.labels.MessageText2" ng-bind-html="submitconfirm.labels.MessageText2" style="font-weight: bold;"></p>
+            <p ng-if="submitconfirm.labels.MessageText3" ng-bind-html="submitconfirm.labels.MessageText3"></p>
+        </div>
+        <div class="modal-footer">
+        </div>
     </div>
 </div>

@@ -42,7 +42,13 @@ function QuoteHelperService($q, OrderCloud) {
     return service;
 }
 
-function MyQuoteConfig($stateProvider) {
+function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
+	$sceDelegateProvider.resourceUrlWhitelist([
+		'self',
+		'https://www.global.weir/brands/**',
+		'https://**.herokuapp.com/**',
+		'https://s3.us-east-2.amazonaws.com/ordercloudtest/**'
+	]);
 	$stateProvider
 		.state('myquote', {
 		    parent: 'base',

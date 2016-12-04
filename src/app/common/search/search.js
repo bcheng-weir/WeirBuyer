@@ -119,17 +119,18 @@ function TrackSearchService() {
     return service;
 }
 
-function SearchProductsService(OrderCloud, $rootScope, CurrentOrder) {
-	//
+function SearchProductsService(OrderCloud, Me, SearchTypeService) {
+	//This service handles type ahead. for app/search and app/home.
     var service = {
         GetAllSerialNumbers: _getAllSerialNumbers,
         GetAllTagNumbers: _getAllTagNumbers,
         GetAllPartNumbers: _getAllPartNumbers,
-	    ImpersonateGetPartNumbers: _impersonateGetPartNumbers
+	    GetPart: _getPart
     };
-
+	var partResults = {};
+    //First three are the home page search methods.
     function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
-    	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.SN": lookForThisPartialSerialNumber+"*", "ParentID":$rootScope.myOrg.ID}, "all", $rootScope.myOrg.xp.WeirGroup.label)
+    	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.SN": lookForThisPartialSerialNumber+"*", "ParentID":Me.Org.ID}, "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
                 return response.Items.map(function(item) {
                     return item.xp.SN;
@@ -138,7 +139,7 @@ function SearchProductsService(OrderCloud, $rootScope, CurrentOrder) {
     }
 
     function _getAllTagNumbers(lookForThisPartialTagNumber) {
-        return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.TagNumber": lookForThisPartialTagNumber+"*", "ParentID":$rootScope.myOrg.ID}, "all", $rootScope.myOrg.xp.WeirGroup.label)
+        return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.TagNumber": lookForThisPartialTagNumber+"*", "ParentID":Me.Org.ID}, "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
                 return response.Items.map(function(item) {
                     return item.xp.TagNumber;
@@ -149,15 +150,80 @@ function SearchProductsService(OrderCloud, $rootScope, CurrentOrder) {
     function _getAllPartNumbers(lookForThisPartialPartNumber) {
         return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"Name": lookForThisPartialPartNumber+"*"})
             .then(function(response) {
-                return response.Items.map(function(item) {
-                    return item.Name;
-                })
+	            if(Me.Org.xp.WeirGroup.label == "WVCUK") {
+		            partResults = response;
+		            return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"})
+			            .then(function(altResponse) {
+				            partResults.Items.push.apply(altResponse.Items);
+				            return partResults.Items.map(function(item) {
+					            return item.Name;
+				            });
+			            });
+	            } else {
+		            return response.Items.map(function (item) {
+			            return item.Name;
+		            });
+	            }
             });
     }
 
-    function _impersonateGetPartNumbers(lookForThisPartialPartNumber) {
-		return;
-    }
+    //This method is used in the main search that is NOT the home page.
+	function _getPart(lookForThisProduct, forThisCustomer) {
+		var filter = {
+			"s":{
+				"xp.SN":lookForThisProduct+"*"
+			},
+			"t":{
+				"xp.TagNumber":lookForThisProduct+"*"
+			},
+			"p":{
+				"WPIFR":{
+					"primary": {
+						"Name":lookForThisProduct+"*"
+					}
+				},
+				"WVCUK":{
+					"primary":{
+						"Name":lookForThisProduct+"*"
+					},
+					"secondary":{
+						"xp.AlternatePartNumber":lookForThisProduct+"*"
+					}
+				}
+			}
+		};
+
+		if(!SearchTypeService.IsGlobalSearch() && SearchTypeService.GetLastSearchType() != "p") {
+			filter[SearchTypeService.GetLastSearchType()].ParentID = forThisCustomer.id;
+		}
+
+		if(SearchTypeService.GetLastSearchType() == "p") {
+			return OrderCloud.Me.ListProducts(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary)
+				.then(function(response) {
+					if(Me.Org.xp.WeirGroup.label == "WVCUK") {
+						partResults = response;
+						return OrderCloud.Me.ListProducts(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].secondary)
+							.then(function(altResponse) {
+								partResults.Items.push.apply(altResponse.Items);
+								return partResults.Items.map(function(item) {
+									return item.Name;
+								});
+							});
+					} else {
+						return response.Items.map(function (item) {
+							return item.Name;
+						});
+					}
+				});
+		} else {
+			return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? "all" : null, Me.Org.xp.WeirGroup.label)
+				.then(function (response) {
+					return response.Items.map(function (item) {
+						return SearchTypeService.GetLastSearchType() == "s" ? item.xp.SN : item.xp.TagNumber;
+					});
+				});
+		}
+	}
 
     return service;
 }

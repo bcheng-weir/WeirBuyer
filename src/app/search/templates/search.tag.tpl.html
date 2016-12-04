@@ -5,7 +5,18 @@
                 <div class="form-group has-feedback" ng-repeat="number in tag.tags track by $index">
 			<label ng-if="$index == 0" ng-bind-html='tag.labels.EnterTag'><span ng-if="tag.tags.length > 1"></span></label>
                     <div class="input-group col-md-12">
-                        <input type="text" class="form-control" ng-change="tag.updateTagList(tag.tags[$index])" ng-model="tag.tags[$index]" typeahead-min-length="3" uib-typeahead="v.xp.TagNumber as (v.xp.TagNumber + ' - ' + v.Description) for v in tag.TagMatches | tagPreSearch:$viewValue" />
+                        <!--<input type="text" class="form-control" ng-change="tag.updateTagList(tag.tags[$index])" ng-model="tag.tags[$index]" typeahead-min-length="3" uib-typeahead="v.xp.TagNumber as (v.xp.TagNumber + ' - ' + v.Description) for v in tag.TagMatches | tagPreSearch:$viewValue" />-->
+                        <input
+                            ng-model="tag.tags[$index]"
+                            autocomplete="off"
+                            class="form-control"
+                            dir="auto"
+                            name="search"
+                            placeholder="Enter tag number"
+                            spellcheck="false"
+                            type="text"
+                            typeahead-min-length="3"
+                            uib-typeahead="tagNumber for tagNumber in tag.updateTagList($viewValue)">
                         <span class="input-group-addon" ng-if="tag.tags.length > 1" ng-click="tag.removeTag($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>

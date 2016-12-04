@@ -5,7 +5,18 @@
                 <div class="form-group has-feedback" ng-repeat="number in serial.serialNumbers track by $index">
 			        <label ng-if="$index == 0" ng-bind-html='serial.labels.EnterSerial'><span ng-if="serial.serialNumbers.length > 1"></span></label>
                     <div class="input-group col-md-12">
-                        <input type="text" class="form-control" ng-model="serial.serialNumbers[$index]" ng-change="serial.updateSerialList(serial.serialNumbers[$index])" typeahead-min-length="3" uib-typeahead="v.xp.SN as (v.xp.SN + ' - ' + v.Description) for v in serial.SerialNumberMatches | serialPreSearch:$viewValue" />
+                        <!--<input type="text" class="form-control" ng-model="serial.serialNumbers[$index]" ng-change="serial.updateSerialList(serial.serialNumbers[$index])" typeahead-min-length="3" uib-typeahead="v.xp.SN as (v.xp.SN + ' - ' + v.Description) for v in serial.SerialNumberMatches | serialPreSearch:$viewValue" />-->
+                        <input
+                            ng-model="serial.serialNumbers[$index]"
+                            autocomplete="off"
+                            class="form-control"
+                            dir="auto"
+                            name="search"
+                            placeholder="Enter serial number"
+                            spellcheck="false"
+                            type="text"
+                            typeahead-min-length="3"
+                            uib-typeahead="serialNumber for serialNumber in serial.updateSerialList($viewValue)">
                         <span class="input-group-addon" ng-if="serial.serialNumbers.length > 1" ng-click="serial.removeSerialNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>

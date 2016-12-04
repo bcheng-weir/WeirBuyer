@@ -46,10 +46,10 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 		})
 }
 
-function HomeController($sce, $state, $rootScope, WeirService, SearchProducts) {
+function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTypeService) {
     var vm = this;
-    vm.CurrentUser = $rootScope.currentUser;
-	vm.CurrentUserOrg = $rootScope.myOrg;
+    vm.CurrentUser = Me.Profile;
+	vm.CurrentUserOrg = Me.Org;
     var labels = {
         en: {
             Search : "Search centre",
@@ -113,6 +113,7 @@ function HomeController($sce, $state, $rootScope, WeirService, SearchProducts) {
     if(vm.LanguageUsed == 'en' ) vm.BrandUK = [{title: vm.labels.Batley, description: vm.labels.BatleyMsg, url: "0"}, {title: vm.labels.Blakeborough, description: vm.labels.BlakeboroughMsg, url: "1"}, {title: vm.labels.Hopkinsons, description: vm.labels.HopkinsonsMsg, url: "2"}];
     if(vm.LanguageUsed == 'fr' ) vm.BrandFR = [{title: vm.labels.SarasinRSBD, description: vm.labels.SarasinRSBDMsg, url: "3"}];
 	vm.SearchProducts = function(val) {
+		//The search method to execute.
 		var options = {
 			"Serial number": "GetAllSerialNumbers",
 			"Part number": "GetAllPartNumbers",
@@ -126,7 +127,7 @@ function HomeController($sce, $state, $rootScope, WeirService, SearchProducts) {
         var searchState;
         switch (searchType){
             case(vm.labels.SerialNumber):
-                //the chaining of the state.go rather than go to child is done due to the parent (search) resovles a promise and blocks the child.
+                //the chaining of the state.go rather than go to child is done due to the parent (search) resolves a promise and blocks the child.
                 $state.go('search').then(function(){
                     $state.go('search.serial.results', {numbers: searchParam}, {});
                 });

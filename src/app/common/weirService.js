@@ -49,7 +49,7 @@ function UserGroupsService($q, OrderCloud) {
     }
 }
 
-function WeirService($q, $cookieStore, $sce, $exceptionHandler, OrderCloud, CurrentOrder, Underscore, buyerid, SearchTypeService) {
+function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, SearchTypeService) {
 	var orderStatuses = {
 		Draft: {id: "DR", label: "Draft", desc: "This is the current quote under construction"},
 		Saved: {id: "SV", label: "Saved", desc: "Quote has been saved but not yet submitted to weir as quote or order"},

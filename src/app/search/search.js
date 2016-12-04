@@ -2,14 +2,14 @@ angular.module('orderCloud')
 	.config(SearchConfig)
 	.controller('SearchCtrl', SearchController)
 	.controller('SerialCtrl', SerialController)
-	.controller( 'SerialResultsCtrl', SerialResultsController )
-	.controller( 'SerialDetailCtrl', SerialDetailController )
-	.controller( 'PartCtrl', PartController )
-	.controller( 'PartResultsCtrl', PartResultsController )
-	.controller( 'TagCtrl', TagController)
-	.controller( 'TagResultsCtrl', TagResultsController )
-	.controller( 'TagDetailCtrl', TagDetailController )
-	.controller( 'NoResultCtrl', NoResultsController )
+	.controller('SerialResultsCtrl', SerialResultsController)
+	.controller('SerialDetailCtrl', SerialDetailController)
+	.controller('PartCtrl', PartController)
+	.controller('PartResultsCtrl', PartResultsController)
+	.controller('TagCtrl', TagController)
+	.controller('TagResultsCtrl', TagResultsController)
+	.controller('TagDetailCtrl', TagDetailController)
+	.controller('NoResultCtrl', NoResultsController)
 ;
 
 function SearchConfig($stateProvider, $sceDelegateProvider) {
@@ -27,11 +27,6 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 			resolve: {
 				CurrentCustomer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
-				},
-				MyOrg: function (OrderCloud) {
-					//TODO remove. this is in $rootscope.
-				    var buyerId = OrderCloud.BuyerID.Get();
-                    return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
 				}
 			}
 		})
@@ -67,14 +62,7 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 			url: '/part',
 			templateUrl: 'search/templates/search.part.tpl.html',
 			controller: 'PartCtrl',
-			controllerAs: 'part',
-			resolve: {
-			    MyOrg: function (OrderCloud) {
-			    	//ToDo - remove. use $rootscope. this is teh org of the current loggedin user.
-			        var buyerId = OrderCloud.BuyerID.Get();
-			        return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
-			    }
-			}
+			controllerAs: 'part'
 		})
 		.state( 'search.part.results', {
 			url: '/search?numbers',
@@ -82,13 +70,8 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 			controller: 'PartResultsCtrl',
 			controllerAs: 'partResults',
 			resolve: {
-			    MyOrg: function (OrderCloud) {
-				    //ToDo - remove. use $rootscope. this is teh org of the current loggedin user.
-			        var buyerId = OrderCloud.BuyerID.Get();
-			        return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
-			    },
-				PartNumberResults: function( $stateParams, WeirService, MyOrg) {
-					return WeirService.PartNumbers(MyOrg.xp.WeirGroup.label, $stateParams.numbers.split(','));
+				PartNumberResults: function( $stateParams, WeirService, Me) {
+					return WeirService.PartNumbers(Me.Org.xp.WeirGroup.label, $stateParams.numbers.split(','));
 				}
 			}
 		})
@@ -128,16 +111,16 @@ function SearchConfig($stateProvider, $sceDelegateProvider) {
 		});
 }
 
-function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, WeirService, CurrentCustomer, MyOrg, imageRoot, SearchTypeService) {
+function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, CurrentCustomer, Me, imageRoot, SearchTypeService) {
 	var vm = this;
 	vm.searchType = WeirService.GetLastSearchType();
-	vm.IsServiceOrg = (MyOrg.xp.Type.id == 2);
-	vm.WeirGroup = MyOrg.xp.WeirGroup.label;
+	vm.IsServiceOrg = (Me.Org.xp.Type.id == 2);
+	vm.WeirGroup = Me.Org.xp.WeirGroup.label;
     vm.Customer = CurrentCustomer;
-    if(!MyOrg.xp.Customers){
-    	MyOrg.xp.Customers = [];
+    if(!Me.Org.xp.Customers){
+	    Me.Org.xp.Customers = [];
 	}
-    vm.AvailableCustomers = MyOrg.xp.Customers;
+    vm.AvailableCustomers = Me.Org.xp.Customers;
 
     vm.ImageBaseUrl = imageRoot;
     vm.GetValveImageUrl = function (img) {
@@ -145,8 +128,8 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
     };
 
 	if (!vm.IsServiceOrg) {
-	    if (!vm.Customer || vm.Customer.id != MyOrg.ID) {
-	        vm.Customer = {id: MyOrg.ID, name: MyOrg.Name};
+	    if (!vm.Customer || vm.Customer.id != Me.Org.ID) {
+	        vm.Customer = {id: Me.Org.ID, name: Me.Org.Name};
 	        CurrentOrder.SetCurrentCustomer(vm.Customer)
                 .then(function() {
 					CurrentOrder.Get();
@@ -161,7 +144,7 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 	if (vm.WeirGroup == 'WPIFR') {
 	    vm.selfsearch = !vm.searchall;
 	} else {
-	    vm.selfsearch = (vm.Customer.id == MyOrg.ID);
+	    vm.selfsearch = (vm.Customer.id == Me.Org.ID);
 	}
     // This function is used by WPIFR users - they select only own products or global search
     // and their order / cart is always in the context of themselves, not any other specific customer
@@ -175,7 +158,7 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 	vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
 	vm.customerFilter = null;
 	vm.SelectCustomer = function() {
-		if (vm.Customer.id == MyOrg.ID) {
+		if (vm.Customer.id == Me.Org.ID) {
 		    vm.customerFilter = "";
 		    vm.selfsearch = true;
 		} else {
@@ -195,7 +178,7 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 	    SearchTypeService.SetGlobalSearchFlag(false);
 	    var newCust = null;
 	    if (vm.selfsearch) {
-	        newCust = {id: MyOrg.ID, name: MyOrg.Name};
+	        newCust = {id: Me.Org.ID, name: Me.Org.Name};
 	    } else {
 			for(var i=0; i<vm.AvailableCustomers.length; i++) {
 		        if (vm.AvailableCustomers[i].name == vm.customerFilter) {
@@ -215,7 +198,7 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 				    return WeirService.FindCart(vm.Customer);
 				    /*WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
 					    .then(function() {
-						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": MyOrg.xp.WeirGroup.label})
+						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": Me.Org.xp.WeirGroup.label})
 							    .then(function(results) {
 								    //vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
 							    });
@@ -285,7 +268,7 @@ function SearchController($sce, $state, $rootScope, OrderCloud, CurrentOrder, We
 	}
 }
 
-function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toastr, SearchTypeService) {
+function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts) {
     var vm = this;
     vm.SerialNumberMatches = [];
 
@@ -342,8 +325,10 @@ function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toa
     vm.goToArticle = function (article) {
         $state.go('news', { id: article.ID });
     };
+
     vm.updateSerialList = function (input) {
-        if (input.length >= 3) {
+    	return SearchProducts.GetPart(input, $scope.search.Customer);
+        /*if (input.length >= 3) {
             var cust = $scope.search.Customer.id;
             if (SearchTypeService.IsGlobalSearch()) {
                 return OrderCloud.Me.ListCategories(null, 1, 20, null, "Name",
@@ -368,7 +353,7 @@ function SerialController(WeirService, $scope, $q, OrderCloud, $state, $sce, toa
                         console.log("Error: " + JSON.stringify(ex));
                     });
             }
-        }
+        }*/
     };
 }
 
@@ -422,7 +407,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SerialDetailController( $stateParams, $rootScope, $scope, $state, $sce, WeirService, SerialNumberDetail ) {
+function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirService, SerialNumberDetail ) {
 	var vm = this;
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
@@ -519,10 +504,10 @@ function SerialDetailController( $stateParams, $rootScope, $scope, $state, $sce,
 
 }
 
-function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService, MyOrg ) {
+function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
     var vm = this;
     vm.PartMatches = [];
-	vm.WeirGroup = MyOrg.xp.WeirGroup.label;
+	vm.WeirGroup = Me.Org.xp.WeirGroup.label;
 	vm.partNumbers = [null];
 	WeirService.SetLastSearchType(WeirService.SearchType.Part);
 
@@ -571,7 +556,8 @@ function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService, MyO
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.updatePartList = function (input) {
-	    if (input.length >= 3) {
+		return SearchProducts.GetPart(input, null);
+	    /*if (input.length >= 3) {
 	        var results = [];
 	        OrderCloud.Me.ListProducts(vm.WeirGroup, 1, 20, "ID", "Name", { "Name": input + "*" }, null, null)
                 .then(function (newList) {
@@ -591,7 +577,7 @@ function PartController( $state, $q, $scope, OrderCloud, $sce , WeirService, MyO
                     }
                 })
                 .catch(function (ex) {});
-	    }
+	    }*/
 	};
 }
 
@@ -647,7 +633,7 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 	};
 }
 
-function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr, SearchTypeService) {
+function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts) {
     var vm = this;
     vm.TagMatches = [];
 
@@ -672,31 +658,7 @@ function TagController(WeirService, $q, OrderCloud, $state, $sce, $scope, toastr
 	vm.labels = WeirService.LocaleResources(labels);
 	WeirService.SetLastSearchType(WeirService.SearchType.Tag);
 	vm.updateTagList = function(input) {
-		if(input.length >= 3) {
-		    var cust = $scope.search.Customer.id;
-		    if (SearchTypeService.IsGlobalSearch()) {
-		        return OrderCloud.Me.ListCategories(null, 1, 20, null, "Name",
-                    { "xp.TagNumber": input + "*" }, "all", cust.substring(0, 5))
-                    .then(function (newList) {
-                        vm.TagMatches.length = 0;
-                        vm.TagMatches.push.apply(vm.TagMatches, newList.Items);
-                    })
-                    .catch(function (ex) {
-                        console.log("Error: " + JSON.stringify(ex));
-                    });
-		    } else  if (cust) {
-                OrderCloud.Me.ListCategories(null, 1, 20, null, null, {
-                    "ParentID": cust,
-                    "xp.TagNumber": input + "*"
-                }, null, cust.substring(0,5)).then(function(newList){
-                    vm.TagMatches.length = 0;
-                    vm.TagMatches.push.apply(vm.TagMatches, newList.Items);
-                })
-                .catch(function(ex) {
-                    console.log("Error: " + JSON.stringify(ex));
-                });
-            }
-        }
+		return SearchProducts.GetPart(input, $scope.search.Customer);
     };
 	vm.tags = [null];
 

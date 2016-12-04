@@ -112,13 +112,12 @@ function BaseConfig($stateProvider, $injector) {
     $stateProvider.state('base', baseState);
 }
 
-
-function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base, MyOrg) {
+function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base, MyOrg, Me) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
-    $rootScope.currentUser = CurrentUser;
-    $rootScope.myOrg = MyOrg;
+    Me.Profile = CurrentUser;
+    Me.Org = MyOrg;
     vm.OrganizationUsed = MyOrg;
     vm.currentUser = CurrentUser;
     vm.catalogItems = ComponentList.nonSpecific;

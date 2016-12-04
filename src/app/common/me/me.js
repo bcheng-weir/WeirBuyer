@@ -1,3 +1,11 @@
-/**
- * Created by E054875 on 12/3/2016.
- */
+angular.module('orderCloud')
+	.factory('Me',Me);
+
+function Me() {
+	var service = {
+		Profile: null,
+		Org: null
+	};
+
+	return service;
+}

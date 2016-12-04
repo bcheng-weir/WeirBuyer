@@ -23,7 +23,7 @@ angular.module('orderCloud', [
     'ordercloud-lineitems',
     'ordercloud-geography',
     'ngCsv',
-    'FileSaver'
+    'ngFileSaver'
     ])
 //    .run(SetBuyerID)
     .config(Routing)

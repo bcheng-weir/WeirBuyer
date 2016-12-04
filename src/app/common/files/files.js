@@ -114,7 +114,7 @@ function FilesService($q,fileStore) {
     return service;
 }
 
-function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService, OrderCloud, fileStore, WeirService) {
+function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService, OrderCloud, fileStore, WeirService, FileSaver) {
     var directive = {
         scope: {
             model: '=',
@@ -163,8 +163,9 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
                 .then(function(fileData) {
                     console.log(fileData);
                     var file = new Blob([fileData.Body], {type: fileData.ContentType});
-                    var fileURL = URL.createObjectURL(file);
-                    window.open(fileURL, "_blank");
+	                FileSaver.saveAs(file, fileName);
+                    //var fileURL = URL.createObjectURL(file);
+                    //window.open(fileURL, "_blank");
                 });
         };
 

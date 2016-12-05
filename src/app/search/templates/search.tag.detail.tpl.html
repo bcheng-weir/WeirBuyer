@@ -15,12 +15,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div id="imgdiv" class="col-md-4" ng-if="tagDetail.tagNumber.xp.ImageName">
             <figure>
-                <img ng-if="tagDetail.tagNumber.xp.ImageName" ng-src="{{search.GetValveImageUrl(tagDetail.tagNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em;display:block; margin-left:auto; margin-right:auto;" />
-                <div ng-if="!tagDetail.tagNumber.xp.ImageName" class="serial-image">
-                    <span>General Arrangement drawing of Valve Type</span>
-                </div>
+                <img ng-src="{{search.GetValveImageUrl(tagDetail.tagNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em;display:block; margin-left:auto; margin-right:auto;"
+                     onerror="window.document.getElementById('imgdiv').style.display = 'none';"/>
             </figure>
         </div>
         <div class="col-md-6">
@@ -97,7 +95,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <h3><span ng-bind-html='tagDetail.headers.PartList'><span class="text-danger">{{tagDetail.tagNumber.Name}}</span></h3>
+            <h3><span ng-bind-html='tagDetail.headers.PartList'></span><span class="text-danger">{{tagDetail.tagNumber.Name}}</span></h3>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
                     <tr>

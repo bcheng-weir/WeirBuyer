@@ -4,6 +4,8 @@
   align-items: center;
   justify-content: center;
   background-color: @component-login-bg;
+  background-image: url('../../../../src/assets/hero-image.jpg');
+  background-size: cover;
   .panel {
     max-width: @component-login-width;
   }
@@ -43,5 +45,82 @@
   }
   .navbar-fixed-bottom navbar-header {
     text-align: center;
+  }
+  p {
+    margin: 0 0 0px;
+  }
+
+  .login-header {
+    background-color: #f2f2f2;
+    padding: 20px 0;
+    font-size: 16px;
+  }
+
+  .login-btn{
+    margin-top: 20px;
+  }
+
+  .forgot-password{
+    margin-top: 20px;
+    text-align:center;
+    color: #b1b6bb;
+    font-size: 12px;
+    position: relative;
+    display: block;
+  }
+
+  .login-panel{
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .login-wrapper {
+    display: table;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .account-wall{
+    background-color: #fff;
+    padding: 10% 20%;
+  }
+
+  .login-block{
+    background-color: #fff;
+
+    margin-top: 40px;
+  }
+
+  .welcome-block{
+    background-color: #005eb8;
+    color: #fff;
+    padding: 60px 20% 90px;
+    margin-left: -65px;
+  }
+
+  .login-index{
+    z-index: 1;
+  }
+
+  .welcome-index{
+    z-index: 0;
+  }
+
+  .btn i {
+    position: absolute;
+    right: 9px;
+    font-size: 19px;
+    top: 10px
+  }
+
+  .navbar-fixed-bottom{
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 10px;
+  }
+
+  .navbar-fixed-bottom .menu>li>a {
+    color: #fff;
   }
 }

@@ -1,4 +1,4 @@
-<main id="COMPONENT_Login" class="login" ng-switch="login.form" style="background-image: url('../../../../src/assets/hero-image.jpg'); background-size: cover;">
+<main id="COMPONENT_Login" class="login container-fluid" ng-switch="login.form">
     <!-- items below login-->
     <div class="row">
         <!--Header -->
@@ -6,28 +6,28 @@
             <div class="container loginHeader">
                 <div clas="row">
                     <div class="col-md-4"></div>
-                        <div class="col-md-4">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="col-lg-5">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="col-lg-5">
+                                    <ul class="menu">
+                                        <li><a href="" >{{login.labels.WorldWide}}</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-lg-5">
+                                    <a class="logo" href="/"><img src="../src/assets/logo.jpg"></a>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="language">
                                         <ul class="menu">
-                                            <li><a href="" >{{login.labels.WorldWide}}</a></li>
+                                            <li><a ng-click="login.setCookie('en')">English</a></li>
+                                            <li><a ng-click="login.setCookie('fr')">Francais</a></li>
                                         </ul>
                                     </div>
-                                    <div class="col-lg-5">
-                                        <a class="logo" href="/"><img src="../src/assets/logo.jpg"></a>
-                                    </div>
-                                    <div class="col-lg-2">
-                                        <div class="language">
-                                            <ul class="menu">
-                                                <li><a ng-click="login.setCookie('en')">English</a></li>
-                                                <li><a ng-click="login.setCookie('fr')">Francais</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
                                 </div>
-                             </div>
-                        </div>
+                            </div>
+                         </div>
+                    </div>
                 </div>
             </div>
      </div>
@@ -61,7 +61,7 @@
                                 </div>
                                 <button id="submit_login" type="submit" class="btn btn-lg btn-primary btn-block login-btn" ng-disabled="LoginForm.$invalid">
                                     {{login.labels.SubmitLabel}} <i class="icon-right-arrow"></i></button>
-                                <a id="forgot_password" class="btn btn-link" ng-click="login.setForm('forgot')">{{login.labels.ForgotPasswordLabel}}</a> <!--TODO: should this be functional in the Seed Project?-->
+                                <a id="forgot_password" class="btn btn-link forgot-password" ng-click="login.setForm('forgot')">{{login.labels.ForgotPasswordLabel}}</a> <!--TODO: should this be functional in the Seed Project?-->
                             </form>
                         </div>
                         <div class="account-wall" ng-switch-when="forgot">

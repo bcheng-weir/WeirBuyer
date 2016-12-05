@@ -1,4 +1,4 @@
-<main id="COMPONENT_Login" ng-switch="login.form" style="background-image: url('../../../../src/assets/hero-image.jpg'); background-size: cover;">
+<main id="COMPONENT_Login" class="login" ng-switch="login.form" style="background-image: url('../../../../src/assets/hero-image.jpg'); background-size: cover; login">
     <!-- items below login-->
     <div class="row">
         <!--Header -->
@@ -89,21 +89,26 @@
             </div>
         </div>
     </section>
-    </div>
 
     <!-- items below login-->
-    <nav class="navbar navbar-fixed-bottom">
-        <div class="container-fluid" style="background-color: #d5d9dc;">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <a class="navbar-brand" style="color: #546270;" ui-sref="terms-of-use">{{login.navlabels.termsTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="cookie-policy">{{login.navlabels.cookieTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="privacy-statement">{{login.navlabels.privacyTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="contact-us">{{login.navlabels.contactTitle}}</a>
-            </div>
-        </div>
-        <div>
-            Copyright Statement
-        </div>
-    </nav>
+        <footer>
+            <nav class="navbar navbar-fixed-bottom">
+                <div class="container">
+                    <ul class="menu">
+                        <li>
+                            <a href="">Terms of Use</a>
+                        </li>
+                        <li>
+                            <a href="">Cookie Policy</a>
+                        </li>
+                        <li>
+                            <a href="">Privacy Statement</a>
+                        </li>
+                        <li>
+                            <a href="">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+                <nav>
+        </footer>
 </main>

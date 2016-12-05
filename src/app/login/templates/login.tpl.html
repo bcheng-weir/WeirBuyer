@@ -91,24 +91,15 @@
     </section>
 
     <!-- items below login-->
-        <footer>
-            <nav class="navbar navbar-fixed-bottom">
-                <div class="container">
-                    <ul class="menu">
-                        <li>
-                            <a href="">Terms of Use</a>
-                        </li>
-                        <li>
-                            <a href="">Cookie Policy</a>
-                        </li>
-                        <li>
-                            <a href="">Privacy Statement</a>
-                        </li>
-                        <li>
-                            <a href="">Contact</a>
-                        </li>
-                    </ul>
-                </div>
-                <nav>
-        </footer>
+    <nav class="navbar navbar-fixed-bottom">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="container">
+                <ul class="menu">
+                    <li><a  ui-sref="terms-of-use">{{login.navlabels.termsTitle}}</a></li>
+                    <li><a  ui-sref="cookie-policy">{{login.navlabels.cookieTitle}}</a></li>
+                    <li><a ui-sref="privacy-statement">{{login.navlabels.privacyTitle}}</a></li>
+                    <li><a ui-sref="contact-us">{{login.navlabels.contactTitle}}</a></li>
+                </ul>
+            </div>
+    </nav>
 </main>

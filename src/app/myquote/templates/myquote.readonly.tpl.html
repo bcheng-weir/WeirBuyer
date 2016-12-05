@@ -118,6 +118,9 @@
             <p ng-repeat="fileName in readonly.Quote.xp.Files">
                 <a href="" ng-click="revised.GetFile(fileName)" target="_blank">{{fileName}}</a>
             </p>
+            <p>
+                <a href="" ng-click="revised.GetFile(readonly.Quote.xp.PODocument)" target="_blank">{{readonly.Quote.xp.PODocument}}</a>
+            </p>
             <p><b><span ng-bind-html='readonly.labels.CommentsHeader'></span></b></p>
             <p>
                 <span ng-bind-html='readonly.Quote.Comments'></span>

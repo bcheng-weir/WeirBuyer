@@ -864,7 +864,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore, FilesService) {
+    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore, FilesService, FileSaver) {
     var vm = this;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
 	if( (typeof(QuoteShareService.Quote.xp.CommentsToWeir) == 'undefined') || QuoteShareService.Quote.xp.CommentsToWeir == null) QuoteShareService.Quote.xp.CommentsToWeir = [];
@@ -978,8 +978,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			.then(function(fileData) {
 				console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
-				var fileURL = URL.createObjectURL(file);
-				window.open(fileURL, "_blank");
+				FileSaver.saveAs(file, fileName);
+				//var fileURL = URL.createObjectURL(file);
+				//window.open(fileURL, "_blank");
 			});
 	};
 

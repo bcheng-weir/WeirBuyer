@@ -5,16 +5,28 @@
             <table class="table table-hover table-condensed oc-table-responsive">
                 <thead>
                     <tr>
-                        <th ng-bind-html='inreview.labels.QuoteNum'></th>
+                        <th scope="col">
+                            <a href="#" role="button" ng-click="quotes.updateSort('ID')">
+                                {{inreview.labels.QuoteNum}}
+                                <i class="fa fa-caret-down" ng-show="quotes.parameters.sortBy == 'ID'"></i>
+                                <i class="fa fa-caret-up" ng-show="quotes.parameters.sortBy == '!ID'"></i>
+                            </a>
+                        </th>
                         <th ng-bind-html='inreview.labels.QuoteRef'></th>
-                        <th ng-bind-html='inreview.labels.Total'></th>
+                        <th scope="col">
+                            <a href="#" role="button" ng-click="quotes.updateSort('Total')">
+                                {{inreview.labels.Total}}
+                                <i class="fa fa-caret-down" ng-show="quotes.parameters.sortBy == 'Total'"></i>
+                                <i class="fa fa-caret-up" ng-show="quotes.parameters.sortBy == '!Total'"></i>
+                            </a>
+                        </th>
                         <th ng-bind-html='inreview.labels.Reviewer'>t</th>
                         <th ng-bind-html='inreview.labels.Status'></th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="quote in inreview.Quotes">
+                    <tr ng-repeat="quote in quotes.list.Items">
                         <td class="text-danger">{{quote.ID}}</td>
                         <td>{{quote.xp.RefNum}}</td>
                         <td ng-switch on="quotes.Customer.id | weirGroupFromBuyersID">

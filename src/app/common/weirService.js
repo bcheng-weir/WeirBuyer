@@ -868,22 +868,22 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		return deferred.promise;
     }
 
-	function findOrders(statuses, resolveSharedId) {
+	function findOrders(urlParams, resolveSharedId) {
 		var quotes = [];
 		var queue = [];
 		var deferred = $q.defer();
 
-		if (statuses && statuses.length) {
-			var filter = {
+		if (urlParams) {
+			/*var filter = {
 				"xp.Type": "Order",
 				"xp.Active": true
 			};
 			var statusFilter = statuses[0].id;
 			for(var i=1; i<statuses.length; i++) statusFilter += "|" + statuses[i].id;
-			filter["xp.Status"] = statusFilter;
+			filter["xp.Status"] = statusFilter;*/
 
 			var d = $q.defer();
-			OrderCloud.Orders.ListOutgoing(null, null, null, 1, 100, null, null, filter, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
+			OrderCloud.Orders.ListOutgoing(urlParams.from, urlParams.to, urlParams.search, urlParams.page, urlParams.pageSize || 100, urlParams.searchOn, urlParams.sortBy, urlParams.filters, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
 				.then(function(results) {
 					angular.forEach(results.Items, function(quote) {
 						quotes.push(quote);
@@ -907,9 +907,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		return deferred.promise;
 	}
 
-    function findQuotes(statuses, resolveSharedId) {
+	/* Do not use */
+    function findQuotes(statuses, resolveSharedId, urlParams) {
 	    var quotes = [];
         var queue = [];
+	    var params = urlParams ? urlParams : {from:null,to:null,search:null,page:null,pageSize:null,searchOn:null,sortBy:null};
         var deferred = $q.defer();
 
 	    if (statuses && statuses.length) {
@@ -922,7 +924,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 filter["xp.Status"] = statusFilter;
 
                 var d = $q.defer();
-		        OrderCloud.Orders.ListOutgoing(null, null, null, 1, 100, null, null, filter, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
+		        OrderCloud.Orders.ListOutgoing(params.from, params.to, params.search, params.page || 1, params.pageSize || 100, params.searchOn, params.sortBy, params.filters, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
                     .then(function(results) {
                         angular.forEach(results.Items, function(quote) {
                             quotes.push(quote);

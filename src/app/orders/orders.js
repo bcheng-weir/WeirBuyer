@@ -19,14 +19,13 @@ function OrdersConfig($stateProvider) {
 	            CurrentCustomer: function(CurrentOrder) {
 		            return CurrentOrder.GetCurrentCustomer();
 	            },
-	            MyOrg: function(OrderCloud) {
-		            return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
-	            },
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-	            Orders: function(OrderCloud, Parameters, MyOrg) {
-                    return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 20, Parameters.searchOn, Parameters.sortBy, Parameters.filters, MyOrg.ID);
+	            Orders: function(OrderCloud, WeirService, Parameters, Me) {
+                	//return WeirService.FindOrders(Parameters, false);
+		            Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
+                    return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 10, Parameters.searchOn, Parameters.sortBy, Parameters.filters, Me.Org.ID);
 				}
             }
         })
@@ -82,11 +81,11 @@ function OrdersConfig($stateProvider) {
     ;
 }
 
-function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, MyOrg, WeirService, CurrentCustomer) {
+function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, Me, WeirService, CurrentCustomer) {
     var vm = this;
     vm.list = Orders;
     vm.parameters = Parameters;
-	vm.MyOrg = MyOrg;
+	vm.MyOrg = Me.Org;
 	vm.Customer = CurrentCustomer;
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);
@@ -167,13 +166,13 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 
     var labels = {
     	en: {
-    		SubmittedHeader: vm.list.Items.length.toString() + " submitted Order" +  (vm.list.Items.length == 1 ? "" : "s"),
-		    PendingHeader: vm.list.Items.length.toString() + " pending Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+    		SubmittedHeader: vm.list.Meta.TotalCount.toString() + " submitted Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+		    PendingHeader: vm.list.Meta.TotalCount.toString() + " pending Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    PendingNotice: "Orders submitted pending PO will not be confirmed until Weir have received a purchase order",
-		    RevisedHeader: vm.list.Items.length.toString() + " revised Order" +  (vm.list.Items.length == 1 ? "" : "s"),
-		    ConfirmedHeader: vm.list.Items.length.toString() + " confirmed Order" +  (vm.list.Items.length == 1 ? "" : "s"),
-		    DespatchedHeader: vm.list.Items.length.toString() + " despatched Order" +  (vm.list.Items.length == 1 ? "" : "s"),
-		    InvoicedHeader: vm.list.Items.length.toString() + " invoiced Order" +  (vm.list.Items.length == 1 ? "" : "s"),
+		    RevisedHeader: vm.list.Meta.TotalCount.toString() + " revised Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+		    ConfirmedHeader: vm.list.Meta.TotalCount.toString() + " confirmed Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+		    DespatchedHeader: vm.list.Meta.TotalCount.toString() + " despatched Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+		    InvoicedHeader: vm.list.Meta.TotalCount.toString() + " invoiced Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    View: "View",
 		    submitted: "Submitted with PO",
 		    pending: "Submitted pending PO",
@@ -200,13 +199,13 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		    EstDelivery: "Estimated delivery date"
 	    },
 	    fr: {
-	        SubmittedHeader: $sce.trustAsHtml("FR: " + vm.list.Items.length.toString() + " submitted Order" + (vm.list.Items.length == 1 ? "" : "s")),
-	        PendingHeader: $sce.trustAsHtml("FR: " + vm.list.Items.length.toString() + " pending Order" + (vm.list.Items.length == 1 ? "" : "s")),
+	        SubmittedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + " submitted Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+	        PendingHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + " pending Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    PendingNotice: $sce.trustAsHtml("FR: Orders submitted pending PO will not be confirmed until Weir have received a purchase order"),
-		    RevisedHeader: $sce.trustAsHtml("FR: " + vm.list.Items.length.toString() + " revised Order" + (vm.list.Items.length == 1 ? "" : "s")),
-		    ConfirmedHeader: $sce.trustAsHtml("FR: " + vm.list.Items.length.toString() + " confirmed Order" + (vm.list.Items.length == 1 ? "" : "s")),
-		    DespatchedHeader: $sce.trustAsHtml("FR: " + vm.list.Items.length.toString() + " despatched Order" + (vm.list.Items.length == 1 ? "" : "s")),
-		    InvoicedHeader: $sce.trustAsHtml("FR: " + vm.list.Items.length.toString() + " invoiced Order" + (vm.list.Items.length == 1 ? "" : "s")),
+		    RevisedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + " revised Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+		    ConfirmedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + " confirmed Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+		    DespatchedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + " despatched Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+		    InvoicedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + " invoiced Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    View: $sce.trustAsHtml("FR:View"),
 		    submitted: $sce.trustAsHtml("FR:Submitted with PO"),
 		    pending: $sce.trustAsHtml("FR:Submitted pending PO"),

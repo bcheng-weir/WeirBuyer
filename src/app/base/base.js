@@ -233,7 +233,27 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
                 "xp.Type": "Order",
                 "xp.Status": WeirService.OrderStatus.Invoiced.id,
                 "xp.Active": true
-            }
+            },
+            "quotes.saved": {
+                "xp.Type": "Quote",
+                "xp.Status": WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,
+                "xp.Active":true
+            },
+	        "quotes.inreview": {
+		        "xp.Type": "Quote",
+		        "xp.Status": WeirService.OrderStatus.Submitted.id+"|"+WeirService.OrderStatus.Review.id,
+		        "xp.Active":true
+	        },
+	        "quotes.revised": {
+		        "xp.Type": "Quote",
+		        "xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,
+		        "xp.Active":true
+	        },
+	        "quotes.confirmed": {
+		        "xp.Type": "Quote",
+		        "xp.Status": WeirService.OrderStatus.ConfirmedQuote.id,
+		        "xp.Active":true
+	        }
         };
         $state.go(action, {filters: JSON.stringify(filter[action])}, {reload: true});
     }

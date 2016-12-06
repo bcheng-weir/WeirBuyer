@@ -2,6 +2,7 @@ angular.module('orderCloud')
     .config(BaseConfig)
     .controller('BaseCtrl', BaseController)
     .controller('NewQuoteCtrl', NewQuoteModalController)
+    .controller('FeedbackCtrl', FeedbackController)
     .filter('occomponents', occomponents)
 ;
 
@@ -181,6 +182,24 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
         }
     };
 
+    vm.showFeedbackForm = function () {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: 'base/templates/base.feedback.tpl.html',
+            controller: 'FeedbackCtrl',
+            controllerAs: 'feedback',
+            size: 'sm',
+            resolve: {
+                User: function () {
+                    return CurrentUser;
+                }
+            }
+        });
+        modalInstance.result;
+    };
+
     function _isMobile() {
         return $ocMedia('max-width:991px');
     }
@@ -319,5 +338,52 @@ function occomponents() {
         });
 
         return result;
+    }
+}
+
+function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirService, User) {
+    var vm = this;
+    vm.user = User;
+    vm.Cancel = cancel;
+    vm.Send = sendFeedback;
+    var labels = {
+        en: {
+            title: "Please send us your feedback and suggestions",
+            bugDefect: "Bug or error",
+            suggestion: "Suggestion"
+        },
+        fr: {
+            title: $sce.trustAsHtml("FR: Please send us your feedback and suggestions"),
+            bugDefect: $sce.trustAsHtml("FR: Bug or error"),
+            suggestion: $sce.trustAsHtml("FR: Suggestion")
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
+    vm.typesOfFeedback = [
+        { Label: "bug", Name: vm.labels.bugDefect },
+        { Label: "suggestion", Name: vm.labels.suggestion }
+    ];
+    vm.type = "suggestion";
+        
+    function cancel() {
+        $uibModalInstance.dismiss('cancel');
+    }
+    function sendFeedback() {
+        var data = {
+            xp: {
+                feedback: {
+                    from: vm.email,
+                    type: vm.type,
+                    content: vm.content,
+                    time: (new Date()).toISOString(),
+                    page: $state.current.name
+                }
+            }
+        };
+        var usr = vm.user;
+        if (usr) {
+            OrderCloud.Users.Patch(usr.ID, data);
+        }
+        $uibModalInstance.close();
     }
 }

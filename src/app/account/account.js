@@ -139,17 +139,17 @@ function AccountController($exceptionHandler, $state, toastr, AccountService, Cu
             Addresses: "Addresses"
 	    },
 	    fr: {
-	        Account: $sce.trustAsHtml("FR: Account"),
-	        FirstName: $sce.trustAsHtml("FR: First Name"),
-	        LastName: $sce.trustAsHtml("FR: Last Name"),
-	        UserID: $sce.trustAsHtml("FR: User ID"),
+	        Account: $sce.trustAsHtml("Compte"),
+	        FirstName: $sce.trustAsHtml("Pr&eacute;nom"),
+	        LastName: $sce.trustAsHtml("Nom"),
+	        UserID: $sce.trustAsHtml("Identifiant d'utilisateur"),
 	        Username: $sce.trustAsHtml("Nom d'utilisateur"),
-	        Email: $sce.trustAsHtml("FR: Email"),
-	        Phone: $sce.trustAsHtml("FR: Phone"),
-	        SaveChanges: $sce.trustAsHtml("FR: Save Changes"),
-	        RevertChanges: $sce.trustAsHtml("FR: Revert Changes"),
-	        ChangePassword: $sce.trustAsHtml("FR: Change Password"),
-	        Addresses: $sce.trustAsHtml("FR: Addresses")
+	        Email: $sce.trustAsHtml("Email"),
+	        Phone: $sce.trustAsHtml("T&eacute;l&eacute;phone"),
+	        SaveChanges: $sce.trustAsHtml("Sauvegarder les modifications"),
+	        RevertChanges: $sce.trustAsHtml("R&eacute;tablir les modifications"),
+	        ChangePassword: $sce.trustAsHtml("Changer le mot de passe"),
+	        Addresses: $sce.trustAsHtml("Adresses")
 	    }
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -173,9 +173,9 @@ function ConfirmPasswordController($uibModalInstance, $sce, WeirService) {
             Cancel: "Cancel"
 	    },
 	    fr: {
-	        ChangePassword: $sce.trustAsHtml("FR: Please confirm your password"),
+	        ChangePassword: $sce.trustAsHtml("Veuillez confirmer votre mot de passe"),
 	        Submit: $sce.trustAsHtml("Soumettre"),
-	        Cancel: $sce.trustAsHtml("FR: Cancel")
+	        Cancel: $sce.trustAsHtml("Annuler")
 	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -209,12 +209,12 @@ function ChangePasswordController($state, $exceptionHandler, toastr, AccountServ
             BackToAcct: "Back to Account"
 	    },
 	    fr: {
-	        ChangePwdHeader: $sce.trustAsHtml("FR: Change Password"),
-	        CurrentPwd: $sce.trustAsHtml("FR: Current Password"),
+	        ChangePwdHeader: $sce.trustAsHtml("Changer le mot de passe"),
+	        CurrentPwd: $sce.trustAsHtml("Mot de passe actuel"),
 	        NewPwd: $sce.trustAsHtml("Nouveau mot de passe"),
 	        Confirm: $sce.trustAsHtml("Confirmer votre mot de passe"),
 	        Submit: $sce.trustAsHtml("Soumettre"),
-	        BackToAcct: $sce.trustAsHtml("FR: Back to Account")
+	        BackToAcct: $sce.trustAsHtml("Retour au compte")
 	    }
 	};
 	vm.labels = WeirService.LocaleResources(labels);

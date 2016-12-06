@@ -141,12 +141,12 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
             buttonLabel: "Quote"
 		},
 		fr: {
-			view: $sce.trustAsHtml("FR: View "),
-			oneItem: $sce.trustAsHtml("FR: 1 item in your "),
-			moreItems: $sce.trustAsHtml("FR:  items in your "),
-			quote: $sce.trustAsHtml("FR: Quote"),
-			order: $sce.trustAsHtml("FR: Order"),
-			buttonLabel: $sce.trustAsHtml("FR: Quote")
+		    view: $sce.trustAsHtml("Voir d&eacute;tails "),
+			oneItem: $sce.trustAsHtml("1 article dans votre "),
+			moreItems: $sce.trustAsHtml(" articles dans votre "),
+			quote: $sce.trustAsHtml("devis"),
+			order: $sce.trustAsHtml("commande"),
+			buttonLabel: $sce.trustAsHtml("Cotation")
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];

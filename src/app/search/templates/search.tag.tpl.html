@@ -1,7 +1,7 @@
 <ui-view>
     <form name="tag_form" ng-submit="tag.searchTags()" class="panel home-panel">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="form-group has-feedback" ng-repeat="number in tag.tags track by $index">
 			<label ng-if="$index == 0" ng-bind-html='tag.labels.EnterTag'><span ng-if="tag.tags.length > 1"></span></label>
                     <div class="input-group col-md-12">
@@ -27,10 +27,10 @@
                 </div>
             </div>
         </div>
-            <div class="row" style="margin-top: 20px;">
-            <div class="col-md-8">
-                <span style="padding-left: 1.0em;" ng-bind-html="tag.labels.TagDisclaimer"></span>
+        <div class="row" style="padding-top: 10%;">
+            <div class="col-md-12 text-center">
+                <a href="#" target="_blank" ng-bind-html='tag.labels.TagDisclaimer'></a>
             </div>
-            </div>
+        </div>
     </form>
 </ui-view>

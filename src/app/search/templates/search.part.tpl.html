@@ -1,7 +1,7 @@
 <ui-view>
     <form name="part_form" ng-submit="part.searchPartNumbers()" class="panel home-panel">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="form-group has-feedback" ng-repeat="number in part.partNumbers track by $index">
                     <label ng-if="$index == 0 && part.partNumbers.length <= 1" ng-bind-html='part.labels.EnterPart'></label>
 		    <label ng-if="$index == 0 && part.partNumbers.length > 1" ng-bind-html='part.labels.EnterParts'></label>
@@ -28,9 +28,11 @@
                     <button type="submit" class="btn btn-primary" ng-bind-html='part.labels.Search'></button>
                 </div>
             </div>
-            <div class="col-md-6 text-center">
+        </div>
+        <div class="row" style="padding-top: 10%;">
+            <div class="col-md-12 text-center">
                 <figure>
-                    <img class="number-directions" src="assets/images/partnumberdirections.png" />
+                    <img class="number-directions" src="../../../assets/images/partnumberdirections.png" />
                 </figure>
             </div>
         </div>

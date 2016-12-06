@@ -1,6 +1,6 @@
 <div class="mce-container-body">
-        <nav class="navbar navbar-default">
     <div class="row">
+        <nav class="navbar navbar-default">
             <div class="container-fluid topNavBar">
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
@@ -47,6 +47,7 @@
         </nav>
     </div>
     <div class="row">
+                <div style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 2em;">
                     <a href="" ui-sref="home">
                         <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
                     </a>
@@ -70,7 +71,9 @@
                             <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">About Sarasin</a>
                         </li>
                         <li>
+                            <a href="#" style="border-bottom: none;" ng-click="base.newQuote()" ng-bind-html="base.navlabels.newQuote"></a>
                         </li>
+                        <li class="active">
                         <a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
                         </li>
                     </ul>

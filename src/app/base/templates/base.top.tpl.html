@@ -1,6 +1,6 @@
 <div class="mce-container-body">
         <nav class="navbar navbar-default">
-
+    <div class="row">
             <div class="container-fluid topNavBar">
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
@@ -43,42 +43,38 @@
                         </li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
-
-    </nav>
+            </div>
+        </nav>
+    </div>
     <div class="row">
-        <div style="margin-top: 1em; margin-bottom: 1em; margin-left: 2em;">
-            <a href="" ui-sref="home">
-                <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
-            </a>
-        </div>
+                    <a href="" ui-sref="home">
+                        <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
+                    </a>
+                </div>
     </div>
     <div class="row spacingTop">
         <div class="panel panel-default">
             <div class="panel-body clearfix spacingTop" style="padding-left: 0px;">
                 <div class="col-xs-6 col-md-12 brand">
-                        <ul class="nav nav-tabs">
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})">About Batley</a>
-                            </li>
-                            <li>
-                                <a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})">About Blakeborough</a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})">About Hopkinsons</a>
-                            </li>
-                            <li>
-                             <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">About Sarasin</a>
-                            </li>
-                            <li>
-                                <a href="#" ng-click="base.newQuote()" style="border-bottom: none" ng-bind-html="base.navlabels.newQuote"></a>
-                            </li>
-                            <li class="active">
-                                <a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search"></i></a>
-                            </li>
-                        </ul>
+                    <ul class="nav nav-tabs">
+                        <li>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})">About Batley</a>
+                        </li>
+                        <li>
+                            <a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})">About Blakeborough</a>
+                        </li>
+                        <li>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})">About Hopkinsons</a>
+                        </li>
+                        <li>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">About Sarasin</a>
+                        </li>
+                        <li>
+                        </li>
+                        <a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
+                        </li>
+                    </ul>
                 </div>
-
             </div>
         </div>
     </div>

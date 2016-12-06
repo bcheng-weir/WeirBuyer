@@ -21,7 +21,7 @@
                 <button type="submit" class="btn btn-primary">Search</button>
                 <button ng-if="orders.searchResults" ng-click="orders.clearSearch()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
             </span>
-			<span ng-class="{'btn-group':addresses.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
+			<span ng-class="{'btn-group':orders.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
                 <button type="button" class="btn btn-default" ng-click="orders.showFilters=!orders.showFilters"><i class="fa fa-filter"></i> Filters</button>
                 <button ng-if="orders.filtersApplied" ng-click="orders.clearFilters()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
             </span>
@@ -48,5 +48,10 @@
 		<hr>
 	</div>-->
 	<div ui-view></div>
+	<div class="text-center" ng-if="application.$ocMedia('min-width:768px') && orders.list.Meta.TotalPages > 1">
+		<uib-pagination boundary-links="orders.list.Meta.TotalPages > 5" max-size="5"
+						total-items="orders.list.Meta.TotalCount" items-per-page="orders.list.Meta.PageSize"
+						ng-model="orders.list.Meta.Page" ng-change="orders.pageChanged()"></uib-pagination>
+	</div>
 	<footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
 </article>

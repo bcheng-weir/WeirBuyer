@@ -1,0 +1,36 @@
+<div>
+    <div class="modal-header">
+        <h1 class="pull-right"><a href="" ng-click="feedback.Cancel()">X</a></h1>
+    </div>
+    <div class="modal-body" style="margin-top: -2em;">
+        <h4 style="margin-top: -2em;" ng-bind-html="feedback.labels.title"></h4>
+        <form name="FeedbackForm" ng-submit="feedback.Send()" novalidate>
+            <div class="form-group">
+                <label for="email">Your email address</label><br />
+                <div class="input-group">
+                    <input id="email" type="email" class="form-control" ng-model="feedback.email" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label style="margin-top: 0.5em;" for="fbtype">Type of feedback</label><br />
+                <div class="input-group">
+                    <select id="fbtype" class="form-control" ng-model="feedback.type"
+                            ng-options="t.Label as t.Name for t in feedback.typesOfFeedback" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label style="margin-top: 0.5em;" for="fb">Your feedback</label><br />
+                <div class="input-group">
+                    <textarea id="fb" rows="8" cols="40" class="form-control" ng-model="feedback.content" required></textarea>
+                </div>
+            </div>
+            <p>If reporting a bug, your issue will be raised with our development team. All suggestions and feedback will be reviewed by our Beta project team.</p>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div class="row">
+            <button class="btn btn-default pull-right" style="margin-left:0.5em; margin-right: 0.5em;" value="Cancel" ng-click="feedback.Cancel()">Cancel</button>
+            <input type="submit" class="btn btn-primary pull-right" value="Send" ng-click="feedback.Send()" />
+        </div>
+    </div>
+</div>

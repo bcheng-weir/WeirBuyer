@@ -1,126 +1,110 @@
 #COMPONENT_Login {
   height: 100vh;
-  display: flex;
   align-items: center;
   justify-content: center;
   background-color: @component-login-bg;
   background-image: url('../../../../src/assets/hero-image.jpg');
   background-size: cover;
-  .panel {
-    max-width: @component-login-width;
-  }
-  .centered {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-height: 15%;
-    max-width: 15%;
-  }
-  .centeredLow {
-    position: fixed;
-    top: 60%;
-    left: 50%;
-    transform: translate(-50%, 0%);
-    max-width: 25%;
-  }
-  .languageBar {
-    position: absolute;
-    top: 0px;
-    right: 20px;
-  }
-  .stretch {
-    width: 100%;
-    height: 50%;
-    position: absolute;
-    top: 2%;
-    left: 0%;
-  }
-  .navbar-fixed-bottom {
-    color: white;
+  font-size: 12px;
+
+  .header .container {
+    background-color:white;
   }
 
-  .navbar-fixed-bottom a:link, .navbar-fixed-bottom a:visited, .navbar-fixed-bottom a:hover, .navbar-fixed-bottom a:active  {
-    color: white;
-  }
-  .navbar-fixed-bottom navbar-header {
-    text-align: center;
-  }
-  p {
-    margin: 0 0 0px;
-  }
-
-  .login-header {
-    background-color: #f2f2f2;
-    padding: 20px 0;
-    font-size: 16px;
-  }
-
-  .login-btn{
-    margin-top: 20px;
-  }
-
-  .forgot-password{
-    margin-top: 20px;
-    text-align:center;
-    color: #b1b6bb;
+  .header .menu li a {
     font-size: 12px;
-    position: relative;
-    display: block;
   }
 
-  .login-panel{
-    display: table-cell;
-    vertical-align: middle;
+  .welcome-block p {
+    font-size:10px;
+  }
+
+  .header .logo img {
+    position: absolute;
+    margin-left: -65px;
+    left: 50%;
+    margin-top: 6px;
+  }
+
+  .logo img {
+    width: 65px;
+    height: 21px !important;
+    margin: 11px;
+  }
+
+  .navbar-fixed-bottom {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    text-align: center;
+    .menu li a {
+      color: white;
+    }
   }
 
   .login-wrapper {
     display: table;
     width: 100%;
-    height: 100%;
+    height: 70%;
     position: relative;
   }
 
-  .account-wall{
-    background-color: #fff;
-    padding: 10% 20%;
+  .login-panel {
+    display: table-cell;
+    vertical-align: middle;
   }
 
-  .login-block{
-    background-color: #fff;
+  .login-index {
+    z-index: 1;
+  }
 
+  .login-block {
+    background-color: #fff;
     margin-top: 40px;
   }
 
-  .welcome-block{
+  .login-header {
+    background-color: #f2f2f2;
+    padding: 10px 0;
+    font-size: 12px;
+  }
+
+  .login-title {
+    margin: 0px 0px 0px 0px !important;
+  }
+
+  .account-wall {
+    background-color: #fff;
+    padding: 4% 10%;
+  }
+
+  .rememberMe {
+    margin-left: 20px
+  }
+
+  .forgot-password {
+    margin-top: 20px;
+    text-align: center;
+    color: #b1b6bb;
+    font-size: 10px;
+    position: relative;
+    display: block;
+  }
+
+  .welcome-index {
+    z-index: 0;
+  }
+
+  .welcome-block {
     background-color: #005eb8;
     color: #fff;
+    margin-top:20px;
     padding: 60px 20% 90px;
     margin-left: -65px;
   }
 
-  .login-index{
-    z-index: 1;
-  }
+ .navbar-fixed-bottom .container {
+   margin-top:8px;
+ }
 
-  .welcome-index{
-    z-index: 0;
-  }
 
-  .btn i {
-    position: absolute;
-    right: 9px;
-    font-size: 19px;
-    top: 10px
-  }
-
-  .navbar-fixed-bottom{
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.4);
-    padding-top: 10px;
-  }
-
-  .navbar-fixed-bottom .menu>li>a {
-    color: #fff;
-  }
 }

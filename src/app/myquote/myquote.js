@@ -610,7 +610,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Votre Cotation"),
 		    QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation"),
-		    QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+		    QuoteName: $sce.trustAsHtml("Ajoutez votre nom de devis "),
 		    YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
 		    ReviewQuote: $sce.trustAsHtml("R&eacute;viser votre cotation"),
@@ -625,7 +625,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
 			Total: $sce.trustAsHtml("Total"),
-			DeliveryAddress: $sce.trustAsHtml("Delivery Address"),
+			DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
 			Save: $sce.trustAsHtml("Sauvegarder"),
 			Share: $sce.trustAsHtml("Partager"),
 			Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
@@ -635,17 +635,17 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 			NoItemsError: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de sauvegarder"),
 			CannotContinueNoItems: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de continuer"),
 			SaveBody: $sce.trustAsHtml("FR: Your quote has been saved."),
-			SaveFooter: $sce.trustAsHtml("**Voir vos cotations"),
-			Approve: $sce.trustAsHtml("FR: Approve"),
-			Reject: $sce.trustAsHtml("FR: Reject"),
-			Comments: $sce.trustAsHtml("FR: Comments"),
-			Status: $sce.trustAsHtml("FR: Status"),
-			OrderDate: $sce.trustAsHtml("FR: Order date;"),
-			RejectedMessage: $sce.trustAsHtml("FR: The revised quote has been rejected."),
-			RejectedTitle: $sce.trustAsHtml("FR: Quote updated"),
-			ApprovedMessage: $sce.trustAsHtml("FR: The revised quote has been accepted"),
-			ApprovedTitle: $sce.trustAsHtml("FR: Quote updated"),
-			SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
+			SaveFooter: $sce.trustAsHtml("Voir vos devis"),
+			Approve: $sce.trustAsHtml("Approuver"),
+			Reject: $sce.trustAsHtml("Rejeter"),
+			Comments: $sce.trustAsHtml("Commentaires"),
+			Status: $sce.trustAsHtml("Statut"),
+			OrderDate: $sce.trustAsHtml("Date de commande;"),
+			RejectedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; rejet&eacute;e."),
+			RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
+			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
+			ApprovedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
+			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 			PriceDisclaimer: $sce.trustAsHtml("FR - All prices stated do not include UK VAT or delivery")
 		}
 	};
@@ -699,7 +699,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 		fr: {
 			Customer: $sce.trustAsHtml("Client"),
 			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation"),
-			QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+			QuoteName: $sce.trustAsHtml("FR: Ajoutez votre nom de devis "),
 			AddNew: $sce.trustAsHtml("Ajouter un item"),
 			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
@@ -789,14 +789,14 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	        InfoText3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
 	    },
 	    fr: {
-	        DefaultAddress: $sce.trustAsHtml("FR: Your default address"),
-	        AddNew: $sce.trustAsHtml("FR: Add a new address"),
-	        DeliveryInfo: $sce.trustAsHtml("FR: Delivery information"),
-	        DeliverHere: $sce.trustAsHtml("FR: Deliver to this address"),
-	        ReviewQuote: $sce.trustAsHtml("FR: Review quote"),
-	        BackToQuote: $sce.trustAsHtml("FR: Back to your quote"),
-	        InfoText1: $sce.trustAsHtml("FR: Delivery costs will be confirmed on order."),
-	        InfoText2: $sce.trustAsHtml("FR: Deliveries will be prepared for shipping based on your standard delivery instructions."),
+	        DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
+	        AddNew: $sce.trustAsHtml("Ajouter une nouvelle adresse"),
+	        DeliveryInfo: $sce.trustAsHtml("Informations de livraison"),
+	        DeliverHere: $sce.trustAsHtml("Livrer &agrave; cette adresse"),
+	        ReviewQuote: $sce.trustAsHtml("Revue de cotation"),
+	        BackToQuote: $sce.trustAsHtml("Retour &agrave; votre cotation"),
+	        InfoText1: $sce.trustAsHtml("Les frais de livraison seront confirm&eacute;s &agrave; la commande."),
+	        InfoText2: $sce.trustAsHtml("Les livraisons seront pr&eacute;par&eacute;es pour l'exp&eacute;dition sur la base de vos instructions de livraison standard."),
 	        InfoText3: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es")
 	    }
 	};
@@ -936,10 +936,10 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             Customer: $sce.trustAsHtml("Client "),
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
             QuoteName: $sce.trustAsHtml("Nom de la cotation "),
-            NextStep: $sce.trustAsHtml("FR: Next"),
+            NextStep: $sce.trustAsHtml("Suivant"),
             Submit: $sce.trustAsHtml("Submit quote or order"),
             BackToReview: $sce.trustAsHtml("Review quote"),
-            BackToDelivery: $sce.trustAsHtml("FR: Back to delivery"),
+            BackToDelivery: $sce.trustAsHtml("Retour &agrave; la livraison"),
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
             PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
             PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
@@ -948,25 +948,25 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
             Quantity: $sce.trustAsHtml("Quantit&eacute;"),
             Total: $sce.trustAsHtml("Total"),
-            YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
+            YourAttachments: $sce.trustAsHtml("Vos pi&eacute;ces jointes"),
             YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
             CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
             CommentsInstr: $sce.trustAsHtml("Veuillez ajouter tout commentaire ou instructions sp&eacute;cifiques pour cette cotation"),
             DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
-            DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
-            ChangeAddr: $sce.trustAsHtml("FR: Change address"),
+            DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
+            ChangeAddr: $sce.trustAsHtml("Changer d'adresse"),
             Update: $sce.trustAsHtml("Mettre à jour"),
-            WeirComment: $sce.trustAsHtml("** Commentaires"),
-            AddComment: $sce.trustAsHtml("FR: Add"),
-            CancelComment: $sce.trustAsHtml("FR: Cancel"),
-            SubmitForReview: $sce.trustAsHtml("FR: Submit quote for review"),
-            CommentSavedMsg: $sce.trustAsHtml("FR:Your quote has been updated"),
-            PONeededHeader: $sce.trustAsHtml("FR:Please provide a Purchase Order to finalise your order"),
-            POUpload: $sce.trustAsHtml("FR:Upload PO document"),
-	        SubmitOrderAndEmail: $sce.trustAsHtml("Submit Order & Email PO"),
-	        SubmitOrderWithPO: $sce.trustAsHtml("Submit Order with PO"),
-	        SerialNum: $sce.trustAsHtml("Serial number"),
-	        EmailPoMessage: $sce.trustAsHtml("*Your order will be confirmed<br>following receipt of your PO.")
+            WeirComment: $sce.trustAsHtml("Commenter"),
+            AddComment: $sce.trustAsHtml("Ajouter"),
+            CancelComment: $sce.trustAsHtml("Annuler"),
+            SubmitForReview: $sce.trustAsHtml("Soumettre votre devis pour examen"),
+            CommentSavedMsg: $sce.trustAsHtml("Votre devis a &eacute;t&eacute; mis &agrave; jour"),
+            PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
+            POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
+            SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande & E-Mail de pi&egrave;ce de rechange"),
+            SubmitOrderWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
+            SerialNum: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
+	        EmailPoMessage: $sce.trustAsHtml("FR: Your order will be confirmed<br>following receipt of your PO.")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1329,7 +1329,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
             Customer: $sce.trustAsHtml("Client "),
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
             QuoteName: $sce.trustAsHtml("Nom de la cotation "),
-            BackToQuotes: $sce.trustAsHtml("FR: Back to your Quotes"),
+            BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
             SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
             PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
@@ -1339,31 +1339,31 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
             PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
             Quantity: $sce.trustAsHtml("Quantit&eacute;"),
             Total: $sce.trustAsHtml("Total"),
-            Removed: "Removed",
-            Updated: "Updated",
-            New: "New",
-            YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
+            Removed: "FR: Removed",
+            Updated: "FR: Updated",
+            New: "FR: New",
+            YourAttachments: $sce.trustAsHtml("Vos pi&egrave;ces jointes"),
             YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
             CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
-            DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
-            ViewRevisions: $sce.trustAsHtml("FR: View Previous revisions"),
-	        Save: $sce.trustAsHtml("Save"),
-	        Share: $sce.trustAsHtml("Share"),
-	        Download: $sce.trustAsHtml("Download"),
-	        Print: $sce.trustAsHtml("Print"),
-	        Approve: $sce.trustAsHtml("Approve"),
-	        Reject: $sce.trustAsHtml("Reject"),
-	        Comments: $sce.trustAsHtml("Comments"),
-	        Status: $sce.trustAsHtml("Status"),
-	        OrderDate: $sce.trustAsHtml("Order date;"),
-	        RejectedMessage: $sce.trustAsHtml("The revised quote has been rejected."),
-	        RejectedTitle: $sce.trustAsHtml("Quote updated"),
-	        ApprovedMessage: $sce.trustAsHtml("The revised quote has been accepted"),
-	        ApprovedTitle: $sce.trustAsHtml("Quote updated"),
-	        Comment: $sce.trustAsHtml("Comment"),
-	        AddedComment: $sce.trustAsHtml(" added a comment - "),
-	        Add: $sce.trustAsHtml("Add"),
-	        Cancel: $sce.trustAsHtml("Cancel")
+            DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
+            ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande"),
+            Save: $sce.trustAsHtml("Sauvegarder"),
+	        Share: $sce.trustAsHtml("Partager"),
+	        Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
+	        Print: $sce.trustAsHtml("Imprimer"),
+	        Approve: $sce.trustAsHtml("Approuver"),
+	        Reject: $sce.trustAsHtml("Rejeter"),
+	        Comments: $sce.trustAsHtml("Commentaires"),
+	        Status: $sce.trustAsHtml("Statut"),
+	        OrderDate: $sce.trustAsHtml("Date de commande"),
+	        RejectedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; rejet&eacute;e."),
+	        RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
+	        ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
+	        ApprovedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
+	        Comment: $sce.trustAsHtml("Commentaire"),
+	        AddedComment: $sce.trustAsHtml("FR: added a comment - "),
+	        Add: $sce.trustAsHtml("Ajouter"),
+	        Cancel: $sce.trustAsHtml("Annuler")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1544,7 +1544,7 @@ function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService, q
 		    Documents: $sce.trustAsHtml("FR: add service documentation"),
 		    RefNum: $sce.trustAsHtml("FR: add your references"),
 		    Comments: $sce.trustAsHtml("FR: add comments to your quote"),
-		    Continue: $sce.trustAsHtml("continue to delivery options")
+		    Continue: $sce.trustAsHtml("FR: continue to delivery options")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1591,10 +1591,10 @@ function SubmitConfirmOrderController($sce, WeirService, Quote) {
 			MessageText3: "If your order needs to be revised we will email you an updated quote."
 		},
 		fr: {
-			Title: $sce.trustAsHtml("Thank you. Your order has submitted for review.​"),
-			MessageText1: $sce.trustAsHtml("We have sent you a confirmation email.​"),
-			MessageText2: $sce.trustAsHtml("We will be in touch with you to discuss the items you have requested to be reviewed."),
-			MessageText3: $sce.trustAsHtml("If your order needs to be revised we will email you an updated quote.")
+			Title: $sce.trustAsHtml("FR: Thank you. Your order has submitted for review.​"),
+			MessageText1: $sce.trustAsHtml("FR: We have sent you a confirmation email.​"),
+			MessageText2: $sce.trustAsHtml("FR: We will be in touch with you to discuss the items you have requested to be reviewed."),
+			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will email you an updated quote.")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1612,10 +1612,10 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO) {
 		    MessageText3: "We will also send you a detailed order confirmation document via email"
 		},
 		fr: {
-		    Title: $sce.trustAsHtml("Thank you. Your order has been placed"),
-		    MessageText1: $sce.trustAsHtml("We have sent you a confirmation email."),
-		    MessageText2: $sce.trustAsHtml("Order number; " + Quote.ID),
-		    MessageText3: $sce.trustAsHtml("We will also send you a detailed order confirmation document via email")
+		    Title: $sce.trustAsHtml("FR: Thank you. Your order has been placed"),
+		    MessageText1: $sce.trustAsHtml("FR: We have sent you a confirmation email."),
+		    MessageText2: $sce.trustAsHtml("FR: Order number; " + Quote.ID),
+		    MessageText3: $sce.trustAsHtml("FR: We will also send you a detailed order confirmation document via email")
 		}
 	};
 
@@ -1627,10 +1627,10 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO) {
 			MessageText3: "If your order needs to be revised we will email you an updated quote."
 		},
 		fr: {
-			Title: $sce.trustAsHtml("Thank you. Your order has been submitted pending your PO."),
-			MessageText1: $sce.trustAsHtml("We have sent you a confirmation email."),
-			MessageText2: $sce.trustAsHtml("When we have received your PO we will confirm your order."),
-			MessageText3: $sce.trustAsHtml("If your order needs to be revised we will email you an updated quote.")
+			Title: $sce.trustAsHtml("FR: Thank you. Your order has been submitted pending your PO."),
+			MessageText1: $sce.trustAsHtml("FR: We have sent you a confirmation email."),
+			MessageText2: $sce.trustAsHtml("FR: When we have received your PO we will confirm your order."),
+			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will email you an updated quote.")
 		}
 	}
 
@@ -1655,12 +1655,12 @@ function ChooseSubmitController($uibModalInstance, $sce, WeirService, QuoteShare
             ConfirmPOBtn: "Confirm Order"
         },
         fr: {
-            SubmitReview: $sce.trustAsHtml("FR: Submit quote for review"),
-            SubmitReviewMessage: $sce.trustAsHtml("<p>FR: Please select Submit quote for review if;<br><br>1. There are items in your quote that you would like Weir to review and confirm.<br>2. You have items in your quote that are POA. Weir will review the quote and provide prices for the POA items.</p>"),
-            SubmitReviewBtn: $sce.trustAsHtml("FR: Submit quote for review"),
-            ConfirmPO: $sce.trustAsHtml("FR: Confirm Order"),
-            ConfirmPOMessage: $sce.trustAsHtml("<p>If you select Confirm Order you will be able to confirm your order as follows;<br><br>1. Submit Order with PO – add your PO number or upload your PO document.<br>2. Submit Order & email PO – submit your order and email your PO (we’ll add it to the order for you).</p>"),
-            ConfirmPOBtn: $sce.trustAsHtml("FR: Confirm Order")
+            SubmitReview: $sce.trustAsHtml("Soumettre un devis pour examen"),
+            SubmitReviewMessage: $sce.trustAsHtml("<p>Veuillez sélectionner Soumettre un devis pour examen si;<br><br>1. 1. Il y a des articles dans votre devis que vous souhaitez que Weir r&eacute;vise et confirme.<br>2. Vous avez des articles dans votre devis qui sont POA. Weir passera en revue le devis et fournira les prix des articles POA.</p>"),
+            SubmitReviewBtn: $sce.trustAsHtml("Soumettre un devis pour examen"),
+            ConfirmPO: $sce.trustAsHtml("Confirmer la commande"),
+            ConfirmPOMessage: $sce.trustAsHtml("<p>Si vous s&eacute;lectionnez Confirmer la commande, vous pourrez confirmer votre commande comme suit:<br><br> 1.Soumettre l'ordre avec PO - ajoutez votre num&eacute;ro de commande ou t&eacute;l&eacute;chargez votre document de commande. <br><br>2.Soumettre commande & email PO - soumettre votre commande et email votre commande (nous l'ajouterons à la commande pour vous).</p>"),
+            ConfirmPOBtn: $sce.trustAsHtml("Confirmer la commande")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1725,7 +1725,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
             Instructions1: $sce.trustAsHtml("FR: Select 'view' to view previous revisions for reference"),
             Instructions2: $sce.trustAsHtml("FR: You can view and comment on the current revision"),
             SearchQuotes: $sce.trustAsHtml("FR: Search Quotes"),
-            Search: $sce.trustAsHtml("FR: Search"),
+            Search: $sce.trustAsHtml("Rechercher"),
             QuoteID: $sce.trustAsHtml("FR: Quote ID"),
             CustomerRef: $sce.trustAsHtml("FR: Customer Ref"),
             BusinessName: $sce.trustAsHtml("FR: Business Name"),
@@ -1733,7 +1733,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
             QuoteValue: $sce.trustAsHtml("FR: Quote value"),
             DateRevised: $sce.trustAsHtml("FR: Date Revised"),
             Reviewer: $sce.trustAsHtml("FR: Reviewer"),
-            Status: $sce.trustAsHtml("FR: Status"),
+            Status: $sce.trustAsHtml("Statut"),
             View: $sce.trustAsHtml("FR: View")
         }
     };
@@ -1805,7 +1805,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
         fr: {
             Customer: $sce.trustAsHtml("Client "),
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
-            QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+            QuoteName: $sce.trustAsHtml("Nom de la cotation "),
             SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
             PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
@@ -1815,25 +1815,25 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
             PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
             Quantity: $sce.trustAsHtml("Quantit&eacute;"),
             Total: $sce.trustAsHtml("Total"),
-            YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
+            YourAttachments: $sce.trustAsHtml("Vos pi&egrave;ces jointes"),
             YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
-            CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
+            CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
             DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
-            DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
-            WeirComment: $sce.trustAsHtml("** Commentaires"),
-	        Save: $sce.trustAsHtml("Save"),
-	        Share: $sce.trustAsHtml("Share"),
-	        Download: $sce.trustAsHtml("Download"),
-	        Print: $sce.trustAsHtml("Print"),
-	        Approve: $sce.trustAsHtml("Approve"),
-	        Reject: $sce.trustAsHtml("Reject"),
-	        Comments: $sce.trustAsHtml("Comments"),
-	        Status: $sce.trustAsHtml("Status"),
-	        OrderDate: $sce.trustAsHtml("Order date;"),
-	        BackToQuotes: $sce.trustAsHtml("Back to your Quotes"),
-	        SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
-	        PriceDisclaimer: $sce.trustAsHtml("All prices stated do not include UK VAT or delivery"),
-	        ViewRevisions: $sce.trustAsHtml("View Previous revisions")
+            DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
+            WeirComment: $sce.trustAsHtml("Commenter"),
+            Save: $sce.trustAsHtml("Sauvegarder"),
+	        Share: $sce.trustAsHtml("Partager"),
+	        Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
+	        Print: $sce.trustAsHtml("Imprimer"),
+	        Approve: $sce.trustAsHtml("Approuver"),
+	        Reject: $sce.trustAsHtml("Rejeter"),
+	        Comments: $sce.trustAsHtml("Commentaires"),
+	        Status: $sce.trustAsHtml("Statut"),
+	        OrderDate: $sce.trustAsHtml("Date de commande;"),
+	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
+	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
+	        PriceDisclaimer: $sce.trustAsHtml("FR: All prices stated do not include UK VAT or delivery"),
+	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1966,7 +1966,7 @@ function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $stat
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
 			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
-			QuoteName: $sce.trustAsHtml("**Ajoutez votre nom de devis "),
+			QuoteName: $sce.trustAsHtml("Nom de la cotation "),
 			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
@@ -1976,31 +1976,31 @@ function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $stat
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
 			Total: $sce.trustAsHtml("Total"),
-			YourAttachments: $sce.trustAsHtml("FR: Your attachments"),
+			YourAttachments: $sce.trustAsHtml("Vos pi&egrave;ces jointes"),
 			YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
-			CommentsHeader: $sce.trustAsHtml("FR: Your comments or instructions"),
+			CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
 			DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
-			DeliveryAddress: $sce.trustAsHtml("FR: Delivery Address"),
-			WeirComment: $sce.trustAsHtml("** Commentaires"),
-			Save: $sce.trustAsHtml("Save"),
-			Share: $sce.trustAsHtml("Share"),
-			Download: $sce.trustAsHtml("Download"),
-			Print: $sce.trustAsHtml("Print"),
-			Approve: $sce.trustAsHtml("Approve"),
-			Reject: $sce.trustAsHtml("Reject"),
-			Comments: $sce.trustAsHtml("Comments"),
-			Status: $sce.trustAsHtml("Status"),
-			OrderDate: $sce.trustAsHtml("Order date;"),
-			BackToQuotes: $sce.trustAsHtml("Back to your Quotes"),
-			SubmitWithPO: $sce.trustAsHtml("Submit Order with PO"),
-			SubmitOrderAndEmail: $sce.trustAsHtml("Submit Order & Email PO"),
-			SubmitOrderWithPO: $sce.trustAsHtml("Submit Order with PO"),
-			EmailPoMessage: $sce.trustAsHtml("*Your order will be confirmed<br class='message-break'>following receipt of your PO."),
-			POEntry: $sce.trustAsHtml("Enter PO Number"),
-			PriceDisclaimer: $sce.trustAsHtml("All prices stated do not include UK VAT or delivery"),
-			DragAndDrop: $sce.trustAsHtml("Drag and drop files here to upload"),
-			PONeededHeader: $sce.trustAsHtml("Please provide a Purchase Order to finalise your order"),
-			POUpload: $sce.trustAsHtml("Upload PO document")
+			DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
+			WeirComment: $sce.trustAsHtml("Commenter"),
+			Save: $sce.trustAsHtml("Sauvegarder"),
+			Share: $sce.trustAsHtml("Partager"),
+			Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
+			Print: $sce.trustAsHtml("Imprimer"),
+			Approve: $sce.trustAsHtml("Approuver"),
+			Reject: $sce.trustAsHtml("Rejeter"),
+			Comments: $sce.trustAsHtml("Commentaires"),
+			Status: $sce.trustAsHtml("Statut"),
+			OrderDate: $sce.trustAsHtml("Date de commande;"),
+			BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
+			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
+			SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande & E-Mail de pi&egrave;ce de rechange"),
+			SubmitOrderWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
+			EmailPoMessage: $sce.trustAsHtml("FR: Your order will be confirmed<br class='message-break'>following receipt of your PO."),
+			POEntry: $sce.trustAsHtml("Entrer une r&eacute;f&eacute;rence de commande"),
+			PriceDisclaimer: $sce.trustAsHtml("FR: All prices stated do not include UK VAT or delivery"),
+			DragAndDrop: $sce.trustAsHtml("Faites glisser vos documents ici pour les t&eacute;l&eacute;charger"),
+			PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
+			POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

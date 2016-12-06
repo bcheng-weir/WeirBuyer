@@ -130,9 +130,9 @@ function QuotesController($sce, WeirService, CurrentCustomer, MyOrg) {
 		},
 		fr: {
 		    Saved: $sce.trustAsHtml("Sauv&eacute;"),
-		    InReview: $sce.trustAsHtml("**Cotation soumis pour examen"),
-		    Revised: $sce.trustAsHtml("**Cotation r&eacute;vis&eacute;es"),
-		    Confirmed: $sce.trustAsHtml("Cotation confirm&eacute;es")
+		    InReview: $sce.trustAsHtml("Cotation soumise &agrave; r&eacute;vision"),
+		    Revised: $sce.trustAsHtml("Cotation r&eacute;vis&eacute;e"),
+		    Confirmed: $sce.trustAsHtml("Devis confirm&eacute;")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -188,8 +188,8 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, Quotes, Cu
             OwnProduct: $sce.trustAsHtml("Propre Produit"),
             View: $sce.trustAsHtml("FR: View"),
             ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?"),
-			ConfirmedListMessage: $sce.trustAsHtml("You can convert confirmed quotes to orders. View the confirmed quote and select; Submit order with PO<br><br>Confirmed quotes are valid for 30 days from confirmation"),
-			Revisions: $sce.trustAsHtml("Revisions")
+            ConfirmedListMessage: $sce.trustAsHtml("Vous pouvez convertir des devis confirm&eacute;s en commandes. Affichez le devis confirm&eacute; et s&eacute;lectionnez: Soumettre l'ordre avec PO. Les devis confirm&eacute;s sont valables pendant 30 jours &agrave; partir de la confirmation."),
+			Revisions: $sce.trustAsHtml("FR: Revisions")
 		}
 	};
 	if ($state.is('quotes.revised')) {
@@ -228,8 +228,8 @@ function InReviewQuotesController(WeirService, $state, $sce, Quotes) {
 		    Total: $sce.trustAsHtml("Total"),
 		    Customer: $sce.trustAsHtml("Client"),
 		    OwnProduct: $sce.trustAsHtml("Propre Produit"),
-		    Approver: $sce.trustAsHtml("Approuv&eacute;"),
-			Reviewer: $sce.trustAsHtml("Reviewer"),
+		    Approver: $sce.trustAsHtml("Approbateur;"),
+			Reviewer: $sce.trustAsHtml("FR: Reviewer"),
             Status: $sce.trustAsHtml("Statut"),
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 			View: $sce.trustAsHtml("View")

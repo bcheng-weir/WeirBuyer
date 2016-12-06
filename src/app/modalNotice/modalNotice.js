@@ -29,8 +29,8 @@ function ModalNoticeController() {
 	        SavedMessage: "Quote number has been saved to Your Quotes.",
             ViewQuotesLink: "View Your Quotes"
 	    }, fr: {
-	        SavedMessage: $sce.trustAsHtml("FR: Quote number has been saved to Your Quotes."),
-	        ViewQuotesLink: $sce.trustAsHtml("FR: View Your Quotes")
+	        SavedMessage: $sce.trustAsHtml("Le nombre de devis a &eacute;t&eacute; enregistr&eacute; dans l'onglet \"Vos Devis\"."),
+	        ViewQuotesLink: $sce.trustAsHtml("Voir vos devis")
 	    }
 	};
 	vm.labels = WeirService.LocaleResources(labels);

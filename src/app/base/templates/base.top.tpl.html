@@ -1,19 +1,10 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#BASE_TOP_COLLAPSE" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
             <ul class="nav navbar-nav navbar-right brand-top-fix">
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
+		            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
                     <ul uib-dropdown-menu>
                         <li><a ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
                         <li><a ui-sref="quotes.saved" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
@@ -23,7 +14,7 @@
                     </ul>
                 </li>
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourOrders"></span><span class="caret"></span></a>
+		            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourOrders"></span><span class="caret"></span></a>
                     <ul uib-dropdown-menu>
                         <li><a ng-click="base.OrderAction('orders.submitted')" ng-bind-html="base.navlabels.submitted"></a></li>
                         <li><a ng-click="base.OrderAction('orders.pending')" ng-bind-html="base.navlabels.pending"></a></li>
@@ -34,7 +25,7 @@
                     </ul>
                 </li>
                 <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-		<a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
+		            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
                     <ul uib-dropdown-menu>
                         <li class="dropdown-header">{{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</li>
                         <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
@@ -50,13 +41,13 @@
                 </li>
             </ul>
         </div><!-- /.navbar-collapse -->
+        <div style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 0.5em;">
+            <a href="" ui-sref="home">
+                <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
+            </a>
+        </div>
     </div><!-- /.container-fluid -->
 </nav>
-<div style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 0.5em;">
-	<a href="" ui-sref="home">
-		<img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
-	</a>
-</div>
 <div class="panel panel-default" >
 	<div class="panel-body clearfix">
 		<ul class="nav nav-pills">

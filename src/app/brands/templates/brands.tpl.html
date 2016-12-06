@@ -1,7 +1,7 @@
 <article id="COMPONENT_Brands" ui-view class="container-fluid" style="background-color: lightgray;">
     <div class="container panel" style="background-color: white;">
         <div class="row {{brands.brand}} hr-one">
-            <div class="col-sm-3  col-lg-4 col-lg-offset-1 backgroundOfValve">
+            <div class="col-sm-3  col-md-4 backgroundOfValve">
                 <div>
                     <div class="pictureMessage">
                        <h1 ng-bind-html="brands.brandLabels.aboutBrand"></h1>
@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-8  col-lg-12">
+            <div class="col-sm-8  col-md-10">
                 &nbsp;&nbsp;
                 <div ng-if="brands.brand == 'batley-valve'" ng-include="'../src/app/brands/templates/companyPages/brands.Batley.tpl.html'"></div>
                 <div ng-if="brands.brand == 'blakeborough'" ng-include="'../src/app/brands/templates/companyPages/brands.Blakeborough.tpl.html'"></div>
@@ -21,5 +21,6 @@
             </div>
         </div>
     </div>
+    <footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
 
 </article>

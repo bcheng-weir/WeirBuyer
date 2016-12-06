@@ -12,7 +12,7 @@
 		"left": false,
 		"right": false,
 		"top": true,
-		"bottom": true
+		"bottom": false
 	},
 	"fileStore": {
 		"akid":"AKIAIDJEBSBD44ECHPAQ",

@@ -1,21 +1,30 @@
-  <nav class="navbar navbar-fixed-bottom" ng-controller="footerCtrl">
-        <div class="container-fluid" style="background-color: #d5d9dc;">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header" ng-show="footer.navlabels.language == true">
-                <a class="navbar-brand" style="color: #546270;" ui-sref="terms-of-use">{{footer.navlabels.termsTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="cookie-policy">{{footer.navlabels.cookieTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="privacy-statement">{{footer.navlabels.privacyTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="contact-us">{{footer.navlabels.contactTitle}}</a>
+<div class="footerBase" style="bottom:0px">
+    <div class="footer-logo-band footer-nav navbar-fixed">
+        <div class="container">
+            <ul class="menu">
+                <li>
+                    <a ui-sref="terms-of-use">{{footer.navlabels.termsTitle}}</a>
+                </li>
+                <li>
+                    <a  ui-sref="cookie-policy">{{footer.navlabels.cookieTitle}}</a>
+                </li>
+                <li>
+                    <a  ui-sref="privacy-statement">{{footer.navlabels.privacyTitle}}</a>
+                </li>
+                <li>
+                    <a ui-sref="contact-us">{{footer.navlabels.contactTitle}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-logo-band">
+        <div class="container">
+            <div class="hidden-xs" style="float:left">
+                <a href="https://www.global.weir/"><img alt="Weir logo" src="https://www.global.weir/assets/template/img/footer/Weir-Site-Home-footer.jpg"></a>
             </div>
-            <div class="navbar-header" ng-show="footer.navlabels.language == false">
-                <a class="navbar-brand" style="color: #546270;" ui-sref="terms-of-use">{{footer.navlabels.termsTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="cookie-policy">{{footer.navlabels.cookieTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="privacy-statement">{{footer.navlabels.privacyTitle}}</a>
-                <a class="navbar-brand" style="color: #546270;" ui-sref="contact-us">{{footer.navlabels.contactTitle}}</a>
+            <div class="footer-mob">
+                <p>© 2016 The Weir Group PLC, 1 West Regent Street, Glasgow, G2 1RW. Company Number 2934.</p>
             </div>
         </div>
-        <div>
-            Copyright Statement
-        </div>
-    </nav>
-
+    </div>
+</div>

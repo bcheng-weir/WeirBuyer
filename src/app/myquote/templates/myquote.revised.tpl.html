@@ -201,17 +201,18 @@
             </div>
             <div class="row" ng-hide="revised.ShowCommentBox">
                 <div class="col-md-12">
-                    <button class="btn btn-lg btn-default" ng-bind-html="revised.labels.Comment" ng-click="revised.ShowCommentBox=true"></button>
+                    <button class="btn btn-md btn-default" ng-bind-html="revised.labels.Comment" ng-click="revised.ShowCommentBox=true"></button>
                 </div>
             </div>
             <div class="row" ng-show="revised.ShowCommentBox">
                 <div class="col-md-12">
                     <textarea cols="100" rows="6" ng-model="revised.CommentToWeir"></textarea>
                     <br>
-                    <button class="btn btn-lg btn-primary" ng-bind-html="revised.labels.Add" ng-click="revised.AddNewComment()"></button>
-                    <button class="btn btn-lg btn-default" ng-bind-html="revised.labels.Cancel" ng-click="revised.ShowCommentBox=false"></button>
+                    <button class="btn btn-md btn-primary" ng-bind-html="revised.labels.Add" ng-click="revised.AddNewComment()"></button>
+                    <button class="btn btn-md btn-default" ng-bind-html="revised.labels.Cancel" ng-click="revised.ShowCommentBox=false"></button>
                 </div>
             </div>
         </div>
     </div>
+    <footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
 </article>

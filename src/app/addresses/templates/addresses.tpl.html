@@ -107,9 +107,10 @@
         </div>
         <button type="button"
                 ng-if="application.$ocMedia('max-width:767px')"
-                class="btn btn-default btn-block btn-lg"
+                class="btn btn-default btn-block btn-md"
                 ng-show="addresses.list.Meta.Page < addresses.list.Meta.TotalPages"
                 ng-click="addresses.loadMore()">Load More
         </button>
     </div>
+    <footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
 </article>

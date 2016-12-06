@@ -1,43 +1,53 @@
 <article id="CommonFilesview" ng-controller="footerCtrl">
-    <div class="container-fluid full heroimage" style="background-image: url('https://www.global.weir/assets/components/phpthumbof/cache/site-info-background-1200x320.eb63d49764b19a1a0d191b5324213db94633.jpg')">
-        <div class="container">
-            <div class="row">
+        <div class="col-md-12"></div>
+            <div class="container-fluid full heroimage" style="background-image: url('https://www.global.weir/assets/components/phpthumbof/cache/site-info-background-1200x320.eb63d49764b19a1a0d191b5324213db94633.jpg')">
+                <div class="container">
+                    <div class="row">
 
-                <div class="col-xs-10  col-sm-6 col-sm-offset-0 col-md-5 bannerText">
-                    <h1>{{footer.navlabels.contactTitle}}</h1>
+                        <div class="col-xs-10  col-sm-6 col-sm-offset-0 col-md-5 bannerText">
+                            <h1>{{footer.navlabels.contactTitle}}</h1>
 
-                    <!-- renderReadMoreButton -->
-                </div>
+                            <!-- renderReadMoreButton -->
+                        </div>
 
-            </div><!-- //row -->
-        </div><!-- //container -->
-    </div>
-        <div class="col-xs-12 col-md-8 main-content" ng-show="footer.navlabels.language == true">
-                <div class="panel">
-                    <p>We'd like to hear from you.</p>&nbsp;
-                    <p>Please use the details below to contact us.</p>&nbsp;
-                    <p>Weir Valves & Controls UK<br />
-                        Britannia House<br />
-                        Huddersfield Road<br />
-                        Elland<br />
-                        West Yorkshire<br />
-                        HX5 9JR</p>
-                    <p><a href="mailto:valvesupport@weirgroup.com">valvesupport@weirgroup.com</a></p>&nbsp;&nbsp;
-                    <p> <a href="tel:+44(0)1422282000">T: +44 (0)142 228 2000</a></p>
-                    <p> <a href="tel:+44(0)1422282100">F: +44 (0)142 228 2100</a></p>
-                </div>
-        </div>
-        <div class="col-xs-12 col-md-8 main-content" ng-show="footer.navlabels.language == false">
-            <div class="panel">
-                <p>Nous aimerions avoir de vos nouvelles.</p>&nbsp;
-                <p>Veuillez utiliser les détails ci-dessous pour nous contacter.</p>
-                <p>Sarasin-RSBD<br />
-                    ZI Du Bois Rigault<br />
-                    Rue Jean Baptiste Grison<br />
-                    Vendin Le Vieil 62880<br /></p>
-                <p><a href="mailto:aftersales.sarasin-RSBD@weirgroup.com">aftersales.sarasin-RSBD@weirgroup.com</a></p>&nbsp;&nbsp;
-                <p> <a href="tel:+33(0)321795450">T: +33 (0)321 79 54 50</a></p>
-                <p> <a href="tel:+33(0)321286200">F: +33 (0)321 28 62 00</a></p>
+                    </div><!-- //row -->
+                </div><!-- //container -->
             </div>
-        </div>
+        <div class="container">
+
+                <div class="row">
+                <div class="col-xs-12 col-md-8 main-content" ng-show="footer.navlabels.language == true">
+                        <div class="panel">
+                            <p>We'd like to hear from you.</p>&nbsp;
+                            <p>Please use the details below to contact us.</p>&nbsp;
+                            <p>Weir Valves & Controls UK<br />
+                                Britannia House<br />
+                                Huddersfield Road<br />
+                                Elland<br />
+                                West Yorkshire<br />
+                                HX5 9JR</p>
+                            <p><a href="mailto:valvesupport@weirgroup.com">valvesupport@weirgroup.com</a></p>&nbsp;&nbsp;
+                            <p> <a href="tel:+44(0)1422282000">T: +44 (0)142 228 2000</a></p>
+                            <p> <a href="tel:+44(0)1422282100">F: +44 (0)142 228 2100</a></p>
+                        </div>
+                </div>
+                </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-8 main-content" ng-show="footer.navlabels.language == false">
+                    <div class="panel">
+                        <p>Nous aimerions avoir de vos nouvelles.</p>&nbsp;
+                        <p>Veuillez utiliser les détails ci-dessous pour nous contacter.</p>
+                        <p>Sarasin-RSBD<br />
+                            ZI Du Bois Rigault<br />
+                            Rue Jean Baptiste Grison<br />
+                            Vendin Le Vieil 62880<br /></p>
+                        <p><a href="mailto:aftersales.sarasin-RSBD@weirgroup.com">aftersales.sarasin-RSBD@weirgroup.com</a></p>&nbsp;&nbsp;
+                        <p> <a href="tel:+33(0)321795450">T: +33 (0)321 79 54 50</a></p>
+                        <p> <a href="tel:+33(0)321286200">F: +33 (0)321 28 62 00</a></p>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div ng-include="'../common/bottom-navBar/navbarFooter.tpl.html'"></div>
+
 </article>

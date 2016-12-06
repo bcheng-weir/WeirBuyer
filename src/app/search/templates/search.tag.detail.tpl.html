@@ -1,28 +1,27 @@
 <article>
-    <div class="row">
-        <div class="col-md-8">
-            <p><b><span ng-bind-html='tagDetail.labels.ResultsHeader'></span><span class="text-danger">{{tagDetail.tagNumber.Name}}</span></b></p>
-            <p><b><span ng-bind-html='tagDetail.labels.Tag'></span><span class="text-danger">{{tagDetail.tagNumber.xp.TagNumber}}</span></b></p>
-            <p ng-if="!search.searchall"><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger">{{tagDetail.tagNumber.xp.Customer}}</span></b></p>
-            <p ng-if="search.searchall"><b><span ng-bind-html='tagDetail.labels.Customer'></span><span class="text-danger" ng-bind-html="search.labels.NotAvailable"></span></b></p>
-            <p><b><span ng-bind-html='tagDetail.labels.DeliveryDate'></span><span class="text-danger">{{tagDetail.tagNumber.xp.DeliveredDate | weirfulldate}}</span></b></p>
-        </div>
-        <div class="col-md-4">
-            <h2 class="pull-right">
-                <button class="btn btn-default" ui-sref="search.tag" ng-bind-html='tagDetail.labels.SearchAgain'></button>
-                <button class="btn btn-primary" ng-if="tagDetail.searchNumbers" ui-sref="search.tag.results({numbers: tagDetail.searchNumbers})" ng-bind-html='tagDetail.labels.BackToResults'></button>
-            </h2>
-        </div>
+    <div class="col-md-12 paddingBetweenElements">
+        <h2 class="pull-right">
+            <button class="btn btn-default" ui-sref="search.serial" ng-bind-html='tagDetail.labels.SearchAgain'></button>
+            <button class="btn btn-primary" ng-if="tagDetail.searchNumbers" ui-sref="search.serial.results({numbers: serialDetail.searchNumbers})" ng-bind-html='tagDetail.labels.BackToResults'></button>
+        </h2>
     </div>
     <div class="row">
-        <div id="imgdiv" class="col-md-4" ng-if="tagDetail.tagNumber.xp.ImageName">
-            <figure>
-                <img ng-src="{{search.GetValveImageUrl(tagDetail.tagNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em;display:block; margin-left:auto; margin-right:auto;"
-                     onerror="window.document.getElementById('imgdiv').style.display = 'none';"/>
+        <div class="col-md-4">
+            <figure id="imgPic">
+                <img ng-if="tagDetail.tagNumber.xp.ImageName" ng-src="{{search.GetValveImageUrl(tagDetail.tagNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em;display:block; margin-left:auto; margin-right:auto;"
+                     onerror="window.document.getElementById('imgPic').style.display = '../src/assets/STARFLOW.png';"/>
             </figure>
+
         </div>
-        <div class="col-md-6">
-            <h3 ng-bind-html='tagDetail.labels.SpecHeader'></h3>
+        <div class="col-md-8">
+            <div class="results"><p></p>
+                <div ng-bind-html='tagDetail.labels.ResultsHeader'>></div><div class="serial-no">{{tagDetail.tagNumber.Name}}</div><p></p><p></p>
+                <div class="results-heading" ng-bind-html='tagDetail.labels.Tag'></div><div class="serial-no">{{tagDetail.tagNumber.xp.TagNumber}}</div><p></p><p></p>
+                <div ng-if="!search.searchall"><div class="results-heading" ng-bind-html='tagDetail.labels.Customer'></div><div class="serial-no">{{tagDetail.tagNumber.xp.Customer}}</div></div><p></p>
+                <div ng-if="search.searchall"><div class="results-heading" ng-bind-html='tagDetail.labels.Customer'></div><div class="serial-no" ng-bind-html="search.labels.NotAvailable"></div></div><p></p>
+                <div class="results-heading" ng-bind-html='tagDetail.labels.DeliveryDate'></div><div class="serial-no">{{tagDetail.tagNumber.xp.DeliveredDate | weirfulldate}}</div><p></p>
+            </div>
+            <h4 ng-bind-html='tagDetail.labels.SpecHeader'></h4>
             <table ng-if="tagDetail.tagNumber.xp.Specs.Type=='WVCUK'" class="table table-bordered oc-table-responsive weir-specs-table">
                 <tbody>
                     <tr>
@@ -95,7 +94,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <h3><span ng-bind-html='tagDetail.headers.PartList'></span><span class="text-danger">{{tagDetail.tagNumber.Name}}</span></h3>
+            <h4><span ng-bind-html='tagDetail.headers.PartList'></span></h4>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
                     <tr>
@@ -128,7 +127,7 @@
                                        ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" />
                             </form>
                         </td>
-                        <td class="button-td"><button class="btn btn-warning" ng-click="tagDetail.addPartToQuote(part)" ng-bind-html='tagDetail.headers.AddToQuote'></button></td>
+                        <td class="button-td"><button class="btn btn-primary ng-binding" ng-click="tagDetail.addPartToQuote(part)" ng-bind-html='tagDetail.headers.AddToQuote'></button></td>
                     </tr>
                 </tbody>
             </table>

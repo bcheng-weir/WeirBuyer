@@ -1,74 +1,85 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
-            <ul class="nav navbar-nav navbar-right brand-top-fix">
-                <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-		            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
-                    <ul uib-dropdown-menu>
-                        <li><a ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
-                        <li><a ui-sref="quotes.saved" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
-                        <li><a ui-sref="quotes.inreview" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
-                        <li><a ui-sref="quotes.revised" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
-                        <li><a ui-sref="quotes.confirmed" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
+<div class="mce-container-body">
+        <nav class="navbar navbar-default">
+
+            <div class="container-fluid topNavBar">
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
+                    <ul class="nav navbar-nav navbar-right brand-top-fix">
+                        <li uib-dropdown ng-if="!base.currentUser.Anonymous">
+                            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
+                            <ul uib-dropdown-menu>
+                                <li><a ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
+                                <li><a ui-sref="quotes.saved" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
+                                <li><a ui-sref="quotes.inreview" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
+                                <li><a ui-sref="quotes.revised" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
+                                <li><a ui-sref="quotes.confirmed" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
+                            </ul>
+                        </li>
+                        <li uib-dropdown ng-if="!base.currentUser.Anonymous">
+                            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourOrders"></span><span class="caret"></span></a>
+                            <ul uib-dropdown-menu>
+                                <li><a ng-click="base.OrderAction('orders.submitted')" ng-bind-html="base.navlabels.submitted"></a></li>
+                                <li><a ng-click="base.OrderAction('orders.pending')" ng-bind-html="base.navlabels.pending"></a></li>
+                                <li><a ng-click="base.OrderAction('orders.revised')" ng-bind-html="base.navlabels.revised"></a></li>
+                                <li><a ng-click="base.OrderAction('orders.confirmed')" ng-bind-html="base.navlabels.confirmed"></a></li>
+                                <li><a ng-click="base.OrderAction('orders.despatched')" ng-bind-html="base.navlabels.despatched"></a></li>
+                                <li><a ng-click="base.OrderAction('orders.invoiced')" ng-bind-html="base.navlabels.invoiced"></a></li>
+                            </ul>
+                        </li>
+                        <li uib-dropdown ng-if="!base.currentUser.Anonymous">
+                            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
+                            <ul uib-dropdown-menu>
+                                <li class="dropdown-header">{{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</li>
+                                <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
+                                <li class="divider"></li>
+                                <li><a ng-click="application.logout()">Logout</a></li>
+                            </ul>
+                        </li>
+                        <li ng-if="base.currentUser.Anonymous && base.registrationAvailable">
+                            <a href="" ui-sref="registration" ui-sref-active="active">Register/Login</a>
+                        </li>
+                        <li>
+                            <ordercloud-minicart order="catalog.currentOrder"></ordercloud-minicart>
+                        </li>
                     </ul>
-                </li>
-                <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-		            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourOrders"></span><span class="caret"></span></a>
-                    <ul uib-dropdown-menu>
-                        <li><a ng-click="base.OrderAction('orders.submitted')" ng-bind-html="base.navlabels.submitted"></a></li>
-                        <li><a ng-click="base.OrderAction('orders.pending')" ng-bind-html="base.navlabels.pending"></a></li>
-                        <li><a ng-click="base.OrderAction('orders.revised')" ng-bind-html="base.navlabels.revised"></a></li>
-                        <li><a ng-click="base.OrderAction('orders.confirmed')" ng-bind-html="base.navlabels.confirmed"></a></li>
-                        <li><a ng-click="base.OrderAction('orders.despatched')" ng-bind-html="base.navlabels.despatched"></a></li>
-                        <li><a ng-click="base.OrderAction('orders.invoiced')" ng-bind-html="base.navlabels.invoiced"></a></li>
-                    </ul>
-                </li>
-                <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-		            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
-                    <ul uib-dropdown-menu>
-                        <li class="dropdown-header">{{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</li>
-                        <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
-                        <li class="divider"></li>
-                        <li><a ng-click="application.logout()">Logout</a></li>
-                    </ul>
-                </li>
-                <li ng-if="base.currentUser.Anonymous && base.registrationAvailable">
-                    <a href="" ui-sref="registration" ui-sref-active="active">Register/Login</a>
-                </li>
-                <li>
-                    <ordercloud-minicart order="catalog.currentOrder"></ordercloud-minicart>
-                </li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-        <div style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 0.5em;">
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+
+    </nav>
+    <div class="row">
+        <div style="margin-top: 1em; margin-bottom: 1em; margin-left: 2em;">
             <a href="" ui-sref="home">
                 <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
             </a>
         </div>
-    </div><!-- /.container-fluid -->
-</nav>
-<div class="panel panel-default" >
-	<div class="panel-body clearfix">
-		<ul class="nav nav-pills">
-			<li class="brand-nav">
-				<a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})">About Batley</a>
-			</li>
-			<li class="brand-nav">
-				<a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})">About Blakeborough</a>
-			</li>
-			<li class="brand-nav">
-				<a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})">About Hopkinsons</a>
-			</li>
-            <li class="brand-nav">
-                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">About Sarasin</a>
-            </li>
-            <li class="newQuote">
-                <a href="#" ng-click="base.newQuote()" ng-bind-html="base.navlabels.newQuote"></a>
-            </li>
-			<li class="active">
-			<a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
-			</li>
-		</ul>
-	</div>
+    </div>
+    <div class="row spacingTop">
+        <div class="panel panel-default">
+            <div class="panel-body clearfix spacingTop" style="padding-left: 0px;">
+                <div class="col-xs-6 col-md-12 brand">
+                        <ul class="nav nav-tabs">
+                            <li>
+                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})">About Batley</a>
+                            </li>
+                            <li>
+                                <a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})">About Blakeborough</a>
+                            </li>
+                            <li>
+                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})">About Hopkinsons</a>
+                            </li>
+                            <li>
+                             <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">About Sarasin</a>
+                            </li>
+                            <li>
+                                <a href="#" ng-click="base.newQuote()" style="border-bottom: none" ng-bind-html="base.navlabels.newQuote"></a>
+                            </li>
+                            <li class="active">
+                                <a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search"></i></a>
+                            </li>
+                        </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>

@@ -36,7 +36,7 @@
             <span style="margin-left: 4em;"><button ng-bind-html="search.labels.ApplyFilter" class="btn btn-primary" ng-click="search.SetGlobalSearch(search.searchall)"></button></span>
         </div>
     </div>
-	<ul class="nav nav-tabs nav-justified" ng-if="search.Customer.id && ['search.serial', 'search.part', 'search.tag'].indexOf(application.$state.current.name) > -1">
+	<ul class="nav nav-tabs nav-justified ng-scope weir-tabs" ng-if="search.Customer.id && ['search.serial', 'search.part', 'search.tag'].indexOf(application.$state.current.name) > -1">
 		<li role="presentation" ui-sref-active="active" ui-sref="search.serial"><a href="#" ng-bind-html='search.labels.SerialSearch'></a></li>
 		<li role="presentation" ui-sref-active="active" ui-sref="search.part"><a href="#" ng-bind-html='search.labels.PartSearch'></a></li>
 		<li role="presentation" ui-sref-active="active" ui-sref="search.tag"><a href="#" ng-bind-html='search.labels.TagSearch'></a></li>

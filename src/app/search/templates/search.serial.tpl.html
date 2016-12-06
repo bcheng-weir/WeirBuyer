@@ -1,7 +1,7 @@
 <ui-view>
     <form name="serial_form" ng-submit="serial.searchSerialNumbers()" class="panel home-panel">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="form-group has-feedback" ng-repeat="number in serial.serialNumbers track by $index">
 			        <label ng-if="$index == 0" ng-bind-html='serial.labels.EnterSerial'><span ng-if="serial.serialNumbers.length > 1"></span></label>
                     <div class="input-group col-md-12">
@@ -26,10 +26,12 @@
                     <button type="submit" class="btn btn-primary" ng-bind-html='serial.labels.Search'></button>
                 </div>
             </div>
-            <div class="col-md-6 text-center">
-		        <a href="#" target="_blank" ng-bind-html='serial.labels.WhereToFind'></a>
-            </div>
         </div>
+            <div class="row" style="padding-top: 10%;">
+                <div class="col-md-12 text-center">
+                    <a href="#" target="_blank" ng-bind-html='serial.labels.WhereToFind'></a>
+                </div>
+            </div>
     </form>
     <div class="row" ng-if="serial.newsArticles">
         <div class="col-md-6 news-preview" ng-repeat="article in serial.newsArticles">

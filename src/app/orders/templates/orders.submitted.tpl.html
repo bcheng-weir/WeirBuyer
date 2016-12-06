@@ -44,16 +44,5 @@
             </tr>
             </tbody>
         </table>
-        <div class="text-center" ng-if="application.$ocMedia('min-width:768px') && orders.list.Meta.TotalPages > 1">
-            <uib-pagination boundary-links="orders.list.Meta.TotalPages > 5" max-size="5"
-                            total-items="orders.list.Meta.TotalCount" items-per-page="orders.list.Meta.PageSize"
-                            ng-model="orders.list.Meta.Page" ng-change="orders.pageChanged()"></uib-pagination>
-        </div>
-        <button type="button"
-                ng-if="application.$ocMedia('max-width:767px')"
-                class="btn btn-default btn-block btn-md"
-                ng-show="orders.list.Meta.Page < orders.list.Meta.TotalPages"
-                ng-click="orders.loadMore()">orders.labels.loadMore</button>
-        <p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>
     </div>
 </div>

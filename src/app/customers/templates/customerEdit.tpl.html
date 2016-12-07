@@ -91,7 +91,10 @@
             </thead>
             <tbody>
             <tr ng-repeat="address in customerEdit.list.Items">
-                <td>{{address.xp.primary}}</td>
+                <td>
+                    <span ng-if="address.xp.primary==true">{{customerEdit.labels.Yes}}</span>
+                    <span ng-if="address.xp.primary!=true">{{customerEdit.labels.No}}</span>
+                </td>
                 <td data-title="Name">{{address.AddressName || '---'}}</td>
                 <td scope="row">{{address.CompanyName}}</td>
                 <td data-title="Address">{{address.Street1 + (address.Street2 ? (' ' + address.Street2) : '')}} <br

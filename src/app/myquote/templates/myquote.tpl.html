@@ -1,5 +1,5 @@
 <article id="COMPONENT_MyQuote" class="container-fluid">
-    <div class="panel-default paddingBetweenElements">
+    <div class="panel-default">
 		<div class="row">
 			<div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
 				<div style="display:inline-block; float:left; text-align:left;">
@@ -39,13 +39,12 @@
 			<li role="presentation" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 			<li role="presentation" ui-sref-active="active" ng-if="myquote.Quote.ShippingAddressID==null"><a href="" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
 			<li role="presentation" ui-sref-active="active" ui-sref="myquote.review" ng-if="myquote.Quote.ShippingAddressID!=null"><a href="" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
-			<li role="presentation" ui-sref-active="active" ui-sref="myquote.buyerreview" ng-if="myquote.UserIsBuyer()"><a href="#" ng-bind-html='myquote.labels.SubmitQuoteOrOrder'></a></li>
-
+			<li role="presentation" ui-sref-active="active" ui-sref="myquote.buyerreview" ng-if="myquote.UserIsBuyer()"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 			<li role="presentation" class="quote-step" ui-sref-active="active" ng-if="myquote.Quote.ShippingAddressID==null"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 			<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.submitquote" ng-if="myquote.Quote.ShippingAddressID!=null"><a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 		</ol>
 	</nav>
-	<div ui-view class="paddingBetweenElements">
+	<div ui-view class="">
 		<div id="modalMyquote" class="modal-quote-confirmation">
 			<script type="text/ng-template" id="modalConfirmation.html">
 				<div class="modal-header" style="border-bottom: 0px; ">

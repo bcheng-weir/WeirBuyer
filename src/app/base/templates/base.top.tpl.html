@@ -23,7 +23,6 @@
                                 <li><a ng-click="base.OrderAction('orders.revised')" ng-bind-html="base.navlabels.revised"></a></li>
                                 <li><a ng-click="base.OrderAction('orders.confirmed')" ng-bind-html="base.navlabels.confirmed"></a></li>
                                 <li><a ng-click="base.OrderAction('orders.despatched')" ng-bind-html="base.navlabels.despatched"></a></li>
-                                <li><a ng-click="base.OrderAction('orders.invoiced')" ng-bind-html="base.navlabels.invoiced"></a></li>
                             </ul>
                         </li>
                         <li uib-dropdown ng-if="!base.currentUser.Anonymous">
@@ -73,11 +72,11 @@
                         <li>
                             <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">{{base.labels.Sarasin}}</a>
                         </li>
-                        <li>
-                            <a href="#" style="border-bottom: none;" ng-click="base.newQuote()" ng-bind-html="base.navlabels.newQuote"></a>
+                        <li class="active last">
+                            <a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
                         </li>
-                        <li class="active">
-                        <a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
+                        <li class="pull-right li-new-quote">
+                            <a href="#" class="new-quote" ng-click="base.newQuote()" ng-bind-html="base.navlabels.newQuote"></a>
                         </li>
                     </ul>
                 </div>

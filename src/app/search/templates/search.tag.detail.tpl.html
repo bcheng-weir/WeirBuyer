@@ -110,7 +110,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="part in tagDetail.tagNumber.Parts">
-                        <td class="text-danger"><span>{{part.Detail.Name}}</span><span ng-if="part.Detail.xp.AlternatePartNumber">&nbsp;({{part.Detail.xp.AlternatePartNumber}})</span></td>
+                        <td class="text-blue"><span>{{part.Detail.Name}}</span><span ng-if="part.Detail.xp.AlternatePartNumber">&nbsp;({{part.Detail.xp.AlternatePartNumber}})</span></td>
                         <td>{{part.Detail.Description}}</td>
                         <td>{{tagDetail.PartQuantity(part.Detail.ID)}}</td>
                         <td>{{part.Detail.xp.ReplacementSchedule}}</td>

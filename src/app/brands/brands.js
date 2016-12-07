@@ -35,7 +35,7 @@ function BrandController(Parameters, WeirService) {
             BatleyMsg: "Weir manufactures an extensive range of butterfly valves for isolation and control applications under the Batley Valve® brand.",
             BatleyTitle: "A leading standard in global process sectors",
             Blakeborough: "Blakeborough®",
-            AboutBlakeborough: "About Blakeborough\<sup\>®\</sup\> Valve",
+            AboutBlakeborough: "About Blakeborough\<sup\>®\</sup\>",
             BlakeboroughTitle: "A leading standard in global process sectors",
             BlakeboroughMsg: "The Blakeborough® brand has been at the forefront of designing and manufacturing control, choke and steam conditioning valves for more than 70 years.",
             Hopkinsons: "Hopkinsons®",

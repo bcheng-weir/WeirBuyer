@@ -7,7 +7,6 @@
 			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.revised({filters:orders.FilterActions('orders.revised')})"><a href="#" ng-bind-html='orders.labels.revised'></a></li>
 			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.confirmed({filters:orders.FilterActions('orders.confirmed')})"><a href="#" ng-bind-html='orders.labels.confirmed'></a></li>
 			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.despatched({filters:orders.FilterActions('orders.despatched')})"><a href="#" ng-bind-html='orders.labels.despatched'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.invoiced({filters:orders.FilterActions('orders.invoiced')})"><a href="#" ng-bind-html='orders.labels.invoiced'></a></li>
 		</ul>
 	</div>
 	<hr>
@@ -47,7 +46,7 @@
 		</div>
 		<hr>
 	</div>-->
-	<div ui-view></div>
+	<div ui-view style="padding-top:10px"></div>
 	<div class="text-center" ng-if="application.$ocMedia('min-width:768px') && orders.list.Meta.TotalPages > 1">
 		<uib-pagination boundary-links="orders.list.Meta.TotalPages > 5" max-size="5"
 						total-items="orders.list.Meta.TotalCount" items-per-page="orders.list.Meta.PageSize"

@@ -5,6 +5,7 @@
 		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.revised({filters:quotes.FilterActions('quotes.revised')})"><a href="#" ng-bind-html='quotes.labels.Revised'></a></li>
 		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.confirmed({filters:quotes.FilterActions('quotes.confirmed')})"><a href="#" ng-bind-html='quotes.labels.Confirmed'></a></li>
 	</ul>
+	<hr>
 	<!--====== SEARCH/FILTERS ======-->
 	<form name="QuoteSearchForm" class="form-inline" ng-submit="quotes.search()">
 		<fieldset class="form-group">
@@ -21,7 +22,7 @@
             </span>
 		</fieldset>
 	</form>
-	<div ui-view></div>
+	<div ui-view style="padding-top:10px"></div>
 	<div class="text-center" ng-if="application.$ocMedia('min-width:768px') && quotes.list.Meta.TotalPages > 1">
 		<uib-pagination boundary-links="quotes.list.Meta.TotalPages > 5" max-size="5"
 						total-items="quotes.list.Meta.TotalCount" items-per-page="quotes.list.Meta.PageSize"

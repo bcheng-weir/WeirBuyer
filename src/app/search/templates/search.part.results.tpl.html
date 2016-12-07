@@ -29,8 +29,8 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="part in partResults.partNumberResults.Parts | searchresults:true">
-                        <td ng-if="!part.Detail.xp.AlternatePartNumber" class="text-danger">{{part.Detail.Name}}</td>
-                        <td ng-if="part.Detail.xp.AlternatePartNumber" class="text-danger">{{part.Detail.Name}} ({{part.Detail.xp.AlternatePartNumber}})</td>
+                        <td ng-if="!part.Detail.xp.AlternatePartNumber" class="text-blue">{{part.Detail.Name}}</td>
+                        <td ng-if="part.Detail.xp.AlternatePartNumber" class="text-blue">{{part.Detail.Name}} ({{part.Detail.xp.AlternatePartNumber}})</td>
                         <td>{{part.Detail.Description}}</td>
                         <td>{{part.Detail.xp.ReplacementSchedule}}</td>
                         <td>{{part.Detail.xp.LeadTime}}</td>

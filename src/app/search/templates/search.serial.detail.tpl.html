@@ -7,17 +7,17 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-                <figure id="imgPic">
-                    <img ng-if="serialDetail.serialNumber.xp.ImageName" ng-src="{{search.GetValveImageUrl(serialDetail.serialNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em; display:block; margin-left:auto; margin-right:auto;"
-                         onerror="window.document.getElementById('imgPic').style.display = '../src/assets/STARFLOW.png';"/>
-                </figure>
+            <figure id="imgPic">
+                <img ng-if="serialDetail.serialNumber.xp.ImageName" ng-src="{{search.GetValveImageUrl(serialDetail.serialNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em; display:block; margin-left:auto; margin-right:auto;"
+                     onerror="window.document.getElementById('imgPic').style.display = '../src/assets/STARFLOW.png';"/>
+            </figure>
         </div>
         <div class="col-md-8">
             <div class="results"><p></p>
                 <div ng-bind-html='serialDetail.labels.ResultsHeader'></div><div class="serial-no">{{serialDetail.serialNumber.Name}}</div>
                     <p></p>
                 <p></p>
-               <div class="results-heading" ng-bind-html='serialDetail.labels.Tag'></div><div class="serial-no">{{serialDetail.serialNumber.xp.TagNumber}}</div><p></p>
+                <div class="results-heading" ng-bind-html='serialDetail.labels.Tag'></div><div class="serial-no">{{serialDetail.serialNumber.xp.TagNumber}}</div><p></p>
                 <div ng-if="!search.searchall"><div class="results-heading" ng-bind-html='serialDetail.labels.Customer'></div><div class="serial-no">{{serialDetail.serialNumber.xp.Customer}}</div></div><p></p>
                 <div ng-if="search.searchall"><div class="results-heading" ng-bind-html='serialDetail.labels.Customer'></div><div class="serial-no" ng-bind-html="search.labels.NotAvailable"></div></div><p></p>
                 <div class="results-heading" ng-bind-html='serialDetail.labels.DeliveryDate'></div><div class="serial-no">{{serialDetail.serialNumber.xp.DeliveredDate | weirfulldate}}</div><p></p>
@@ -112,7 +112,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="part in serialDetail.serialNumber.Parts">
-                        <td class="text-danger"><span>{{part.Detail.Name}}</span><span ng-if="part.Detail.xp.AlternatePartNumber">&nbsp;({{part.Detail.xp.AlternatePartNumber}})</span></td>
+                        <td class="text-blue"><span>{{part.Detail.Name}}</span><span ng-if="part.Detail.xp.AlternatePartNumber">&nbsp;({{part.Detail.xp.AlternatePartNumber}})</span></td>
                         <td>{{part.Detail.Description}}</td>
                         <td>{{serialDetail.PartQuantity(part.Detail.ID)}}</td>
                         <td>{{part.Detail.xp.ReplacementSchedule}}</td>

@@ -262,11 +262,6 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
                 "xp.Status": WeirService.OrderStatus.Despatched.id,
                 "xp.Active": true
             },
-            "orders.invoiced": {
-                "xp.Type": "Order",
-                "xp.Status": WeirService.OrderStatus.Invoiced.id,
-                "xp.Active": true
-            },
             "quotes.saved": {
                 "xp.Type": "Quote",
                 "xp.Status": WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,

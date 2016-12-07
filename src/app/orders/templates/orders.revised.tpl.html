@@ -26,7 +26,13 @@
                     </a>
                 </th>
                 <th ng-bind-html='orders.labels.Reviewer'></th>
-                <th ng-bind-html='orders.labels.OrderDate'></th>
+                <th>
+                    <a href="#" role="button" ng-click="orders.updateSort('DateSubmitted')">
+                        {{orders.labels.OrderDate}}
+                        <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'DateSubmitted'"></i>
+                        <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!DateSubmitted'"></i>
+                    </a>
+                </th>
                 <th ng-bind-html='orders.labels.Status'></th>
             </tr>
             </thead>
@@ -42,7 +48,7 @@
                     <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
                 </td>
                 <td>{{order.xp.ReviewerName}}</td>
-                <td>{{order.DateSubmitted}}</td>
+                <td>{{order.DateSubmitted | weirdate}}</td>
                 <td>{{orders.getStatusLabel(order.xp.Status) + "; " + (order.xp.StatusDate | weirdate)}}</td>
                 <td>
                     <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>

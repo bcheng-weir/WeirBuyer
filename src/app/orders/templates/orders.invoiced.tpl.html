@@ -17,8 +17,20 @@
                 </th>
                 <th ng-bind-html='orders.labels.ContractNum'></th>
                 <th ng-bind-html='orders.labels.PONumber'></th>
-                <th ng-bind-html='orders.labels.Total'></th>
-                <th ng-bind-html='orders.labels.OrderDate'></th>
+                <th scope="col">
+                    <a href="#" role="button" ng-click="orders.updateSort('Total')">
+                        {{orders.labels.Total}}
+                        <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'Total'"></i>
+                        <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!Total'"></i>
+                    </a>
+                </th>
+                <th>
+                    <a href="#" role="button" ng-click="orders.updateSort('DateSubmitted')">
+                        {{orders.labels.OrderDate}}
+                        <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'DateSubmitted'"></i>
+                        <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!DateSubmitted'"></i>
+                    </a>
+                </th>
                 <th ng-bind-html='orders.labels.ConfirmedBy'></th>
                 <th ng-bind-html='orders.labels.DateInvoiced'></th>
                 <th ng-bind-html='orders.labels.EstDelivery'></th>
@@ -34,10 +46,10 @@
                     <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
                     <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
                 </td>
-                <td>{{order.DateSubmitted}}</td>
+                <td>{{order.DateSubmitted | weirdate}}</td>
                 <td>{{order.xp.ReviewerName}}</td>
-                <td>{{order.xp.StatusDate}}</td>
-                <td>{{order.xp.DeliveryDate}}</td>
+                <td>{{order.xp.StatusDate | weirdate}}</td>
+                <td>{{order.xp.DeliveryDate | weirdate}}</td>
                 <td><button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button></td>
             </tr>
             </tbody>

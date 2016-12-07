@@ -34,7 +34,7 @@
     </div>
 	<nav>
 		<ol class="cd-breadcrumb triangle" ng-if="['readonly', 'revised'].indexOf(application.$state.current.name) == -1">
-			<li role="presentation"  ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
+			<li role="presentation" ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
 			<li role="presentation" ng-class="{active: myquote.isActive('myquote.delivery')}" ng-click="myquote.GotoDelivery(true)" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 			<li role="presentation" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 			<li role="presentation" ui-sref-active="active" ng-if="myquote.Quote.ShippingAddressID==null"><a href="" ng-bind-html='myquote.labels.ReviewQuote'></a></li>

@@ -9,10 +9,10 @@
                             <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
                             <ul uib-dropdown-menu>
                                 <li><a ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
-                                <li><a ui-sref="quotes.saved" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
-                                <li><a ui-sref="quotes.inreview" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
-                                <li><a ui-sref="quotes.revised" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
-                                <li><a ui-sref="quotes.confirmed" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
+                                <li><a ng-click="base.OrderAction('quotes.saved')" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
+                                <li><a ng-click="base.OrderAction('quotes.inreview')" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
+                                <li><a ng-click="base.OrderAction('quotes.revised')" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
+                                <li><a ng-click="base.OrderAction('quotes.confirmed')" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
                             </ul>
                         </li>
                         <li uib-dropdown ng-if="!base.currentUser.Anonymous">

@@ -33,7 +33,9 @@ function QuotesConfig($stateProvider) {
 				},
 				Quotes: function(OrderCloud, WeirService, Parameters, Me) {
 					//return WeirService.FindOrders(Parameters, false);
-					Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
+					if(Parameters && Parameters.search && Parameters.search != 'undefined') {
+						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
+					}
 					return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 10, Parameters.searchOn, Parameters.sortBy, Parameters.filters, Me.Org.ID);
 				}
 			}
@@ -84,7 +86,7 @@ function QuotesConfig($stateProvider) {
 	;
 }
 
-function QuotesController($sce, $state, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudParameters) {
+function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudParameters) {
 	var vm = this;
 	vm.list = Quotes;
 	vm.parameters = Parameters;

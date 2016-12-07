@@ -1,4 +1,4 @@
-<form name="myForm">
+<form name="myForm" id="printable">
     <div class="row" style="padding-top:20px;">
         <div class="col-xs-8">
             <h4><span ng-bind-html='review.labels.Customer'></span><span class="text-danger">{{myquote.Customer.name}}</span></h4>
@@ -13,14 +13,18 @@
                 <button ng-if="review.Step=='Review'" class="btn btn-primary" ng-bind-html='review.labels.BackToDelivery' ng-click="review.backToDelivery()"></button>
                 <button ng-if="review.Step=='Review'" class="btn btn-success" ng-bind-html='review.labels.Submit' ng-click="myquote.Next()"></button>
 
-                <!-- -->
+                <!-- Previous and Next buttons on review step. -->
                 <button ng-if="review.Step=='Submit' && !review.SubmittingToReview && !review.SubmittingWithPO" class="btn btn-primary" ng-bind-html='review.labels.BackToReview' ng-click="review.toReview()"></button>
                 <button ng-if="review.Step=='Submit' && !review.SubmittingToReview && !review.SubmittingWithPO && review.ShowNextButton" class="btn btn-warning" ng-bind-html='review.labels.Submit' ng-click="review.proceedToSubmit()"></button>
+
+                <!-- Submit an order with PO, or submit and email one later. -->
                 <button ng-if="review.SubmittingWithPO" class="btn btn-success pull-right" ng-disabled="!review.PONumber" ng-click="review.submitOrder(true)" ng-bind-html='review.labels.SubmitOrderWithPO'></button>
                 <span ng-if="review.SubmittingWithPO">
                     <button class="btn btn-warning pull-right" ng-click="review.submitOrder(false)" ng-bind-html='review.labels.SubmitOrderAndEmail'></button>
                     <br class="message-break"> <h6 class="email-message" ng-bind-html="review.labels.EmailPoMessage"></h6>
                 </span>
+
+                <!-- Submit a quote for review -->
                 <button class="btn btn-success" ng-if="review.SubmittingToReview" ng-click="review.submitForReview(myForm.$dirty)" ng-bind-html='review.labels.SubmitForReview'></button>
             </h2>
         </div>

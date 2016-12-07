@@ -126,7 +126,21 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
     vm.registrationAvailable = Underscore.filter(vm.organizationItems, function (item) {
         return item.StateRef == 'registration'
     }).length;
-
+    var labels = {
+        en: {
+            Batley: "About Batley",
+            Blakeborough: "About Blakeborough",
+            Hopkinsons: "About Hopkinsons",
+            Feedback: "Beta feedback"
+        },
+        fr: {
+            title: $sce.trustAsHtml("FR: Please send us your feedback and suggestions"),
+            bugDefect: $sce.trustAsHtml("FR: Bug or error"),
+            suggestion: $sce.trustAsHtml("FR: Suggestion"),
+            Sarasin: $sce.trustAsHtml("FR: About Sarasin")
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
     //var vm = this; Is this supposed to happen twice?
     var navlabels = WeirService.navBarLabels();
     switch (WeirService.Locale()) {
@@ -370,7 +384,12 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirSer
         en: {
             title: "Please send us your feedback and suggestions",
             bugDefect: "Bug or error",
-            suggestion: "Suggestion"
+            suggestion: "Suggestion",
+            bug : "If reporting a bug, your issue will be raised with our development team. All suggestions and feedback will be reviewed by our Beta project team.",
+            YourFeedback: "Your feedback",
+            TypeFeedback: "Type of feedback",
+            Email: "Your email",
+            Feedback: "Beta feedback"
         },
         fr: {
             title: $sce.trustAsHtml("FR: Please send us your feedback and suggestions"),

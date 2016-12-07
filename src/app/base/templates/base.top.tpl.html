@@ -47,11 +47,14 @@
         </nav>
     </div>
     <div class="row">
-                <div style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 2em;">
-                    <a href="" ui-sref="home">
-                        <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
-                    </a>
-                </div>
+        <div class="pull-left" style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 2em;">
+            <a href="" ui-sref="home">
+                <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
+            </a>
+        </div>
+        <div class="pull-right" style="margin-top: 0.5em; margin-bottom: 0.5em; margin-right: 2em;">
+                <span class="glyphicon glyphicon-envelope feedbackBaseImage" aria-hidden="true"></span><a ng-click="base.showFeedbackForm()" href="">{{base.labels.Feedback}}</a>
+        </div>
     </div>
     <div class="row spacingTop">
         <div class="panel panel-default">
@@ -59,16 +62,16 @@
                 <div class="col-xs-6 col-md-12 brand">
                     <ul class="nav nav-tabs">
                         <li>
-                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})">About Batley</a>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})">{{base.labels.Batley}}</a>
                         </li>
                         <li>
-                            <a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})">About Blakeborough</a>
+                            <a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})">{{base.labels.Blakeborough}}</a>
                         </li>
                         <li>
-                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})">About Hopkinsons</a>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})">{{base.labels.Hopkinsons}}</a>
                         </li>
                         <li>
-                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">About Sarasin</a>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">{{base.labels.Sarasin}}</a>
                         </li>
                         <li>
                             <a href="#" style="border-bottom: none;" ng-click="base.newQuote()" ng-bind-html="base.navlabels.newQuote"></a>

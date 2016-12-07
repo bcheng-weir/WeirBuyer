@@ -468,8 +468,8 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 						}
 					});
 					modalInstance.result;*/
+					$window.location.reload();
 				}
-				return;
 			});
 	}
 	function _approve() {

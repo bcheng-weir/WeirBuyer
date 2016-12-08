@@ -389,7 +389,12 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirSer
         fr: {
             title: $sce.trustAsHtml("FR: Please send us your feedback and suggestions"),
             bugDefect: $sce.trustAsHtml("FR: Bug or error"),
-            suggestion: $sce.trustAsHtml("FR: Suggestion")
+            suggestion: $sce.trustAsHtml("FR: Suggestion"),
+            bug : "FR: If reporting a bug, your issue will be raised with our development team. All suggestions and feedback will be reviewed by our Beta project team.",
+            YourFeedback: "FR: Your feedback",
+            TypeFeedback: "FR: Type of feedback",
+            Email: "FR: Your email",
+            Feedback: "FR: Beta feedback"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

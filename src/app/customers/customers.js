@@ -143,7 +143,6 @@ function CustomerService($q, $state, $sce, OrderCloud, $exceptionHandler) {
         },
         fr: {
             NewCustomer: $sce.trustAsHtml("FR: New Customer"),
-<<<<<<< HEAD
             WeirGroup: $sce.trustAsHtml("FR: Weir Group"),
             CustomerType: $sce.trustAsHtml("FR: Customer Type"),
             SelectGroup: $sce.trustAsHtml("FR: (Select Weir Group)"),
@@ -185,47 +184,6 @@ function CustomerService($q, $state, $sce, OrderCloud, $exceptionHandler) {
             Search: $sce.trustAsHtml("FR: Search"),
             Yes: $sce.trustAsHtml("FR: Yes"),
             No: $sce.trustAsHtml("FR: No")
-=======
-            WeirGroup: $sce.trustAsHtml("FR:Weir Group"),
-            CustomerType: $sce.trustAsHtml("FR:Customer Type"),
-            SelectGroup: $sce.trustAsHtml("FR:(Select Weir Group)"),
-            SelectType: $sce.trustAsHtml("FR:(Select Customer Type)"),
-            Active: $sce.trustAsHtml("FR:Active"),
-            Terms: $sce.trustAsHtml("FR:Terms and Conditions"),
-            ShippingDetails: $sce.trustAsHtml("FR:Shipping Details"),
-            NewAddress: $sce.trustAsHtml("FR:New Address"),
-            AddressId: $sce.trustAsHtml("FR:Address ID"),
-            AddressName: $sce.trustAsHtml("FR:Address Name"),
-            CompanyName: $sce.trustAsHtml("FR:Company Name"),
-            FirstName: $sce.trustAsHtml("FR:First Name"),
-            LastName: $sce.trustAsHtml("FR:Last Name"),
-            StreetOne: $sce.trustAsHtml("FR:Street 1"),
-            StreetTwo: $sce.trustAsHtml("FR:Street 2"),
-            City: $sce.trustAsHtml("FR:City"),
-            County: $sce.trustAsHtml("FR:County"),
-            PostCode: $sce.trustAsHtml("FR:Post Code"),
-            Country: $sce.trustAsHtml("FR:Country"),
-            PhoneNumber: $sce.trustAsHtml("FR:Phone Number"),
-            Primary: $sce.trustAsHtml("FR:Primary"),
-            Save: $sce.trustAsHtml("FR:Save"),
-            Cancel: $sce.trustAsHtml("FR:Cancel"),
-            Edit: $sce.trustAsHtml("FR:Edit"),
-            EditAddress: $sce.trustAsHtml("FR:Edit Address"),
-            SetInactive: $sce.trustAsHtml("FR:Set as Inactive"),
-            AssignmentsFor: $sce.trustAsHtml("FR:Assignments for"),
-            ID: $sce.trustAsHtml("FR:ID"),
-            Name: $sce.trustAsHtml("FR:Name"),
-            Back: $sce.trustAsHtml("FR:Back"),
-            UpdateAssignments: $sce.trustAsHtml("FR:Update Assignments"),
-            EditCustomer: $sce.trustAsHtml("FR:Edit Customer"),
-            CreateNew: $sce.trustAsHtml("FR:Create New"),
-            Address: $sce.trustAsHtml("FR:Address"),
-            Addresses: $sce.trustAsHtml("FR:Addresses"),
-            NoMatch: $sce.trustAsHtml("FR:No matches found."),
-            LoadMore: $sce.trustAsHtml("FR:Load More"),
-            Customers: $sce.trustAsHtml("FR:Customers"),
-            Search: $sce.trustAsHtml("FR:Search")
->>>>>>> wording
         }
     };
 

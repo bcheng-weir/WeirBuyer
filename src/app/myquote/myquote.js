@@ -1,6 +1,7 @@
 angular.module('orderCloud')
     .service( 'QuoteShareService', QuoteShareService)
     .service('QuoteHelperService', QuoteHelperService)
+	.service('QuoteCommentsService', QuoteCommentsService)
     .config(MyQuoteConfig)
 	.controller('MyQuoteCtrl', MyQuoteController)
 	.controller('MyQuoteDetailCtrl', MyQuoteDetailController)
@@ -40,6 +41,32 @@ function QuoteHelperService($q, OrderCloud) {
         FindQuoteRevisions: findRevisions
     };
     return service;
+}
+
+function QuoteCommentsService(OrderCloud, QuoteShareService, Me) {
+	var service = {
+		AddComment: _addComment
+	};
+
+	function _addComment(commentText) {
+		var comment = {
+			date: new Date(),
+			by: Me.Profile.FirstName + " " + Me.Profile.LastName,
+			val: commentText
+		};
+
+		// Take the new comment, push it onto the current comments to weir then patch.
+		if (!QuoteShareService.Quote.xp.CommentsToWeir || Object.prototype.toString.call(QuoteShareService.Quote.xp.CommentsToWeir) !== '[object Array]') {
+			QuoteShareService.Quote.xp.CommentsToWeir = [];
+		}
+		QuoteShareService.Quote.xp.CommentsToWeir.push(comment);
+		OrderCloud.Orders.Patch(QuoteShareService.Quote.ID, {xp: {CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
+			.then(function (quote) {
+				QuoteShareService.Quote = quote;
+			});
+	}
+
+	return service;
 }
 
 function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
@@ -378,7 +405,9 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
     ;
 }
 
-function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress, Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer, IsShopper) {
+function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
+                           Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
+                           IsShopper, QuoteCommentsService) {
     var vm = this;
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
@@ -650,6 +679,15 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 		}
 	};
 
+	vm.AddNewComment = function(CommentToBeAdded) {
+		if (CommentToBeAdded) {
+			QuoteCommentsService.AddComment(CommentToBeAdded);
+			//vm.NewComment = null; //BE SURE TO DO THIS IN THE CHILD CONTROLLER
+		} else {
+			toastr.info("Cannot save an empty comment.","Empty Comment");
+		}
+	};
+
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.GotoDelivery = gotoDelivery;
 	vm.Save = save;
@@ -665,12 +703,13 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	vm.Next = _next;
 }
 
-function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $rootScope, OrderCloud, QuoteShareService) {
+function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $scope, $rootScope, OrderCloud, QuoteShareService) {
     if ((QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) ||
         (QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id)) {
         $state.go("revised", {quoteID: QuoteShareService.Quote.ID, buyerID: OrderCloud.BuyerID.Get()});
     }
 	var vm = this;
+	vm.NewComment = null;
 	vm.LineItems = QuoteShareService.LineItems;
 	var labels = {
 		en: {
@@ -694,7 +733,11 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             CommentsInstr: "Please add any specific comments or instructions for this quote",
 		    DeliveryOptions: "Delivery Options",
 			Update: "Update",
-			DragAndDrop: "Save your draft before uploading documents."
+			DragAndDrop: "Save your draft before uploading documents.",
+			Add: "Add",
+			Cancel: "Cancel",
+			Comments: "Comments",
+			AddedComment: " added a comment - "
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client"),
@@ -754,6 +797,11 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			.catch(function(ex) {
 				$exceptionHandler(ex);
 			});
+	}
+
+	vm.AddComment = function() {
+		$scope.$parent.myquote.AddNewComment(vm.NewComment);
+		vm.NewComment = null;
 	}
 
 }
@@ -864,7 +912,8 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore, FilesService, FileSaver) {
+    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore, FilesService,
+	$scope, FileSaver) {
     var vm = this;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
 	if( (typeof(QuoteShareService.Quote.xp.CommentsToWeir) == 'undefined') || QuoteShareService.Quote.xp.CommentsToWeir == null) QuoteShareService.Quote.xp.CommentsToWeir = [];
@@ -1145,27 +1194,11 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
            });
     }
 
-    //ToDo remove this button.
-    function _saveWeirComment() {
-        //var quote = QuoteShareService.Quote;
-        if (vm.CommentsToWeir) {
-        	var newComment = {
-            	id: new Date(),
-	            by: "First Last",
-	            val: vm.CommentsToWeir
-            };
-
-	        OrderCloud.Orders.Patch(QuoteShareService.Quote.ID, {xp:{CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
-		        .then(function(quote) {
-		        	QuoteShareService.Quote = quote;
-			        toastr.success(vm.labels.CommentSavedMsg);
-		        });
-        }
-    }
-
-    function _cancelWeirComment() {
-        vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir;
-    }
+    vm.NewComment = null;
+	vm.AddComment = function() {
+		$scope.$parent.myquote.AddNewComment(vm.NewComment);
+		vm.NewComment = null;
+	}
 
     function _submitForReview(dirty) {
 	    var data = {};
@@ -1227,8 +1260,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.deleteLineItem = _deleteLineItem;
     vm.updateLineItem = _updateLineItem;
     vm.proceedToSubmit = _proceedToSubmit;
-    vm.saveWeirComment = _saveWeirComment;
-    vm.cancelWeirComment = _cancelWeirComment;
     vm.submitForReview = _submitForReview;
     vm.submitOrder = _submitOrder;
     vm.backToDelivery = _gotoDelivery;

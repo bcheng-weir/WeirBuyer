@@ -1,15 +1,16 @@
 <form name="myForm">
     <div class="row">
         <div class="container-fluid">
-            <div class="col-xs-8 pull-left">
-                <h4><span ng-bind-html='detail.labels.Customer'></span><span class="text-blue bindingSpan" style="margin-left: 1em;">{{myquote.Customer.name}}</span></h4>
-                <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-blue bindingSpan" style="margin-left: 1em;" ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
-                <h4><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' style="margin-left:1em;" maxlength="20" ng-model='myquote.Quote.xp.Name' /></h4>
-                <h4><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' style="margin-left:1em;" maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h4>
+            <div class="col-xs-7 pull-left">
+                <h4><span ng-bind-html='detail.labels.Customer'></span><span class="text-blue">{{myquote.Customer.name}}</span></h4>
+                <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-blue" ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
+                <h4><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' maxlength="20" ng-model='myquote.Quote.xp.Name' /></h4>
+                <h4><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h4>
             </div>
 
-            <div class="col-xs-4 pull-right">
+            <div class="col-xs-5 pull-right">
                 <h2 class="pull-right">
+                    <a role="button" class="btn btn-default" href="#Comments"><span ng-bind-html="detail.labels.Comments"></span></a>
                     <button class="btn btn-default" ui-sref="home" ng-bind-html='detail.labels.AddNew'></button>
                     <button class="btn btn-success" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html='detail.labels.DeliveryOptions'></button>
                 </h2>
@@ -67,12 +68,58 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8">
-            <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>
+        <!-- Get the current master upload data in here. -->
+        <div class="col-xs-6">
+            <h4><span ng-bind-html='detail.labels.UploadHeader'></span></h4>
+            <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
+            <div class="panel panel-default">
+                <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                <p><ordercloud-file-upload model="myquote.Quote" keyname="Files" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6"> <!-- Comments to Weir -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <ul class="nav nav-tabs">
+                                <li class="active comments"><a href="#" id="Comments" ng-bind-html="detail.labels.Comments"></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row" ng-repeat="comment in myquote.Quote.xp.CommentsToWeir"> <!-- ng-repeat comment in comments to weir -->
+                        <div class="col-xs-12">
+                            <div>
+                                <span ng-bind-html="comment.by"></span>
+                                <span ng-bind-html="detail.labels.AddedComment"></span>
+                                <span ng-bind-html="comment.date | weirdate"></span>
+                            </div>
+                            <br>
+                            <div>
+                                <span ng-bind-html="comment.val"></span>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <textarea cols="50" rows="6" ng-model="detail.NewComment"></textarea>
+                            <br>
+                            <button class="btn btn-lg btn-primary" ng-bind-html="detail.labels.Add" ng-click="detail.AddComment()"></button>
+                            <button class="btn btn-lg btn-default" ng-bind-html="detail.labels.Cancel" ng-click="detail.NewComment=null"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="row paddingBetweenElements">
+    <!--<div class="row paddingBetweenElements">
         <div class="col-md-6 pull-left">
             <h4><span ng-bind-html='detail.labels.UploadHeader'></span></h4>
             <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
@@ -86,5 +133,5 @@
             <p><span ng-bind-html='detail.labels.CommentsInstr'></span></p>
             <p><textarea rows='4' cols='40' maxlength="1000" ng-model='myquote.Quote.Comments'></textarea></p>
         </div>
-    </div>
+    </div>-->
 </form>

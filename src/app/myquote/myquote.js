@@ -770,7 +770,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Cancel: "FR: Cancel",
 			Comments: "FR: Comments",
 			AddedComment: "FR: added a comment - ",
-			PriceDisclaimer: "FR: All prices stated do not include UK VAT or delivery",
+			PriceDisclaimer: "FR: All prices stated do not include UK VAT or delivery"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1680,7 +1680,7 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO) {
 			MessageText2: $sce.trustAsHtml("FR: When we have received your PO we will confirm your order."),
 			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will email you an updated quote.")
 		}
-	}
+	};
 
 	if(WithPO) {
 		vm.labels = WeirService.LocaleResources(labels);

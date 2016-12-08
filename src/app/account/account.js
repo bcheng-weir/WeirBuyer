@@ -122,7 +122,7 @@ function AccountController($exceptionHandler, $state, toastr, AccountService, Cu
 	};
 	vm.editAddresses = function () {
 	    $state.go('customers.edit', { buyerid: OrderCloud.BuyerID.Get() });
-	}
+	};
 
 	var labels = {
 	    en: {

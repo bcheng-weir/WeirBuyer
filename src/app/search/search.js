@@ -880,7 +880,7 @@ function NoResultsController($state, $sce, WeirService) {
             SparesPrompt: $sce.trustAsHtml("FR: Please provide details of the spares you require a quote for."),
             Submit: $sce.trustAsHtml("FR: Submit Enquiry"),
             SearchAgain: $sce.trustAsHtml("FR: Chercher &agrave; nouveau"),
-            YourContact: $sce.trustAsHtml("FR: Your contact"),
+            YourContact: $sce.trustAsHtml("FR: Your contact")
     }
     };
     vm.labels = WeirService.LocaleResources(labels);

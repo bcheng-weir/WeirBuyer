@@ -23,7 +23,7 @@ function ModalNoticeController() {
 				}
 			}
 		});
-	}
+	};
 	var labels = {
 	    en: {
 	        SavedMessage: "Quote number has been saved to Your Quotes.",

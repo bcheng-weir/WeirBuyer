@@ -82,8 +82,7 @@ function QuotesConfig($stateProvider) {
 			        return d.promise;
 			    }
 			}
-		})
-	;
+		});
 }
 
 function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudParameters) {

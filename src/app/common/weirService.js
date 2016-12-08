@@ -347,7 +347,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 			    } else {
 			        deferred.resolve("No customer context was set");
 			    }
-			})
+			});
         return deferred.promise;
     }
 

@@ -28,7 +28,7 @@ function CustomerConfig($stateProvider) {
             }
         })
         .state('customers.edit', {
-            url: '/:buyerid/edit?search&page&pageSize&searchOn&sortBy&filters   ',
+            url: '/:buyerid/edit?search&page&pageSize&searchOn&sortBy&filters',
             templateUrl: 'customers/templates/customerEdit.tpl.html',
             controller: 'CustomerEditCtrl',
             controllerAs: 'customerEdit',

@@ -104,7 +104,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
                             OrderCloud.Buyers.List().then(function (buyers) {
                                 if (buyers && buyers.Items.length > 0) {
                                     var buyer = buyers.Items[0];
-                                    buyerid = buyer.ID
+                                    buyerid = buyer.ID;
                                     OrderCloud.BuyerID.Set(buyer.ID);
                                     CurrentOrder.Remove()
                                         .then(function () {

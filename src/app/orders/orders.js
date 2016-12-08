@@ -231,7 +231,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		    DateDespatched: $sce.trustAsHtml("FR:Date despatched"),
 		    DateInvoiced: $sce.trustAsHtml("FR:Date invoiced"),
 		    EstDelivery: $sce.trustAsHtml("FR:Estimated delivery date"),
-            NoMatches: $sce.trustAsHtml("FR:No matches found."),
+            NoMatches: $sce.trustAsHtml("FR:No matches found.")
 	    }
     };
     vm.labels = labels[WeirService.Locale()];

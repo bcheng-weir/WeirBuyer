@@ -97,7 +97,7 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             PartNumber: $sce.trustAsHtml("Numéro de pièce"),
             TagNumber: $sce.trustAsHtml("Numéro du tag"),
             SarasinRSBD:"Sarasin RSBD®",
-            SarasinRSBDMsg: $sce.trustAsHtml("Lorem....")
+            SarasinRSBDMsg: "Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD® sont conçues pour garantir des performances, une sécurité et une fiabilité optimales."
         }
     };
     vm.LanguageUsed = WeirService.Locale();

@@ -201,7 +201,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 	            invoiced: "Invoiced"
             },
             fr: {
-                privacyTitle: $sce.trustAsHtml("D&eacute;claration de confidentialit&eacute;"),
+                privacyTitle: $sce.trustAsHtml("Déclaration de confidentialité"),
                 newQuote: "Nouveau Quote",
                 cookieTitle: "Politique de cookie",
                 termsTitle: "Conditions d'utilisation",

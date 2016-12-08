@@ -45,9 +45,9 @@ function BrandController(Parameters, WeirService) {
         },
         fr: {
             SarasinRSBD: "Sarasin RSBD®",
-            AboutSarasinRSBD: "About SarasinRSBD\<sup\>®\</sup\> Valve",
-            SarasinRSBDTitle: "A leading standard in global process sectors",
-            SarasinRSBDMsg: "Established over 160 years ago, the Hopkinsons® brand is renowned for long and dependable service life, generation after generation."
+            AboutSarasinRSBD: "SarasinRSBD® Valve",
+            SarasinRSBDTitle: "",
+            SarasinRSBDMsg: "Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD® sont conçues pour garantir des performances, une sécurité et une fiabilité optimales."
         }
     };
     vm.LanguageUsed = WeirService.Locale();

@@ -1,28 +1,29 @@
 <article id="COMPONENT_Revised" class="container-fluid">
     <div class="panel-default">
-        <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:5em;">
-            <div style="display:inline-block; float:left; text-align:left;">
-                <span ng-bind-html="revised.labels.Status"/><br/>
-                <span style="font-weight:bold;">{{revised.GetStatusLabel() + " " + (revised.Quote.xp.StatusDate | weirdate)}}</span>
-            </div>
-            <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
-                <span ng-bind-html="revised.labels.OrderDate" /><br />
-                <span style="font-weight:bold;">{{(revised.Quote.DateSubmitted | weirdate)}}</span>
-            </div>
-            <div style="display:inline-block; float:right; margin-left: 1em;" ng-click="revised.Print()">
-                <a href="#"><img aria-hidden="true" ng-src="{{revised.GetImageUrl('printer.png')}}"></img><br/><span ng-bind-html='revised.labels.Print'></span></a>
-            </div>
-            <div style="display:inline-block; float:right; margin-left: 1em;" ng-csv="readonly.ToCsvJson" filename="{{revised.CsvFilename}}">
-                <a href=""><img aria-hidden="true" ng-src="{{revised.GetImageUrl('download.png')}}"></img><br/><span ng-bind-html='revised.labels.Download'></span></a>
-            </div>
-            <div ng-if="application.$state.current.name=='revised'" style="float:right;">
-                <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
-                <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
-                <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
+        <div class="row">
+            <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
+                <div style="display:inline-block; float:left; text-align:left;">
+                    <span ng-bind-html="revised.labels.Status"/><br/>
+                    <span style="font-weight:bold;">{{revised.GetStatusLabel() + " " + (revised.Quote.xp.StatusDate | weirdate)}}</span>
+                </div>
+                <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
+                    <span ng-bind-html="revised.labels.OrderDate" /><br />
+                    <span style="font-weight:bold;">{{(revised.Quote.DateSubmitted | weirdate)}}</span>
+                </div>
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="revised.Print()">
+                    <a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('printer.png')}}"></img><span class="imageText" ng-bind-html='revised.labels.Print'></span></a>
+                </div>
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{revised.CsvFilename}}">
+                    <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}"></img><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
+                </div>
+                <div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">
+                    <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
+                    <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
+                    <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
+                </div>
             </div>
         </div>
     </div>
-
     <div class="row" style="padding-top:20px; padding-bottom:20px;">
         <div class="col-md-8">
             <h4><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-blue"  ng-if="revised.Quote.xp.Status != 'DR'">{{revised.Quote.ID}}</span></h4>
@@ -37,7 +38,6 @@
             </h2>
         </div>
     </div>
-
     <div class="row">
         <div class="col-md-12">
             <table class="table table-bordered oc-table-responsive weir-results-table">
@@ -79,7 +79,6 @@
                             </h4>
                         </td>
                     </tr>
-
                     <!-- Show deleted items -->
                     <tr ng-repeat="line in revised.PreviousLineItems">
                         <td>{{line.xp.SN}}</td>
@@ -128,28 +127,48 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>
-        </div>
-    </div>
+    <div class="row" >
+        <div class="col-xs-6" > <!-- ng-if="!review.SubmittingToReview && !review.SubmittingWithPO" -->
+            <!-- PO Documents and # -->
+            <div class="row" ng-if="revised.SubmittingWithPO">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4 ng-bind-html="revised.labels.POEntry"></h4>
+                            <p class="form-inline"><input type="text" class="form-control" ng-model="review.PONumber" id="pon" /></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4 ng-bind-html="revised.labels.PONeededHeader"></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <h4 ng-bind-html="revised.labels.POUpload"></h4>
+                            <h3><span ng-bind-html='revised.labels.UploadHeader'></span></h3>
+                            <p><span ng-bind-html='revised.labels.UploadInstruct'></span></p>
+                            <div class="panel panel-default">
+                                <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                                <p><ordercloud-po-upload model="revised.Quote" keyname="PODocument" label='{{revised.labels.DragAndDrop}}'></ordercloud-po-upload></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <div class="row" ng-if="!revised.SubmittingToReview && !revised.SubmittingWithPO">
-        <div class="col-md-6">
-            <!-- <p><b><span ng-bind-html='revised.labels.YourReference'></span><br>
-                <span class="text-danger">{{myquote.Quote.xp.RefNum}}</span></b></p> -->
-	    <p><b><span>{{revised.labels.DeliveryAddress}}</span></b></p>
+            <p><b><span>{{revised.labels.DeliveryAddress}}</span></b></p>
             <div ng-if="revised.ShippingAddress.Country=='FR'">
                 {{revised.ShippingAddress.CompanyName}}<br>
                 {{revised.ShippingAddress.Street1}}<br>
-                <span ng-if="revised.ShippingAddress.Street2">{{revised.ShippingAddress.Street2}}<br></span>
+                {{revised.ShippingAddress.Street2}}<br>
                 {{revised.ShippingAddress.Zip}} {{revised.ShippingAddress.City}}<br>
                 {{revised.country(revised.ShippingAddress.Country)}}
             </div>
             <div ng-if="revised.ShippingAddress.Country=='GB'">
                 {{revised.ShippingAddress.CompanyName}}<br>
                 {{revised.ShippingAddress.Street1}}<br>
-                <span ng-if="revised.ShippingAddress.Street2">{{revised.ShippingAddress.Street2}}<br></span>
+                {{revised.ShippingAddress.Street2}}<br>
                 {{revised.ShippingAddress.City}}<br>
                 {{revised.ShippingAddress.Zip}}<br>
                 {{revised.country(revised.ShippingAddress.Country)}}
@@ -157,28 +176,30 @@
             <div ng-if="revised.ShippingAddress.Country!='GB' && revised.ShippingAddress.Country!='FR'">
                 {{revised.ShippingAddress.CompanyName}}<br>
                 {{revised.ShippingAddress.Street1}}<br>
-                <span ng-if="revised.ShippingAddress.Street2">{{revised.ShippingAddress.Street2}}<br></span>
+                {{revised.ShippingAddress.Street2}}<br>
                 {{revised.ShippingAddress.City}}, {{revised.ShippingAddress.State}} {{revised.ShippingAddress.Zip}}<br>
                 {{revised.country(revised.ShippingAddress.Country)}}
             </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-8">
+                    <p><span ng-bind-html='revised.labels.ReplacementGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='revised.labels.POAGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='revised.labels.LeadTimeNotice'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='revised.labels.PriceDisclaimer'></span></p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-xs-6">
             <p><b><span ng-bind-html='revised.labels.YourAttachments'></span><br></b></p>
             <p ng-repeat="fileName in revised.Quote.xp.Files">
                 <a href="" ng-click="revised.GetFile(fileName)" target="_blank">{{fileName}}</a>
             </p>
-            <p ng-if="revised.Quote.xp.PODocument!=null">
-                <a href="" ng-click="revised.GetFile(revised.Quote.xp.PODocument)" target="_blank">{{revised.Quote.xp.PODocument}}</a>
+            <p>
+                <a href="" ng-click="revised.GetFile(revised.Quote.xp.PONumber)" target="_blank">{{revised.Quote.xp.PONumber}}</a>
             </p>
-            <p><b><span ng-bind-html='revised.labels.CommentsHeader'></span></b></p>
-            <p><span ng-bind-html='revised.Quote.Comments'></span></p>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-12">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-xs-12">
                     <ul class="nav nav-tabs">
                         <li class="active comments"><a href="#" id="Comments" ng-bind-html="revised.labels.Comments"></a></li>
                     </ul>
@@ -186,11 +207,11 @@
             </div>
             <br>
             <div class="row" ng-repeat="comment in revised.Quote.xp.CommentsToWeir"> <!-- ng-repeat comment in comments to weir -->
-                <div class="col-md-12">
+                <div class="col-xs-12">
                     <div>
                         <span ng-bind-html="comment.by"></span>
-                        <span ng-bind-html="revised.labels.AddedComment"></span>
-                        <span ng-bind-html="comment.date"></span>
+                        <span ng-bind-html="detail.labels.AddedComment"></span>
+                        <span ng-bind-html="comment.date | weirdate"></span>
                     </div>
                     <br>
                     <div>
@@ -199,20 +220,16 @@
                     <hr>
                 </div>
             </div>
-            <div class="row" ng-hide="revised.ShowCommentBox">
-                <div class="col-md-12">
-                    <button class="btn btn-md btn-default" ng-bind-html="revised.labels.Comment" ng-click="revised.ShowCommentBox=true"></button>
-                </div>
-            </div>
-            <div class="row" ng-show="revised.ShowCommentBox">
-                <div class="col-md-12">
-                    <textarea cols="100" rows="6" ng-model="revised.CommentToWeir"></textarea>
+            <div class="row">
+                <div class="col-xs-12">
+                    <textarea cols="50" rows="6" ng-model="revised.CommentToWeir"></textarea>
                     <br>
-                    <button class="btn btn-md btn-primary" ng-bind-html="revised.labels.Add" ng-click="revised.AddNewComment()"></button>
-                    <button class="btn btn-md btn-default" ng-bind-html="revised.labels.Cancel" ng-click="revised.ShowCommentBox=false"></button>
+                    <button class="btn btn-lg btn-primary" ng-bind-html="revised.labels.Add" ng-click="revised.AddNewComment()"></button>
+                    <button class="btn btn-lg btn-default" ng-bind-html="revised.labels.Cancel" ng-click="revised.CommentToWeir=null"></button>
                 </div>
             </div>
         </div>
     </div>
+
     <footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
 </article>

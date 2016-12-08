@@ -733,7 +733,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             Quantity: "Quantity",
             Total: "Total",
             UploadHeader: "Upload your Service or Operating Condition Document",
-            RefNumHeader: "Add your Reference Number",
+            RefNumHeader: "Add your Reference Number ",
             CommentsHeader: "Your Comments or Instructions",
 		    DeliveryOptions: "Delivery Options",
 			Update: "Update",
@@ -926,10 +926,10 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	$scope, FileSaver) {
     var vm = this;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
-	if( (typeof(QuoteShareService.Quote.xp.CommentsToWeir) == 'undefined') || QuoteShareService.Quote.xp.CommentsToWeir == null) QuoteShareService.Quote.xp.CommentsToWeir = [];
+	//if( (typeof(QuoteShareService.Quote.xp.CommentsToWeir) == 'undefined') || QuoteShareService.Quote.xp.CommentsToWeir == null) QuoteShareService.Quote.xp.CommentsToWeir = [];
 	vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
-    vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir && QuoteShareService.Quote.xp.CommentsToWeir.length ? QuoteShareService.Quote.xp.CommentsToWeir[0].val : ""; //ToDo comments to weir is now an array. at this point we just keep modifying comment[0];
+    //vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir && QuoteShareService.Quote.xp.CommentsToWeir.length ? QuoteShareService.Quote.xp.CommentsToWeir[0].val : ""; //ToDo comments to weir is now an array. at this point we just keep modifying comment[0];
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
     if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
@@ -1162,8 +1162,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    StatusDate: new Date(),
 				    Type: "Order",
 				    Revised: false,
-				    PONumber: vm.PONumber,
-				    CommentsToWeir: []
+				    PONumber: vm.PONumber
 			    }
 		    };
 	    } else {
@@ -1174,8 +1173,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    Type: "Order",
 				    PendingPO: true,
 				    Revised: false,
-				    PONumber: "Pending",
-				    CommentsToWeir: []
+				    PONumber: "Pending"
 			    }
 		    };
 	    }
@@ -1216,7 +1214,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	vm.AddComment = function() {
 		$scope.$parent.myquote.AddNewComment(vm.NewComment);
 		vm.NewComment = null;
-	}
+	};
 
     function _submitForReview(dirty) {
 	    var data = {};
@@ -1225,14 +1223,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    xp: {
 				    Status: WeirService.OrderStatus.Submitted.id,
 				    StatusDate: new Date(),
-				    Revised: false,
-				    CommentsToWeir: [
-					    {
-						    date: new Date(),
-						    by: QuoteShareService.Me.FirstName + " " + QuoteShareService.Me.LastName,
-						    val: vm.CommentsToWeir
-					    }
-				    ]
+				    Revised: false
 			    }
 		    };
 	    } else {
@@ -1240,8 +1231,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    xp: {
 				    Status: WeirService.OrderStatus.Submitted.id,
 				    StatusDate: new Date(),
-				    Revised: false,
-				    CommentsToWeir: []
+				    Revised: false
 			    }
 		    };
 	    }
@@ -1286,7 +1276,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 }
 
 function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography,
-	Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me, fileStore, FilesService) {
+	Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me, fileStore, FilesService, FileSaver) {
     var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1372,7 +1362,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	        Comment: "Comment",
 	        AddedComment: " added a comment - ",
 	        Add: "Add",
-	        Cancel: "Cancel"
+	        Cancel: "Cancel",
+	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
+	        ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
+	        POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1412,7 +1406,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	        Comment: $sce.trustAsHtml("Commentaire"),
 	        AddedComment: $sce.trustAsHtml("FR: added a comment - "),
 	        Add: $sce.trustAsHtml("Ajouter"),
-	        Cancel: $sce.trustAsHtml("Annuler")
+	        Cancel: $sce.trustAsHtml("Annuler"),
+	        PriceDisclaimer: "FR: All prices stated do not include UK VAT or delivery",
+	        ReplacementGuidance: "FR: Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
+	        POAGuidance: "FR: POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+	        LeadTimeNotice: "FR: Lead time for all orders will be based on the longest lead time from the list of spares requested"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1423,8 +1421,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			.then(function(fileData) {
 				console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
-				var fileURL = URL.createObjectURL(file);
-				window.open(fileURL, "_blank");
+				FileSaver.saveAs(file, fileName);
+				//var fileURL = URL.createObjectURL(file);
+				//window.open(fileURL, "_blank");
 			});
 	};
 
@@ -1792,7 +1791,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, Me, fileStore, OrderCloud, FilesService) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, Me, fileStore, OrderCloud, FilesService, FileSaver) {
     var vm = this;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
@@ -1849,7 +1848,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order",
 	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-	        ViewRevisions: "View Previous Revisions"
+	        ViewRevisions: "View Previous Revisions",
+	        ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
+	        POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1882,7 +1884,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 	        PriceDisclaimer: $sce.trustAsHtml("FR: All prices stated do not include UK VAT or delivery"),
-	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande")
+	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande"),
+	        ReplacementGuidance: "FR: Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
+	        POAGuidance: "FR: POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+	        LeadTimeNotice: "FR: Lead time for all orders will be based on the longest lead time from the list of spares requested"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1893,8 +1898,9 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 			.then(function(fileData) {
 				console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
-				var fileURL = URL.createObjectURL(file);
-				window.open(fileURL, "_blank");
+				FileSaver.saveAs(file, fileName);
+				//var fileURL = URL.createObjectURL(file);
+				//window.open(fileURL, "_blank");
 			});
 	};
 
@@ -1944,9 +1950,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.gotoRevisions = _gotoRevisions;
 }
 
-function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
-                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud) {
+function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
+                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, Me, FilesService, FileSaver) {
 	var vm = this;
+	vm.NewComment = null;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
 	vm.PONumber = "";
@@ -2010,7 +2017,13 @@ function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $stat
 			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			DragAndDrop: "Drag and drop Files Here to Upload",
 			PONeededHeader: "Please Provide a Purchase Order to Finalise your Order",
-			POUpload: "Upload PO Document"
+			POUpload: "Upload PO Document",
+			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
+			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
+			Add: "Add",
+			Cancel: "Cancel",
+			AddedComment: " added a comment - "
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -2049,32 +2062,56 @@ function SubmitController($sce, WeirService, $timeout, $window, $uibModal, $stat
 			PriceDisclaimer: $sce.trustAsHtml("FR: All prices stated do not include UK VAT or delivery"),
 			DragAndDrop: $sce.trustAsHtml("Faites glisser vos documents ici pour les t&eacute;l&eacute;charger"),
 			PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
-			POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande")
+			POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
+			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
+			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
+			Add: "Add",
+			Cancel: "Cancel",
+			AddedComment: " added a comment - "
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
+
+	vm.AddNewComment = function() {
+		if (vm.NewComment) {
+			var comment = {
+				date: new Date(),
+				by: Me.Profile.FirstName + " " + Me.Profile.LastName,
+				val: vm.NewComment
+			};
+
+			// Take the new comment, push it onto the current comments to weir then patch.
+			if (!vm.Quote.xp.CommentsToWeir || Object.prototype.toString.call(vm.Quote.xp.CommentsToWeir) !== '[object Array]') {
+				vm.Quote.xp.CommentsToWeir = [];
+			}
+			vm.Quote.xp.CommentsToWeir.push(comment);
+			OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CommentsToWeir: vm.Quote.xp.CommentsToWeir}})
+				.then(function (quote) {
+					vm.Quote = quote;
+				});
+			vm.NewComment = null; //BE SURE TO DO THIS IN THE CHILD CONTROLLER
+		} else {
+			toastr.info("Cannot save an empty comment.","Empty Comment");
+		}
+	};
+
+	vm.GetFile = function(fileName) {
+		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
+		FilesService.Get(orderid + fileName)
+			.then(function(fileData) {
+				console.log(fileData);
+				var file = new Blob([fileData.Body], {type: fileData.ContentType});
+				FileSaver.saveAs(file, fileName);
+			});
+	};
 
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
 	vm.GetImageUrl = function(img) {
 		return vm.ImageBaseUrl + img;
 	};
-	function download() {
-		$timeout($window.print,1);
-	}
-	function print() {
-		$timeout($window.print,1);
-	}
-	function getStatusLabel() {
-		if (vm.Quote.xp.Status) {
-			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
-			if (status) {
-				return status.label;
-				// TODO: Address localization
-			}
-		}
-		return "";
-	}
+
 	function download() {
 		$timeout($window.print,1);
 	}

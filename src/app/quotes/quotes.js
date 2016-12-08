@@ -251,7 +251,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             OwnProduct: "Own Product",
             View: "View",
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?",
-			ConfirmedListMessage: "You can convert confirmed quotes to orders. View the confirmed quote and select; Submit order with PO<br><br>Confirmed quotes are valid for 30 days from confirmation",
+			ConfirmedListMessage: "You can convert confirmed quotes to orders. View the confirmed quote and select; Submit Order.<br><br>Confirmed quotes are valid for 30 days from confirmation",
 			Revisions: "Revisions"
 		},
 		fr: {
@@ -266,7 +266,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             OwnProduct: $sce.trustAsHtml("Propre Produit"),
             View: $sce.trustAsHtml("FR: View"),
             ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?"),
-            ConfirmedListMessage: $sce.trustAsHtml("Vous pouvez convertir des devis confirm&eacute;s en commandes. Affichez le devis confirm&eacute; et s&eacute;lectionnez: Soumettre l'ordre avec PO. Les devis confirm&eacute;s sont valables pendant 30 jours &agrave; partir de la confirmation."),
+            ConfirmedListMessage: $sce.trustAsHtml("Vous pouvez convertir des devis confirm&eacute;s en commandes. Affichez le devis confirm&eacute; et s&eacute;lectionnez: Soumettre l'ordre. Les devis confirm&eacute;s sont valables pendant 30 jours &agrave; partir de la confirmation."),
 			Revisions: $sce.trustAsHtml("FR: Revisions")
 		}
 	};

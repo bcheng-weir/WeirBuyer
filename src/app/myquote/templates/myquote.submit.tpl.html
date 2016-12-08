@@ -1,37 +1,56 @@
 <article id="COMPONENT_Submit" class="container-fluid">
     <div class="panel-default">
-        <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:5em;">
-            <div style="display:inline-block; float:left; text-align:left;">
-                <span ng-bind-html="submit.labels.Status"/><br/>
-                <span style="font-weight:bold;">{{submit.GetStatusLabel() + " " + (submit.Quote.xp.StatusDate | weirdate)}}</span>
-            </div>
-            <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
-                <span ng-bind-html="submit.labels.OrderDate" /><br />
-                <span style="font-weight:bold;">{{(submit.Quote.DateSubmitted | weirdate)}}</span>
+        <div class="row">
+            <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
+                <div style="display:inline-block; float:left; text-align:left;">
+                    <span ng-bind-html="submit.labels.Status"/><br/>
+                    <span style="font-weight:bold;">{{submit.GetStatusLabel() + " " + (submit.Quote.xp.StatusDate | weirdate)}}</span>
+                </div>
+                <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
+                    <span ng-bind-html="submit.labels.OrderDate" /><br />
+                    <span style="font-weight:bold;">{{(submit.Quote.DateSubmitted | weirdate)}}</span>
+                </div>
             </div>
         </div>
     </div>
     <div class="row" style="padding-top:20px;">
-        <div class="col-md-8">
+        <div class="col-md-7">
             <h4><span ng-bind-html='submit.labels.Customer'></span><span class="text-blue" style="margin-left: 1em;">{{submit.Quote.xp.CustomerName}}</span></h4>
             <h4><span ng-bind-html='submit.labels.QuoteNumber'></span><span class="text-blue" style="margin-left: 1em;">{{submit.Quote.ID}}</span></h4>
             <h4><span ng-bind-html='submit.labels.QuoteName'></span><span class='text-blue' style="margin-left:1em;" maxlength="20">{{submit.Quote.xp.Name}}</span></h4>
             <h4><span ng-bind-html='submit.labels.YourReference'></span><span class='text-blue' style="margin-left:1em;" maxlength="50">{{submit.Quote.xp.RefNum}}</span></h4>
         </div>
 
-        <div class="col-md-4">
-            <h2 class="pull-right">
-                <button class="btn btn-success pull-right" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button>
-                <span ng-hide="submit.Quote.xp.Type=='Order'">
+        <div class="col-xs-5">
+            <!-- Submit an order with PO, or submit and email one later. -->
+            <div class="row">
+                <div class="col-xs-6 col-email-message">
+                    <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
+                        <!--<div class="col-xs-12"><button class="btn btn-warning pull-right" ng-click="review.submitOrder(false)" ng-bind-html='review.labels.SubmitOrderAndEmail'></button></div>-->
                         <button class="btn btn-warning pull-right" ng-click="submit.submitOrder(false)" ng-bind-html='submit.labels.SubmitOrderAndEmail'></button>
-                        <br class="message-break"> <h6 class="email-message" ng-bind-html="submit.labels.EmailPoMessage"></h6>
-                </span>
-            </h2>
+                    </div>
+                    <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
+                        <div class="col-xs-12"><h6 class="email-message pull-right" ng-bind-html="submit.labels.EmailPoMessage"></h6></div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <!--<button ng-if="review.SubmittingWithPO" class="btn btn-success pull-right" ng-disabled="review.PONumber == 'undefined' || review.PONumber == null || review.PONumber == ''" ng-click="review.submitOrder(true)" ng-bind-html='review.labels.SubmitOrderWithPO'></button>-->
+                            <button class="btn btn-success pull-right" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="pull-right"><h6 class="pon-link"><a href="#pon">Enter PO Number</a></h6></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-xs-12">
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead class="header-cell">
                 <tr>
@@ -76,30 +95,104 @@
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-8">
-            <p><span style="font-style:italic;" ng-bind-html='submit.labels.PriceDisclaimer'></span></p>
-        </div>
-    </div>
 
-    <div>
-        <div class="col-xs-3">
-            <h4 ng-bind-html="submit.labels.POEntry"></h4>
-            <p class="form-inline"><input type="text" class="form-control" ng-model="submit.PONumber" /></p>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <h4 ng-bind-html="submit.labels.PONeededHeader"></h4>
+    <div class="row" >
+        <div class="col-xs-6" > <!-- ng-if="!review.SubmittingToReview && !review.SubmittingWithPO" -->
+            <!-- PO Documents and # -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4 ng-bind-html="submit.labels.POEntry"></h4>
+                            <p class="form-inline"><input type="text" class="form-control" ng-model="submit.PONumber" id="pon" /></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h4 ng-bind-html="submit.labels.PONeededHeader"></h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-9">
+                            <!--<h4 ng-bind-html="submit.labels.POUpload"></h4>-->
+                            <h3><span ng-bind-html='submit.labels.UploadHeader'></span></h3>
+                            <p><span ng-bind-html='submit.labels.UploadInstruct'></span></p>
+                            <div class="panel panel-default">
+                                <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                                <p><ordercloud-po-upload model="submit.Quote" keyname="PODocument" label='{{submit.labels.POUpload}}'></ordercloud-po-upload></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p><b><span>{{submit.labels.DeliveryAddress}}</span></b></p>
+            <div ng-if="submit.ShippingAddress.Country=='FR'">
+                {{submit.ShippingAddress.CompanyName}}<br>
+                {{submit.ShippingAddress.Street1}}<br>
+                {{submit.ShippingAddress.Street2}}<br>
+                {{submit.ShippingAddress.Zip}} {{submit.ShippingAddress.City}}<br>
+                {{submit.country(submit.ShippingAddress.Country)}}
+            </div>
+            <div ng-if="submit.ShippingAddress.Country=='GB'">
+                {{submit.ShippingAddress.CompanyName}}<br>
+                {{submit.ShippingAddress.Street1}}<br>
+                {{submit.ShippingAddress.Street2}}<br>
+                {{submit.ShippingAddress.City}}<br>
+                {{submit.ShippingAddress.Zip}}<br>
+                {{submit.country(submit.ShippingAddress.Country)}}
+            </div>
+            <div ng-if="submit.ShippingAddress.Country!='GB' && submit.ShippingAddress.Country!='FR'">
+                {{submit.ShippingAddress.CompanyName}}<br>
+                {{submit.ShippingAddress.Street1}}<br>
+                {{submit.ShippingAddress.Street2}}<br>
+                {{submit.ShippingAddress.City}}, {{submit.ShippingAddress.State}} {{submit.ShippingAddress.Zip}}<br>
+                {{submit.country(submit.ShippingAddress.Country)}}
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-8">
+                    <p><span ng-bind-html='submit.labels.ReplacementGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='submit.labels.POAGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='submit.labels.LeadTimeNotice'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='submit.labels.PriceDisclaimer'></span></p>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-9">
-                <h4 ng-bind-html="submit.labels.POUpload"></h4>
-                <h3><span ng-bind-html='submit.labels.UploadHeader'></span></h3>
-                <p><span ng-bind-html='submit.labels.UploadInstruct'></span></p>
-                <div class="panel panel-default">
-                    <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
-                    <p><ordercloud-po-upload model="submit.Quote" keyname="PODocument" label='{{submit.labels.DragAndDrop}}'></ordercloud-po-upload></p>
+        <div class="col-xs-6">
+            <p><b><span ng-bind-html='submit.labels.YourAttachments'></span><br></b></p>
+            <p ng-repeat="fileName in submit.Quote.xp.Files">
+                <a href="" ng-click="submit.GetFile(fileName)" target="_blank">{{fileName}}</a>
+            </p>
+            <!--<p><b><span ng-bind-html='review.labels.CommentsHeader'></span></b></p>-->
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="nav nav-tabs">
+                        <li class="active comments"><a href="#" id="Comments" ng-bind-html="submit.labels.Comments"></a></li>
+                    </ul>
+                </div>
+            </div>
+            <br>
+            <div class="row" ng-repeat="comment in submit.Quote.xp.CommentsToWeir"> <!-- ng-repeat comment in comments to weir -->
+                <div class="col-xs-12">
+                    <div>
+                        <span ng-bind-html="comment.by"></span>
+                        <span ng-bind-html="detail.labels.AddedComment"></span>
+                        <span ng-bind-html="comment.date | weirdate"></span>
+                    </div>
+                    <br>
+                    <div>
+                        <span ng-bind-html="comment.val"></span>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <textarea cols="50" rows="6" ng-model="submit.NewComment"></textarea>
+                    <br>
+                    <button class="btn btn-lg btn-primary" ng-bind-html="submit.labels.Add" ng-click="submit.AddNewComment()"></button>
+                    <button class="btn btn-lg btn-default" ng-bind-html="submit.labels.Cancel" ng-click="submit.NewComment=null"></button>
                 </div>
             </div>
         </div>

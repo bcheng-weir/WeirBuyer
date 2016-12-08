@@ -1,14 +1,12 @@
 <article id="COMPONENT_Orders" class="container-fluid">
 	<!--ng-if="['orders.submitted', 'orders.pending', 'orders.revised', 'orders.confirmed', 'orders.despatched', 'orders.invoiced'].indexOf(application.$state.current.name) > -1"-->
-	<div>
-		<ul class="nav nav-pills nav-justified">
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.submitted({filters:orders.FilterActions('orders.submitted')})"><a href="#" ng-bind-html='orders.labels.submitted'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.pending({filters:orders.FilterActions('orders.pending')})"><a href="#" ng-bind-html='orders.labels.pending'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.revised({filters:orders.FilterActions('orders.revised')})"><a href="#" ng-bind-html='orders.labels.revised'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.confirmed({filters:orders.FilterActions('orders.confirmed')})"><a href="#" ng-bind-html='orders.labels.confirmed'></a></li>
-			<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.despatched({filters:orders.FilterActions('orders.despatched')})"><a href="#" ng-bind-html='orders.labels.despatched'></a></li>
-		</ul>
-	</div>
+	<ul class="nav nav-pills nav-justified">
+		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.submitted({filters:orders.FilterActions('orders.submitted')})"><a href="#" ng-bind-html='orders.labels.submitted'></a></li>
+		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.pending({filters:orders.FilterActions('orders.pending')})"><a href="#" ng-bind-html='orders.labels.pending'></a></li>
+		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.revised({filters:orders.FilterActions('orders.revised')})"><a href="#" ng-bind-html='orders.labels.revised'></a></li>
+		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.confirmed({filters:orders.FilterActions('orders.confirmed')})"><a href="#" ng-bind-html='orders.labels.confirmed'></a></li>
+		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.despatched({filters:orders.FilterActions('orders.despatched')})"><a href="#" ng-bind-html='orders.labels.despatched'></a></li>
+	</ul>
 	<hr>
 	<!--====== SEARCH/FILTERS ======-->
 	<form name="OrderSearchForm" class="form-inline" ng-submit="orders.search()">

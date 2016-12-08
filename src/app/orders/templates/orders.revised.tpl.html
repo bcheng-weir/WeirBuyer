@@ -34,6 +34,8 @@
                     </a>
                 </th>
                 <th ng-bind-html='orders.labels.Status'></th>
+                <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -52,6 +54,8 @@
                 <td>{{orders.getStatusLabel(order.xp.Status) + "; " + (order.xp.StatusDate | weirdate)}}</td>
                 <td>
                     <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
+                </td>
+                <td>
                     <a ui-sref="revisions({quoteID:order.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="orders.labels.Revisions"></a>
                 </td>
             </tr>

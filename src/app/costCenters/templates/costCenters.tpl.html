@@ -99,5 +99,7 @@
                 ng-show="costCenters.list.Meta.Page < costCenters.list.Meta.TotalPages"
                 ng-click="costCenters.loadMore()">Load More</button>
     </div>
-    <footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
+    <footer>
+        <div rsm-footer></div>
+    </footer>
 </article>

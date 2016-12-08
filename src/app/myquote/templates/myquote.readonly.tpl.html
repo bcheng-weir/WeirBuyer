@@ -11,10 +11,10 @@
                     <span style="font-weight:bold;">{{(readonly.Quote.DateSubmitted | weirdate)}}</span>
                 </div>
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="readonly.Print()">
-                    <a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('printer.png')}}"></img><span class="imageText" ng-bind-html='readonly.labels.Print'></span></a>
+                    <a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('printer.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Print'></span></a>
                 </div>
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
-                    <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}"></img><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
+                    <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
                 </div>
                 <div ng-if="application.$state.current.name=='revised'" style="float:right;">
                     <button class="btn btn-success" ng-click="readonly.Approve()" ng-bind-html="readonly.labels.Approve"></button>
@@ -185,5 +185,7 @@
             </div>-->
         </div>
     </div>
-    <footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
+    <footer>
+        <div rsm-footer></div>
+    </footer>
 </article>

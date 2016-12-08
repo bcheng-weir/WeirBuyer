@@ -28,5 +28,7 @@
 						total-items="quotes.list.Meta.TotalCount" items-per-page="quotes.list.Meta.PageSize"
 						ng-model="quotes.list.Meta.Page" ng-change="quotes.pageChanged()"></uib-pagination>
 	</div>
-	<footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
+	<footer>
+        <div rsm-footer></div>
+    </footer>
 </article>

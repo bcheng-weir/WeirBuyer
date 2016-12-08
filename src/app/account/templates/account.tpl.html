@@ -32,5 +32,7 @@
 		<button type="button" class="btn btn-default" ui-sref=".changePassword"  ng-bind-html="account.labels.ChangePassword"></button>
 		<button type="button" class="btn btn-default" ng-click="account.editAddresses()"  ng-bind-html="account.labels.Addresses"></button>
 	</form>
-	<footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
+	<footer>
+		<div rsm-footer></div>
+	</footer>
 </article>

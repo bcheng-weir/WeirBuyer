@@ -50,5 +50,7 @@
 						total-items="orders.list.Meta.TotalCount" items-per-page="orders.list.Meta.PageSize"
 						ng-model="orders.list.Meta.Page" ng-change="orders.pageChanged()"></uib-pagination>
 	</div>
-	<footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
+	<footer>
+		<div rsm-footer></div>
+	</footer>
 </article>

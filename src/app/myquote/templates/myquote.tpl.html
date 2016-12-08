@@ -11,18 +11,18 @@
 						<span style="font-weight:bold;">{{(myquote.Quote.DateSubmitted | weirdate)}}</span>
 					</div>
 					<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="myquote.Print()">
-						<a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('printer.png')}}"></img><span class="imageText" ng-bind-html='myquote.labels.Print'></span></a>
+						<a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('printer.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Print'></span></a>
 					</div>
 					<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="myquote.ToCsvJson" filename="{{myquote.CsvFilename}}"> <!-- ng-click="myquote.Download()"> -->
-						<a href=""><img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('download.png')}}"></img><span class="imageText" ng-bind-html='myquote.labels.Download'></span></a>
+						<a href=""><img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Download'></span></a>
 					</div>
 					<div style="margin-left:1em; float:right; padding-top: 0.5em; padding-left: 1%;" ng-click="myquote.NoItemsMessage()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && !myquote.HasLineItems()">
 						<a href="#">
-							<img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('save.png')}}"></img> <span class="imageText" ng-bind-html='myquote.labels.Save'></span>
+							<img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('save.png')}}" /> <span class="imageText" ng-bind-html='myquote.labels.Save'></span>
 						</a>
 					</div>
 					<div style="display:inline-block; float:right; margin-left: 0.5em; padding-top: 0.5em; padding-left: 1%;" ng-click="myquote.Save()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && myquote.HasLineItems()">
-						<a href="#"><img aria-hidden="true" class="imageSize"ng-src="{{myquote.GetImageUrl('save.png')}}"></img><span class="imageText" ng-bind-html='myquote.labels.Save'></span></a>
+						<a href="#"><img aria-hidden="true" class="imageSize"ng-src="{{myquote.GetImageUrl('save.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Save'></span></a>
 					</div>
 					<div ng-if="application.$state.current.name=='revised'" style="float:right;">
 						<button class="btn btn-success" ng-click="myquote.Approve()" ng-bind-html="myquote.labels.Approve"></button>
@@ -59,5 +59,7 @@
 			</script>
 		</div>
 	</div>
-	<footer ng-include="'src/app/base/templates/base.bottom.tpl.html'"></footer>
+	<footer>
+		<div rsm-footer></div>
+	</footer>
 </article>

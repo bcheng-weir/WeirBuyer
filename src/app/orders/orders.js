@@ -54,11 +54,6 @@ function OrdersConfig($stateProvider) {
 		    templateUrl: 'orders/templates/orders.despatched.tpl.html',
 		    parent: 'orders'
 	    })
-	    .state('orders.invoiced', {
-		    url: '/invoiced',
-		    templateUrl: 'orders/templates/orders.invoiced.tpl.html',
-		    parent: 'orders'
-	    })
 		.state('orders.goto', {
 		    url: '/:orderID',
 		    controller: 'RouteToOrderCtrl',
@@ -243,8 +238,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 			"orders.pending":{"xp.Type":"Order", "xp.PendingPO":true, "xp.Active":true},
 			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id+"|"+WeirService.OrderStatus.RejectedRevisedOrder, "xp.Active":true},
 			"orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":true},
-			"orders.despatched":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.Despatched.id, "xp.Active":true},
-			"orders.invoiced":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.Invoiced.id, "xp.Active":true}
+			"orders.despatched":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.Despatched.id, "xp.Active":true}
 		};
 		return JSON.stringify(filter[action]);
 	}

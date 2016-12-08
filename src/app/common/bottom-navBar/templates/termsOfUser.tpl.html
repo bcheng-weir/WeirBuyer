@@ -1,21 +1,15 @@
-<article id="CommonFilesview" ng-controller="footerCtrl">
+<article id="CommonFilesview">
     <div class="container-fluid full heroimage" style="background-image: url('https://www.global.weir/assets/components/phpthumbof/cache/site-info-background-1200x320.eb63d49764b19a1a0d191b5324213db94633.jpg')">
         <div class="container">
             <div class="row">
-
                 <div class="col-xs-10  col-sm-6 col-sm-offset-0 col-md-5 bannerText">
                     <h1>{{footer.navlabels.termsTitle}}</h1>
-
                     <!-- renderReadMoreButton -->
                 </div>
-
             </div><!-- //row -->
         </div><!-- //container -->
     </div>
-
     <div class="col-xs-12 col-md-8 main-content" style="overflow-scrolling:auto" ng-show="footer.navlabels.language == true">
-
-
         <p>Weir Engineering Services Limited provides access to and the use of the Website (www.store.flowcontrol.weir) (the "Website") subject to the following Terms.</p>
         <h3>Your Acceptance of these Terms</h3>
         <p>Your use of the Website constitutes your agreement to all the terms and conditions contained in this document (the "Terms"). If you do not agree with the Terms of this document either in full or in part, you should cease using the Website immediately.</p>
@@ -106,8 +100,6 @@
                 <P> En cas de contradiction entre les présentes Conditions et règles et/ou les conditions d'utilisation spécifiques figurant sur le Site Web concernant un contenu spécifique, ces dernières prévaudront. </P>
                 <P> Si l'une des présentes Conditions devait être jugée illégale, invalide ou inopposable en vertu des lois de tout État ou pays dans lequel les présentes Conditions sont censées prendre effet, alors, dans la mesure et dans le pays où ladite Condition est illégale, invalide ou inopposable, elle sera écartée et supprimée de la présente clause et les Conditions restantes resteront en vigueur et de plein effet et resteront contraignantes et opposables. </p>
                 <P> Les présentes Conditions sont régies par et doivent être interprétées conformément au droit anglais. Les tribunaux anglais ont la compétence exclusive pour trancher tous différends survenant à partir de ou en lien avec l'utilisation du Site Web. </P>
-
-
     </div>
-    <div ng-include="'../common/bottom-navBar/navbarFooter.tpl.html'"></div>
+    <div rsm-footer></div>
 </article>

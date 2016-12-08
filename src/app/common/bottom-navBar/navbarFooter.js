@@ -1,31 +1,31 @@
 angular.module('orderCloud')
     .config(navConfig)
     .controller('footerCtrl', footerController)
-;
+    .directive('rsmFooter', rsmFooterDirective);
 
 function navConfig($stateProvider) {
     $stateProvider
         .state('terms-of-use', {
             url: '/termsofuse',
-            templateUrl: 'common/bottom-navBar/termsOfUser.tpl.html',
+            templateUrl: 'common/bottom-navBar/templates/termsOfUser.tpl.html',
             controller: 'footerCtrl',
             controllerAs: 'footer'
         })
         .state('cookie-policy', {
             url: '/cookiepolicy',
-            templateUrl: 'common/bottom-navBar/cookiepolicy.tpl.html',
+            templateUrl: 'common/bottom-navBar/templates/cookiepolicy.tpl.html',
             controller: 'footerCtrl',
             controllerAs: 'footer'
         })
         .state('privacy-statement', {
             url: '/privacystatement',
-            templateUrl: 'common/bottom-navBar/privacystatement.tpl.html',
+            templateUrl: 'common/bottom-navBar/templates/privacystatement.tpl.html',
             controller: 'footerCtrl',
             controllerAs: 'footer'
         })
         .state('contact-us', {
             url: '/contactus',
-            templateUrl: 'common/bottom-navBar/contact.tpl.html',
+            templateUrl: 'common/bottom-navBar/templates/contact.tpl.html',
             controller: 'footerCtrl',
             controllerAs: 'footer'
         })
@@ -44,4 +44,12 @@ function footerController(WeirService){
             break;
     }
 
+}
+function rsmFooterDirective() {
+    return {
+        restrict: 'A',
+        templateUrl: 'common/bottom-navBar/templates/navbarFooter.tpl.html',
+        controller: 'footerCtrl',
+        controllerAs: 'footer'
+    }
 }

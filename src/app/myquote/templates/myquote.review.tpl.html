@@ -29,7 +29,7 @@
                         </span>
                     </div>
                     <div class="col-xs-6">
-                        <button ng-if="review.SubmittingWithPO" class="btn btn-success pull-right" ng-disabled="!review.PONumber" ng-click="review.submitOrder(true)" ng-bind-html='review.labels.SubmitOrderWithPO'></button>
+                        <button ng-if="review.SubmittingWithPO" class="btn btn-success pull-right" ng-disabled="review.PONumber == 'undefined' || review.PONumber == null || review.PONumber == ''" ng-click="review.submitOrder(true)" ng-bind-html='review.labels.SubmitOrderWithPO'></button>
                     </div>
                 </div>
             </div>

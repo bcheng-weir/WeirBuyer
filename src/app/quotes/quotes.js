@@ -174,7 +174,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 	var labels = {
 		en: {
 			Saved: "Saved",
-			InReview: "Quotes submitted for review",
+			InReview: "Quotes Submitted for Review",
 			Revised: "Revised Quotes",
 			Confirmed: "Confirmed Quotes",
 			LoadMore: "Load More"
@@ -241,14 +241,14 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 	var labels = {
 		en: {
 		    Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " saved Quote" +  ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s"),
-		    QuoteNum: "Weir Quote number",
+		    QuoteNum: "Weir Quote Number",
 			QuoteName: "Quote Name",
-		    QuoteRef: "Your Quote ref;",
+		    QuoteRef: "Your Quote Ref;",
             Total: "Total",
             Customer: "Customer",
 			Status: "Status",
-            ValidTo: "Valid until",
-            OwnProduct: "Own product",
+            ValidTo: "Valid Until",
+            OwnProduct: "Own Product",
             View: "View",
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this quote. Are you sure you want to proceed?",
 			ConfirmedListMessage: "You can convert confirmed quotes to orders. View the confirmed quote and select; Submit order with PO<br><br>Confirmed quotes are valid for 30 days from confirmation",
@@ -287,15 +287,15 @@ function InReviewQuotesController(WeirService, $state, $sce, $scope) {
 	var labels = {
 		en: {
 		    Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Quote" +  ($scope.$parent.quotes.list.Meta.TotalCount.length == 1 ? "" : "s under review"),
-		    QuoteNum: "Weir Quote number",
-		    QuoteRef: "Your Quote ref;",
+		    QuoteNum: "Weir Quote Number",
+		    QuoteRef: "Your Quote Ref;",
             Total: "Total",
             Customer: "Customer",
-		    OwnProduct: "Own product",
+		    OwnProduct: "Own Product",
 		    Approver: "Approver",
 			Reviewer: "Reviewer",
             Status: "Status",
-            ValidTo: "Valid until",
+            ValidTo: "Valid Until",
 			View: "View"
 		},
 		fr: {

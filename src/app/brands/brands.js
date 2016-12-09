@@ -68,6 +68,4 @@ function BrandController(Parameters, WeirService) {
         }
     }
     vm.brandLabels = getBrand(vm.brand);
-
 }
-

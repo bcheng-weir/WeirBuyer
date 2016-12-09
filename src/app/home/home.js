@@ -144,5 +144,4 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
                 break;
         }
     };
-
 }

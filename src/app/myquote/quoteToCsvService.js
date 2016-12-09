@@ -1,8 +1,9 @@
 angular.module('orderCloud')
     .service('QuoteToCsvService', QuoteToCsvService);
 
-function QuoteToCsvService($sce, WeirService, $filter) {
+function QuoteToCsvService($filter) {
     function ToCsvJson(Quote, LineItems, DeliveryAddress, Payments, Labels) {
+
         var payment = null;
         if (Payments && Payments.length) {
             payment = Payments[0];
@@ -46,9 +47,8 @@ function QuoteToCsvService($sce, WeirService, $filter) {
 	    });
         return data;
     }
-    var service =
-        {
+    var service = {
             ToCsvJson: ToCsvJson
-        };
+    };
     return service;
 }

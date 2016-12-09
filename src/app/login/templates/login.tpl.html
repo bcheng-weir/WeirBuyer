@@ -6,7 +6,7 @@
                     <li><a href="">{{login.labels.WorldWide}}</a></li>
                 </ul>
             </div>
-            <a class="logo" href="/"><img src="../src/assets/logo.jpg"></a>
+            <a class="logo" href="/"><img src="../src/assets/images/logo.jpg"></a>
             <div class="language pull-right">
                 <ul class="menu">
                     <li><a ng-click="login.setCookie('en')">English</a></li>
@@ -60,8 +60,9 @@
                             </div>
                         </div>
                         <div class="col-sm-6 col-lg-5 welcome-index">
-                            <div class="welcome-block"  ng-if="login.languageOfUser == 'en'" ng-include="'src/app/login/templates/englishWelcomeMessage.tpl.html'"></div>
-                            <div class="welcome-block"  ng-if="login.languageOfUser == 'fr'" ng-include="'src/app/login/templates/frenchWelcomeMessage.tpl.html'"></div>
+                            <!-- Need to set this to a ui-view -->
+                            <div class="welcome-block"  ng-if="login.languageOfUser == 'en'" ng-include="'login/templates/login.englishWelcomeMessage.tpl.html'"></div>
+                            <div class="welcome-block"  ng-if="login.languageOfUser == 'fr'" ng-include="'login/templates/login.frenchWelcomeMessage.tpl.html'"></div>
                         </div>
                     </div>
                 </div>

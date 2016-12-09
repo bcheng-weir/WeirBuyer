@@ -10,9 +10,9 @@
                     <span ng-bind-html="readonly.labels.OrderDate" /><br />
                     <span style="font-weight:bold;">{{(readonly.Quote.DateSubmitted | weirdate)}}</span>
                 </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="readonly.Print()">
+                <!--<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="readonly.Print()">
                     <a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('printer.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Print'></span></a>
-                </div>
+                </div>-->
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
                     <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
                 </div>

@@ -65,6 +65,7 @@ function QuoteCommentsService(OrderCloud, QuoteShareService, Me, $q) {
 		OrderCloud.Orders.Patch(QuoteShareService.Quote.ID, {xp: {CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
 			.then(function (quote) {
 				QuoteShareService.Quote = quote;
+				QuoteShareService.Comments = quote.xp.CommentsToWeir;
 				dfd.resolve(quote);
 			})
 			.catch(function(ex) {
@@ -821,11 +822,12 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	vm.AddComment = function() {
 		$scope.$parent.myquote.AddNewComment(vm.NewComment)
 			.then(function(result) {
-				vm.Comments = result.xp.CommentsToWeir;
+				if(result) {
+					vm.Comments = result.xp.CommentsToWeir;
+				}
 			});
 		vm.NewComment = null;
 	}
-
 }
 
 function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography) {
@@ -938,11 +940,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	$scope, FileSaver) {
     var vm = this;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
-	//if( (typeof(QuoteShareService.Quote.xp.CommentsToWeir) == 'undefined') || QuoteShareService.Quote.xp.CommentsToWeir == null) QuoteShareService.Quote.xp.CommentsToWeir = [];
 	vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
 	vm.Comments = QuoteShareService.Comments;
-    //vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir && QuoteShareService.Quote.xp.CommentsToWeir.length ? QuoteShareService.Quote.xp.CommentsToWeir[0].val : ""; //ToDo comments to weir is now an array. at this point we just keep modifying comment[0];
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
     if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
@@ -1227,7 +1227,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	vm.AddComment = function() {
 		$scope.$parent.myquote.AddNewComment(vm.NewComment)
 			.then(function(result) {
-				vm.Comments = result.xp.CommentsToWeir;
+				if(result) {
+					vm.Comments = result.xp.CommentsToWeir;
+				}
 			});
 		vm.NewComment = null;
 	};
@@ -1643,7 +1645,7 @@ function NewAddressModalController($uibModalInstance) {
 	};
 }
 
-function SubmitConfirmOrderController($sce, WeirService, Quote) {
+function SubmitConfirmOrderController($sce, WeirService, Quote, $modalInstance) {
 	var vm = this;
 	vm.Quote = Quote;
 
@@ -1660,6 +1662,10 @@ function SubmitConfirmOrderController($sce, WeirService, Quote) {
 			MessageText2: $sce.trustAsHtml("FR: We will be in touch with you to discuss the items you have requested to be reviewed."),
 			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will email you an updated quote.")
 		}
+	};
+
+	vm.Close = function() {
+		$modalInstance.close();
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }

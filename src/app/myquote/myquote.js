@@ -23,6 +23,7 @@ function QuoteShareService() {
     var svc = {
         LineItems: [],
         Payments: [],
+	    Comments: [],
 	    Quote: null,
 	    Me: null
     };
@@ -43,12 +44,13 @@ function QuoteHelperService($q, OrderCloud) {
     return service;
 }
 
-function QuoteCommentsService(OrderCloud, QuoteShareService, Me) {
+function QuoteCommentsService(OrderCloud, QuoteShareService, Me, $q) {
 	var service = {
 		AddComment: _addComment
 	};
 
 	function _addComment(commentText) {
+		var dfd = $q.defer();
 		var comment = {
 			date: new Date(),
 			by: Me.Profile.FirstName + " " + Me.Profile.LastName,
@@ -63,7 +65,12 @@ function QuoteCommentsService(OrderCloud, QuoteShareService, Me) {
 		OrderCloud.Orders.Patch(QuoteShareService.Quote.ID, {xp: {CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
 			.then(function (quote) {
 				QuoteShareService.Quote = quote;
+				dfd.resolve(quote);
+			})
+			.catch(function(ex) {
+				dfd.resolve(ex);
 			});
+		return dfd.promise;
 	}
 
 	return service;
@@ -180,6 +187,12 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
+		.state('myquote.submitquote', {
+			url: '/submitquote',
+			templateUrl: 'myquote/templates/myquote.review.tpl.html',
+			controller: 'ReviewQuoteCtrl',
+			controllerAs: 'review'
+		})
 		.state('revised', {
 			parent: 'base',
 		    url: '/revised?quoteID&buyerID',
@@ -262,12 +275,6 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 		            return $stateParams.quoteID;
 		        }
 		    }
-		})
-		.state('myquote.submitquote', {
-			url: '/submitquote',
-			templateUrl: 'myquote/templates/myquote.review.tpl.html',
-			controller: 'ReviewQuoteCtrl',
-			controllerAs: 'review'
 		})
 		.state('readonly', {
 			parent: 'base',
@@ -405,7 +412,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
     ;
 }
 
-function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
+function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
                            IsShopper, QuoteCommentsService) {
     var vm = this;
@@ -423,6 +430,7 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
 	QuoteShareService.Payments = Payments.Items;
+	QuoteShareService.Comments = Quote.xp.CommentsToWeir;
 
 	vm.isActive = function(viewLocation) {
 		return viewLocation == $state.current.name;
@@ -531,12 +539,6 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	            $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
             });
         }
-	}
-
-	function _comments() {
-	    if (vm.Quote.Status == 'RV') {
-	        console.log("Do something with comments ...");
-	    }
 	}
 
 	function gotoDelivery(dirty) {
@@ -686,12 +688,18 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	};
 
 	vm.AddNewComment = function(CommentToBeAdded) {
+		var dfd = $q.defer();
 		if (CommentToBeAdded) {
-			QuoteCommentsService.AddComment(CommentToBeAdded);
-			//vm.NewComment = null; //BE SURE TO DO THIS IN THE CHILD CONTROLLER
+			QuoteCommentsService.AddComment(CommentToBeAdded)
+				.then(function(result) {
+					QuoteShareService.Quote = result;
+					dfd.resolve(result);
+				})
 		} else {
 			toastr.info("Cannot save an empty comment.","Empty Comment");
+			dfd.resolve();
 		}
+		return dfd.promise;
 	};
 
 	vm.labels = WeirService.LocaleResources(labels);
@@ -705,7 +713,6 @@ function MyQuoteController($sce, $state, $uibModal, $timeout, $window, toastr, W
 	vm.GetStatusLabel = getStatusLabel;
 	vm.Approve = _approve;
 	vm.Reject = _reject;
-	vm.Comments = _comments;
 	vm.Next = _next;
 }
 
@@ -715,8 +722,10 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
         $state.go("revised", {quoteID: QuoteShareService.Quote.ID, buyerID: OrderCloud.BuyerID.Get()});
     }
 	var vm = this;
+	vm.Quote = QuoteShareService.Quote;
 	vm.NewComment = null;
 	vm.LineItems = QuoteShareService.LineItems;
+	vm.Comments = QuoteShareService.Comments;
 	var labels = {
 		en: {
             Customer: "Customer; ",
@@ -810,7 +819,10 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 
 	vm.AddComment = function() {
-		$scope.$parent.myquote.AddNewComment(vm.NewComment);
+		$scope.$parent.myquote.AddNewComment(vm.NewComment)
+			.then(function(result) {
+				vm.Comments = result.xp.CommentsToWeir;
+			});
 		vm.NewComment = null;
 	}
 
@@ -929,6 +941,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	//if( (typeof(QuoteShareService.Quote.xp.CommentsToWeir) == 'undefined') || QuoteShareService.Quote.xp.CommentsToWeir == null) QuoteShareService.Quote.xp.CommentsToWeir = [];
 	vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
+	vm.Comments = QuoteShareService.Comments;
     //vm.CommentsToWeir = QuoteShareService.Quote.xp.CommentsToWeir && QuoteShareService.Quote.xp.CommentsToWeir.length ? QuoteShareService.Quote.xp.CommentsToWeir[0].val : ""; //ToDo comments to weir is now an array. at this point we just keep modifying comment[0];
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
@@ -1212,7 +1225,10 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 
     vm.NewComment = null;
 	vm.AddComment = function() {
-		$scope.$parent.myquote.AddNewComment(vm.NewComment);
+		$scope.$parent.myquote.AddNewComment(vm.NewComment)
+			.then(function(result) {
+				vm.Comments = result.xp.CommentsToWeir;
+			});
 		vm.NewComment = null;
 	};
 

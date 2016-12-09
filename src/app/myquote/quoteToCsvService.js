@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .service('QuoteToCsvService', QuoteToCsvService);
 
-function QuoteToCsvService($sce, WeirService) {
+function QuoteToCsvService($sce, WeirService, $filter) {
     function ToCsvJson(Quote, LineItems, DeliveryAddress, Payments, Labels) {
         var payment = null;
         if (Payments && Payments.length) {
@@ -28,16 +28,22 @@ function QuoteToCsvService($sce, WeirService) {
             line.push(item.Quantity);
             data.push(line);
         });
-        data.push(["", "", "", "", "", "", Labels.Total, Quote.Total]);
+        data.push(["", "", "", "", "", Labels.Total, Quote.Total]);
         data.push(["", ""]);
-        data.push([Labels.DeliveryAddress, "", "", Labels.Comments]);
+        data.push([Labels.DeliveryAddress]);
         if (DeliveryAddress) {
-            data.push([DeliveryAddress.FirstName + " " + DeliveryAddress.LastName, "", "", Quote.xp.CommentsToWeir]);
+            data.push([DeliveryAddress.FirstName + " " + DeliveryAddress.LastName, ""]);
             data.push([DeliveryAddress.CompanyName]);
             data.push([DeliveryAddress.Street1]);
             data.push([DeliveryAddress.Street2]);
             data.push([DeliveryAddress.City]);
         }
+	    data.push(["", ""]);
+        data.push([Labels.Comments]);
+	    angular.forEach(Quote.xp.CommentsToWeir, function(comment) {
+		    data.push(["",comment.by,$filter('weirdate')(comment.date)]);
+		    data.push(["","",comment.val]);
+	    });
         return data;
     }
     var service =

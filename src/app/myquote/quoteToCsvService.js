@@ -13,9 +13,9 @@ function QuoteToCsvService($filter) {
             payment = Payments[0];
         }
         var currencies = {
-        	"GBP":"",
-	        "EUR":"",
-	        "USD":""
+        	"USD":'$',
+	        "GBP":'£',
+	        "EUR":'€'
         };
         var data = [
             [Labels.Status, Quote.xp.Status],
@@ -28,17 +28,19 @@ function QuoteToCsvService($filter) {
 
         angular.forEach(LineItems, function (item) {
             var line = [];
+	        var up = $filter('currency')(item.UnitPrice,currencies[item.Product.StandardPriceSchedule.xp.Currency]);
+	        up = up.replace(/&#160/,'');
             line.push((item.xp.SN) ? item.xp.SN : "");
             line.push((item.xp.TagNumber) ? item.xp.TagNumber : "");
             line.push((item.Product.Name) ? item.Product.Name : "");
             line.push((item.Product.Description) ? item.Product.Description : "");
             line.push((item.Product.xp.ReplacementSchedule) ? item.Product.xp.ReplacementSchedule : "");
             line.push((item.Product.xp.LeadTime) ? item.Product.xp.LeadTime : "");
-            line.push($filter('currency')(item.Product.StandardPriceSchedule.xp.Currency) + " " + item.UnitPrice);
+            line.push(up);
             line.push(item.Quantity);
             data.push(line);
         });
-        data.push(["", "", "", "", "", Labels.Total, Quote.Total]);
+        data.push(["", "", "", "", "", Labels.Total, $filter('currency')(Quote.Total, currencies[LineItems[0].Product.StandardPriceSchedule.xp.Currency])]);
         data.push(["", ""]);
         data.push([Labels.DeliveryAddress]);
         if (DeliveryAddress) {

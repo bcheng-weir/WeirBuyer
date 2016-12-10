@@ -106,7 +106,7 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
 					},
 					"StandardPriceSchedule": {
 						"xp": {
-							"Currency":Customer.id.substring(0,5)=='WVCUK'?'GBP':'EUR'
+							"Currency":Customer.id.substring(0,5)=='WPIFR'?'EUR':'GBP'
 						}
 					}
 				};

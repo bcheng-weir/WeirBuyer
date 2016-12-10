@@ -17,17 +17,39 @@
                                 <li ng-repeat="searchItem in home.SearchOptions"><a ng-click="home.dropboxSelectedItem(searchItem)">{{searchItem}}</a> </li>
                             </ul>
                         </div><!-- /btn-group -->
-                        <input
-                                ng-model="home.SearchParams"
-                                autocomplete="off"
-                                class="center-block form-control input-lg home-search"
-                                dir="auto"
-                                name="search"
-                                placeholder="Enter serial, part, or tag number"
-                                spellcheck="false"
-                                type="text"
-                                typeahead-min-length="3"
-                                uib-typeahead="home.SearchPartOne() as (home.SearchPartTwo() + ' - ' + home.SearchPartThree()) for p in home.SearchProducts($viewValue)">
+                        <input ng-if="home.selectedItem=='Serial number'"
+                            ng-model="home.SearchParams"
+                            autocomplete="off"
+                            class="center-block form-control input-lg home-search"
+                            dir="auto"
+                            name="search"
+                            placeholder="Enter serial, part, or tag number"
+                            spellcheck="false"
+                            type="text"
+                            typeahead-min-length="3"
+                            uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in serial.updateSerialList($viewValue)">
+                        <input ng-if="home.selectedItem=='Tag number'"
+                            ng-model="home.SearchParams"
+                            autocomplete="off"
+                            class="center-block form-control input-lg home-search"
+                            dir="auto"
+                            name="search"
+                            placeholder="Enter serial, part, or tag number"
+                            spellcheck="false"
+                            type="text"
+                            typeahead-min-length="3"
+                            uib-typeahead="cat.xp.TagNumber as (cat.xp.TagNumber + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
+                        <input ng-if="home.selectedItem=='Part number'"
+                           ng-model="home.SearchParams"
+                           autocomplete="off"
+                           class="center-block form-control input-lg home-search"
+                           dir="auto"
+                           name="search"
+                           placeholder="Enter serial, part, or tag number"
+                           spellcheck="false"
+                           type="text"
+                           typeahead-min-length="3"
+                           uib-typeahead="p.Name as (p.Name + ' - ' + p.Description) for p in home.SearchProducts($viewValue)">
                         <!-- uib-typeahead="searchNumber for searchNumber in home.SearchProducts($viewValue)" -->
                         <div class="input-group-addon">
                             <button class="btn search action-btn" name="ss" type="submit" ng-click="home.Search(home.selectedItem, home.SearchParams);"><i class="icon-search white"></i></button>

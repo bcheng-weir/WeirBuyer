@@ -130,14 +130,14 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 	var partResults = {};
     //First three are the home page search methods.
     function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
-    	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.SN": lookForThisPartialSerialNumber+"*", "ParentID":Me.Org.ID}, "all", Me.Org.xp.WeirGroup.label)
+    	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.SN": lookForThisPartialSerialNumber+"*", "ParentID":Me.Org.ID}, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
             	return response.Items;
             });
     }
 
     function _getAllTagNumbers(lookForThisPartialTagNumber) {
-        return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.TagNumber": lookForThisPartialTagNumber+"*", "ParentID":Me.Org.ID}, "all", Me.Org.xp.WeirGroup.label)
+        return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.TagNumber": lookForThisPartialTagNumber+"*", "ParentID":Me.Org.ID}, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
             	return response.Items;
             });
@@ -204,7 +204,7 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 					}
 				});
 		} else {
-			return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? "all" : null, Me.Org.xp.WeirGroup.label)
+			return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id=="1" ? null : "all" : null, Me.Org.xp.WeirGroup.label)
 				.then(function (response) {
 					return response.Items;
 				});

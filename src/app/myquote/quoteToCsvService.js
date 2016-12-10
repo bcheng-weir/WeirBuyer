@@ -2,12 +2,21 @@ angular.module('orderCloud')
     .service('QuoteToCsvService', QuoteToCsvService);
 
 function QuoteToCsvService($filter) {
+	function PlaceHolderPriceSchedule() {
+
+	}
+
     function ToCsvJson(Quote, LineItems, DeliveryAddress, Payments, Labels) {
 
         var payment = null;
         if (Payments && Payments.length) {
             payment = Payments[0];
         }
+        var currencies = {
+        	"GBP":"",
+	        "EUR":"",
+	        "USD":""
+        };
         var data = [
             [Labels.Status, Quote.xp.Status],
             [Labels.QuoteNumber, Quote.ID],
@@ -25,7 +34,7 @@ function QuoteToCsvService($filter) {
             line.push((item.Product.Description) ? item.Product.Description : "");
             line.push((item.Product.xp.ReplacementSchedule) ? item.Product.xp.ReplacementSchedule : "");
             line.push((item.Product.xp.LeadTime) ? item.Product.xp.LeadTime : "");
-            line.push(item.UnitPrice);
+            line.push($filter('currency')(item.Product.StandardPriceSchedule.xp.Currency) + " " + item.UnitPrice);
             line.push(item.Quantity);
             data.push(line);
         });

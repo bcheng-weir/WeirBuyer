@@ -105,7 +105,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
 		            return null;
 		        },
-		        LineItems: function ($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService) {
+		        LineItems: function ($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService, Customer) {
 		            QuoteShareService.LineItems.length = 0;
 		            var dfd = $q.defer();
 		            CurrentOrder.GetID()
@@ -116,7 +116,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
                                         toastr.error('Your quote does not contain any line items.', 'Error');
                                         dfd.resolve({ Items: [] });
                                     } else {
-	                                    LineItemHelpers.GetBlankProductInfo(data.Items);
+	                                    LineItemHelpers.GetBlankProductInfo(data.Items, Customer);
                                         LineItemHelpers.GetProductInfo(data.Items)
                                             .then(function () { dfd.resolve(data); });
                                     }
@@ -128,7 +128,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
                         });
 		            return dfd.promise;
 		        },
-			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers) {
+			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Customer) {
 				    // We can't have a quantity of 0 on a line item. With show previous line items
 				    // Split the current order ID. If a rec exists, get, else do nothing.
 				    var pieces = Quote.ID.split('-Rev');
@@ -140,7 +140,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 							    if (!data.Items.length) {
 								    dfd.resolve({ Items: [] });
 							    } else {
-								    LineItemHelpers.GetBlankProductInfo(data.Items);
+								    LineItemHelpers.GetBlankProductInfo(data.Items, Customer);
 								    LineItemHelpers.GetProductInfo(data.Items)
 									    .then(function () { dfd.resolve(data); });
 							    }
@@ -232,7 +232,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 					if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
 					return null;
 				},
-				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote) {
+				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
 					//QuoteShareService.LineItems.length = 0;
 					var dfd = $q.defer();
 					OrderCloud.LineItems.List(Quote.ID)
@@ -241,7 +241,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 								toastr.error('Your quote does not contain any line items.', 'Error');
 								dfd.resolve({ Items: [] });
 							} else {
-								LineItemHelpers.GetBlankProductInfo(data.Items);
+								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
 									.then(function () { dfd.resolve(data); });
 							}
@@ -252,7 +252,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 						});
 					return dfd.promise;
 				},
-				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers) {
+				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me) {
 					// We can't have a quantity of 0 on a line item. With show previous line items
 					// Split the current order ID. If a rec exists, get, else do nothing.
 					var pieces = Quote.ID.split('-Rev');
@@ -265,7 +265,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 									toastr.error('Previous quote does not contain any line items.', 'Error');
 									dfd.resolve({ Items: [] });
 								} else {
-									LineItemHelpers.GetBlankProductInfo(data.Items);
+									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
 										.then(function () { dfd.resolve(data); });
 								}
@@ -300,7 +300,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 				    if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
 				    return null;
 			    },
-			    LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote) {
+			    LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
 				    //QuoteShareService.LineItems.length = 0;
 				    var dfd = $q.defer();
 				    OrderCloud.LineItems.List(Quote.ID)
@@ -309,7 +309,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 							    toastr.error('Your quote does not contain any line items.', 'Error');
 							    dfd.resolve({ Items: [] });
 						    } else {
-							    LineItemHelpers.GetBlankProductInfo(data.Items);
+							    LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 							    LineItemHelpers.GetProductInfo(data.Items)
 								    .then(function () { dfd.resolve(data); });
 						    }
@@ -320,7 +320,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 					    });
 				    return dfd.promise;
 			    },
-			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers) {
+			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers,Me) {
 				    // We can't have a quantity of 0 on a line item. With show previous line items
 				    // Split the current order ID. If a rec exists, get, else do nothing.
 				    var pieces = Quote.ID.split('-Rev');
@@ -333,7 +333,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 								    toastr.error('Previous quote does not contain any line items.', 'Error');
 								    dfd.resolve({ Items: [] });
 							    } else {
-								    LineItemHelpers.GetBlankProductInfo(data.Items);
+								    LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								    LineItemHelpers.GetProductInfo(data.Items)
 									    .then(function () { dfd.resolve(data); });
 							    }
@@ -365,7 +365,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 					if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
 					return null;
 				},
-				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote) {
+				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
 					//QuoteShareService.LineItems.length = 0;
 					var dfd = $q.defer();
 					OrderCloud.LineItems.List(Quote.ID)
@@ -374,7 +374,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 								toastr.error('Your quote does not contain any line items.', 'Error');
 								dfd.resolve({ Items: [] });
 							} else {
-								LineItemHelpers.GetBlankProductInfo(data.Items);
+								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
 									.then(function () { dfd.resolve(data); });
 							}
@@ -385,7 +385,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 						});
 					return dfd.promise;
 				},
-				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers) {
+				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me) {
 					// We can't have a quantity of 0 on a line item. With show previous line items
 					// Split the current order ID. If a rec exists, get, else do nothing.
 					var pieces = Quote.ID.split('-Rev');
@@ -398,7 +398,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 									toastr.error('Previous quote does not contain any line items.', 'Error');
 									dfd.resolve({ Items: [] });
 								} else {
-									LineItemHelpers.GetBlankProductInfo(data.Items);
+									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
 										.then(function () { dfd.resolve(data); });
 								}

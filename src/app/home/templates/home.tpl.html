@@ -27,7 +27,7 @@
                             spellcheck="false"
                             type="text"
                             typeahead-min-length="3"
-                            uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in serial.updateSerialList($viewValue)">
+                            uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
                         <input ng-if="home.selectedItem=='Tag number'"
                             ng-model="home.SearchParams"
                             autocomplete="off"

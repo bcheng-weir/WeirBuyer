@@ -64,10 +64,11 @@
                             <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
                             <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
                         </td>
-                        <td ng-switch on="revised.BuyerID | weirGroupFromBuyersID" class='text-right'>
-                            <span ng-switch-when="WPIFR">{{line.UnitPrice | currency:'&euro; '}}</span>
-                            <span ng-switch-when="WVCUK">{{line.UnitPrice | currency:'&#163; '}}</span>
-                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
+                        <td ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                            <span ng-switch-when="USD">{{line.UnitPrice | currency:'&#36;'}}</span>
+                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163;'}}</span>
+                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&#128;'}}</span>
+                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163;'}}</span>
                         </td>
                         <td class="form-inline">
                             <input  type="number" class="form-control" style="width:5em;" ng-model="line.Quantity" readonly />
@@ -88,10 +89,11 @@
                         <td>{{line.Product.xp.ReplacementSchedule}}</td>
 
                         <td ng-if="revised.Quote.xp.Status!='RE'">{{line.Product.xp.LeadTime}}</td>
-                        <td ng-switch="myquote.Quote.xp.Currency" class='text-right' ng-if="revised.Quote.xp.Status!='RE'">
-                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&euro; '}}</span>
-                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163; '}}</span>
-                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
+                        <td ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                            <span ng-switch-when="USD">{{line.UnitPrice | currency:'&#36;'}}</span>
+                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163;'}}</span>
+                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&#128;'}}</span>
+                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163;'}}</span>
                         </td>
                         <td ng-if="revised.Quote.xp.Status!='RE'">
                             {{revised.Zero}}
@@ -116,10 +118,11 @@
                     <tr ng-if="revised.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='revised.labels.Total'></td>
-                        <td ng-switch on="revised.BuyerID | weirGroupFromBuyersID" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="WPIFR">{{revised.Quote.Total | currency:'&euro;'}}</span>
-                            <span ng-switch-when="WVCUK">{{revised.Quote.Total | currency:'&#163; '}}</span>
-                            <span ng-switch-default>{{revised.Quote.Total | currency:'&#163; '}}</span>
+                        <td ng-switch on="revised.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
+                            <span ng-switch-when="USD">{{revised.Quote.Total | currency:'&#36;'}}</span>
+                            <span ng-switch-when="GBP">{{revised.Quote.Total | currency:'&#163;'}}</span>
+                            <span ng-switch-when="EUR">{{revised.Quote.Total | currency:'&#128;'}}</span>
+                            <span ng-switch-default>{{revised.Quote.Total | currency:'&#163;'}}</span>
                         </td>
                     </tr>
                 </tbody>

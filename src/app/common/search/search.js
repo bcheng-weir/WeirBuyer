@@ -130,14 +130,28 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 	var partResults = {};
     //First three are the home page search methods.
     function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
-    	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.SN": lookForThisPartialSerialNumber+"*", "ParentID":Me.Org.ID}, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
+    	var filter = {
+    		"xp.SN":lookForThisPartialSerialNumber+"*"
+	    };
+	    if(Me.Org.xp.WeirGroup.id=="1") { // No global search for UK.
+	    	filter.ParentID = Me.Org.ID;
+	    }
+
+    	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
             	return response.Items;
             });
     }
 
     function _getAllTagNumbers(lookForThisPartialTagNumber) {
-        return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.TagNumber": lookForThisPartialTagNumber+"*", "ParentID":Me.Org.ID}, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
+	    var filter = {
+		    "xp.TagNumber":lookForThisPartialTagNumber+"*"
+	    };
+	    if(Me.Org.xp.WeirGroup.id=="1") { //No global search for UK
+		    filter.ParentID = Me.Org.ID;
+	    }
+
+        return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
             	return response.Items;
             });
@@ -185,7 +199,8 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 			}
 		};
 
-		if(!SearchTypeService.IsGlobalSearch() && SearchTypeService.GetLastSearchType() != "p") {
+		//If a UK user, OR not a global search, and not a part search: set a ParentID filter
+		if((Me.Org.xp.WeirGroup.id=="1") || !SearchTypeService.IsGlobalSearch() && SearchTypeService.GetLastSearchType() != "p") {
 			filter[SearchTypeService.GetLastSearchType()].ParentID = forThisCustomer.id;
 		}
 

@@ -1,16 +1,21 @@
 <form name="myForm">
     <div class="row">
         <div class="container-fluid">
-            <div class="col-xs-7 pull-left">
+            <div class="col-xs-6 pull-left">
                 <h4><span ng-bind-html='detail.labels.Customer'></span><span class="text-blue">{{myquote.Customer.name}}</span></h4>
                 <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-blue" ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
                 <h4><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' maxlength="20" ng-model='myquote.Quote.xp.Name' /></h4>
                 <h4><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h4>
             </div>
 
-            <div class="col-xs-5 pull-right">
-                <h2 class="pull-right">
+            <div class="col-xs-2">
+                <h2 class="pull-left">
                     <a role="button" class="btn btn-default" href="#Comments"><span ng-bind-html="detail.labels.Comments"></span></a>
+                </h2>
+            </div>
+
+            <div class="col-xs-4 pull-right">
+                <h2 class="pull-right">
                     <button class="btn btn-default" ui-sref="home" ng-bind-html='detail.labels.AddNew'></button>
                     <button class="btn btn-success" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html='detail.labels.DeliveryOptions'></button>
                 </h2>

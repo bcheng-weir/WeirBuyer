@@ -50,7 +50,7 @@
                 <a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 			<li role="presentation" class="quote-step" ui-sref-active="active" ng-if="myquote.Quote.ShippingAddressID==null || myquote.Quote.xp.Status=='DR' ||!myquote.HasLineItems()">
                 <a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
-			<li role="presentation" class="quote-step" ui-sref-active="active" ui-sref="myquote.submitquote" ng-if="myquote.Quote.ShippingAddressID!=null && myquote.Quote.xp.Status!='DR' && myquote.HasLineItems()">
+			<li role="presentation" ng-class="{active: myquote.isActive('myquote.submitquote') || myquote.isActive('myquote.submitorder')}" ng-click="myquote.proceedToSubmit()" ng-if="myquote.Quote.ShippingAddressID!=null && myquote.Quote.xp.Status!='DR' && myquote.HasLineItems()">
                 <a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 		</ol>
 	</nav>

@@ -194,12 +194,33 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review'
 		})
+		.state('myquote.submitorder', {
+			url: '/submitorder',
+			templateUrl: 'myquote/templates/myquote.review.tpl.html',
+			controller: 'ReviewQuoteCtrl',
+			controllerAs: 'review'
+		})
+		.state('revisions', {
+		    parent: 'base',
+		    url: '/revisions?quoteID',
+		    templateUrl: 'myquote/templates/myquote.revisions.tpl.html',
+		    controller: 'QuoteRevisionsCtrl',
+		    controllerAs: 'revisions',
+		    resolve: {
+		        Revisions: function ($stateParams, QuoteHelperService) {
+		            return QuoteHelperService.FindQuoteRevisions($stateParams.quoteID);
+		        },
+		        QuoteID: function($stateParams) {
+		            return $stateParams.quoteID;
+		        }
+		    }
+		})
 		.state('revised', {
 			parent: 'base',
-		    url: '/revised?quoteID&buyerID',
-		    templateUrl: 'myquote/templates/myquote.revised.tpl.html',
-		    controller: 'RevisedQuoteCtrl',
-		    controllerAs: 'revised',
+			url: '/revised?quoteID&buyerID',
+			templateUrl: 'myquote/templates/myquote.revised.tpl.html',
+			controller: 'RevisedQuoteCtrl',
+			controllerAs: 'revised',
 			resolve: {
 				Me: function(OrderCloud) {
 					return OrderCloud.Me.Get();
@@ -261,21 +282,6 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 					return OrderCloud.Payments.List($stateParams.quoteID);
 				}
 			}
-		})
-		.state('revisions', {
-		    parent: 'base',
-		    url: '/revisions?quoteID',
-		    templateUrl: 'myquote/templates/myquote.revisions.tpl.html',
-		    controller: 'QuoteRevisionsCtrl',
-		    controllerAs: 'revisions',
-		    resolve: {
-		        Revisions: function ($stateParams, QuoteHelperService) {
-		            return QuoteHelperService.FindQuoteRevisions($stateParams.quoteID);
-		        },
-		        QuoteID: function($stateParams) {
-		            return $stateParams.quoteID;
-		        }
-		    }
 		})
 		.state('readonly', {
 			parent: 'base',
@@ -417,6 +423,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
                            IsShopper, QuoteCommentsService) {
     var vm = this;
+	vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
 	vm.Quote = Quote;
@@ -525,7 +532,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             });
 	    }
 	}
-
 	function _reject() {
 	    if (vm.Quote.xp.Status == 'RV') {
 	        var mods = {
@@ -541,7 +547,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             });
         }
 	}
-
 	function gotoDelivery(dirty) {
 		if(dirty) {
 			save();
@@ -703,6 +708,31 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		return dfd.promise;
 	};
 
+	function _proceedToSubmit() {
+		vm.SubmittingToReview = false;
+		vm.SubmittingWithPO = false;
+		//if (!$state.is('myquote.submitquote')) return;
+		var modalInstance = $uibModal.open({
+			animation: true,
+			ariaLabelledBy: 'modal-title',
+			ariaDescribedBy: 'modal-body',
+			templateUrl: 'myquote/templates/myquote.submitorconfirm.tpl.html',
+			controller: 'ChooseSubmitCtrl',
+			controllerAs: 'choosesubmit'
+		});
+		modalInstance.result.then(
+			function (val) {
+				if (val == "Review") {
+					vm.SubmittingToReview = true;
+					$state.go('myquote.submitquote');
+				} else if (val == "Submit") {
+					vm.SubmittingWithPO = true;
+					$state.go('myquote.submitorder');
+				}
+			}
+		);
+	}
+
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.GotoDelivery = gotoDelivery;
 	vm.Save = save;
@@ -715,6 +745,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.Approve = _approve;
 	vm.Reject = _reject;
 	vm.Next = _next;
+	vm.proceedToSubmit = _proceedToSubmit;
 }
 
 function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $scope, $rootScope, OrderCloud, QuoteShareService) {
@@ -939,6 +970,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore, FilesService,
 	$scope, FileSaver) {
     var vm = this;
+	vm.currentState = $state.$current.name;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
 	vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
@@ -1106,29 +1138,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         $state.go("myquote.review");
     }
 
-    function _proceedToSubmit() {
-        vm.SubmittingToReview = false;
-        vm.SubmittingWithPO = false;
-        if (!$state.is('myquote.submitquote')) return;
-        var modalInstance = $uibModal.open({
-            animation: true,
-            ariaLabelledBy: 'modal-title',
-            ariaDescribedBy: 'modal-body',
-            templateUrl: 'myquote/templates/myquote.submitorconfirm.tpl.html',
-            controller: 'ChooseSubmitCtrl',
-            controllerAs: 'choosesubmit'
-        });
-        modalInstance.result.then(
-                function (val) {
-                    if (val == "Review") {
-                        vm.SubmittingToReview = true;
-                    } else if (val == "Submit") {
-						vm.SubmittingWithPO = true;
-                    }
-                }
-            );
-    }
-
     // ToDo Accept a parameter withPO. It will be true or false.
     function _submitOrder(withPO) {
         if (payment == null) {
@@ -1179,6 +1188,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 			    }
 		    };
 	    } else {
+	    	//TODO check admin app. Can we set PONUmber to null instead of pending?
 		    data = {
 			    xp: {
 				    Status: WeirService.OrderStatus.SubmittedPendingPO.id,
@@ -1223,17 +1233,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
            });
     }
 
-    vm.NewComment = null;
-	vm.AddComment = function() {
-		$scope.$parent.myquote.AddNewComment(vm.NewComment)
-			.then(function(result) {
-				if(result) {
-					vm.Comments = result.xp.CommentsToWeir;
-				}
-			});
-		vm.NewComment = null;
-	};
-
     function _submitForReview(dirty) {
 	    var data = {};
 	    if(dirty) {
@@ -1275,17 +1274,27 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 					    }
 				    }
 			    })
-				    .closed.then(function () {
-					    $rootScope.$broadcast('OC:RemoveOrder');
-					    $state.go("home");
-				    });
+			    .closed.then(function () {
+				    $rootScope.$broadcast('OC:RemoveOrder');
+				    $state.go("home");
+			    });
 		    });
 
     }
 
+	vm.NewComment = null;
+	vm.AddComment = function() {
+		$scope.$parent.myquote.AddNewComment(vm.NewComment)
+			.then(function(result) {
+				if(result) {
+					vm.Comments = result.xp.CommentsToWeir;
+				}
+			});
+		vm.NewComment = null;
+	};
+
     vm.deleteLineItem = _deleteLineItem;
     vm.updateLineItem = _updateLineItem;
-    vm.proceedToSubmit = _proceedToSubmit;
     vm.submitForReview = _submitForReview;
     vm.submitOrder = _submitOrder;
     vm.backToDelivery = _gotoDelivery;
@@ -1645,7 +1654,7 @@ function NewAddressModalController($uibModalInstance) {
 	};
 }
 
-function SubmitConfirmOrderController($sce, WeirService, Quote, $modalInstance) {
+function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstance) {
 	var vm = this;
 	vm.Quote = Quote;
 
@@ -1654,23 +1663,23 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $modalInstance) 
 			Title: "Thank you. Your order has submitted for review.​",
 			MessageText1: "We have sent you a confirmation email.​",
 			MessageText2: "We will be in touch with you to discuss the items you have requested to be reviewed.",
-			MessageText3: "If your order needs to be revised we will email you an updated quote."
+			MessageText3: "If your order needs to be revised we will send you an updated quote."
 		},
 		fr: {
 			Title: $sce.trustAsHtml("FR: Thank you. Your order has submitted for review.​"),
 			MessageText1: $sce.trustAsHtml("FR: We have sent you a confirmation email.​"),
 			MessageText2: $sce.trustAsHtml("FR: We will be in touch with you to discuss the items you have requested to be reviewed."),
-			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will email you an updated quote.")
+			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will send you an updated quote.")
 		}
 	};
 
 	vm.Close = function() {
-		$modalInstance.close();
+		$uibModalInstance.dismiss();
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SubmitConfirmController($sce, WeirService, Quote, WithPO) {
+function SubmitConfirmController($sce, WeirService, Quote, WithPO, $uibModalInstance) {
     var vm = this;
     vm.Quote = Quote;
 
@@ -1694,15 +1703,20 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO) {
 			Title: "Thank you. Your order has been submitted pending your PO.",
 			MessageText1: "We have sent you a confirmation email.",
 			MessageText2: "When we have received your PO we will confirm your order.",
-			MessageText3: "If your order needs to be revised we will email you an updated quote."
+			MessageText3: "If your order needs to be revised we will send you an updated quote."
 		},
 		fr: {
 			Title: $sce.trustAsHtml("FR: Thank you. Your order has been submitted pending your PO."),
 			MessageText1: $sce.trustAsHtml("FR: We have sent you a confirmation email."),
 			MessageText2: $sce.trustAsHtml("FR: When we have received your PO we will confirm your order."),
-			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will email you an updated quote.")
+			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will send you an updated quote.")
 		}
 	};
+
+	vm.Close = function() {
+		$uibModalInstance.dismiss();
+	};
+	vm.labels = WeirService.LocaleResources(labels);
 
 	if(WithPO) {
 		vm.labels = WeirService.LocaleResources(labels);

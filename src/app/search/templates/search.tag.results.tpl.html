@@ -20,7 +20,7 @@
                         <td ng-if='search.searchall'><span ng-bind-html="search.labels.NotAvailable"></span></td> -->
                         <td>{{result.Detail.xp.TagNumber}}</td>
 			<td ng-bind-html='result.Detail.Description'></td>
-			<td class="button-td"><button class="btn btn-warning" ui-sref="search.tag.detail({id: result.Detail.ID, number: result.Number, searchNumbers: tagResults.searchNumbers})" ng-bind-html='tagResults.labels.ViewDetails'></button></td>
+			<td class="button-td"><button class="btn btn-primary" ui-sref="search.tag.detail({id: result.Detail.ID, number: result.Number, searchNumbers: tagResults.searchNumbers})" ng-bind-html='tagResults.labels.ViewDetails'></button></td>
                     </tr>
                 </tbody>
             </table>

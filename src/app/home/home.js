@@ -112,6 +112,32 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
     //using a repeater to display these in a div.
     if(vm.LanguageUsed == 'en' ) vm.BrandUK = [{title: vm.labels.Batley, description: vm.labels.BatleyMsg, url: "0"}, {title: vm.labels.Blakeborough, description: vm.labels.BlakeboroughMsg, url: "1"}, {title: vm.labels.Hopkinsons, description: vm.labels.HopkinsonsMsg, url: "2"}];
     if(vm.LanguageUsed == 'fr' ) vm.BrandFR = [{title: vm.labels.SarasinRSBD, description: vm.labels.SarasinRSBDMsg, url: "3"}];
+
+    vm.SearchPartOne = function() {
+    	var options = {
+		    "Serial number": 'p.xp.SN',
+		    "Part number": "",
+		    "Tag number": ""
+	    };
+	    return options[vm.selectedItem];
+    };
+	vm.SearchPartTwo = function() {
+		var options = {
+			"Serial number": 'p.xp.SN',
+			"Part number": "",
+			"Tag number": ""
+		};
+		return options[vm.selectedItem];
+	};
+	vm.SearchPartThree = function() {
+		var options = {
+			"Serial number": 'p.Description',
+			"Part number": "",
+			"Tag number": ""
+		};
+		return options[vm.selectedItem];
+	};
+
 	vm.SearchProducts = function(val) {
 		//The search method to execute.
 		var options = {

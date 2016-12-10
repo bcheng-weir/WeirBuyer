@@ -132,18 +132,14 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
     function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
     	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.SN": lookForThisPartialSerialNumber+"*", "ParentID":Me.Org.ID}, "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
-                return response.Items.map(function(item) {
-                    return item.xp.SN;
-                })
+            	return response.Items;
             });
     }
 
     function _getAllTagNumbers(lookForThisPartialTagNumber) {
         return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {"xp.TagNumber": lookForThisPartialTagNumber+"*", "ParentID":Me.Org.ID}, "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
-                return response.Items.map(function(item) {
-                    return item.xp.TagNumber;
-                })
+            	return response.Items;
             });
     }
 
@@ -151,18 +147,14 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
         return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"Name": lookForThisPartialPartNumber+"*"})
             .then(function(response) {
 	            if(Me.Org.xp.WeirGroup.label == "WVCUK") {
-		            partResults = response;
+		            partResults = response.Items;
 		            return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"})
 			            .then(function(altResponse) {
-				            partResults.Items.push.apply(altResponse.Items);
-				            return partResults.Items.map(function(item) {
-					            return item.Name;
-				            });
+				            partResults.push.apply(altResponse.Items);
+				            return partResults;
 			            });
 	            } else {
-		            return response.Items.map(function (item) {
-			            return item.Name;
-		            });
+	            	response.Items;
 	            }
             });
     }
@@ -201,26 +193,20 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 			return OrderCloud.Me.ListProducts(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary)
 				.then(function(response) {
 					if(Me.Org.xp.WeirGroup.label == "WVCUK") {
-						partResults = response;
+						partResults = response.Items;
 						return OrderCloud.Me.ListProducts(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].secondary)
 							.then(function(altResponse) {
-								partResults.Items.push.apply(altResponse.Items);
-								return partResults.Items.map(function(item) {
-									return item.Name;
-								});
+								partResults.push.apply(altResponse.Items);
+								return partResults;
 							});
 					} else {
-						return response.Items.map(function (item) {
-							return item.Name;
-						});
+						return response.Items;
 					}
 				});
 		} else {
 			return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? "all" : null, Me.Org.xp.WeirGroup.label)
 				.then(function (response) {
-					return response.Items.map(function (item) {
-						return SearchTypeService.GetLastSearchType() == "s" ? item.xp.SN : item.xp.TagNumber;
-					});
+					return response.Items;
 				});
 		}
 	}

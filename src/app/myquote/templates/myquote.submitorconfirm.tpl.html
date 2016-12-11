@@ -20,9 +20,14 @@
                 <div class="modal-body" style="margin-top: -5px;">
                     <div ng-bind-html="choosesubmit.labels.ConfirmPOMessage" ></div>
                         <div class="pull-right">
-                            <button class="btn btn-success" style="padding-bottom: 10px;" ng-click="choosesubmit.confirmOrderWithPO()" ng-bind-html='choosesubmit.labels.ConfirmPOBtn'></button>
+                            <button class="btn btn-success" style="padding-bottom: 10px;" ng-click="choosesubmit.confirmOrderWithPO()"
+                                    ng-bind-html='choosesubmit.labels.ConfirmPOBtn' ng-disabled="choosesubmit.checkbox == false"></button>
                         </div>
                         <span>&nbsp;</span>
+                    </div>
+                    <div class="footer">
+                        <input type="checkbox" ng-model="choosesubmit.checkbox" id="checkbox_id">
+                        <label for="checkbox_id" style="padding-right: 5px;"> <a ng-click="choosesubmit.goToTerms()">Review Terms and Conditions</a></label>
                     </div>
                 </div>
         </div>

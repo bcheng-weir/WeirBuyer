@@ -17,6 +17,7 @@ angular.module('orderCloud')
 	.controller('SubmitConfirmOrderCtrl', SubmitConfirmOrderController)
 	.controller('ChooseSubmitCtrl', ChooseSubmitController)
 	.controller('SubmitCtrl',SubmitController)
+    .controller('TermsAndConditionsCtrl', TermsAndConditionsController)
 ;
 
 function QuoteShareService() {
@@ -84,6 +85,12 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 		'https://s3.us-east-2.amazonaws.com/ordercloudtest/**'
 	]);
 	$stateProvider
+		.state('myquote.termsandconditions',{
+			url: 'termsandconditions',
+            templateUrl: 'myquote/templates/termsandconditions.tpl.html',
+            controller: 'TermsAndConditionsCtrl',
+            controllerAs: 'termsAndCondition'
+        })
 		.state('myquote', {
 		    parent: 'base',
 		    url: '/myquote',
@@ -1123,6 +1130,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                     if (val == "Review") {
                         vm.SubmittingToReview = true;
                     } else if (val == "Submit") {
+                    	//toDo make the me.terms check here
 						vm.SubmittingWithPO = true;
                     }
                 }
@@ -1705,9 +1713,10 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO) {
 	}
 }
 
-function ChooseSubmitController($uibModalInstance, $sce, WeirService, QuoteShareService) {
+function ChooseSubmitController($uibModalInstance, $sce, $state, WeirService, QuoteShareService) {
     var vm = this;
     vm.Quote = QuoteShareService.Quote;
+    vm.checkbox = false;
 
     var labels = {
         en: {
@@ -1716,7 +1725,8 @@ function ChooseSubmitController($uibModalInstance, $sce, WeirService, QuoteShare
             SubmitReviewBtn: "Submit quote for review",
             ConfirmPO: "Confirm Order",
             ConfirmPOMessage: $sce.trustAsHtml("<p>If you select Confirm Order you will be able to confirm your order as follows;<br><br>1. Submit Order with PO – add your PO number or upload your PO document.<br>2. Submit Order & email PO – submit your order and email your PO (we’ll add it to the order for you).</p>"),
-            ConfirmPOBtn: "Confirm Order"
+            ConfirmPOBtn: "Confirm Order",
+            AcceptTerms: "Confirm Order"
         },
         fr: {
             SubmitReview: $sce.trustAsHtml("Soumettre un devis pour examen"),
@@ -1724,21 +1734,29 @@ function ChooseSubmitController($uibModalInstance, $sce, WeirService, QuoteShare
             SubmitReviewBtn: $sce.trustAsHtml("Soumettre un devis pour examen"),
             ConfirmPO: $sce.trustAsHtml("Confirmer la commande"),
             ConfirmPOMessage: $sce.trustAsHtml("<p>Si vous s&eacute;lectionnez Confirmer la commande, vous pourrez confirmer votre commande comme suit:<br><br> 1.Soumettre l'ordre avec PO - ajoutez votre num&eacute;ro de commande ou t&eacute;l&eacute;chargez votre document de commande. <br><br>2.Soumettre commande & email PO - soumettre votre commande et email votre commande (nous l'ajouterons à la commande pour vous).</p>"),
-            ConfirmPOBtn: $sce.trustAsHtml("Confirmer la commande")
+            ConfirmPOBtn: $sce.trustAsHtml("Confirmer la commande"),
+            ConfirmPOBtn: "Confirm Order"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
+
+    function _termsOfSale(){
+        $state.go('myquote.termsandconditions');
+        $uibModalInstance.close("");
+
+    }
 
     function _submitForReview() {
         $uibModalInstance.close("Review");
     }
 
     function _confirmOrderWithPO() {
-        $uibModalInstance.close("Submit");
+			$uibModalInstance.close("Submit");
     }
 
     vm.submitForReview = _submitForReview;
     vm.confirmOrderWithPO = _confirmOrderWithPO;
+    vm.goToTerms = _termsOfSale;
 }
 
 function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions) {
@@ -2244,4 +2262,25 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.GetStatusLabel = getStatusLabel;
 	vm.gotoQuotes = _gotoQuotes;
 	vm.submitOrder = _submitOrder;
+}
+function TermsAndConditionsController($sce,WeirService){
+    var vm = this;
+	var labels = {
+        en: {
+            TermsAndConditions: "Terms And Conditions"
+        },
+        fr: {
+            TermsAndConditions: $sce.trustAsHtml("Terms And Conditions")
+        }
+    };
+    var navlabels = WeirService.navBarLabels();
+    switch (WeirService.Locale()) {
+        case 'fr':
+            vm.navlabels = navlabels.fr;
+            break;
+        default:
+            vm.navlabels = navlabels.en;
+            break;
+    }
+    vm.labels = WeirService.LocaleResources(labels);
 }

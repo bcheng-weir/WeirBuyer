@@ -1,5 +1,5 @@
 <article id="COMPONENT_MyQuote" class="container-fluid">
-    <div class="panel-default">
+    <div class="panel-default" ng-if="myquote.isActive('myquote.termsandconditions') == false">
 		<div class="row">
 			<div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
 				<div style="display:inline-block; float:left; text-align:left;">
@@ -33,7 +33,7 @@
 		</div>
     </div>
 	<nav>
-		<ol class="cd-breadcrumb triangle" ng-if="['readonly', 'revised'].indexOf(application.$state.current.name) == -1">
+		<ol class="cd-breadcrumb triangle" ng-if="['readonly', 'revised'].indexOf(application.$state.current.name) == -1 && myquote.isActive('myquote.termsandconditions') == false" >
 			<li role="presentation" ui-sref-active="active" ui-sref="myquote.detail"><a href="#" ng-bind-html='myquote.labels.YourQuote'></a></li>
 			<li role="presentation" ng-class="{active: myquote.isActive('myquote.delivery')}" ng-click="myquote.GotoDelivery(true)" ng-if="myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 			<li role="presentation" ui-sref-active="active" ng-click="myquote.CannotContinueNoItemsMessage()" ng-if="!myquote.HasLineItems()"><a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>

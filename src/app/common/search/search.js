@@ -200,7 +200,7 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 		};
 
 		//If a UK user, OR not a global search, and not a part search: set a ParentID filter
-		if((Me.Org.xp.WeirGroup.id=="1") || !SearchTypeService.IsGlobalSearch() && SearchTypeService.GetLastSearchType() != "p") {
+		if(SearchTypeService.GetLastSearchType() != "p" && (Me.Org.xp.WeirGroup.id=="1" || !SearchTypeService.IsGlobalSearch())) {
 			filter[SearchTypeService.GetLastSearchType()].ParentID = forThisCustomer.id;
 		}
 

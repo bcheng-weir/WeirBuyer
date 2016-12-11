@@ -32,17 +32,17 @@
                         <small class="text-muted" ng-hide="lineItem.ProductID=='PLACEHOLDER'">{{lineItem.ProductID}}</small>
                         </br>
                     </td>
-                    <td ng-switch on="minicart.Order.xp.Currency" style="padding-right: 25px;">
-                        <span ng-switch-when="EUR">{{lineItem.LineTotal | currency:'&euro;'}}</span>
-                        <span ng-switch-when="GBP">{{lineItem.LineTotal | currency:'&#163; '}}</span>
-                        <span ng-switch-default>{{lineItem.LineTotal | currency:'&#163; '}}</span>
+                    <td ng-switch on="lineItem.Product.StandardPriceSchedule.xp.Currency">
+                        <span ng-switch-when="USD">{{lineItem.LineTotal | currency:'&#36;'}}</span>
+                        <span ng-switch-when="GBP">{{lineItem.LineTotal | currency:'&#163;'}}</span>
+                        <span ng-switch-when="EUR">{{lineItem.LineTotal | currency:'&#128;'}}</span>
+                        <span ng-switch-default>{{lineItem.LineTotal | currency:'&#163;'}}</span>
                     </td>
                 </tr>
             </table>
         </div>
         <div class="panel-footer">
             <div class="row">
-                <!--<div ng-class="{'col-xs-6': minicart.checkForCheckout(), 'col-xs-12': !minicart.checkForCheckout()}">-->
                 <div class="col-xs-6">
                     <button class="btn btn-info btn-block" ng-click="minicart.goToCart()">{{minicart.labels.buttonLabel}}</button>
                 </div>

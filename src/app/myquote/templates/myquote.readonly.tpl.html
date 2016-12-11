@@ -10,9 +10,9 @@
                     <span ng-bind-html="readonly.labels.OrderDate" /><br />
                     <span style="font-weight:bold;">{{(readonly.Quote.DateSubmitted | weirdate)}}</span>
                 </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="readonly.Print()">
+                <!--<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="readonly.Print()">
                     <a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('printer.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Print'></span></a>
-                </div>
+                </div>-->
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
                     <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
                 </div>
@@ -33,6 +33,7 @@
             <h4><span ng-bind-html='readonly.labels.QuoteNumber'></span><span class="text-blue" style="margin-left: 1em;">{{readonly.Quote.ID}}</span></h4>
             <h4><span ng-bind-html='readonly.labels.QuoteName'></span><span class='text-blue' style="margin-left:1em;" maxlength="20">{{readonly.Quote.xp.Name}}</span></h4>
             <h4><span ng-bind-html='readonly.labels.YourReference'></span><span class='text-blue' style="margin-left:1em;" maxlength="50">{{readonly.Quote.xp.RefNum}}</span></h4>
+            <h4><span ng-bind-html='readonly.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50">{{readonly.Quote.xp.PONumber}}</span></h4>
             <h4><a href="#" ng-click="readonly.gotoRevisions()" ng-bind-html="readonly.labels.ViewRevisions"></a></h4>
         </div>
     </div>
@@ -62,20 +63,22 @@
                             <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
                             <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
                         </td>
-                        <td ng-switch on="readonly.BuyerID | weirGroupFromBuyersID" class='text-right'>
-                            <span ng-switch-when="WPIFR">{{line.UnitPrice | currency:'&euro; '}}</span>
-                            <span ng-switch-when="WVCUK">{{line.UnitPrice | currency:'&#163; '}}</span>
-                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163; '}}</span>
+                        <td ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                            <span ng-switch-when="USD">{{line.UnitPrice | currency:'&#36;'}}</span>
+                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163;'}}</span>
+                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&#128;'}}</span>
+                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163;'}}</span>
                         </td>
                         <td class="text-right">{{line.Quantity}}</td>
                     </tr>
                     <tr ng-if="readonly.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='readonly.labels.Total'></td>
-                        <td ng-switch on="readonly.BuyerID | weirGroupFromBuyersID" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="WPIFR">{{readonly.Quote.Total | currency:'&euro;'}}</span>
-                            <span ng-switch-when="WVCUK">{{readonly.Quote.Total | currency:'&#163; '}}</span>
-                            <span ng-switch-default>{{readonly.Quote.Total | currency:'&#163; '}}</span>
+                        <td ng-switch on="readonly.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
+                            <span ng-switch-when="USD">{{readonly.Quote.Total | currency:'&#36;'}}</span>
+                            <span ng-switch-when="GBP">{{readonly.Quote.Total | currency:'&#163;'}}</span>
+                            <span ng-switch-when="EUR">{{readonly.Quote.Total | currency:'&#128;'}}</span>
+                            <span ng-switch-default>{{readonly.Quote.Total | currency:'&#163;'}}</span>
                         </td>
                     </tr>
                 </tbody>

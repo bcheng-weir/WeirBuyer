@@ -20,7 +20,7 @@
                         <td class="text-blue">{{result.Detail.Name}}</td>
                         <td>{{result.Detail.xp.TagNumber}}</td>
 			            <td ng-bind-html='result.Detail.Description'></td>
-			            <td class="button-td"><button class="btn btn-warning" ui-sref="search.serial.detail({number: result.Number, searchNumbers: serialResults.searchNumbers})" ng-bind-html='serialResults.labels.ViewDetails'></button></td>
+			            <td class="button-td"><button class="btn btn-primary" ui-sref="search.serial.detail({number: result.Number, searchNumbers: serialResults.searchNumbers})" ng-bind-html='serialResults.labels.ViewDetails'></button></td>
                     </tr>
                 </tbody>
             </table>

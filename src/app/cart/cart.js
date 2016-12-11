@@ -193,8 +193,8 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
                             vm.LineItems.Items = [].concat(vm.LineItems.Items, result.Items);
                             vm.LineItems.Meta = result.Meta;
                         });
-                        LineItemHelpers.GetBlankProductInfo(vm.LineItems.Items);
-                        dfd.resolve(LineItemHelpers.GetProductInfo(vm.LineItems.Items.reverse()));
+                        LineItemHelpers.GetBlankProductInfo(vm.LineItems.Items, {"id":order.xp.BuyerID});
+                        dfd.resolve(LineItemHelpers.GetProductInfo(vm.LineItems.Items)); // This used to be reversed and i do not know why. it is removed.
                     });
                 Underscore.map(vm.LineItems.Items, function(value, key){
                     vm.TotalItems += value.Quantity;

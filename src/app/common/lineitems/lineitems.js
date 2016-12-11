@@ -75,7 +75,8 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         var queue = [];
         angular.forEach(productIDs, function (productid) {
             if(productid != "PLACEHOLDER") {
-                queue.push(OrderCloud.Products.Get(productid));
+                //queue.push(OrderCloud.Products.Get(productid)); // This has to be as Me() or we won't get the price schedule
+                queue.push(OrderCloud.Me.GetProduct(productid));
             }
         });
         $q.all(queue)
@@ -90,9 +91,10 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         return dfd.promise;
     }
 
-	function _getBlankProductInfo(LineItems) {
+	function _getBlankProductInfo(LineItems, Customer) {
 		var li = LineItems || LineItems.Items;
 
+		console.log(Customer);
 		angular.forEach(li, function(item) {
 			if(item.ProductID == "PLACEHOLDER") {
 				item.Product = {
@@ -101,6 +103,11 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
 					"xp": {
 						"ReplacementSchedule": item.xp.ReplacementSchedule,
 						"LeadTime": item.xp.LeadTime
+					},
+					"StandardPriceSchedule": {
+						"xp": {
+							"Currency":Customer.id.substring(0,5)=='WPIFR'?'EUR':'GBP'
+						}
 					}
 				};
 			}

@@ -16,7 +16,7 @@
                             spellcheck="false"
                             type="text"
                             typeahead-min-length="3"
-                            uib-typeahead="tagNumber for tagNumber in tag.updateTagList($viewValue)">
+                            uib-typeahead="cat.xp.TagNumber as (cat.xp.TagNumber + ' - ' + cat.Description) for cat in tag.updateTagList($viewValue)">
                         <span class="input-group-addon" ng-if="tag.tags.length > 1" ng-click="tag.removeTag($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>

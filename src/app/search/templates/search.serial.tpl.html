@@ -16,7 +16,7 @@
                             spellcheck="false"
                             type="text"
                             typeahead-min-length="3"
-                            uib-typeahead="serialNumber for serialNumber in serial.updateSerialList($viewValue)">
+                            uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in serial.updateSerialList($viewValue)">
                         <span class="input-group-addon" ng-if="serial.serialNumbers.length > 1" ng-click="serial.removeSerialNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>
@@ -27,11 +27,6 @@
                 </div>
             </div>
         </div>
-            <div class="row" style="padding-top: 10%;">
-                <div class="col-md-12 text-center">
-                    <a href="#" target="_blank" ng-bind-html='serial.labels.WhereToFind'></a>
-                </div>
-            </div>
     </form>
     <div class="row" ng-if="serial.newsArticles">
         <div class="col-md-6 news-preview" ng-repeat="article in serial.newsArticles">

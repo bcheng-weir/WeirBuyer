@@ -9,7 +9,7 @@
         <div class="col-md-4">
             <figure id="imgPic">
                 <img ng-if="tagDetail.tagNumber.xp.ImageName" ng-src="{{search.GetValveImageUrl(tagDetail.tagNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em;display:block; margin-left:auto; margin-right:auto;"
-                     onerror="window.document.getElementById('imgPic').style.display = '../src/assets/STARFLOW.png';"/>
+                     onerror="window.document.getElementById('imgPic').style.display = 'assets/images/STARFLOW.png';"/>
             </figure>
 
         </div>
@@ -98,14 +98,14 @@
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead>
                     <tr>
-                        <th ng-bind-html='tagDetail.headers.PartNum'></th>
-                        <th ng-bind-html='tagDetail.headers.PartDesc'></th>
-                        <th ng-bind-html='tagDetail.headers.PartQty'></th>
-                        <th ng-bind-html='tagDetail.headers.ReplSched'>t</th>
-                        <th ng-bind-html='tagDetail.headers.LeadTime'></th>
-                        <th ng-bind-html='tagDetail.headers.Price'></th>
-                        <th ng-bind-html='tagDetail.headers.Qty'></th>
-                        <th class="button-th"></th>
+                        <th class="em-sixteen" ng-bind-html='tagDetail.headers.PartNum'></th>
+                        <th class="em-sixteen" ng-bind-html='tagDetail.headers.PartDesc'></th>
+                        <th class="em-seven" ng-bind-html='tagDetail.headers.PartQty'></th>
+                        <th class="em-ten" ng-bind-html='tagDetail.headers.ReplSched'>t</th>
+                        <th class="em-six" ng-bind-html='tagDetail.headers.LeadTime'></th>
+                        <th class="em-six" ng-bind-html='tagDetail.headers.Price'></th>
+                        <th class="em-six" ng-bind-html='tagDetail.headers.Qty'></th>
+                        <th class="em-eight" class="button-th"></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -94,7 +94,6 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
 	function _getBlankProductInfo(LineItems, Customer) {
 		var li = LineItems || LineItems.Items;
 
-		console.log(Customer);
 		angular.forEach(li, function(item) {
 			if(item.ProductID == "PLACEHOLDER") {
 				item.Product = {

@@ -17,7 +17,7 @@
                                 <li ng-repeat="searchItem in home.SearchOptions"><a ng-click="home.dropboxSelectedItem(searchItem)">{{searchItem}}</a> </li>
                             </ul>
                         </div><!-- /btn-group -->
-                        <input ng-if="home.selectedItem=='Serial number'"
+                        <input ng-if="home.selectedItem==home.labels.SerialNumber"
                             ng-model="home.SearchParams"
                             autocomplete="off"
                             class="center-block form-control input-lg home-search"
@@ -28,7 +28,7 @@
                             type="text"
                             typeahead-min-length="3"
                             uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
-                        <input ng-if="home.selectedItem=='Tag number'"
+                        <input ng-if="home.selectedItem==home.labels.PartNumber"
                             ng-model="home.SearchParams"
                             autocomplete="off"
                             class="center-block form-control input-lg home-search"
@@ -39,7 +39,7 @@
                             type="text"
                             typeahead-min-length="3"
                             uib-typeahead="cat.xp.TagNumber as (cat.xp.TagNumber + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
-                        <input ng-if="home.selectedItem=='Part number'"
+                        <input ng-if="home.selectedItem==home.labels.TagNumber"
                            ng-model="home.SearchParams"
                            autocomplete="off"
                            class="center-block form-control input-lg home-search"
@@ -118,6 +118,7 @@
                             </div><img alt="" src="assets/images/submit.jpg">
                             <h4>{{home.labels.DetailsSubmitHeader}}</h4>
                             <p>{{home.labels.DetailsSubmitMsg}}</p>
+                            <br>
                         </div>
                     </div>
                 </div>

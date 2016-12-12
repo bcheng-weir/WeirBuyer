@@ -403,7 +403,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
 		}
 	};
-	if(numFound == 0) $state.go('search.noresults');
+	//if(numFound == 0) $state.go('search.noresults');
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
@@ -847,6 +847,7 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 
 function NoResultsController($state, $sce, WeirService) {
     var vm = this;
+	vm.locale = WeirService.Locale();
     vm.submitEnquiry = function () {
         console.log("Functioning.");
     };

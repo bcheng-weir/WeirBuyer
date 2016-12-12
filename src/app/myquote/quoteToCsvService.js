@@ -29,7 +29,6 @@ function QuoteToCsvService($filter) {
         angular.forEach(LineItems, function (item) {
             var line = [];
 	        var up = $filter('currency')(item.UnitPrice,currencies[item.Product.StandardPriceSchedule.xp.Currency]);
-	        up = up.replace(/&#160/,'');
             line.push((item.xp.SN) ? item.xp.SN : "");
             line.push((item.xp.TagNumber) ? item.xp.TagNumber : "");
             line.push((item.Product.Name) ? item.Product.Name : "");

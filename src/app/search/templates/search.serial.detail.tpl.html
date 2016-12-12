@@ -23,77 +23,77 @@
                     <div ng-if="search.searchall"><div class="results-heading" ng-bind-html='serialDetail.labels.Customer'></div><div class="serial-no" ng-bind-html="search.labels.NotAvailable"></div></div><p></p>
                     <div class="results-heading" ng-bind-html='serialDetail.labels.DeliveryDate'></div><div class="serial-no">{{serialDetail.serialNumber.xp.DeliveredDate | weirfulldate}}</div><p></p>
                 </div>
-            <h4 ng-bind-html='serialDetail.labels.SpecHeader'></h4>
-            <table ng-if="serialDetail.serialNumber.xp.Specs.Type=='WVCUK'" class="table table-bordered oc-table-responsive weir-specs-table">
-                <tbody>
-                <tr>
-                    <td>Serial number</td>
-                    <td>{{serialDetail.serialNumber.Name}}</td>
-                </tr>
-                <tr>
-                    <td>Valve description</td>
-                    <td>{{serialDetail.serialNumber.Description}}</td>
-                </tr>
-                <tr>
-                    <td>Valve quantity</td>
-                    <td>{{serialDetail.serialNumber.xp.Quantity}}</td>
-                </tr>
-                <tr>
-                    <td>Size</td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.Size}}</td>
-                </tr>
-                <tr>
-                    <td>Valve type</td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.ValveType}}</td>
-                </tr>
-                <tr>
-                    <td>Valve form</td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.ValveForm}}</td>
-                </tr>
-                <tr>
-                    <td>Body rating</td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.BodyRating}}</td>
-                </tr>
-                </tbody>
-            </table>
-            <p></p>
-        </div>
-            <table ng-if="serialDetail.serialNumber.xp.Specs.Type=='WPIFR'" class="table table-bordered oc-table-responsive weir-specs-table ng-scope">
-                <tbody>
-                <tr>
-                    <td ng-bind-html='serialDetail.labels.SerialNum'></td>
-                    <td>{{serialDetail.serialNumber.Name}}</td>
-                </tr>
-                <tr>
-                    <td ng-bind-html='serialDetail.labels.ValveDesc'></td>
-                    <td>{{serialDetail.serialNumber.Description}}</td>
-                </tr>
-                <tr>
-                    <td ng-bind-html='serialDetail.labels.ValveQty'></td>
-                    <td>{{serialDetail.serialNumber.xp.Quantity}}</td>
-                </tr>
-                <tr>
-                    <td ng-bind-html='serialDetail.labels.Pressure'></td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.Pressure}}</td>
-                </tr>
-                <tr>
-                    <td ng-bind-html='serialDetail.labels.BackPressure'></td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.BackPressure}}</td>
-                </tr>
-                <tr>
-                    <td ng-bind-html='serialDetail.labels.Temp'></td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.Temperature}}</td>
-                </tr>
-                <tr>
-                    <td ng-bind-html='serialDetail.labels.Inlet'></td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.Inlet}}</td>
-                </tr>
-                <tr>
-                    <td ng-bind-html='serialDetail.labels.Outlet'></td>
-                    <td>{{serialDetail.serialNumber.xp.Specs.Outlet}}</td>
-                </tr>
-                </tbody>
-            </table>
+                <h4 ng-bind-html='serialDetail.labels.SpecHeader'></h4>
+                <table ng-if="serialDetail.serialNumber.xp.Specs.Type=='WVCUK'" class="table table-bordered oc-table-responsive weir-specs-table">
+                    <tbody>
+                    <tr>
+                        <td>Serial number</td>
+                        <td>{{serialDetail.serialNumber.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Valve description</td>
+                        <td>{{serialDetail.serialNumber.Description}}</td>
+                    </tr>
+                    <tr>
+                        <td>Valve quantity</td>
+                        <td>{{serialDetail.serialNumber.xp.Quantity}}</td>
+                    </tr>
+                    <tr>
+                        <td>Size</td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.Size}}</td>
+                    </tr>
+                    <tr>
+                        <td>Valve type</td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.ValveType}}</td>
+                    </tr>
+                    <tr>
+                        <td>Valve form</td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.ValveForm}}</td>
+                    </tr>
+                    <tr>
+                        <td>Body rating</td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.BodyRating}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table ng-if="serialDetail.serialNumber.xp.Specs.Type=='WPIFR'" class="table table-bordered oc-table-responsive weir-specs-table">
+                    <tbody>
+                    <tr>
+                        <td ng-bind-html='serialDetail.labels.SerialNum'></td>
+                        <td>{{serialDetail.serialNumber.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html='serialDetail.labels.ValveDesc'></td>
+                        <td>{{serialDetail.serialNumber.Description}}</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html='serialDetail.labels.ValveQty'></td>
+                        <td>{{serialDetail.serialNumber.xp.Quantity}}</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html='serialDetail.labels.Pressure'></td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.Pressure}}</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html='serialDetail.labels.BackPressure'></td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.BackPressure}}</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html='serialDetail.labels.Temp'></td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.Temperature}}</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html='serialDetail.labels.Inlet'></td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.Inlet}}</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html='serialDetail.labels.Outlet'></td>
+                        <td>{{serialDetail.serialNumber.xp.Specs.Outlet}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p></p>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-12">

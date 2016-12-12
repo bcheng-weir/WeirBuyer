@@ -128,6 +128,9 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
     }).length;
     var labels = {
         en: {
+	        title: "Please send us your feedback and suggestions",
+	        bugDefect: "Bug or error",
+	        suggestion: "Suggestion",
             Batley: "About Batley",
             Blakeborough: "About Blakeborough",
             Hopkinsons: "About Hopkinsons",
@@ -137,7 +140,8 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             title: $sce.trustAsHtml("FR: Please send us your feedback and suggestions"),
             bugDefect: $sce.trustAsHtml("FR: Bug or error"),
             suggestion: $sce.trustAsHtml("FR: Suggestion"),
-            Sarasin: $sce.trustAsHtml("FR: About Sarasin")
+            Sarasin: $sce.trustAsHtml("FR: About Sarasin"),
+            Feedback: "FR: Beta feedback"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

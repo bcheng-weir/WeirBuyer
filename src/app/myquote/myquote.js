@@ -646,14 +646,14 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		    LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested"
 	    },
 		fr: {
-		    YourQuote: $sce.trustAsHtml("Votre Cotation"),
+		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
 		    QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation"),
-		    QuoteName: $sce.trustAsHtml("Ajoutez votre nom de devis "),
+		    QuoteName: $sce.trustAsHtml("Nom de la cotation "),
 		    YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
-		    ReviewQuote: $sce.trustAsHtml("R&eacute;viser votre cotation"),
-			SubmitQuote: $sce.trustAsHtml("FR: Submit Quote or Order"),
-			PONumber: $sce.trustAsHtml("FR: PO Number"),
+		    ReviewQuote: $sce.trustAsHtml("Récapitulatif"),
+			SubmitQuote: $sce.trustAsHtml("Soumettre votre cotation ou commande"),
+			PONumber: $sce.trustAsHtml("Numéro de bon de commande"),
 			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
@@ -684,7 +684,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
 			ApprovedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
 			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
-			PriceDisclaimer: $sce.trustAsHtml("FR - All prices stated do not include UK VAT or delivery"),
+			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 			ReplacementGuidance: $sce.trustAsHtml("FR Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares."),
 			POAGuidance: $sce.trustAsHtml("FR POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request."),
 			LeadTimeNotice: $sce.trustAsHtml("FR Lead time for all orders will be based on the longest lead time from the list of spares requested")
@@ -805,9 +805,9 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
 			Update: $sce.trustAsHtml("Mettre &agrave; jour"),
 			DragAndDrop: $sce.trustAsHtml("Enregistrez votre ébauche avant de télécharger des documents."),
-			Add: "FR: Add",
-			Cancel: "FR: Cancel",
-			Comments: "FR: Comments",
+			Add: "Ajouter",
+			Cancel: "Annuler",
+			Comments: "Commentaires",
 			AddedComment: "FR: added a comment - ",
 			PriceDisclaimer: "FR: All prices stated do not include UK VAT or delivery"
 		}
@@ -1043,8 +1043,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             Customer: $sce.trustAsHtml("Client "),
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
             QuoteName: $sce.trustAsHtml("Nom de la cotation "),
-            NextStep: $sce.trustAsHtml("FR: Submit Quote or Order"),
-            Submit: $sce.trustAsHtml("FR: Submit quote or order"),
+            NextStep: $sce.trustAsHtml("Suivant"),
+            Submit: $sce.trustAsHtml("Soumettre"),
             BackToReview: $sce.trustAsHtml("Review quote"),
             BackToDelivery: $sce.trustAsHtml("Retour &agrave; la livraison"),
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
@@ -1066,18 +1066,18 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             WeirComment: $sce.trustAsHtml("Commenter"),
             AddComment: $sce.trustAsHtml("Ajouter"),
             CancelComment: $sce.trustAsHtml("Annuler"),
-            SubmitForReview: $sce.trustAsHtml("Soumettre votre devis pour examen"),
+            SubmitForReview: $sce.trustAsHtml("Soumettre votre cotation pour révision"),
             CommentSavedMsg: $sce.trustAsHtml("Votre devis a &eacute;t&eacute; mis &agrave; jour"),
             PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
             POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
             SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande & E-Mail de pi&egrave;ce de rechange"),
             SubmitOrderWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
             SerialNum: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
-	        EmailPoMessage: $sce.trustAsHtml("FR: Your order will be confirmed<br>following receipt of your PO."),
-	        Add: "FR: Add",
-	        Cancel: "FR: Cancel",
-	        Comments: "FR: Comments",
-	        AddedComment: "FR: added a comment - "
+	        EmailPoMessage: $sce.trustAsHtml("Votre commande sera confirmée <br class='message-break'>  après réception de votre commande."),
+	        Add: "Ajouter",
+	        Cancel: "Annuler",
+	        Comments: "Commentaires",
+	        AddedComment: "A ajouté un commentaire "
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1331,11 +1331,11 @@ function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService, q
 		    Continue: "Continue to Delivery Options"
 		},
 		fr: {
-			Title: $sce.trustAsHtml("FR: You can add more information to this quote;"),
-		    Documents: $sce.trustAsHtml("FR: add service documentation"),
-		    RefNum: $sce.trustAsHtml("FR: add your references"),
-		    Comments: $sce.trustAsHtml("FR: add comments to your quote"),
-		    Continue: $sce.trustAsHtml("FR: continue to delivery options")
+			Title: $sce.trustAsHtml("Vous avez la possibilité d'ajouter plus d'informations à cette cotation;"),
+		    Documents: $sce.trustAsHtml("Ajouter des documents sur les conditions de services"),
+		    RefNum: $sce.trustAsHtml("Ajouter votre référence"),
+		    Comments: $sce.trustAsHtml("Ajouter des commentaires à votre cotation"),
+		    Continue: $sce.trustAsHtml("Continuer vers les options de livraison")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1382,10 +1382,10 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 			MessageText3: "If your order needs to be revised we will send you an updated quote."
 		},
 		fr: {
-			Title: $sce.trustAsHtml("FR: Thank you. Your order has submitted for review.​"),
-			MessageText1: $sce.trustAsHtml("FR: We have sent you a confirmation email.​"),
-			MessageText2: $sce.trustAsHtml("FR: We will be in touch with you to discuss the items you have requested to be reviewed."),
-			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will send you an updated quote.")
+			Title: $sce.trustAsHtml("Nous vous remercions. Votre commande a bien été soumise à la révision.​"),
+			MessageText1: $sce.trustAsHtml("Nous vous avons envoyé un e-mail de confirmation"),
+			MessageText2: $sce.trustAsHtml("Nous serons en contact avec vous pour discuter des éléments que vous avez demandé d'être examinés"),
+			MessageText3: $sce.trustAsHtml("Si votre commande doit être révisée, nous vous enverrons une cotation actualisé.")
 		}
 	};
 
@@ -1407,10 +1407,10 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO, $uibModalInst
 		    MessageText3: "We will also send you a detailed order confirmation document via email"
 		},
 		fr: {
-		    Title: $sce.trustAsHtml("FR: Thank you. Your order has been placed"),
-		    MessageText1: $sce.trustAsHtml("FR: We have sent you a confirmation email."),
-		    MessageText2: $sce.trustAsHtml("FR: Order number; " + Quote.ID),
-		    MessageText3: $sce.trustAsHtml("FR: We will also send you a detailed order confirmation document via email")
+		    Title: $sce.trustAsHtml("Nous vous remercions. Votre commande a bien été reçu."),
+		    MessageText1: $sce.trustAsHtml("Nous vous avons envoyé un e-mail de confirmation"),
+		    MessageText2: $sce.trustAsHtml("Numéro de cotation: " + Quote.ID),
+		    MessageText3: $sce.trustAsHtml("Nous vous enverrons également un document détaillé de confirmation de commande par courrier électronique")
 		}
 	};
 
@@ -1422,10 +1422,10 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO, $uibModalInst
 			MessageText3: "If your order needs to be revised we will send you an updated quote."
 		},
 		fr: {
-			Title: $sce.trustAsHtml("FR: Thank you. Your order has been submitted pending your PO."),
-			MessageText1: $sce.trustAsHtml("FR: We have sent you a confirmation email."),
-			MessageText2: $sce.trustAsHtml("FR: When we have received your PO we will confirm your order."),
-			MessageText3: $sce.trustAsHtml("FR: If your order needs to be revised we will send you an updated quote.")
+			Title: $sce.trustAsHtml("Nous vous remercions. Votre commande a été soumise en attendant votre commande"),
+			MessageText1: $sce.trustAsHtml("Nous vous avons envoyé un e-mail de confirmation"),
+			MessageText2: $sce.trustAsHtml("Nous confirmerons votre commande à la réception de votre bon de commande."),
+			MessageText3: $sce.trustAsHtml("Si votre commande doit être révisée, nous vous enverrons une cotation actualisée.")
 		}
 	};
 
@@ -1522,19 +1522,19 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
         },
         fr: {
             QuoteHeading: $sce.trustAsHtml("FR: Quote revisions for Quote; " + QuoteID),
-            Instructions1: $sce.trustAsHtml("FR: Select 'view' to view previous revisions for reference"),
-            Instructions2: $sce.trustAsHtml("FR: You can view and comment on the current revision"),
-            SearchQuotes: $sce.trustAsHtml("FR: Search Quotes"),
+            Instructions1: $sce.trustAsHtml("Sélectionnez 'voir' pour afficher les révisions précédentes"),
+            Instructions2: $sce.trustAsHtml("Vous pouvez consulter et commenter la révision en cours"),
+            SearchQuotes: $sce.trustAsHtml("Rechercher une cotation"),
             Search: $sce.trustAsHtml("Rechercher"),
-            QuoteID: $sce.trustAsHtml("FR: Quote ID"),
-            CustomerRef: $sce.trustAsHtml("FR: Customer Ref"),
-            BusinessName: $sce.trustAsHtml("FR: Business Name"),
-            SubmittedBy: $sce.trustAsHtml("FR: Submitted by"),
-            QuoteValue: $sce.trustAsHtml("FR: Quote value"),
-            DateRevised: $sce.trustAsHtml("FR: Date Revised"),
-            Reviewer: $sce.trustAsHtml("FR: Reviewer"),
+            QuoteID: $sce.trustAsHtml("Identité de la cotation"),
+            CustomerRef: $sce.trustAsHtml("Référence client"),
+            BusinessName: $sce.trustAsHtml("Nom de l'entreprise"),
+            SubmittedBy: $sce.trustAsHtml("Soumit par"),
+            QuoteValue: $sce.trustAsHtml("Montant"),
+            DateRevised: $sce.trustAsHtml("Date révisée"),
+            Reviewer: $sce.trustAsHtml("Révisé par"),
             Status: $sce.trustAsHtml("Statut"),
-            View: $sce.trustAsHtml("FR: View")
+            View: $sce.trustAsHtml("Voir")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

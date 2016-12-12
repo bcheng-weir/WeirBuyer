@@ -48,6 +48,11 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
 
 function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTypeService) {
     var vm = this;
+	if(WeirService.Locale() == 'fr') {
+		SearchTypeService.SetGlobalSearchFlag(true);
+	} else {
+		SearchTypeService.SetGlobalSearchFlag(false);
+	}
     vm.CurrentUser = Me.Profile;
 	vm.CurrentUserOrg = Me.Org;
     var labels = {
@@ -55,7 +60,7 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             Search : "Search centre",
             PlatformMsg1 : "Plan in advance for shutdowns, servicing or outages. Rapidly create and save quotes for spares for your valves. View spares lists for your valves and submit your orders. All submitted quotes and orders will be checked and confirmed by your existing valve support team.",
             PlatformMsg2Header : "How to use the platform",
-            PlatformMsg2 : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dui massa, vestibulum in malesuada vehicula, porttitor at turpis. Nulla facilisi. Vestibulum eu imperdiet nisl.",
+            PlatformMsg2 : "Search by serial number or part number, create your quote, upload your documentation and submit your quote or order.",
             DetailsSearchHeader : "Search",
             DeatilsSearchMsg : "Search by Weir serial number, Weir part number or your Tag number. Browse the result search and view spares associated valve.",
             DetailsQuoteHeader : "Quote",
@@ -81,7 +86,7 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             Search : $sce.trustAsHtml("Centre de recherche"),
             PlatformMsg1 : $sce.trustAsHtml("Planifiez à l'avance les arrêts, les réparations ou les pannes. Créez et enregistrez rapidement des devis pour les pièces de rechange pour vos vannes. Consultez les listes de pièces détachées pour vos vannes et soumettez vos commandes. Toutes les soumissions soumises et les commandes seront vérifiées et confirmées par votre équipe existante de soupape."),
             PlatformMsg2Header : $sce.trustAsHtml("Comment utiliser la plate-forme"),
-            PlatformMsg2 : $sce.trustAsHtml("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed dui massa, vestibulum in malesuada vehicula, porttitor at turpis. Nulla facilisi. Vestibulum eu imperdiet nisl."),
+            PlatformMsg2 : $sce.trustAsHtml("Recherchez par numéro de série ou numéro de pièce, créez vos cotations, téléchargez votre documentation et soumettez vos cotations ou commandes."),
             DetailsSearchHeader : $sce.trustAsHtml("Chercher"),
             DeatilsSearchMsg : $sce.trustAsHtml("Recherche par numéro de série Weir, numéro de pièce Weir ou votre numéro de tag. Parcourez la recherche de résultats et visualisez les pièces associées associées."),
             DetailsQuoteHeader : $sce.trustAsHtml("Citation"),
@@ -115,11 +120,13 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 
 	vm.SearchProducts = function(val) {
 		//The search method to execute.
-		var options = {
-			"Serial number": "GetAllSerialNumbers",
-			"Part number": "GetAllPartNumbers",
-			"Tag number": "GetAllTagNumbers"
-		};
+		var serial = vm.labels.SerialNumber;
+		var part = vm.labels.PartNumber;
+		var tag = vm.labels.TagNumber;
+		var options = {};
+		options[serial] = "GetAllSerialNumbers";
+		options[part] = "GetAllPartNumbers";
+		options[tag] = "GetAllTagNumbers";
 		return SearchProducts[options[vm.selectedItem]](val);
 	};
 

@@ -198,7 +198,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 	            revised: "Revised",
 	            confirmed: "Confirmed",
 	            despatched: "Despatched",
-	            invoiced: "Invoiced"
+	            invoiced: "Invoiced",
+	            home: "Home"
             },
             fr: {
                 privacyTitle: $sce.trustAsHtml("Déclaration de confidentialité"),
@@ -222,7 +223,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 	            revised: $sce.trustAsHtml("R&eacute;vis&eacute;"),
 	            confirmed: $sce.trustAsHtml("Confirm&eacute;"),
 	            despatched: $sce.trustAsHtml("FR: Despatched"),
-	            invoiced: $sce.trustAsHtml("FR: Invoiced")
+	            invoiced: $sce.trustAsHtml("FR: Invoiced"),
+	            home: $sce.trustAsHtml("FR: Home")
             }
         };
         return navLabels;
@@ -326,6 +328,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
             });
         return deferred.promise;
     }
+
     function getValve(id) {
         var deferred = $q.defer();
         var result;

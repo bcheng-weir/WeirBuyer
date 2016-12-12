@@ -26,12 +26,28 @@
     </div>
         <div class="col-md-4" style="padding: 0px 5px 0px 60px;">
             <div>
-                <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;"
-			ng-click="noResult.searchAgain()" ng-bind-html="noResult.labels.SearchAgain"></button>
+                <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;"  ng-click="noResult.searchAgain()" ng-bind-html="noResult.labels.SearchAgain"></button>
             </div>
             <h2 class="pull-right">
                 <p><h3 ng-html-bind="noResults.labels.YourContact"></h3></p>
-                <p>
+                <p ng-if="noResult.locale=='en'">
+                    Weir Valves & Controls UK<br/>
+                    Britannia House<br/>
+                    Huddersfield Road<br/>
+                    Elland<br/>
+                    West Yorkshire<br/>
+                    HX5 9JR<br/>
+                    <a href="valvesupport@weirgroup.com">valvesupport@weirgroup.com</a><br/>
+                    T: +44 (0)142 228 2000<br/>
+                    F: +44 (0)142 228 2100<br/>
+                    Or<br/>
+                    Sanjay Sharma<br/>
+                    Aftermarket Development Manager<br/>
+                    <a href="Sanjay.sharma@mail.weir">Sanjay.sharma@mail.weir</a><br/>
+                    M: +44 (0)7825 820041<br/>
+                    T: +44 (0)1422 282 314<br/>
+                </p>
+                <p ng-if="noResult.locale=='fr'">
                     Sarasin-RSBD <br />
                     ZI Du Bois Rigault<br />
                     Rue Jean Baptiste Grison<br />

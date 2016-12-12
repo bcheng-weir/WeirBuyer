@@ -6,7 +6,7 @@
                 <span ng-if="!search.searchall">{{search.Customer.name}}</span>
                 <span ng-if="search.searchall">{{search.labels.NoFilter}}</span>
             </div>
-			<div class="row"><a href="#" ng-click="search.SelectCustomer()" ng-bind-html="search.labels.SelectCustomer"></a></div>
+			<div class="row" ng-if="search.WeirGroup=='WPIFR'"><a href="#" ng-click="search.SelectCustomer()" ng-bind-html="search.labels.SelectCustomer"></a></div>
 		</div>
             <div ng-if="search.SelectingCustomer">
                 <div class="row"><span ng-bind-html="search.labels.SearchMine"></span><input type="checkbox" style="margin-left: 1em;" ng-model="search.selfsearch" ng-change="search.ClearFilter()" /></div>

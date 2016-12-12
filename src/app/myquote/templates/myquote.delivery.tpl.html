@@ -17,7 +17,9 @@
         <div class="col-md-7">
             <div class="row">
                 <span style="font-weight: bold; margin-left: 0.5em;" ng-bind-html="delivery.labels.DefaultAddress"></span>
-                <button class="btn btn-success pull-right" ng-click="delivery.CustomShipping(myquote.Quote.ID)"><i class="fa fa-plus-circle"></i> {{delivery.labels.AddNew}}</button>
+                <button class="btn btn-success pull-right" ng-click="delivery.CustomShipping(myquote.Quote.ID)">
+                    <i class="fa fa-plus-circle"></i> {{delivery.labels.AddNew}}
+                </button>
             </div>
             <div class="row" ng-repeat="rows in delivery.ChunkedData">
                 <div class="col-md-5 address-cell" ng-repeat="item in rows" ng-if="item.Country=='FR'">
@@ -52,8 +54,8 @@
         </div>
         <div class="col-md-5">
             <div class="pull-right">
-                <button class="btn btn-primary" ui-sref="myquote.detail"><i class="fa fa-angle-left" aria-hidden="true"></i> {{delivery.labels.BackToQuote}}</button>
-                <button class="btn btn-success" style="margin-left: 1em;" ng-click="myquote.Next()" >{{delivery.labels.ReviewQuote}} <i class="fa fa-angle-right" aria-hidden="true"></i></button>
+                <button class="btn btn-primary" ui-sref="myquote.detail" ng-bind-html="delivery.labels.BackToQuote"></button>
+                <button class="btn btn-success" style="margin-left: 1em;" ng-click="myquote.Next()" ng-bind-html="delivery.labels.ReviewQuote"></button>
             </div>
             <div class="row">
                 <div class="col-md-8 pull-right">

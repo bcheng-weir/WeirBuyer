@@ -98,7 +98,7 @@
                             <span ng-switch-default>{{line.UnitPrice | currency:'&#163;'}}</span>
                         </td>
                         <td class="form-inline">
-                            <input  type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:50%" ng-disabled="review.Step!='Review'" />
+                            <input  type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" ng-disabled="review.Step!='Review'" />
                             <button ng-if="review.Step=='Review'" class="btn btn-default" ng-bind-html='review.labels.Update' ng-click="review.updateLineItem(myquote.Quote.ID,line)"></button>
                         </td>
                         <td ng-if="review.Step=='Review'" ng-click="review.deleteLineItem(myquote.Quote.ID,line.ID)"><i class="fa fa-times" aria-hidden="true"></i></td>

@@ -652,7 +652,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		    YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
 		    ReviewQuote: $sce.trustAsHtml("R&eacute;viser votre cotation"),
-			SubmitQuote: $sce.trustAsHtml("FR: Submit Quote or Order"),
+			SubmitQuote: $sce.trustAsHtml("Soumettre une cotation ou une commande"),
 			PONumber: $sce.trustAsHtml("FR: PO Number"),
 			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
@@ -684,9 +684,9 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
 			ApprovedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
 			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
-			PriceDisclaimer: $sce.trustAsHtml("FR - All prices stated do not include UK VAT or delivery"),
-			ReplacementGuidance: $sce.trustAsHtml("FR Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares."),
-			POAGuidance: $sce.trustAsHtml("FR POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request."),
+			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
+			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
+			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
 			LeadTimeNotice: $sce.trustAsHtml("FR Lead time for all orders will be based on the longest lead time from the list of spares requested")
 		}
 	};
@@ -786,7 +786,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
-			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
+			QuoteNumber: $sce.trustAsHtml("Numéro de cotation "),
 			QuoteName: $sce.trustAsHtml("FR: Ajoutez votre nom de devis "),
 			AddNew: $sce.trustAsHtml("Ajouter un item"),
 			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
@@ -796,7 +796,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
 			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
-			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
+			Quantity: $sce.trustAsHtml("Quantité"),
 			Total: $sce.trustAsHtml("FR: Total"),
 			UploadHeader: $sce.trustAsHtml("T&eacute;l&eacute;charger vos documents concernant vos conditions de services"),
             UploadInstruct: $sce.trustAsHtml("Veuillez t&eacute;l&eacute;charger tout type de document concernant vos soupapes ou vos pi&egrave;ces de rechanges. De ce fait, nous pouvons les utiliser comme r&eacute;f&eacute;rence pour cette cotation."),
@@ -806,11 +806,11 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			DeliveryOptions: $sce.trustAsHtml("Options de livraison <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			Update: $sce.trustAsHtml("Mettre &agrave; jour"),
 			DragAndDrop: $sce.trustAsHtml("Enregistrez votre ébauche avant de télécharger des documents."),
-			Add: "FR: Add",
-			Cancel: "FR: Cancel",
-			Comments: "FR: Comments",
-			AddedComment: "FR: added a comment - ",
-			PriceDisclaimer: "FR: All prices stated do not include UK VAT or delivery",
+			Add: "Ajouter",
+			Cancel: "Annuler",
+			Comments: "Commentaires",
+			AddedComment: " A ajouté un commentaire - ",
+			PriceDisclaimer: "Tous les prix indiqués ne comprennent pas la livraison ni la TVA.",
 			SaveToContinue: "FR: *Save to Continue"
 		}
 	};
@@ -1045,8 +1045,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             Customer: $sce.trustAsHtml("Client "),
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
             QuoteName: $sce.trustAsHtml("Nom de la cotation "),
-            NextStep: $sce.trustAsHtml("FR: Submit Quote or Order"),
-            Submit: $sce.trustAsHtml("FR: Submit quote or order"),
+            NextStep: $sce.trustAsHtml("Soumettre une cotation ou une commande"),
+            Submit: $sce.trustAsHtml("Soumettre une cotation ou une commande"),
             BackToReview: $sce.trustAsHtml("Review quote"),
             BackToDelivery: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; la livraison"),
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
@@ -1075,11 +1075,11 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande<br>& E-Mail de pi&egrave;ce<br>de rechange <i class='fa fa-angle-right' aria-hidden='true'></i>"),
             SubmitOrderWithPO: $sce.trustAsHtml("Soumettre une commande<br>avec bon de commande <i class='fa fa-angle-right' aria-hidden='true'></i>"),
             SerialNum: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
-	        EmailPoMessage: $sce.trustAsHtml("FR: Your order will be confirmed<br>following receipt of your PO."),
-	        Add: "FR: Add",
-	        Cancel: "FR: Cancel",
-	        Comments: "FR: Comments",
-	        AddedComment: "FR: added a comment - "
+	        EmailPoMessage: $sce.trustAsHtml("Votre commande sera confirmée après<br class='message-break'>réception de votre bon de commande."),
+	        Add: "Ajouter",
+	        Cancel: "Annuler",
+	        Comments: "Commentaires",
+	        AddedComment: " A ajouté un commentaire - "
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1674,14 +1674,14 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
 			ApprovedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
 			Comment: $sce.trustAsHtml("Commentaire"),
-			AddedComment: $sce.trustAsHtml("FR: added a comment - "),
+			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
 			Add: $sce.trustAsHtml("Ajouter"),
 			Cancel: $sce.trustAsHtml("Annuler"),
-			PriceDisclaimer: "FR: All prices stated do not include UK VAT or delivery",
-			ReplacementGuidance: "FR: Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "FR: POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
-			LeadTimeNotice: "FR: Lead time for all orders will be based on the longest lead time from the list of spares requested",
-			PONumber: "FR: PO Number;"
+			PriceDisclaimer: "Tous les prix indiqués ne comprennent pas la livraison ni la TVA.",
+			ReplacementGuidance: "Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans.",
+			POAGuidance: "Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision.",
+			LeadTimeNotice: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées",
+			PONumber: "Numéro de bon de commande;"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1923,12 +1923,12 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        OrderDate: $sce.trustAsHtml("Date de commande;"),
 	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
-	        PriceDisclaimer: $sce.trustAsHtml("FR: All prices stated do not include UK VAT or delivery"),
+	        PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
 	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande"),
-	        ReplacementGuidance: "FR: Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-	        POAGuidance: "FR: POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
-	        LeadTimeNotice: "FR: Lead time for all orders will be based on the longest lead time from the list of spares requested",
-	        PONumber: "FR: PO Number;"
+	        ReplacementGuidance: "Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans.",
+	        POAGuidance: "Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision.",
+	        LeadTimeNotice: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées",
+	        PONumber: "Numéro de bon de commande;"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -2099,19 +2099,19 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 			SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande & E-Mail de pi&egrave;ce de rechange"),
 			SubmitOrderWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
-			EmailPoMessage: $sce.trustAsHtml("FR: Your order will be confirmed<br class='message-break'>following receipt of your PO."),
+			EmailPoMessage: $sce.trustAsHtml("Votre commande sera confirmée après<br class='message-break'>réception de votre bon de commande."),
 			POEntry: $sce.trustAsHtml("Entrer une r&eacute;f&eacute;rence de commande"),
-			PriceDisclaimer: $sce.trustAsHtml("FR: All prices stated do not include UK VAT or delivery"),
+			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
 			DragAndDrop: $sce.trustAsHtml("Faites glisser vos documents ici pour les t&eacute;l&eacute;charger"),
 			PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
 			POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
-			ReplacementGuidance: "FR: Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "FR: POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
-			LeadTimeNotice: "FR: Lead time for all orders will be based on the longest lead time from the list of spares requested",
-			Add: "FR: Add",
-			Cancel: "FR: Cancel",
-			AddedComment: "FR: added a comment - ",
-			PONumber: "FR: PO Number;"
+			ReplacementGuidance: "Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans.",
+			POAGuidance: "Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision.",
+			LeadTimeNotice: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées",
+			Add: "Ajouter",
+			Cancel: "Annuler",
+			AddedComment: " A ajouté un commentaire - ",
+			PONumber: "Numéro de bon de commande;"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

@@ -136,7 +136,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
     }
 }
 
-function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
+function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, $sce, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
     var vm = this;
     vm.credentials = {
         Username: null,
@@ -166,20 +166,20 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
             BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter."
         },
         fr: {
-            LoginLabel: "Veuillez saisir vos identifiants",
-            UsernameLabel: "Nom d'utilisateur",
-            PasswordLabel: "Mot de passe",
-            BackToLoginLabel: "Retourner &agrave; l'identification",
-            ForgotPasswordLabel: "Mot de passe oubli&eacute;",
-            RememberMe: "Souviens-toi de moi",
-            WorldWide: "Accéder au site global",
-            NewPasswordLabel: "Nouveau mot de passe",
-            ConfirmPasswordLabel: "Confirmer votre mot de passe",
-            ResetPasswordMessage: "Votre mot de passe a &eacute;t&eacute; chang&eacute;",
-            ForgotMessageLabel: "Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe.",
-            ResetPasswordLabel: "Changer de mot de passe",
-            SubmitLabel: "Soumettre",
-            BadUsernamePassword: "Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de v&eacute;rifier vos identifiant, puis veuillez r&eacute;essayer."
+            LoginLabel: $sce.trustAsHtml("Veuillez saisir vos identifiants"),
+            UsernameLabel: $sce.trustAsHtml("Nom d'utilisateur"),
+            PasswordLabel: $sce.trustAsHtml("Mot de passe"),
+            BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
+            ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
+            RememberMe: $sce.trustAsHtml("Souviens-toi de moi"),
+            WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
+            NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
+            ConfirmPasswordLabel: $sce.trustAsHtml("Confirmer votre mot de passe"),
+            ResetPasswordMessage: $sce.trustAsHtml("Votre mot de passe a &eacute;t&eacute; chang&eacute;"),
+            ForgotMessageLabel: $sce.trustAsHtml("Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe."),
+            ResetPasswordLabel: $sce.trustAsHtml("Changer de mot de passe"),
+            SubmitLabel: $sce.trustAsHtml("Soumettre"),
+            BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de v&eacute;rifier vos identifiant, puis veuillez r&eacute;essayer.")
         }
     };
     var navlabels = WeirService.navBarLabels();
@@ -195,6 +195,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
     }
     vm.languageOfUser = WeirService.Locale();
 
+    console.log(TokenRefresh.GetToken());
     vm.submit = function() {
         OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
@@ -231,8 +232,8 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
     vm.forgotPassword = function() {
         LoginService.SendVerificationCode(vm.credentials.Email)
             .then(function() {
-                vm.setForm('verificationCodeSuccess');
-                vm.credentials.Email = null;
+                vm.setForm('login');
+                //vm.credentials.Email = null;
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
@@ -242,7 +243,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
     vm.resetPassword = function() {
         LoginService.ResetPassword(vm.credentials, vm.token)
             .then(function() {
-                vm.setForm('resetSuccess');
+                vm.setForm('login');
                 vm.token = null;
                 vm.credentials.ResetUsername = null;
                 vm.credentials.NewPassword = null;

@@ -536,7 +536,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			save();
 		}
 
-		if (!$state.is("myquote.detail") || (vm.Quote.Comments && vm.Quote.xp.RefNum && vm.Quote.xp.Files && vm.Quote.xp.Files.length)) {
+		if (!$state.is("myquote.detail") || ((vm.Quote.xp.CommentsToWeir && vm.Quote.xp.CommentsToWeir.length > 0) && vm.Quote.xp.RefNum && vm.Quote.xp.Files && vm.Quote.xp.Files.length)) {
             $state.go("myquote.delivery");
 		} else {
             var modalInstance = $uibModal.open({
@@ -629,7 +629,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 		    ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
 		    POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
-		    LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested"
+		    LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
+		    Currency: "Currency"
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
@@ -673,7 +674,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
 			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
 			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("FR Lead time for all orders will be based on the longest lead time from the list of spares requested")
+			LeadTimeNotice: $sce.trustAsHtml("FR Lead time for all orders will be based on the longest lead time from the list of spares requested"),
+			Currency: $sce.trustAsHtml("Currency")
 		}
 	};
 
@@ -683,6 +685,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			QuoteCommentsService.AddComment(CommentToBeAdded)
 				.then(function(result) {
 					QuoteShareService.Quote = result;
+					vm.Quote = result;
 					dfd.resolve(result);
 				})
 		} else {
@@ -767,7 +770,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Cancel: "Cancel",
 			Comments: "Comments",
 			AddedComment: " added a comment - ",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery"
+			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
+			SaveToContinue: "*Save to Continue"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -1428,7 +1432,7 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO, $uibModalInst
 	}
 }
 
-function ChooseSubmitController($uibModalInstance, $sce, WeirService, QuoteShareService) {
+function ChooseSubmitController($uibModalInstance, $sce, $state, WeirService, QuoteShareService) {
     var vm = this;
     vm.Quote = QuoteShareService.Quote;
 
@@ -1443,10 +1447,10 @@ function ChooseSubmitController($uibModalInstance, $sce, WeirService, QuoteShare
         },
         fr: {
             SubmitReview: $sce.trustAsHtml("Soumettre un devis pour examen"),
-            SubmitReviewMessage: $sce.trustAsHtml("<p>Veuillez sélectionner Soumettre un devis pour examen si;<br><br>1. 1. Il y a des articles dans votre devis que vous souhaitez que Weir r&eacute;vise et confirme.<br>2. Vous avez des articles dans votre devis qui sont POA. Weir passera en revue le devis et fournira les prix des articles POA.</p>"),
+            SubmitReviewMessage: $sce.trustAsHtml("<p>Veuillez sélectionner Soumettre un devis pour examen si;<br><br>1. Il y a des articles dans votre devis que vous souhaitez que Weir r&eacute;vise et confirme.<br>2. Vous avez des articles dans votre devis qui sont POA. Weir passera en revue le devis et fournira les prix des articles POA.</p>"),
             SubmitReviewBtn: $sce.trustAsHtml("Soumettre un devis pour examen"),
             ConfirmPO: $sce.trustAsHtml("Confirmer la commande"),
-            ConfirmPOMessage: $sce.trustAsHtml("FR: <p>Si vous s&eacute;lectionnez Confirmer la commande, vous pourrez confirmer votre commande comme suit:<br><br> 1.Soumettre l'ordre avec PO - ajoutez votre num&eacute;ro de commande ou t&eacute;l&eacute;chargez votre document de commande. <br><br>2.Soumettre commande & email PO - soumettre votre commande et email votre commande (nous l'ajouterons à la commande pour vous).</p>"),
+            ConfirmPOMessage: $sce.trustAsHtml("<p>Si vous s&eacute;lectionnez Confirmer la commande, vous pourrez confirmer votre commande comme suit:<br><br> 1.Soumettre l'ordre avec PO - ajoutez votre num&eacute;ro de commande ou t&eacute;l&eacute;chargez votre document de commande. <br><br>2.Soumettre commande & email PO - soumettre votre commande et email votre commande (nous l'ajouterons à la commande pour vous).</p>"),
             ConfirmPOBtn: $sce.trustAsHtml("Confirmer la commande")
         }
     };
@@ -1460,8 +1464,14 @@ function ChooseSubmitController($uibModalInstance, $sce, WeirService, QuoteShare
         $uibModalInstance.close("Submit");
     }
 
+    function _goToTerms() {
+    	$uibModalInstance.close();
+	    $state.go('myquote.termsandconditions');
+    }
+
     vm.submitForReview = _submitForReview;
     vm.confirmOrderWithPO = _confirmOrderWithPO;
+	vm.goToTerms = _goToTerms;
 }
 
 function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions) {

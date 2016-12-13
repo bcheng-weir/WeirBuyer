@@ -136,19 +136,22 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
         switch (searchType){
             case(vm.labels.SerialNumber):
                 //the chaining of the state.go rather than go to child is done due to the parent (search) resolves a promise and blocks the child.
-                $state.go('search').then(function(){
-                    $state.go('search.serial.results', {numbers: searchParam}, {});
-                });
+                $state.go('search')
+	                .then(function(){
+                        $state.go('search.serial.detail', {number: searchParam}, {});
+                    });
                 break;
             case(vm.labels.TagNumber):
-                $state.go('search').then(function(){
-                $state.go('search.tag.results', {numbers: searchParam}, {});
-                });
+                $state.go('search')
+	                .then(function(){
+                        $state.go('search.tag.results', {numbers: searchParam}, {});
+                    });
                 break;
             case(vm.labels.PartNumber):
-                $state.go('search').then(function(){
-                $state.go('search.part.results', {numbers: searchParam}, {});
-                });
+                $state.go('search')
+	                .then(function(){
+                        $state.go('search.part.results', {numbers: searchParam}, {});
+                    });
                 break;
         }
     };

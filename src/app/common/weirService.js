@@ -335,7 +335,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
         CurrentOrder.GetCurrentCustomer()
 			.then(function (cust) {
 			    if (cust) {
-			        OrderCloud.Me.ListCategories(null, 1, 50, null, "Name",
+			        OrderCloud.Me.ListCategories(null, 1, 50, null, null,
             { "ID": id }, "all", cust.id.substring(0, 5))
             .then(function (matches) {
                 if (matches.Items.length == 1) {

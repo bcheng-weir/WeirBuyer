@@ -92,7 +92,7 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             DetailsSubmitMsg : $sce.trustAsHtml("Vous pouvez soumettre votre devis afin que nous puissions vérifier et confirmer votre devis avant de passer votre commande."),
             OrderMsg : $sce.trustAsHtml("Votre confirmation de commande vous sera envoyée par e-mail et Weir mettra à jour l'ordre de la plate-forme avec le numéro de contrat"),
             Brands: $sce.trustAsHtml("Marques"),
-            BrandsMsg: $sce.trustAsHtml("Explorez les marques du groupe Weir à l'aide de leurs pages de marque individuelles ci-dessous."),
+            BrandsMsg: $sce.trustAsHtml("Découvrez les marques du groupe Weir en utilisant les pages individuelles de chaque marque ci-dessous."),
             SerialNumber: $sce.trustAsHtml("Numéro de série"),
             PartNumber: $sce.trustAsHtml("Numéro de pièce"),
             TagNumber: $sce.trustAsHtml("Numéro du tag"),

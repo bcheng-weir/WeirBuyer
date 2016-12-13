@@ -135,6 +135,7 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
 		en: {
 			view: "View ",
 			oneItem: "1 item in your ",
+            //toDo get the number of items in the order
 			moreItems: " items in your ",
 			quote: "Quote",
             order: "Order",
@@ -142,10 +143,11 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
 		},
 		fr: {
 		    view: $sce.trustAsHtml("Voir d&eacute;tails "),
-			oneItem: $sce.trustAsHtml("1 article dans votre "),
-			moreItems: $sce.trustAsHtml(" articles dans votre "),
-			quote: $sce.trustAsHtml("devis"),
-			order: $sce.trustAsHtml("commande"),
+			oneItem: $sce.trustAsHtml("1 article dans votre cotation (ou commande) "),
+            //toDo get the number of items in the order
+			moreItems: $sce.trustAsHtml(" articles dans votre cotation (ou commande) "),
+			quote: $sce.trustAsHtml("Cotation"),
+			order: $sce.trustAsHtml("Commande"),
 			buttonLabel: $sce.trustAsHtml("Cotation")
 		}
 	};

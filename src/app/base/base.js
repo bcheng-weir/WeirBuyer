@@ -131,12 +131,16 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             Batley: "About Batley",
             Blakeborough: "About Blakeborough",
             Hopkinsons: "About Hopkinsons",
-            Feedback: "Beta feedback"
+            Feedback: "Beta feedback",
+            bugDefect: $sce.trustAsHtml("Bug or error"),
+            title: $sce.trustAsHtml("Please send us your feedback and suggestions"),
+            suggestion: $sce.trustAsHtml("Suggestion")
         },
         fr: {
-            title: $sce.trustAsHtml("FR: Please send us your feedback and suggestions"),
-            bugDefect: $sce.trustAsHtml("FR: Bug or error"),
-            suggestion: $sce.trustAsHtml("FR: Suggestion"),
+            title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
+            Feedback: $sce.trustAsHtml("Retour et commentaires sur la Beta"),
+            bugDefect: $sce.trustAsHtml("Bogue ou erreur"),
+            suggestion: $sce.trustAsHtml("Suggestion"),
             Sarasin: $sce.trustAsHtml("FR: About Sarasin")
         }
     };
@@ -387,14 +391,14 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirSer
             Feedback: "Beta feedback"
         },
         fr: {
-            title: $sce.trustAsHtml("FR: Please send us your feedback and suggestions"),
-            bugDefect: $sce.trustAsHtml("FR: Bug or error"),
-            suggestion: $sce.trustAsHtml("FR: Suggestion"),
-            bug : "FR: If reporting a bug, your issue will be raised with our development team. All suggestions and feedback will be reviewed by our Beta project team.",
-            YourFeedback: "FR: Your feedback",
-            TypeFeedback: "FR: Type of feedback",
-            Email: "FR: Your email",
-            Feedback: "FR: Beta feedback"
+            title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
+            bugDefect: $sce.trustAsHtml("Bogue ou erreur"),
+            suggestion: $sce.trustAsHtml("Suggestion"),
+            bug : "Si vous signalez un bogue, celui-ci sera soumit à notre équipe de développement.",
+            YourFeedback: "Votre commentaire",
+            TypeFeedback: "Type de commentaires",
+            Email: "Votre adresse E-mail",
+            Feedback: "Retour et commentaires sur la Beta"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

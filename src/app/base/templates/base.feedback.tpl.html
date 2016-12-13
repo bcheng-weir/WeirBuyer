@@ -26,7 +26,7 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-12">
-                                     <label style="margin-top: 0.5em;" for="fbtype">{{feedback.labels.TypeFeedback}}</label><br />
+                                     <label style="margin-top: 0.5em;" for="fbtype" ng-bind-html="feedback.labels.TypeFeedback"></label><br />
                                 </div>
                             </div>
                             <div class="row">
@@ -54,7 +54,7 @@
                             </div>
                         </div>
                     </div>
-                    <p>{{feedback.labels.bug}}</p>
+                    <p ng-bind-html="feedback.labels.bug"></p>
                 </form>
         </div>
         <div class="modal-footer">

@@ -3,16 +3,16 @@
         <div class="container">
             <ul class="menu">
                 <li>
-                    <a ui-sref="terms-of-use">{{base.navlabels.termsTitle}}</a>
+                    <a ui-sref="terms-of-use" ng-bind-html="base.navlabels.termsTitle"></a>
                 </li>
                 <li>
-                    <a  ui-sref="cookie-policy">{{base.navlabels.cookieTitle}}</a>
+                    <a  ui-sref="cookie-policy" ng-bind-html="base.navlabels.cookieTitle"></a>
                 </li>
                 <li>
-                    <a  ui-sref="privacy-statement">{{base.navlabels.privacyTitle}}</a>
+                    <a  ui-sref="privacy-statement" ng-bind="base.navlabels.privacyTitle"></a>
                 </li>
                 <li>
-                    <a ui-sref="contact-us">{{base.navlabels.contactTitle}}</a>
+                    <a ui-sref="contact-us" ng-bind-html="base.navlabels.contactTitle"></a>
                 </li>
             </ul>
         </div>

@@ -134,14 +134,17 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             Batley: "About Batley",
             Blakeborough: "About Blakeborough",
             Hopkinsons: "About Hopkinsons",
-            Feedback: "Beta feedback"
+            Feedback: "Beta feedback",
+            bugDefect: $sce.trustAsHtml("Bug or error"),
+            title: $sce.trustAsHtml("Please send us your feedback and suggestions"),
+            suggestion: $sce.trustAsHtml("Suggestion")
         },
         fr: {
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
+            Feedback: $sce.trustAsHtml("Retour et commentaires sur la Beta"),
             bugDefect: $sce.trustAsHtml("Bogue ou erreur"),
             suggestion: $sce.trustAsHtml("Suggestion"),
-            Sarasin: $sce.trustAsHtml("FR: About Sarasin"),
-            Feedback: "Retour et commentaires sur la Beta"
+            Sarasin: $sce.trustAsHtml("FR: About Sarasin")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -391,15 +394,14 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirSer
             Feedback: "Beta feedback"
         },
         fr: {
+            title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
+            bugDefect: $sce.trustAsHtml("Bogue ou erreur"),
+            suggestion: $sce.trustAsHtml("Suggestion"),
             bug : "Si vous signalez un bogue, celui-ci sera soumit à notre équipe de développement.",
             YourFeedback: "Votre commentaire",
             TypeFeedback: "Type de commentaires",
-            Email: "FR: Your email",
-	        title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
-	        bugDefect: $sce.trustAsHtml("Bogue ou erreur"),
-	        suggestion: $sce.trustAsHtml("Suggestion"),
-	        Sarasin: $sce.trustAsHtml("FR: About Sarasin"),
-	        Feedback: "Retour et commentaires sur la Beta"
+            Email: "Votre adresse E-mail",
+            Feedback: "Retour et commentaires sur la Beta"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

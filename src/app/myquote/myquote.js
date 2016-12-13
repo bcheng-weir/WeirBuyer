@@ -55,7 +55,8 @@ function QuoteCommentsService(OrderCloud, QuoteShareService, Me, $q) {
 		var comment = {
 			date: new Date(),
 			by: Me.Profile.FirstName + " " + Me.Profile.LastName,
-			val: commentText
+			val: commentText,
+			IsWeirComment: false
 		};
 
 		// Take the new comment, push it onto the current comments to weir then patch.
@@ -1741,7 +1742,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		var comment = {
 			date: new Date(),
 			by: Me.Profile.FirstName + " " + Me.Profile.LastName,
-			val: vm.CommentToWeir
+			val: vm.CommentToWeir,
+			IsWeirComment: false
 		};
 		vm.Quote.xp.CommentsToWeir.push(comment);
 		OrderCloud.Orders.Patch(vm.Quote.ID, {xp:{CommentsToWeir: vm.Quote.xp.CommentsToWeir}}, OrderCloud.BuyerID.Get())
@@ -2116,7 +2118,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			var comment = {
 				date: new Date(),
 				by: Me.Profile.FirstName + " " + Me.Profile.LastName,
-				val: vm.NewComment
+				val: vm.NewComment,
+				IsWeirComment: false
 			};
 
 			// Take the new comment, push it onto the current comments to weir then patch.

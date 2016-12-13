@@ -764,7 +764,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             UploadHeader: "Upload your Service or Operating Condition Document",
             RefNumHeader: "Add your Reference Number ",
             CommentsHeader: "Your Comments or Instructions",
-		    DeliveryOptions: "Delivery Options <i class='fa fa-angle-right' aria-hidden='true'></i>",
+		    DeliveryOptions: $sce.trustAsHtml("Delivery Options <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			Update: "Update",
 			DragAndDrop: "Save your Draft before Uploading Documents.",
 			Add: "Add",
@@ -872,7 +872,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	var labels = {
 	    en: {
 	        DefaultAddress: "Your Default Address",
-	        AddNew: "Add a New Address",
+	        AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Add a New Address"),
 	        DeliveryInfo: "Delivery Information",
 	        DeliverHere: "Deliver to this Address",
 	        ReviewQuote: "Review Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
@@ -883,7 +883,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	    },
 	    fr: {
 	        DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
-	        AddNew: $sce.trustAsHtml("Ajouter une nouvelle adresse"),
+	        AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Ajouter une nouvelle adresse"),
 	        DeliveryInfo: $sce.trustAsHtml("Informations de livraison"),
 	        DeliverHere: $sce.trustAsHtml("Livrer &agrave; cette adresse"),
 	        ReviewQuote: $sce.trustAsHtml("Revue de cotation <i class='fa fa-angle-right' aria-hidden='true'></i>"),

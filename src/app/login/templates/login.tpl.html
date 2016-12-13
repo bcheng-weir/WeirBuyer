@@ -24,27 +24,26 @@
                         <div class="col-sm-6 col-lg-5 col-lg-offset-1 login-index">
                             <div class="login-block">
                                 <div class="login-header">
-                                    <p class="text-center login-title">{{login.labels.LoginLabel}}</p>
+                                    <p class="text-center login-title" ng-bind-html="login.labels.LoginLabel"></p>
                                 </div>
                                 <div class="account-wall" ng-switch-when="login">
                                     <form class="form-signin" ng-submit="login.submit()">
                                         <div class="form-group">
-                                            <label for="inputUsernameEmail">{{login.labels.UsernameLabel}}</label>
+                                            <label for="inputUsernameEmail" ng-bind-html="login.labels.UsernameLabel"></label>
                                             <input type="text" class="form-control" id="inputUsernameEmail" ng-model="login.credentials.Username" ng-required="true">
                                         </div>
                                         <div class="form-group">
-                                            <label for="inputPassword">{{login.labels.PasswordLabel}}</label>
+                                            <label for="inputPassword" ng-bind-html="login.labels.PasswordLabel"></label>
                                             <input type="password" class="form-control" id="inputPassword" ng-model="login.credentials.Password" ng-required="true">
                                         </div>
                                         <div class="form-group rememberMe">
                                             <label class="checkbox">
                                                 <input type="checkbox" value="remember-me" ng-model="login.rememberStatus">
-                                                {{login.labels.RememberMe}}
+                                                <span ng-bind-html="login.labels.RememberMe"></span>
                                             </label>
                                         </div>
-                                        <button class="btn btn-lg btn-primary btn-block login-btn" type="submit" ng-disabled="LoginForm.$invalid">
-                                            {{login.labels.SubmitLabel}} <i class="icon-right-arrow"></i></button>
-                                        <a href="#" class="forgot-password" ng-click="login.setForm('forgot')">{{login.labels.ForgotPasswordLabel}}</a>
+                                        <button class="btn btn-lg btn-primary btn-block login-btn" type="submit" ng-disabled="LoginForm.$invalid" ng-bind-html="login.labels.SubmitLabel"></button>
+                                        <a href="#" class="forgot-password" ng-click="login.setForm('forgot')" ng-bind-html="login.labels.ForgotPasswordLabel"></a>
                                     </form>
                                 </div>
                                 <div class="account-wall" ng-switch-when="forgot">
@@ -54,7 +53,7 @@
                                             <label for="Email">{{login.label.UsernameLabel}}</label>
                                             <input type="text" class="form-control" id="Email" ng-model="login.credentials.Email" ng-required="true" />
                                         </div>
-                                        <button type="submit" id="email_submit" class="btn btn-primary" ng-disabled="ForgotPasswordForm.$invalid">{{login.labels.SubmitLabel}}</button>
+                                        <button type="submit" id="email_submit" class="btn btn-primary" ng-disabled="ForgotPasswordForm.$invalid" ng-bind-html="login.labels.SubmitLabel"></button>
                                         <a id="back_to_login" class="btn btn-link" ng-click="login.setForm('login')">{{login.labels.BackToLoginLabel}}</a>
                                     </form>
                                 </div>
@@ -73,10 +72,10 @@
     <nav class="navbar navbar-fixed-bottom">
         <div class="container">
             <ul class="menu">
-                <li><a  ui-sref="terms-of-use">{{login.navlabels.termsTitle}}</a></li>
-                <li><a  ui-sref="cookie-policy">{{login.navlabels.cookieTitle}}</a></li>
-                <li><a ui-sref="privacy-statement">{{login.navlabels.privacyTitle}}</a></li>
-                <li><a ui-sref="contact-us">{{login.navlabels.contactTitle}}</a></li>
+                <li><a  ui-sref="terms-of-use" ng-bind-html="login.navlabels.termsTitle"></a></li>
+                <li><a  ui-sref="cookie-policy" ng-bind-html="login.navlabels.cookieTitle"></a></li>
+                <li><a ui-sref="privacy-statement" ng-bind-html="login.navlabels.privacyTitle"></a></li>
+                <li><a ui-sref="contact-us" ng-bind-html="login.navlabels.contactTitle"></a></li>
             </ul>
         </div>
     </nav>

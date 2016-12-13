@@ -845,11 +845,27 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 	};
 }
 
-function NoResultsController($state, $sce, WeirService) {
+function NoResultsController($state, $sce, WeirService, OrderCloud, toastr) {
     var vm = this;
-	vm.locale = WeirService.Locale();
-    vm.submitEnquiry = function () {
-        console.log("Functioning.");
+    vm.searchTerm = "";
+    vm.info = "";
+    vm.locale = WeirService.Locale();
+
+	vm.submitEnquiry = function () {
+	    var data = {
+	        xp: {
+	            enquiry: {
+	                searchFor: vm.searchTerm,
+                    details: vm.info
+	            }
+	        }
+	    }
+	    OrderCloud.Me.Patch(data)
+        .then(function (usr) {
+            toastr.success(vm.labels.SubmittedMessage);
+            vm.searchTerm = "";
+            vm.info = "";
+        });
     };
     vm.searchAgain = function () {
         var searchType = WeirService.GetLastSearchType();
@@ -871,7 +887,8 @@ function NoResultsController($state, $sce, WeirService) {
             SparesPrompt: "Please provide details of the spares you require a quote for.",
             Submit: "Submit Enquiry",
             SearchAgain: "Search again",
-            YourContact: "Your contact"
+            YourContact: "Your contact",
+            SubmittedMessage: "Your enquiry has been submitted"
         },
         fr: {
             CantFindHeader: $sce.trustAsHtml("FR: Can't find what you are looking for?"),
@@ -881,7 +898,8 @@ function NoResultsController($state, $sce, WeirService) {
             SparesPrompt: $sce.trustAsHtml("FR: Please provide details of the spares you require a quote for."),
             Submit: $sce.trustAsHtml("FR: Submit Enquiry"),
             SearchAgain: $sce.trustAsHtml("FR: Chercher &agrave; nouveau"),
-            YourContact: $sce.trustAsHtml("FR: Your contact")
+            YourContact: $sce.trustAsHtml("FR: Your contact"),
+            SubmittedMessage: $sce.trustAsHtml("Your enquiry has been submitted")
     }
     };
     vm.labels = WeirService.LocaleResources(labels);

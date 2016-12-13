@@ -25,6 +25,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
     };
 
     function _routeAfterLogin() {
+        SetFSInfo();
         var storageName = appname + '.routeto';
         $localForage.getItem(storageName)
         .then(function (rte) {
@@ -43,6 +44,17 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
         })
         .catch(function () {
             $state.go('home');
+        });
+    }
+    function SetFSInfo() {
+        OrderCloud.Me.Get()
+        .then(function (usr) {
+            FS.identify(usr.ID, {
+                displayName: usr.FirstName + ' ' + usr.LastName,
+                email: usr.Email,
+                group: (usr.xp.WeirGroup && usr.xp.WeirGroup.label) ? usr.xp.WeirGroup.label : "Not set",
+                buyer: buyerid
+            });
         });
     }
 

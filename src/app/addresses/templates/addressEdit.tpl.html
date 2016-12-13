@@ -45,7 +45,7 @@
 		</div>
 		<div class="col-sm-3 form-group" ng-show="addressEdit.address.Country == 'US' || addressEdit.address.Country == 'CA'">
 			<label for="addressStateInput">State</label>
-			<select id="addressStateInput" class="form-control" ng-options="state.value as state.label for state in addressEdit.states" ng-model="addressEdit.address.State" required/>
+			<select id="addressStateInput" class="form-control" ng-options="state.value as state.label for state in addressEdit.states" ng-model="addressEdit.address.State" required></select>
 		</div>
 		<div class="col-sm-3 form-group"  ng-hide="addressEdit.address.Country == 'US' || addressEdit.address.Country == 'CA'">
 			<label for="addressStateInput">State</label>
@@ -59,7 +59,7 @@
 	<div class="row">
 		<div class="col-sm-6 form-group">
 			<label for="addressCountryInput">Country</label>
-			<select id="addressCountryInput" class="form-control" ng-options="country.value as country.label for country in addressEdit.countries" ng-model="addressEdit.address.Country" required/>
+			<select id="addressCountryInput" class="form-control" ng-options="country.value as country.label for country in addressEdit.countries" ng-model="addressEdit.address.Country" required></select>
 		</div>
 		<div class="col-sm-6 form-group">
 			<label for="addressPhoneInput">Phone Number</label>

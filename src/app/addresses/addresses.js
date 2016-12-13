@@ -61,7 +61,7 @@ function AddressesConfig($stateProvider) {
                     });
                 }
             }
-        })
+        });
 }
 
 function AddressesController($state, $ocMedia, OrderCloud, OrderCloudParameters, AddressList, Parameters) {

@@ -107,7 +107,7 @@ describe('Component: Checkout', function() {
                     PageSize: 20
                 },
                 Items: []
-            })
+            });
             defer.resolve(order);
             spyOn(oc.LineItems, 'List').and.returnValue(lidefer.promise);
             spyOn(LineItemHelpers, 'GetProductInfo').and.returnValue(defer.promise);

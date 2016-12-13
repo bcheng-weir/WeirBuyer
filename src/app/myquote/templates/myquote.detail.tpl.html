@@ -86,14 +86,17 @@
     <div class="row">
         <!-- Get the current master upload data in here. -->
         <div class="col-xs-6">
-            <h4><span ng-bind-html='detail.labels.UploadHeader'></span></h4>
+            <h4>
+                <span ng-if="myquote.Quote.xp.Status!='DR'" ng-bind-html='detail.labels.UploadHeader'></span>
+                <span ng-if="myquote.Quote.xp.Status=='DR'" ng-bind-html='detail.labels.DragAndDrop'></span>
+            </h4>
             <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
-            <div class="panel panel-default">
+            <div class="panel panel-default" ng-if="myquote.Quote.xp.Status!='DR'">
                 <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
-                <p><ordercloud-file-upload model="myquote.Quote" keyname="Files" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p>
+                <p><ordercloud-file-upload model="myquote.Quote" keyname="Files" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p> <!-- myquote.Quote or detail.quote? -->
             </div>
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-xs-12">
                     <p><span ng-bind-html='myquote.labels.ReplacementGuidance'></span></p>
                     <p><span style="font-style:italic;" ng-bind-html='myquote.labels.POAGuidance'></span></p>
                     <p><span style="font-style:italic;" ng-bind-html='myquote.labels.LeadTimeNotice'></span></p>

@@ -93,7 +93,7 @@ function CustomerConfig($stateProvider) {
         });
 }
 
-function CustomerService($q, $state, $sce, OrderCloud, $exceptionHandler) {
+function CustomerService($sce, OrderCloud, $exceptionHandler) {
     var _weirGroups = [{id: "1", label: "WCVUK"}, {id: "2", label: "WPIFR"}];
     var _customerTypes = [{id: "1", label: "End User"}, {id: "2", label: "Service Company"}];
     var _componentLabels = {
@@ -395,7 +395,7 @@ function CustomerEditCtrl($exceptionHandler, $scope, $state, $ocMedia, toastr, O
     }
 }
 
-function CustomerCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, OrderCloud, CustomerService, OCGeography, WeirService) {
+function CustomerCreateCtrl($q, $state, toastr, CustomerService, OCGeography, WeirService) {
     var vm = this;
     vm.WeirGroups = CustomerService.WeirGroups;
     vm.types = CustomerService.CustomerTypes;
@@ -432,7 +432,7 @@ function CustomerCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, Order
     }
 }
 
-function CustomerAddressEditCtrl($q, $exceptionHandler, $state, $scope, toastr, OrderCloud, OCGeography, SelectedBuyer, SelectedAddress, Underscore, WeirService, CustomerService) {
+function CustomerAddressEditCtrl($exceptionHandler, $state, $scope, toastr, OrderCloud, OCGeography, SelectedBuyer, SelectedAddress, Underscore, WeirService, CustomerService) {
     var vm = this,
         addressID = SelectedAddress.ID;
     vm.addressName = SelectedAddress.AddressName;
@@ -553,7 +553,7 @@ function CustomerAddressEditCtrl($q, $exceptionHandler, $state, $scope, toastr, 
     };
 }
 
-function CustomerAddressCreateCtrl($q, $exceptionHandler, $scope, $state, toastr, OrderCloud, OCGeography, CustomerService, SelectedBuyer, Underscore, WeirService) {
+function CustomerAddressCreateCtrl($exceptionHandler, $state, toastr, OrderCloud, OCGeography, CustomerService, SelectedBuyer, Underscore, WeirService) {
     var vm = this;
     vm.countries = OCGeography.Countries;
     vm.states = OCGeography.States;
@@ -611,7 +611,7 @@ function CustomerAddressCreateCtrl($q, $exceptionHandler, $scope, $state, toastr
     }
 }
 
-function CustomerAssignCtrl($q, $exceptionHandler, $scope, $state, toastr, Underscore, OrderCloud, SelectedBuyer, EndUsers, Assignments, WeirService, CustomerService) {
+function CustomerAssignCtrl($exceptionHandler, $scope, $state, toastr, Underscore, OrderCloud, SelectedBuyer, EndUsers, Assignments, WeirService, CustomerService) {
     var vm = this;
     vm.list = angular.copy(EndUsers);
     vm.endUsers = angular.copy(EndUsers);

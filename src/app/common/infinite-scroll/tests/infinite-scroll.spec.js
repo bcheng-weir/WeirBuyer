@@ -2,7 +2,7 @@ describe('Component: Infinite Scroll', function() {
     var scope;
     beforeEach(module('orderCloud'));
     beforeEach(module('orderCloud.sdk'));
-    beforeEach(module('ordercloud-infinite-scroll'))
+    beforeEach(module('ordercloud-infinite-scroll'));
     beforeEach(inject(function($rootScope) {
         scope = $rootScope.$new();
     }));

@@ -419,7 +419,7 @@ function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService) {
+                           IsShopper, QuoteCommentsService, CurrentOrder) {
     var vm = this;
 	vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
@@ -491,27 +491,13 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		WeirService.UpdateQuote(vm.Quote, mods, assignQuoteNumber, vm.Customer.id)
 			.then(function(quote) {
 				QuoteShareService.Quote = quote;
+				return CurrentOrder.Set(quote.ID);
+			})
+			.then(function() {
 				toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
 				if(assignQuoteNumber) {
-					vm.Quote = quote;
-					/*var modalInstance = $uibModal.open({
-						animation: true,
-						ariaLabelledBy: 'modal-title',
-						ariaDescribedBy: 'modal-body',
-						templateUrl: 'modalConfirmation.html',
-						controller: 'ModalInstanceCtrl',
-						controllerAs: 'myQuote',
-						resolve: {
-							quote: function () {
-								return vm.Quote;
-							},
-							labels: function () {
-								return vm.labels;
-							}
-						}
-					});
-					modalInstance.result;*/
-					$window.location.reload();
+					vm.Quote = QuoteShareService.Quote;
+					//$window.location.reload();
 				}
 			});
 	}

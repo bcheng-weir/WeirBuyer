@@ -634,7 +634,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
 		    QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation"),
-		    QuoteName: $sce.trustAsHtml("Nom de la cotation "),
+		    QuoteName: $sce.trustAsHtml("Ajouter un libellé à votre cotation "),
 		    YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
 		    ReviewQuote: $sce.trustAsHtml("Récapitulatif"),
@@ -658,8 +658,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			SaveSuccessMessage: $sce.trustAsHtml("Vos modifications ont &eacute;t&eacute; enregistr&eacute;es"),
 			NoItemsError: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de sauvegarder"),
 			CannotContinueNoItems: $sce.trustAsHtml("Veuillez ajouter des pi&egrave;ces de rechanges avant de continuer"),
-			SaveBody: $sce.trustAsHtml("FR: Your quote has been saved."),
-			SaveFooter: $sce.trustAsHtml("Voir vos devis"),
+			SaveBody: $sce.trustAsHtml("Votre cotation a été enregistrée."),
+			SaveFooter: $sce.trustAsHtml("Voir vos cotations"),
 			Approve: $sce.trustAsHtml("Approuver"),
 			Reject: $sce.trustAsHtml("Rejeter"),
 			Comments: $sce.trustAsHtml("Commentaires"),
@@ -772,7 +772,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
 			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
-			QuoteName: $sce.trustAsHtml("Ajoutez votre nom de devis "),
+			QuoteName: $sce.trustAsHtml("Ajouter un libellé à votre cotation "),
 			AddNew: $sce.trustAsHtml("Ajouter un item"),
 			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
@@ -1029,7 +1029,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         fr: {
             Customer: $sce.trustAsHtml("Client "),
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
-            QuoteName: $sce.trustAsHtml("Nom de la cotation "),
+            QuoteName: $sce.trustAsHtml("Libellé de la cotation "),
             NextStep: $sce.trustAsHtml("Suivant"),
             Submit: $sce.trustAsHtml("Soumettre"),
             BackToReview: $sce.trustAsHtml("Review quote"),
@@ -1054,7 +1054,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             AddComment: $sce.trustAsHtml("Ajouter"),
             CancelComment: $sce.trustAsHtml("Annuler"),
             SubmitForReview: $sce.trustAsHtml("Soumettre votre cotation pour révision <i class='fa fa-angle-right' aria-hidden='true'></i>"),
-            CommentSavedMsg: $sce.trustAsHtml("Votre devis a &eacute;t&eacute; mis &agrave; jour"),
+            CommentSavedMsg: $sce.trustAsHtml("Votre cotation a été mise à jour"),
             PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
             POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
             SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande<br>& E-Mail de pi&egrave;ce de rechange <i class='fa fa-angle-right' aria-hidden='true'></i>"),
@@ -1637,9 +1637,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
 			Total: $sce.trustAsHtml("Total"),
-			Removed: "Mettre à jour",
+			Removed: "Supprimé",
 			Updated: "Modifié",
-			New: "FR: New",
+			New: "Ajouter",
 			YourAttachments: $sce.trustAsHtml("Vos pi&egrave;ces jointes"),
 			YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 			CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
@@ -2264,7 +2264,7 @@ function TermsAndConditionsController($sce,WeirService){
             TermsAndConditions: "Terms And Conditions"
         },
         fr: {
-            TermsAndConditions: $sce.trustAsHtml("Terms And Conditions")
+            TermsAndConditions: $sce.trustAsHtml("FR: Terms And Conditions")
         }
     };
     var navlabels = WeirService.navBarLabels();

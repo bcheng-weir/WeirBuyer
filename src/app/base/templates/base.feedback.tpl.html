@@ -10,7 +10,7 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <label for="email">{{feedback.labels.Email}}</label><br />
+                                    <label for="email" ng-bind-html="feedback.labels.Email"></label><br />
                                 </div>
                             </div>
                             <div class="row">
@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-12">
-                                     <label style="margin-top: 0.5em;" for="fb">{{feedback.labels.YourFeedback}}</label><br />
+                                     <label style="margin-top: 0.5em;" for="fb" ng-bind-html="feedback.labels.YourFeedback"></label><br />
                                 </div>
                             </div>
                             <div class="row">
@@ -59,7 +59,7 @@
         </div>
         <div class="modal-footer">
             <div class="row">
-                <button class="btn btn-default pull-right" style="margin-left:0.5em; margin-right: 0.5em;" value="Cancel" ng-click="feedback.Cancel()">Cancel</button>
+                <button class="btn btn-default pull-right" style="margin-left:0.5em; margin-right: 0.5em;" value="Cancel" ng-click="feedback.Cancel()">FR: Cancel</button>
                 <input type="submit" class="btn btn-primary pull-right" value="Send" ng-click="feedback.Send()" />
             </div>
         </div>

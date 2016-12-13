@@ -8,7 +8,7 @@
             </span>
             <br>
             <span>
-                <a href="#" ng-click="minicart.goToCart()">{{minicart.Order.labels.view}}</a>
+                <a href="#" ng-click="minicart.goToCart()" ng-bind-html="minicart.Order.labels.view"></a>
             </span>
         </div>
     </div>
@@ -45,7 +45,7 @@
         <div class="panel-footer">
             <div class="row">
                 <div class="col-xs-6">
-                    <button class="btn btn-info btn-block" ng-click="minicart.goToCart()">{{minicart.labels.buttonLabel}}</button>
+                    <button class="btn btn-info btn-block" ng-click="minicart.goToCart()" ng-bind-html="minicart.labels.buttonLabel"></button>
                 </div>
                 <div class="col-xs-6 pull-right">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="minicartCloseButton" ng-click="minicart.toggleDropdown($event)"><span aria-hidden="true">&times;</span></button>

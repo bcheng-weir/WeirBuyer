@@ -52,7 +52,7 @@
             </a>
         </div>
         <div class="pull-right" style="margin-top: 0.5em; margin-bottom: 0.5em; margin-right: 2em;">
-                <span class="glyphicon glyphicon-envelope feedbackBaseImage" aria-hidden="true"></span><a ng-click="base.showFeedbackForm()" href="">{{base.labels.Feedback}}</a>
+                <span class="glyphicon glyphicon-envelope feedbackBaseImage" aria-hidden="true"></span><a ng-click="base.showFeedbackForm()" href="" ng-bind-html="base.labels.Feedback"></a>
         </div>
     </div>
     <div class="row spacingTop">
@@ -61,16 +61,16 @@
                 <div class="col-xs-6 col-md-12 brand">
                     <ul class="nav nav-tabs">
                         <li>
-                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})">{{base.labels.Batley}}</a>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})" ng-bind-html="base.labels.Batley"></a>
                         </li>
                         <li>
-                            <a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})">{{base.labels.Blakeborough}}</a>
+                            <a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})" ng-bind-html="base.labels.Blakeborough"></a>
                         </li>
                         <li>
-                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})">{{base.labels.Hopkinsons}}</a>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})" ng-bind-html="base.labels.Hopkinsons"></a>
                         </li>
                         <li>
-                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})">{{base.labels.Sarasin}}</a>
+                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})" ng-bind-html="base.labels.Sarasin"></a>
                         </li>
                         <li class="active last">
                             <a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>

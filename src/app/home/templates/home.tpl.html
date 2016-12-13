@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="intro-message">
-                        <h1>{{home.labels.Search}}</h1>
+                        <h1 ng-bind-html="home.labels.Search"></h1>
                     </div>
                 </div>
             </div>
@@ -12,10 +12,10 @@
                 <div class="col-xs-12 col-md-8 col-md-offset-2">
                     <div class="input-group">
                         <div class="input-group-btn">
-                            <button aria-expanded="false" aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
-                                {{home.selectedItem.label}}<span class="caret"></span></button>
+                            <button aria-expanded="false" aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" ng-bind-html="home.selectedItem.label">
+                                <span class="caret"></span></button>
                             <ul class="dropdown-menu">
-                                <li ng-repeat="searchItem in home.SearchOptions"><a ng-click="home.dropboxSelectedItem(searchItem)">{{searchItem.label}}</a> </li>
+                                <li ng-repeat="searchItem in home.SearchOptions"><a ng-click="home.dropboxSelectedItem(searchItem)" ng-bind-html="searchItem.label"></a> </li>
                             </ul>
                         </div><!-- /btn-group -->
                         <input ng-if="home.selectedItem.opt==0"
@@ -74,8 +74,8 @@
             <div class="row">
                 <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
                     <div class="h-t-u">
-                        <h2>{{home.labels.PlatformMsg2Header}}</h2>
-                        <p> {{home.labels.PlatformMsg2}} </p>
+                        <h2 ng-bind-html="home.labels.PlatformMsg2Header"></h2>
+                        <p ng-bind-html="home.labels.PlatformMsg2"> </p>
                     </div>
                 </div>
             </div>
@@ -90,8 +90,8 @@
                             <div class="number">
                                 1
                             </div><img alt="" src="assets/images/search.jpg">
-                            <h4>{{home.labels.DetailsSearchHeader}}</h4>
-                            <p>{{home.labels.DeatilsSearchMsg}}</p>
+                            <h4 ng-bind-html="home.labels.DetailsSearchHeader"></h4>
+                            <p ng-bind-html="home.labels.DeatilsSearchMsg"></p>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-3">
@@ -99,8 +99,8 @@
                             <div class="number">
                                 2
                             </div><img alt="" src="assets/images/quote.jpg">
-                            <h4>{{home.labels.DetailsQuoteHeader}}</h4>
-                            <p>{{home.labels.DetailsQuoteMsg}}</p>
+                            <h4 ng-bind-html="home.labels.DetailsQuoteHeader"></h4>
+                            <p ng-bind-html="home.labels.DetailsQuoteMsg"></p>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-3">
@@ -108,8 +108,8 @@
                             <div class="number">
                                 3
                             </div><img alt="" src="assets/images/detail.jpg">
-                            <h4>{{home.labels.DetailsDetailsHeader}}</h4>
-                            <p>{{home.labels.DetailsDetailsMsg}}</p>
+                            <h4 ng-bind-html="home.labels.DetailsDetailsHeader"></h4>
+                            <p ng-bind-html="home.labels.DetailsDetailsMsg"></p>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-3">
@@ -117,8 +117,8 @@
                             <div class="number">
                                 4
                             </div><img alt="" src="assets/images/submit.jpg">
-                            <h4>{{home.labels.DetailsSubmitHeader}}</h4>
-                            <p>{{home.labels.DetailsSubmitMsg}}</p>
+                            <h4 ng-bind-html="home.labels.DetailsSubmitHeader"></h4>
+                            <p ng-bind-html="home.labels.DetailsSubmitMsg"></p>
                             <br>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
                                 <i aria-hidden="true" class="fa fa-check"></i>
                             </div>
                             <div class="col-xs-11">
-                                <p>{{home.labels.OrderMsg}}</p>
+                                <p ng-bind-html="home.labels.OrderMsg"></p>
                             </div>
                         </div>
                     </div>
@@ -144,21 +144,21 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 col-md-10 col-md-8 col-lg-offset-2 col-md-offset-1 text-center">
-                    <h2>{{home.labels.Brands}}</h2>
-                    <p>{{home.labels.BrandsMsg}}</p>
+                    <h2 ng-bind-html="home.labels.Brands"></h2>
+                    <p ng-bind-html="home.labels.BrandsMsg"></p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'en'" ng-repeat="brand in home.BrandUK track by brand.title">
                     <div class="featured-link">
-                        <a href="brands/{{brand.url}}">{{brand.title}} <i class="icon-right-arrow"></i></a>
-                        <p>{{brand.description}} </p>
+                        <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
+                        <p ng-bind-html="brand.description"> </p>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'fr'" ng-repeat="brand in home.BrandFR track by brand.title">
                     <div class="featured-link">
-                        <a href="brands/{{brand.url}}">{{brand.title}} <i class="icon-right-arrow"></i></a>
-                        <p>{{brand.description}} </p>
+                        <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
+                        <p ng-bind-html="brand.description"></p>
                     </div>
                 </div>
             </div>

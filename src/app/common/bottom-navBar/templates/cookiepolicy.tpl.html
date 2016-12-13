@@ -4,8 +4,8 @@
             <div class="row">
 
                 <div class="col-xs-10  col-sm-6 col-sm-offset-0 col-md-5 bannerText">
-                    <h1>{{footer.navlabels.cookieTitle}}</h1>
-                    <h6><a ui-sref="home">{{footer.navlabels.home}}</a></h6>
+                    <h1 ng-bind-html="footer.navlabels.cookieTitle"></h1>
+                    <h6><a ui-sref="home" ng-bind-html="footer.navlabels.home"></a></h6>
                     <!-- renderReadMoreButton -->
                 </div>
 

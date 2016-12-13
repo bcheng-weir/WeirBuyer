@@ -8,14 +8,14 @@
 		<br /><br />
                 <span ng-bind-html="noResult.labels.CantFindText2"></span>
             </p>
-        <form>
+        <form novalidate>
             <div class="form-group">
-                <label for="numberOfItem"><h4 ng-bind-html="noResult.labels.SerNumPrompt"></h4></label>
-                <input type="text" class="form-control" id="numberOfItem">
+                <h4><label for="numberOfItem" ng-bind-html="noResult.labels.SerNumPrompt"></label></h4>
+                <input type="text" class="form-control" id="numberOfItem" ng-model="noResult.searchTerm" required>
             </div>
             <div class="form-group">
-                <label for="detailsOfSpare"><h4 ng-bind-html="noResult.labels.SparesPrompt"></h4></label>
-                <input type="text" class="form-control" id="detailsOfSpare">
+                <h4><label for="detailsOfSpare" ng-bind-html="noResult.labels.SparesPrompt"></label></h4>
+                <input type="text" class="form-control" id="detailsOfSpare" ng-model="noResult.info" required>
             </div>
             <div class="pull-right">
                 <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%"
@@ -28,8 +28,8 @@
             <div>
                 <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;"  ng-click="noResult.searchAgain()" ng-bind-html="noResult.labels.SearchAgain"></button>
             </div>
-            <h2 class="pull-right">
-                <p><h3 ng-html-bind="noResults.labels.YourContact"></h3></p>
+            <div class="pull-right">
+                <h3 ng-html-bind="noResults.labels.YourContact"></h3>
                 <p ng-if="noResult.locale=='en'">
                     Weir Valves & Controls UK<br/>
                     Britannia House<br/>
@@ -56,7 +56,7 @@
                     T: +33 (0)321 79 54 50<br />
                     F: +33 (0)321 28 62 00<br />
                 </p>
-            </h2>
+            </div>
         </div>
     </div>
 </article>

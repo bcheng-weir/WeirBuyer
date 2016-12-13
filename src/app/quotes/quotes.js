@@ -263,18 +263,18 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             Status: $sce.trustAsHtml("Statut"),
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
             OwnProduct: $sce.trustAsHtml("Propre Produit"),
-            View: $sce.trustAsHtml("FR: View"),
+            View: $sce.trustAsHtml("Voir"),
             ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?"),
             ConfirmedListMessage: $sce.trustAsHtml("Vous pouvez convertir des devis confirm&eacute;s en commandes. Affichez le devis confirm&eacute; et s&eacute;lectionnez: Soumettre l'ordre. Les devis confirm&eacute;s sont valables pendant 30 jours &agrave; partir de la confirmation."),
-			Revisions: $sce.trustAsHtml("FR: Revisions")
+			Revisions: $sce.trustAsHtml("Révisions")
 		}
 	};
 	if ($state.is('quotes.revised')) {
 	    labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " revised Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-	    labels.fr.Header = "FR: " + $scope.$parent.quotes.list.Meta.TotalCount.toString() + " revised Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
+	    labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation révisée" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
 	} else if ($state.is('quotes.confirmed')) {
 	    labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " confirmed Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-	    labels.fr.Header = "FR: " + $scope.$parent.quotes.list.Meta.TotalCount.toString() + " confirmed Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
+	    labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation confirmée" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
 	}
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.ReviewQuote = _reviewQuote;
@@ -298,17 +298,17 @@ function InReviewQuotesController(WeirService, $state, $sce, $scope) {
 			View: "View"
 		},
 		fr: {
-		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) dans l'examen"),
+		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation soumise à révision"),
 		    QuoteNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de cotation chez WEIR"),
 		    QuoteRef: $sce.trustAsHtml("Votre R&eacute;f&eacute;rence de cotation"),
 		    Total: $sce.trustAsHtml("Total"),
 		    Customer: $sce.trustAsHtml("Client"),
 		    OwnProduct: $sce.trustAsHtml("Propre Produit"),
 		    Approver: $sce.trustAsHtml("Approbateur;"),
-			Reviewer: $sce.trustAsHtml("FR: Reviewer"),
+			Reviewer: $sce.trustAsHtml("Révisé par"),
             Status: $sce.trustAsHtml("Statut"),
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
-			View: $sce.trustAsHtml("View")
+			View: $sce.trustAsHtml("Voir")
 	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

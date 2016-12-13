@@ -25,7 +25,7 @@ angular.module('orderCloud', [
     'ngCsv',
     'ngFileSaver'
     ])
-//    .run(SetBuyerID)
+    .run(InitGA)
     .config(Routing)
     .config(ErrorHandling)
     .config(Interceptor)
@@ -33,14 +33,20 @@ angular.module('orderCloud', [
     .config(DatePickerConfig)
 ;
 
+InitGA.$inject = ['$rootScope', '$location', '$window'];
+function InitGA($rootScope, $location, $window) {
+    // initialize Google Analytics
+    ga('create', 'UA-88345453-1', 'auto');
+    // track pageview on state change
+    $rootScope.$on('$stateChangeSuccess', function (event) {
+        $window.ga('send', 'pageview', $location.path());
+    });
+}
+
 function DatePickerConfig(uibDatepickerConfig, uibDatepickerPopupConfig){
     uibDatepickerConfig.showWeeks = false;
     uibDatepickerPopupConfig.showButtonBar = false;
 }
-
-//function SetBuyerID(OrderCloud, buyerid) {
-//    OrderCloud.BuyerID.Get() == buyerid ? angular.noop() : OrderCloud.BuyerID.Set(buyerid);
-//}
 
 function Routing($urlRouterProvider, $urlMatcherFactoryProvider, $locationProvider) {
     $urlMatcherFactoryProvider.strictMode(false);

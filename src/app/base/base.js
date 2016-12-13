@@ -134,10 +134,7 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             Batley: "About Batley",
             Blakeborough: "About Blakeborough",
             Hopkinsons: "About Hopkinsons",
-            Feedback: "Beta feedback",
-            bugDefect: $sce.trustAsHtml("Bug or error"),
-            title: $sce.trustAsHtml("Please send us your feedback and suggestions"),
-            suggestion: $sce.trustAsHtml("Suggestion")
+            Feedback: "Beta feedback"
         },
         fr: {
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),

@@ -237,7 +237,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 		fr: {
 		    SerialSearch: $sce.trustAsHtml("Rechercher par Num&eacute;ro de S&eacute;rie"),
 		    PartSearch: $sce.trustAsHtml("Rechercher par R&eacute;f&eacute;rence de Pi&egrave;ce"),
-		    TagSearch: $sce.trustAsHtml("Rechercher par Num&eacute;ro de Tag"),
+		    TagSearch: $sce.trustAsHtml("Rechercher par numéro de repère soupape"),
 		    CustomerFilter: $sce.trustAsHtml("R&eacute;sultats filtr&eacute;s par: "),
 		    NoFilter: $sce.trustAsHtml("FR: Any customer"),
 		    SelectCustomer: $sce.trustAsHtml("Renouveler la recherche filtr&eacute;e"),
@@ -248,9 +248,9 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 		    AllValves:  $sce.trustAsHtml("FR: All Valves"),
 		    MyValves: $sce.trustAsHtml("FR: My Valves"),
 		    Select: $sce.trustAsHtml("S&eacute;lectionner"),
-		    ReplacementGuidance: $sce.trustAsHtml("TBD: Replacement guidance"),
-		    POAGuidance: $sce.trustAsHtml("TBD: POA guidance"),
-		    PriceDisclaimer: $sce.trustAsHtml("TBD: Price disclaimer"),
+		    ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé:Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans.Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
+		    POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
+		    PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 		    NotAvailable: $sce.trustAsHtml("TBD: N/A"),
 		    ApplyFilter: "FR: OK"
 	    }
@@ -818,7 +818,7 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 			AddToQuote: "Add to Quote"
 		},
 		fr: {
-			PartList: $sce.trustAsHtml("FR: Parts list for tag number"),
+			PartList: $sce.trustAsHtml("Liste des pièces pour ce numéro de série"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence"),
 			PartDesc: $sce.trustAsHtml("Description de la partie"),
 			PartQty: $sce.trustAsHtml("Quantit&eacute; de partie"),

@@ -18,7 +18,7 @@ function BrandConfig($stateProvider) {
 		})
 }
 
-function BrandController(Parameters, WeirService) {
+function BrandController(Parameters, WeirService, $sce) {
 	var vm = this;
 	vm.list = [
         'batley-valve',
@@ -30,24 +30,24 @@ function BrandController(Parameters, WeirService) {
     vm.brand = vm.list[Parameters.brandId];
     var labels = {
         en: {
-            Batley: "Batley Valve®",
-            AboutBatley: "About Batley\<sup\>®\</sup\> Valve",
-            BatleyMsg: "Weir manufactures an extensive range of butterfly valves for isolation and control applications under the Batley Valve® brand.",
+            Batley: $sce.trustAsHtml("Batley Valve<sup>®</sup>"),
+            AboutBatley: $sce.trustAsHtml("Batley Valve<sup>®</sup>"),
+            BatleyMsg: $sce.trustAsHtml("Weir manufactures an extensive range of butterfly valves for isolation and control applications under the Batley Valve<sup>®</sup> brand."),
             BatleyTitle: "A leading standard in global process sectors",
-            Blakeborough: "Blakeborough®",
-            AboutBlakeborough: "About Blakeborough\<sup\>®\</sup\>",
+            Blakeborough: $sce.trustAsHtml("Blakeborough<sup>®</sup>"),
+            AboutBlakeborough: $sce.trustAsHtml("Blakeborough<sup>®</sup>"),
             BlakeboroughTitle: "A leading standard in global process sectors",
-            BlakeboroughMsg: "The Blakeborough® brand has been at the forefront of designing and manufacturing control, choke and steam conditioning valves for more than 70 years.",
-            Hopkinsons: "Hopkinsons®",
-            AboutHopkinsons: "About Hopkinsons\<sup\>®\</sup\> Valve",
+            BlakeboroughMsg: $sce.trustAsHtml("The Blakeborough<sup>®</sup> brand has been at the forefront of designing and manufacturing control, choke and steam conditioning valves for more than 70 years."),
+            Hopkinsons: $sce.trustAsHtml("Hopkinsons<sup>®</sup>"),
+            AboutHopkinsons: $sce.trustAsHtml("Hopkinsons<sup>®</sup>"),
             HopkinsonsTitle: "A leading standard in global process sectors",
-            HopkinsonsMsg: "Established over 160 years ago, the Hopkinsons® brand is renowned for long and dependable service life, generation after generation."
+            HopkinsonsMsg: $sce.trustAsHtml("Established over 160 years ago, the Hopkinsons<sup>®</sup> brand is renowned for long and dependable service life, generation after generation.")
         },
         fr: {
-            SarasinRSBD: "Sarasin RSBD®",
-            AboutSarasinRSBD: "SarasinRSBD® Valve",
-            SarasinRSBDTitle: "",
-            SarasinRSBDMsg: "Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD® sont conçues pour garantir des performances, une sécurité et une fiabilité optimales."
+            SarasinRSBD: $sce.trustAsHtml("Sarasin RSBD<sup>™</sup>"),
+            AboutSarasinRSBD: $sce.trustAsHtml("Sarasin-RSBD<sup>™</sup>"),
+            SarasinRSBDTitle: $sce.trustAsHtml(""),
+            SarasinRSBDMsg: $sce.trustAsHtml("Les soupapes de s&ucirc;ret&eacute; &agrave; ressort et pilot&eacute;es Sarasin-RSBD<sup>™</sup> sont conçues pour garantir des performances, une s&eacute;curit&eacute; et une fiabilit&eacute; optimales.")
         }
     };
     vm.LanguageUsed = WeirService.Locale();

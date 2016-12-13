@@ -464,7 +464,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 	};
 	var headers = {
 		en: {
-			PartList: "Parts list for serial number;",
+			PartList: "Parts list for serial number; ",
 			PartNum: "Part number",
 			PartDesc: "Description of part",
 			PartQty: "Part quantity",
@@ -476,7 +476,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 			AddToQuote: "Add to Quote"
 		},
 		fr: {
-		    PartList: $sce.trustAsHtml("Liste des pi&eacute;ces pour ce num&eacute;ro de s&eacute;rie"),
+		    PartList: $sce.trustAsHtml("Liste des pi&eacute;ces pour ce num&eacute;ro de s&eacute;rie "),
 		    PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
 		    PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
 		    PartQty: $sce.trustAsHtml("Quantit&eacute; de pi&egrave;ce"),

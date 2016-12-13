@@ -63,7 +63,8 @@
                             <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
                             <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
                         </td>
-                        <td ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">POA</td>
+                        <td ng-if="line.UnitPrice>0" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
                             <span ng-switch-when="USD">{{line.UnitPrice | currency:'&#36;'}}</span>
                             <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163;'}}</span>
                             <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&#128;'}}</span>

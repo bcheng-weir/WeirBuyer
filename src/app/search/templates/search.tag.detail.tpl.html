@@ -115,7 +115,8 @@
                         <td>{{tagDetail.PartQuantity(part.Detail.ID)}}</td>
                         <td>{{part.Detail.xp.ReplacementSchedule}}</td>
                         <td>{{part.Detail.xp.LeadTime}}</td>
-                        <td ng-switch on="part.Detail.StandardPriceSchedule.xp.Currency">
+                        <td ng-if="part.Detail.StandardPriceSchedule.PriceBreaks[0].Price<='0'">POA</td>
+                        <td ng-if="part.Detail.StandardPriceSchedule.PriceBreaks[0].Price>'0'" ng-switch on="part.Detail.StandardPriceSchedule.xp.Currency">
                             <span ng-switch-when="USD">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#36;'}}</span>
                             <span ng-switch-when="GBP">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span>
                             <span ng-switch-when="EUR">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#128;'}}</span>

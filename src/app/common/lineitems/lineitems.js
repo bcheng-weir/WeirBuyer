@@ -83,6 +83,8 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
             .then(function (results) {
                 angular.forEach(li, function (item) {
                     if(item.ProductID != "PLACEHOLDER") {
+                        // set POA if the item has a unit price of 0
+	                    //item.UnitPrice = item.UnitPrice==0 ? 'POA' : item.UnitPrice;
                         item.Product = angular.copy(Underscore.where(results, {ID: item.ProductID})[0]);
                     }
                 });

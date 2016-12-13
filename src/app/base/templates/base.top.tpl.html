@@ -28,14 +28,14 @@
                         <li uib-dropdown ng-if="!base.currentUser.Anonymous">
                             <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
                             <ul uib-dropdown-menu>
-                                <li class="dropdown-header">{{base.currentUser.FirstName + ' ' + base.currentUser.LastName}}</li>
+                                <li class="dropdown-header" ng-bind-html="base.currentUser.FirstName + ' ' + base.currentUser.LastName"></li>
                                 <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
                                 <li class="divider"></li>
                                 <li><a ng-click="application.logout()">Logout</a></li>
                             </ul>
                         </li>
                         <li ng-if="base.currentUser.Anonymous && base.registrationAvailable">
-                            <a href="" ui-sref="registration" ui-sref-active="active">Register/Login</a>
+                            <a href="" ui-sref="registration" ui-sref-active="active">FR: Register/Login</a>
                         </li>
                         <li>
                             <ordercloud-minicart order="catalog.currentOrder"></ordercloud-minicart>

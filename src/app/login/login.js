@@ -136,7 +136,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
     }
 }
 
-function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, $sce, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
+function LoginController($state, $stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
     var vm = this;
     vm.credentials = {
         Username: null,
@@ -162,7 +162,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
             ResetPasswordMessage: "Your password has been reset.",
             ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
             ResetPasswordLabel: "Reset Password",
-            SubmitLabel: "Submit",
+            SubmitLabel: $sce.trustAsHtml("Submit  <i class='icon-right-arrow'></i>"),
             BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter."
         },
         fr: {
@@ -178,7 +178,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
             ResetPasswordMessage: $sce.trustAsHtml("Votre mot de passe a &eacute;t&eacute; chang&eacute;"),
             ForgotMessageLabel: $sce.trustAsHtml("Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe."),
             ResetPasswordLabel: $sce.trustAsHtml("Changer de mot de passe"),
-            SubmitLabel: $sce.trustAsHtml("Soumettre"),
+            SubmitLabel: $sce.trustAsHtml("Soumettre  <i class='icon-right-arrow'></i>"),
             BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de v&eacute;rifier vos identifiant, puis veuillez r&eacute;essayer.")
         }
     };
@@ -232,8 +232,8 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
     vm.forgotPassword = function() {
         LoginService.SendVerificationCode(vm.credentials.Email)
             .then(function() {
-                vm.setForm('login');
-                //vm.credentials.Email = null;
+                vm.setForm('verificationCodeSuccess');
+                vm.credentials.Email = null;
             })
             .catch(function(ex) {
                 $exceptionHandler(ex);
@@ -243,7 +243,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
     vm.resetPassword = function() {
         LoginService.ResetPassword(vm.credentials, vm.token)
             .then(function() {
-                vm.setForm('login');
+                vm.setForm('resetSuccess');
                 vm.token = null;
                 vm.credentials.ResetUsername = null;
                 vm.credentials.NewPassword = null;

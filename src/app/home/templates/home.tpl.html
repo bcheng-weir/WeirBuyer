@@ -12,12 +12,13 @@
                 <div class="col-xs-12 col-md-8 col-md-offset-2">
                     <div class="input-group">
                         <div class="input-group-btn">
-                            <button aria-expanded="false" aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">{{home.selectedItem}}<span class="caret"></span></button>
+                            <button aria-expanded="false" aria-haspopup="true" class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+                                {{home.selectedItem.label}}<span class="caret"></span></button>
                             <ul class="dropdown-menu">
-                                <li ng-repeat="searchItem in home.SearchOptions"><a ng-click="home.dropboxSelectedItem(searchItem)">{{searchItem}}</a> </li>
+                                <li ng-repeat="searchItem in home.SearchOptions"><a ng-click="home.dropboxSelectedItem(searchItem)">{{searchItem.label}}</a> </li>
                             </ul>
                         </div><!-- /btn-group -->
-                        <input ng-if="home.selectedItem==home.labels.SerialNumber"
+                        <input ng-if="home.selectedItem.opt==0"
                             ng-model="home.SearchParams"
                             autocomplete="off"
                             class="center-block form-control input-lg home-search"
@@ -28,7 +29,7 @@
                             type="text"
                             typeahead-min-length="3"
                             uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
-                        <input ng-if="home.selectedItem==home.labels.PartNumber"
+                        <input ng-if="home.selectedItem.opt==1"
                            ng-model="home.SearchParams"
                            autocomplete="off"
                            class="center-block form-control input-lg home-search"
@@ -39,7 +40,7 @@
                            type="text"
                            typeahead-min-length="3"
                            uib-typeahead="p.Name as (p.Name + ' - ' + p.Description) for p in home.SearchProducts($viewValue)">
-                        <input ng-if="home.selectedItem==home.labels.TagNumber"
+                        <input ng-if="home.selectedItem.opt==2"
                             ng-model="home.SearchParams"
                             autocomplete="off"
                             class="center-block form-control input-lg home-search"
@@ -52,7 +53,7 @@
                             uib-typeahead="cat.xp.TagNumber as (cat.xp.TagNumber + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
                         <!-- uib-typeahead="searchNumber for searchNumber in home.SearchProducts($viewValue)" -->
                         <div class="input-group-addon">
-                            <button class="btn search action-btn" name="ss" type="submit" ng-click="home.Search(home.selectedItem, home.SearchParams);"><i class="icon-search white"></i></button>
+                            <button class="btn search action-btn" name="ss" type="submit" ng-click="home.Search(home.selectedItem.label, home.SearchParams);"><i class="icon-search white"></i></button>
                         </div>
                     </div><!-- /input-group -->
                 </div>

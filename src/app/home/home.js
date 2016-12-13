@@ -43,7 +43,7 @@ function HomeConfig($stateProvider, $sceDelegateProvider) {
                     });
                 }
             }
-		})
+		});
 }
 
 function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTypeService) {
@@ -108,7 +108,20 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
     vm.LanguageUsed = WeirService.Locale();
     vm.labels = WeirService.LocaleResources(labels);
     //to be shown in html, using the id to filter which search controller to leverage
-    vm.SearchOptions = [vm.labels.SerialNumber, vm.labels.PartNumber, vm.labels.TagNumber];
+    vm.SearchOptions = [
+	    {
+	    	opt:0,
+		    label:vm.labels.SerialNumber
+	    },
+	    {
+		    opt:1,
+		    label:vm.labels.PartNumber
+	    },
+		{
+			opt:2,
+			label:vm.labels.TagNumber
+		}
+	];
     vm.selectedItem = vm.SearchOptions[0];
     vm.SearchParams = "";
     vm.dropboxSelectedItem = function(label){
@@ -120,14 +133,14 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 
 	vm.SearchProducts = function(val) {
 		//The search method to execute.
-		var serial = vm.labels.SerialNumber;
-		var part = vm.labels.PartNumber;
-		var tag = vm.labels.TagNumber;
+		var serial = 0;
+		var part = 1;
+		var tag = 2;
 		var options = {};
 		options[serial] = "GetAllSerialNumbers";
 		options[part] = "GetAllPartNumbers";
 		options[tag] = "GetAllTagNumbers";
-		return SearchProducts[options[vm.selectedItem]](val);
+		return SearchProducts[options[vm.selectedItem.opt]](val);
 	};
 
     vm.Search = function(searchType, searchParam){

@@ -119,7 +119,7 @@ function TrackSearchService() {
     return service;
 }
 
-function SearchProductsService(OrderCloud, Me, SearchTypeService) {
+function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 	//This service handles type ahead. for app/search and app/home.
     var service = {
         GetAllSerialNumbers: _getAllSerialNumbers,
@@ -130,6 +130,7 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 	var partResults = {};
     //First three are the home page search methods.
     function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
+    	var dfd = $q.defer();
     	var filter = {
     		"xp.SN":lookForThisPartialSerialNumber+"*"
 	    };
@@ -137,13 +138,15 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 	    	filter.ParentID = Me.Org.ID;
 	    }
 
-    	return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
+    	OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
-            	return response.Items;
+            	dfd.resolve(response.Items);
             });
+	    return dfd.promise;
     }
 
     function _getAllTagNumbers(lookForThisPartialTagNumber) {
+    	var dfd = $q.defer();
 	    var filter = {
 		    "xp.TagNumber":lookForThisPartialTagNumber+"*"
 	    };
@@ -151,26 +154,31 @@ function SearchProductsService(OrderCloud, Me, SearchTypeService) {
 		    filter.ParentID = Me.Org.ID;
 	    }
 
-        return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
+        OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
-            	return response.Items;
+            	dfd.resolve(response.Items);
             });
+	    return dfd.promise;
     }
 
     function _getAllPartNumbers(lookForThisPartialPartNumber) {
-        return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"Name": lookForThisPartialPartNumber+"*"})
+    	var dfd = $q.defer();
+        OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"Name": lookForThisPartialPartNumber+"*"})
             .then(function(response) {
 	            if(Me.Org.xp.WeirGroup.label == "WVCUK") {
 		            partResults = response.Items;
 		            return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"})
 			            .then(function(altResponse) {
 				            partResults.push.apply(altResponse.Items);
-				            return partResults;
+				            //return partResults;
+				            dfd.resolve(partResults);
 			            });
 	            } else {
-	            	response.Items;
+	            	//response.Items;
+		            dfd.resolve(response.Items);
 	            }
             });
+	    return dfd.promise;
     }
 
     //This method is used in the main search that is NOT the home page.

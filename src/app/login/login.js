@@ -20,6 +20,8 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
         RememberMe: _rememberMe,
+	    GetUsername: _getUsername,
+	    SetUsername: _setUsername,
         Logout: _logout,
         RouteAfterLogin: _routeAfterLogin
     };
@@ -106,25 +108,28 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
         $state.go(anonymous ? 'home' : 'login', {}, {reload: true});
     }
 
-    function _rememberMe() {
-        TokenRefresh.GetToken()
+    // We are not using this base functionality. Only remember the user name.
+    function _rememberMe(username) {
+
+        /*TokenRefresh.GetToken()
             .then(function (refreshToken) {
                 if (refreshToken) {
                     TokenRefresh.Refresh(refreshToken)
                         .then(function(token) {
                             OrderCloud.Auth.SetToken(token.access_token);
-                            OrderCloud.Buyers.List().then(function (buyers) {
-                                if (buyers && buyers.Items.length > 0) {
-                                    var buyer = buyers.Items[0];
-                                    buyerid = buyer.ID;
-                                    OrderCloud.BuyerID.Set(buyer.ID);
-                                    CurrentOrder.Remove()
-                                        .then(function () {
-                                            return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
-                                        });
-                                    _routeAfterLogin();
-                                }
-                            });
+                            OrderCloud.Buyers.List()
+	                            .then(function (buyers) {
+	                                if (buyers && buyers.Items.length > 0) {
+	                                    var buyer = buyers.Items[0];
+	                                    buyerid = buyer.ID;
+	                                    OrderCloud.BuyerID.Set(buyer.ID);
+	                                    CurrentOrder.Remove()
+	                                        .then(function () {
+	                                            return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
+	                                        });
+	                                    _routeAfterLogin();
+	                                }
+                                });
                         })
                         .catch(function () {
                             toastr.error('Your token has expired, please log in again.');
@@ -132,22 +137,45 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, Cur
                 } else {
                     _logout();
                 }
-            });
+            });*/
+    }
+
+    function _setUsername(username) {
+	    $localForage.setItem('username',username);
+    }
+
+    function _getUsername() {
+    	var dfd = $q.defer();
+    	$localForage.getItem('username')
+		    .then(function(username) {
+		    	dfd.resolve(username);
+		    });
+	    return dfd.promise;
     }
 }
 
 function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, $sce, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
     var vm = this;
-    vm.credentials = {
-        Username: null,
-        Password: null
-    };
+	var username = null;
+	LoginService.GetUsername()
+		.then(function(myUsername) {
+			console.log('My User Name: ' + myUsername);
+			username = myUsername;
+			vm.credentials = {
+				Username: username,
+				Password: null
+			};
+			vm.rememberStatus = username ? true : false;
+		});
+	/*vm.credentials = {
+		Username: username,
+		Password: null
+	};*/
     vm.token = $stateParams.token;
     vm.form = vm.token ? 'reset' : 'login';
     vm.setForm = function(form) {
         vm.form = form;
     };
-    vm.rememberStatus = false;
     var labels = {
         en: {
             LoginLabel: "Please enter your login details",
@@ -195,11 +223,17 @@ function LoginController($state, $stateParams, $exceptionHandler, $cookieStore, 
     }
     vm.languageOfUser = WeirService.Locale();
 
-    console.log(TokenRefresh.GetToken());
     vm.submit = function() {
         OrderCloud.Auth.GetToken(vm.credentials)
             .then(function(data) {
-                vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : angular.noop();
+                //vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : angular.noop();
+	            //vm.rememberStatus ? LoginService.RememberMe(vm.credentials.Username) : angular.noop();
+	            if(vm.rememberStatus) {
+	            	LoginService.SetUsername(vm.credentials.Username);
+	            } else {
+		            LoginService.SetUsername(null);
+	            }
+	            console.log(TokenRefresh.Get());
                 OrderCloud.Auth.SetToken(data['access_token']);
                 OrderCloud.Buyers.List().then(function (buyers) {
                     if (buyers && buyers.Items.length > 0) {

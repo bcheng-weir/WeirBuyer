@@ -21,7 +21,7 @@
                     <div ng-bind-html="choosesubmit.labels.ConfirmPOMessage" ></div>
                     <div class="pull-right">
                         <button class="btn btn-success" style="padding-bottom: 10px;" ng-click="choosesubmit.confirmOrderWithPO()"
-                                ng-bind-html='choosesubmit.labels.ConfirmPOBtn' ng-disabled="choosesubmit.checkbox != true"></button>
+                                ng-bind-html='choosesubmit.labels.ConfirmPOBtn' ng-disabled="choosesubmit.checkbox!=true || choosesubmit.isPOA==true"></button>
                     </div>
                     <span>&nbsp;</span>
                 </div>

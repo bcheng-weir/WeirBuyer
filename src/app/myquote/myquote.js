@@ -26,8 +26,19 @@ function QuoteShareService() {
         Payments: [],
 	    Comments: [],
 	    Quote: null,
-	    Me: null
+	    Me: null,
+	    IsPOA: _isPOA
     };
+
+    function _isPOA() {
+    	var poa = false;
+    	angular.forEach(svc.LineItems, function(value, key) {
+    		if(value.LineTotal == 0) {
+    			poa = true;
+		    }
+	    });
+	    return poa;
+    }
     return svc;
 }
 
@@ -1436,6 +1447,7 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO, $uibModalInst
 function ChooseSubmitController($uibModalInstance, $sce, $state, WeirService, QuoteShareService) {
     var vm = this;
     vm.Quote = QuoteShareService.Quote;
+	vm.isPOA = QuoteShareService.IsPOA();
 
     var labels = {
         en: {

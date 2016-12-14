@@ -8,6 +8,7 @@ angular.module( 'orderCloud' )
     .filter('weirdate', weirdate)
     .filter('weirfulldate', weirfulldate)
 	.filter('weirGroupFromBuyersID', weirGroupFromBuyersID)
+	.filter('reverseComments',reverseComments)
 ;
 
 function serialnumber() {
@@ -163,6 +164,14 @@ function weirGroupFromBuyersID() {
 			return currentBuyerID.substring(0, 5);
 		} else {
 			return currentBuyerID;
+		}
+	}
+}
+
+function reverseComments(Underscore) {
+	return function(comments) {
+		if(comments && comments.length) {
+			return Underscore.sortBy(comments, 'date').reverse();
 		}
 	}
 }

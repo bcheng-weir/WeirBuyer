@@ -198,7 +198,7 @@
                 </div>
             </div>
             <br>
-            <div class="row" ng-repeat="comment in review.Comments"> <!-- ng-repeat comment in comments to weir -->
+            <div class="row" ng-repeat="comment in review.Comments | reverseComments"> <!-- ng-repeat comment in comments to weir -->
                 <div class="col-xs-12">
                     <div>
                         <span ng-bind-html="comment.by"></span>

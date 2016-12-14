@@ -128,7 +128,10 @@
                                        ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" />
                             </form>
                         </td>
-                        <td class="button-td"><button class="btn btn-primary ng-binding" ng-click="tagDetail.addPartToQuote(part)" ng-bind-html='tagDetail.headers.AddToQuote'></button></td>
+                        <td class="button-td">
+                            <!--<button class="btn btn-primary ng-binding" ng-click="tagDetail.addPartToQuote(part)" ng-bind-html='tagDetail.headers.AddToQuote'></button>-->
+                            <button ng-model="tagDetail.addButtons[$index]" ng-class="{true:'btn btn-success ng-binding','undefined':'btn btn-primary ng-binding'}[tagDetail.addButtons[$index]]" ng-click="tagDetail.addPartToQuote(part, $index)" ng-bind-html='tagDetail.headers.AddToQuote'></button>
+                        </td>
                     </tr>
                 </tbody>
             </table>

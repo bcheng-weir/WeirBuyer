@@ -266,6 +266,10 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	} else if (searchType == WeirService.SearchType.Serial){
 	    $state.go('search.serial');
 	}
+
+	vm.setSelected = function(selectedID) {
+
+	};
 }
 
 function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts) {
@@ -491,7 +495,9 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.headers = WeirService.LocaleResources(headers);
 
-	vm.addPartToQuote = function(part) {
+	vm.addButtons = [];
+	vm.addPartToQuote = function(part, index) {
+		vm.addButtons[index] = true;
 		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
 		part.xp.SN = vm.serialNumber.Name;
 		part.xp.TagNumber = vm.serialNumber.xp.TagNumber;
@@ -621,7 +627,10 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 	if(numFound == 0) $state.go('search.noresults');
-	vm.addPartToQuote = function(part) {
+
+	vm.addButtons = [];
+	vm.addPartToQuote = function(part, index) {
+		vm.addButtons[index] = true;
 		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
 		part.xp.SN = null;
 		part.xp.TagNumber = null;
@@ -833,7 +842,9 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.headers = WeirService.LocaleResources(headers);
 
-	vm.addPartToQuote = function(part) {
+	vm.addButtons = [];
+	vm.addPartToQuote = function(part, index) {
+		vm.addButtons[index] = true;
 		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
 		part.xp.SN = vm.tagNumber.Name;
 		part.xp.TagNumber = vm.tagNumber.xp.TagNumber;

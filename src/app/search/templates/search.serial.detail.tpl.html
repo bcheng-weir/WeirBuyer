@@ -129,7 +129,10 @@
                                 <input type="number" class="form-control form-control-qty" ng-model="part.Quantity" ng-min="0"
                                     ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" />
                             </td>
-                            <td class="button-td"><button class="btn btn-primary ng-binding" ng-click="serialDetail.addPartToQuote(part)" ng-bind-html='serialDetail.headers.AddToQuote'></button></td>
+                            <td class="button-td">
+                                <!--<button ng-model="addButtons[$index]" class="btn btn-primary ng-binding" ng-click="serialDetail.addPartToQuote(part, $index)" ng-bind-html='serialDetail.headers.AddToQuote'></button>-->
+                                <button ng-model="serialDetail.addButtons[$index]" ng-class="{true:'btn btn-success ng-binding','undefined':'btn btn-primary ng-binding'}[serialDetail.addButtons[$index]]" ng-click="serialDetail.addPartToQuote(part, $index)" ng-bind-html='serialDetail.headers.AddToQuote'></button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

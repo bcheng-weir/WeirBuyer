@@ -3,11 +3,7 @@ angular.module('orderCloud')
 	.controller('HomeCtrl', HomeController)
 ;
 
-function HomeConfig($stateProvider, $sceDelegateProvider) {
-	$sceDelegateProvider.resourceUrlWhitelist([
-		'self',
-		'https://www.global.weir/brands/**'
-	]);
+function HomeConfig($stateProvider) {
 	$stateProvider
 		.state('home', {
 			parent: 'base',

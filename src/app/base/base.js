@@ -6,7 +6,14 @@ angular.module('orderCloud')
     .filter('occomponents', occomponents)
 ;
 
-function BaseConfig($stateProvider, $injector) {
+function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
+    $sceDelegateProvider.resourceUrlWhitelist([
+        'self',
+        'https://www.global.weir/**',
+	    'https://weirwebhooks.azurewebsites.net/**',
+	    'http://www.store.flowcontrol.weir/**',
+        'http://store.flowcontrol.weir/**'
+    ]);
     var baseViews = {
         '': {
             templateUrl: 'base/templates/base.tpl.html',

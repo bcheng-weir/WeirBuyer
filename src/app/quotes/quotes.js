@@ -176,14 +176,16 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			InReview: "Quotes Submitted for Review",
 			Revised: "Revised Quotes",
 			Confirmed: "Confirmed Quotes",
-			LoadMore: "Load More"
+			LoadMore: "Load More",
+			Search: "Search"
 		},
 		fr: {
 		    Saved: $sce.trustAsHtml("Sauv&eacute;"),
 		    InReview: $sce.trustAsHtml("Cotation soumise &agrave; r&eacute;vision"),
 		    Revised: $sce.trustAsHtml("Cotation r&eacute;vis&eacute;e"),
 		    Confirmed: $sce.trustAsHtml("Devis confirm&eacute;"),
-			LoadMore: $sce.trustAsHtml("FR: Load More")
+			LoadMore: $sce.trustAsHtml("FR: Load More"),
+            Search: "Rechercher"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

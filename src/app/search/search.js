@@ -225,7 +225,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 			MyValves: "My Valves",
 			Select: "Select",
 			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
 			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			NotAvailable: "N/A",
             ApplyFilter: "OK"
@@ -245,7 +245,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 		    MyValves: $sce.trustAsHtml("FR: My Valves"),
 		    Select: $sce.trustAsHtml("S&eacute;lectionner"),
 		    ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-		    POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
+		    POAGuidance: $sce.trustAsHtml("FR: Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
 		    PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 		    NotAvailable: $sce.trustAsHtml("FR: N/A"),
 		    ApplyFilter: "FR: OK"

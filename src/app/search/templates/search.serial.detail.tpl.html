@@ -24,6 +24,7 @@
                     <div class="results-heading" ng-bind-html='serialDetail.labels.DeliveryDate'></div><div class="serial-no">{{serialDetail.serialNumber.xp.DeliveredDate | weirfulldate}}</div><p></p>
                 </div>
                 <h4 ng-bind-html='serialDetail.labels.SpecHeader'></h4>
+                <!--Tables are different leaving this item alone while updating the labels.-->
                 <table ng-if="serialDetail.serialNumber.xp.Specs.Type=='WVCUK'" class="table table-bordered oc-table-responsive weir-specs-table">
                     <tbody>
                     <tr>
@@ -118,7 +119,7 @@
                             <td>{{serialDetail.PartQuantity(part.Detail.ID)}}</td>
                             <td>{{part.Detail.xp.ReplacementSchedule}}</td>
                             <td>{{part.Detail.xp.LeadTime}}</td>
-                            <td ng-if="part.Detail.StandardPriceSchedule.PriceBreaks[0].Price<='0'">POA</td>
+                            <td ng-if="part.Detail.StandardPriceSchedule.PriceBreaks[0].Price<='0'" ng-bind-html="serialDetail.labels.POA"></td>
                             <td ng-if="part.Detail.StandardPriceSchedule.PriceBreaks[0].Price>'0'" ng-switch on="part.Detail.StandardPriceSchedule.xp.Currency">
                                 <span ng-switch-when="USD">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#36;'}}</span>
                                 <span ng-switch-when="GBP">{{part.Detail.StandardPriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span>

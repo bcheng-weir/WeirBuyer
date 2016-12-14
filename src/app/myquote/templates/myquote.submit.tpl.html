@@ -43,7 +43,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <div class="pull-right"><h6 class="pon-link"><a href="#pon">Enter PO Number</a></h6></div>
+                            <div class="pull-right"><h6 class="pon-link"><a href="#pon" ng-bind-html="submit.labels.POEntry"></a></h6></div>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                         <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
                         <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
                     </td>
-                    <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">POA</td>
+                    <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="submit.labels.POA"></td>
                     <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
                         <span ng-switch-when="USD">{{line.UnitPrice | currency:'&#36;'}}</span>
                         <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163;'}}</span>

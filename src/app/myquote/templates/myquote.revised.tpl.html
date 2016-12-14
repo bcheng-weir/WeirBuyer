@@ -65,7 +65,7 @@
                             <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
                             <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
                         </td>
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">FR: POA</td>
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="revised.labels.POA"></td>
                         <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
                             <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
                             <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
@@ -92,7 +92,7 @@
 
                         <td ng-if="revised.Quote.xp.Status!='RE'" ng-bind-html="line.Product.xp.LeadTime"></td>
 
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'"> FR: POA</td>
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="revised.labels.POA"></td>
                         <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
                             <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
                             <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>

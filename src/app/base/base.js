@@ -388,7 +388,8 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirSer
             YourFeedback: "Your feedback",
             TypeFeedback: "Type of feedback",
             Email: "Your email",
-            Feedback: "Beta feedback"
+            Feedback: "Beta feedback",
+            Cancel: "Cancel"
         },
         fr: {
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
@@ -398,7 +399,8 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirSer
             YourFeedback: "Votre commentaire",
             TypeFeedback: "Type de commentaires",
             Email: "Votre adresse E-mail",
-            Feedback: "Retour et commentaires sur la Beta"
+            Feedback: "Retour et commentaires sur la Beta",
+            Cancel: "Annuler"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

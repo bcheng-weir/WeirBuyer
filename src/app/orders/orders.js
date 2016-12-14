@@ -192,7 +192,9 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		    DateDespatched: "Date Despatched",
 		    DateInvoiced: "Date Invoiced",
 		    EstDelivery: "Estimated Delivery Date",
-			NoMatches: "No Matches Found."
+			NoMatches: "No Matches Found.",
+			Search: "Search",
+			Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters")
 	    },
 	    fr: {
 	        SubmittedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes soumise" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
@@ -226,7 +228,9 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		    DateDespatched: $sce.trustAsHtml("Date d'envoi"),
 		    DateInvoiced: $sce.trustAsHtml("Date de facturation"),
 		    EstDelivery: $sce.trustAsHtml("Délai de livraison estimé"),
-            NoMatches: $sce.trustAsHtml("FR:No matches found.")
+            NoMatches: $sce.trustAsHtml("FR:No matches found."),
+            Search: "Rechercher",
+            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> FR: Filters")
 	    }
     };
     vm.labels = labels[WeirService.Locale()];

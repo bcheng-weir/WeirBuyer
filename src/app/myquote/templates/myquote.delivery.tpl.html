@@ -5,8 +5,8 @@
                 <form ng-submit="NewAddressModal.submit();" name="newAddress_modal_form">
                     <ordercloud-address-form address="NewAddressModal.address"></ordercloud-address-form>
                     <div class="modal_buttons">
-                        <button ng-disabled="newAddress_modal_form.$invalid" type="submit" class="btn btn-success pull-left">FR: Submit</button>
-                        <button ng-click="NewAddressModal.cancel();" type="button" class="btn btn-danger pull-right">FR: Cancel</button>
+                        <button ng-disabled="newAddress_modal_form.$invalid" type="submit" class="btn btn-success pull-left" ng-bind-html="NewAddressModal.labels.Submit"></button>
+                        <button ng-click="NewAddressModal.cancel();" type="button" class="btn btn-danger pull-right" ng-bind-html="NewAddressModal.labels.Cancel"></button>
                     </div>
                 </form>
             </div>

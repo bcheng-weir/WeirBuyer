@@ -248,10 +248,10 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 		    AllValves:  $sce.trustAsHtml("FR: All Valves"),
 		    MyValves: $sce.trustAsHtml("FR: My Valves"),
 		    Select: $sce.trustAsHtml("S&eacute;lectionner"),
-		    ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé:Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans.Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
+		    ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
 		    POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
 		    PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
-		    NotAvailable: $sce.trustAsHtml("TBD: N/A"),
+		    NotAvailable: $sce.trustAsHtml("FR: N/A"),
 		    ApplyFilter: "FR: OK"
 	    }
 	};
@@ -441,7 +441,8 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 			BackPressure: "Back Pressure",
 			Temp: "Temperature",
 			Inlet: "In",
-			Outlet: "Out"
+			Outlet: "Out",
+			POA: "POA"
 		},
 		fr: {
 		    ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les Num&eacute;ros de s&eacute;rie: "),
@@ -462,7 +463,8 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 			BackPressure: $sce.trustAsHtml("Contre-pression"),
 			Temp: $sce.trustAsHtml("Temp&eacute;rature"),
 			Inlet: $sce.trustAsHtml("Entr&eacute;e"),
-			Outlet: $sce.trustAsHtml("Sortie")
+			Outlet: $sce.trustAsHtml("Sortie"),
+            POA: "POA"
 		}
 
 	};
@@ -548,7 +550,8 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 			EnterParts: "Enter part numbers",
 			AddMore: "Add more part numbers   ",
 			ClearSearch: "Clear search",
-			Search: "Search"
+			Search: "Search",
+			POA: "POA"
 		},
 		fr: {
 		    WhereToFind: $sce.trustAsHtml("O&ugrave; trouver vos r&eacute;f&eacute;rences de pi&egrave;ces"),
@@ -557,7 +560,8 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 		    AddMore: $sce.trustAsHtml("Ajouter plus de r&eacute;f&eacute;rences de pi&egrave;ce   "),
 			
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
-		    Search: "Rechercher"
+		    Search: "Rechercher",
+            POA: "POA"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -789,7 +793,8 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 			BackPressure: "Back Pressure",
 			Temp: "Temperature",
 			Inlet: "In",
-			Outlet: "Out"
+			Outlet: "Out",
+            POA: "POA"
 		},
 		fr: {
 		    ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de tag: "),
@@ -810,7 +815,8 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 			BackPressure: $sce.trustAsHtml("Contre-pression"),
 			Temp: $sce.trustAsHtml("Temp&eacute;rature"),
 			Inlet: $sce.trustAsHtml("Entr&eacute;e"),
-			Outlet: $sce.trustAsHtml("Sortie")
+			Outlet: $sce.trustAsHtml("Sortie"),
+            POA: "POA"
 		}
 	};
 	var headers = {

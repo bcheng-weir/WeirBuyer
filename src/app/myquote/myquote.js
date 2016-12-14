@@ -783,7 +783,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Comments: "Comments",
 			AddedComment: " added a comment - ",
 			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-			SaveToContinue: "*Save to Continue"
+			SaveToContinue: "*Save to Continue",
+			POA: "POA"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -812,7 +813,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Comments: "Commentaires",
 			AddedComment: " A ajouté un commentaire - ",
 			PriceDisclaimer: "Tous les prix indiqués ne comprennent pas la livraison ni la TVA.",
-			SaveToContinue: "FR: *Save to Continue"
+			SaveToContinue: "FR: *Save to Continue",
+            POA: "POA"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1040,7 +1042,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        Add: "Add",
 	        Cancel: "Cancel",
 	        Comments: "Comments",
-	        AddedComment: " added a comment - "
+	        AddedComment: " added a comment - ",
+			POA: "POA"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1073,6 +1076,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             CommentSavedMsg: $sce.trustAsHtml("Votre cotation a été mise à jour"),
             PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
             POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
+            POEntry: "Entrer une référence de commande",
             SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande<br>& E-Mail de pi&egrave;ce de rechange <i class='fa fa-angle-right' aria-hidden='true'></i>"),
             SubmitOrderWithPO: $sce.trustAsHtml("Soumettre une commande<br>avec bon de commande <i class='fa fa-angle-right' aria-hidden='true'></i>"),
             SerialNum: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
@@ -1080,7 +1084,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        Add: $sce.trustAsHtml("Ajouter"),
 	        Cancel: $sce.trustAsHtml("Annuler"),
 	        Comments: $sce.trustAsHtml("Commentaires"),
-	        AddedComment: $sce.trustAsHtml("A ajouté un commentaire ")
+	        AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),
+            POA: "POA"
+
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1382,13 +1388,17 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 			Title: "Thank you. Your order has submitted for review.​",
 			MessageText1: "We have sent you a confirmation email.​",
 			MessageText2: "We will be in touch with you to discuss the items you have requested to be reviewed.",
-			MessageText3: "If your order needs to be revised we will send you an updated quote."
+			MessageText3: "If your order needs to be revised we will send you an updated quote.",
+			Submit: "Submit",
+			Cancel: "Cancel"
 		},
 		fr: {
 			Title: $sce.trustAsHtml("Nous vous remercions. Votre commande a bien été soumise à la révision.​"),
 			MessageText1: $sce.trustAsHtml("Nous vous avons envoyé un e-mail de confirmation"),
 			MessageText2: $sce.trustAsHtml("Nous serons en contact avec vous pour discuter des éléments que vous avez demandé d'être examinés"),
-			MessageText3: $sce.trustAsHtml("Si votre commande doit être révisée, nous vous enverrons une cotation actualisé.")
+			MessageText3: $sce.trustAsHtml("Si votre commande doit être révisée, nous vous enverrons une cotation actualisé."),
+            Submit: "Soumettre",
+            Cancel: "Annuler"
 		}
 	};
 
@@ -1407,13 +1417,15 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO, $uibModalInst
 		    Title: "Thank you. Your order has been placed",
 		    MessageText1: "We have sent you a confirmation email.",
 		    MessageText2: "Order number; " + Quote.ID,
-		    MessageText3: "We will also send you a detailed order confirmation document via email"
+		    MessageText3: "We will also send you a detailed order confirmation document via email",
+			Close: "Close"
 		},
 		fr: {
 		    Title: $sce.trustAsHtml("Nous vous remercions. Votre commande a bien été reçu."),
 		    MessageText1: $sce.trustAsHtml("Nous vous avons envoyé un e-mail de confirmation"),
 		    MessageText2: $sce.trustAsHtml("Numéro de cotation: " + Quote.ID),
-		    MessageText3: $sce.trustAsHtml("Nous vous enverrons également un document détaillé de confirmation de commande par courrier électronique")
+		    MessageText3: $sce.trustAsHtml("Nous vous enverrons également un document détaillé de confirmation de commande par courrier électronique"),
+            Close: "Close"
 		}
 	};
 
@@ -1456,15 +1468,17 @@ function ChooseSubmitController($uibModalInstance, $sce, $state, WeirService, Qu
             SubmitReviewBtn: "Submit quote for review",
             ConfirmPO: "Submit Order",
             ConfirmPOMessage: $sce.trustAsHtml("<p>If you select Submit Order you will be able to submit your order as follows;<br><br>1. Submit Order with PO – add your PO number or upload your PO document.<br>2. Submit Order & email PO – submit your order and email your PO (we’ll add it to the order for you).</p>"),
-            ConfirmPOBtn: "Submit Order"
+            ConfirmPOBtn: "Submit Order",
+			TermsAndConditions: "Review Terms and Conditions"
         },
         fr: {
             SubmitReview: $sce.trustAsHtml("Soumettre un devis pour examen"),
-            SubmitReviewMessage: $sce.trustAsHtml("<p>Veuillez sélectionner Soumettre un devis pour examen si;<br><br>1. Il y a des articles dans votre devis que vous souhaitez que Weir r&eacute;vise et confirme.<br>2. Vous avez des articles dans votre devis qui sont POA. Weir passera en revue le devis et fournira les prix des articles POA.</p>"),
+            SubmitReviewMessage: $sce.trustAsHtml("<p>Veuillez sélectionner 'Soumettre votre cotation pour révision' si;<br><br>1. Il y a des articles dans votre cotation que vous souhaitez que Weir révise et confirme. <br>2. Vous avez des articles dans votre cotation qui sont POA. Weir passera en revue le devis et fournira les prix des articles POA.</p>"),
             SubmitReviewBtn: $sce.trustAsHtml("Soumettre un devis pour examen"),
             ConfirmPO: $sce.trustAsHtml("Confirmer la commande"),
-            ConfirmPOMessage: $sce.trustAsHtml("<p>Si vous s&eacute;lectionnez Confirmer la commande, vous pourrez confirmer votre commande comme suit:<br><br> 1.Soumettre l'ordre avec PO - ajoutez votre num&eacute;ro de commande ou t&eacute;l&eacute;chargez votre document de commande. <br><br>2.Soumettre commande & email PO - soumettre votre commande et email votre commande (nous l'ajouterons à la commande pour vous).</p>"),
-            ConfirmPOBtn: $sce.trustAsHtml("Confirmer la commande")
+            ConfirmPOMessage: $sce.trustAsHtml("<p>Si vous sélectionnez 'Soumettre votre commande', vous pourrez confirmer votre commande comme suit: <br><br> 1.Soumettre votre commande avec bon de commande :  ajoutez votre numéro de commande ou téléchargez votre document de commande.  <br><br>2.Soumettre votre commande & envoyer par mail votre bon de commande  (nous l'ajouterons à la commande pour vous)</p>"),
+            ConfirmPOBtn: $sce.trustAsHtml("Confirmer la commande"),
+            TermsAndConditions: "FR: Review Terms and Conditions"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1528,7 +1542,8 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
             Reviewer: "Reviewer",
             Status: "Status",
             View: "View",
-            LoadMore: "Load More"
+            LoadMore: "Load More",
+            NoMatchesFound : $sce.trustAsHtml("<b>No matches found.</b>")
         },
         fr: {
             QuoteHeading: $sce.trustAsHtml("FR: Quote revisions for Quote; " + QuoteID),
@@ -1544,7 +1559,10 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
             DateRevised: $sce.trustAsHtml("Date révisée"),
             Reviewer: $sce.trustAsHtml("Révisé par"),
             Status: $sce.trustAsHtml("Statut"),
-            View: $sce.trustAsHtml("Voir")
+            View: $sce.trustAsHtml("Voir"),
+            LoadMore: "FR: Load More",
+            NoMatchesFound :  $sce.trustAsHtml("<b>No matches found.</b>")
+
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1644,7 +1662,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
 			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
 			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
-			PONumber: "PO Number;"
+			PONumber: "PO Number;",
+			POA: "POA"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -1686,10 +1705,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Add: $sce.trustAsHtml("Ajouter"),
 			Cancel: $sce.trustAsHtml("Annuler"),
 			PriceDisclaimer: "Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France",
-			ReplacementGuidance: "FR: Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "FR: POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+			ReplacementGuidance: "Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans.",
+			POAGuidance: "Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision.",
 			LeadTimeNotice: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées",
-			PONumber: "Numéro de bon de commande;"
+			PONumber: "Numéro de bon de commande;",
+            POA: "POA"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1900,7 +1920,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
 	        POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
 	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
-	        PONumber: "PO Number;"
+	        PONumber: "PO Number;",
+            POA: "POA"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1934,10 +1955,11 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 	        PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande"),
-	        ReplacementGuidance: "FR: Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-	        POAGuidance: "FR: POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+	        ReplacementGuidance: "Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans.",
+	        POAGuidance: "Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision.",
 	        LeadTimeNotice: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées",
-	        PONumber: "Numéro de bon de commande;"
+	        PONumber: "Numéro de bon de commande;",
+            POA: "POA"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -2074,7 +2096,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Add: "Add",
 			Cancel: "Cancel",
 			AddedComment: " added a comment - ",
-			PONumber: "PO Number;"
+			PONumber: "PO Number;",
+			POA: "POA"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -2114,13 +2137,14 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			DragAndDrop: $sce.trustAsHtml("Faites glisser vos documents ici pour les t&eacute;l&eacute;charger"),
 			PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
 			POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
-			ReplacementGuidance: "FR: Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "FR: POA; You can add POA items to your quote and submit your quote for review. We will respond with a price for the POA items on your quote request.",
+			ReplacementGuidance: "Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans.",
+			POAGuidance: "Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision.",
 			LeadTimeNotice: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées",
 			Add: "Ajouter",
 			Cancel: "Annule",
 			AddedComment: "A ajouté un commentaire ",
-			PONumber: "Numéro de bon de commande;"
+			PONumber: "Numéro de bon de commande;",
+            POA: "POA"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

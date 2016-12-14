@@ -55,7 +55,7 @@
                         <td ng-bind-html="line.Product.Description"></td>
                         <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
                         <td ng-bind-html="line.Product.xp.LeadTime"></td>
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">FR:POA</td>
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="detail.labels.POA"></td>
                         <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
                             <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
                             <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>

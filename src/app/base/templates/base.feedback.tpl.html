@@ -59,7 +59,7 @@
         </div>
         <div class="modal-footer">
             <div class="row">
-                <button class="btn btn-default pull-right" style="margin-left:0.5em; margin-right: 0.5em;" value="Cancel" ng-click="feedback.Cancel()">FR: Cancel</button>
+                <button class="btn btn-default pull-right" style="margin-left:0.5em; margin-right: 0.5em;" value="Cancel" ng-click="feedback.Cancel()" ng-bind-html="feedback.labels.Cancel"></button>
                 <input type="submit" class="btn btn-primary pull-right" value="Send" ng-click="feedback.Send()" />
             </div>
         </div>

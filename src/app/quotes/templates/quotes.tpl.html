@@ -13,11 +13,11 @@
 		</fieldset>
 		<fieldset class="form-group" ng-class="{'text-center':application.$ocMedia('max-width:767px')}">
             <span ng-class="{'btn-group':orders.searchResults}">
-                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="submit" class="btn btn-primary" ng-bind-html="quotes.labels.Search"></button>
                 <button ng-if="quotes.searchResults" ng-click="quotes.clearSearch()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
             </span>
 			<span ng-class="{'btn-group':quotes.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
-                <button type="button" class="btn btn-default" ng-click="quotes.showFilters=!quotes.showFilters"><i class="fa fa-filter"></i> Filters</button>
+                <button type="button" class="btn btn-default" ng-click="quotes.showFilters=!quotes.showFilters" ng-bind-html="quotes.labels.Filters"></button>
                 <button ng-if="quotes.filtersApplied" ng-click="quotes.clearFilters()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
             </span>
 		</fieldset>

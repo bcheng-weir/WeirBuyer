@@ -181,7 +181,7 @@ function CustomerService($sce, OrderCloud, $exceptionHandler) {
             NoMatch: $sce.trustAsHtml("FR: No matches found."),
             LoadMore: $sce.trustAsHtml("FR: Load More"),
             Customers: $sce.trustAsHtml("FR: Customers"),
-            Search: $sce.trustAsHtml("FR: Search"),
+            Search: $sce.trustAsHtml("Rechercher"),
             Yes: $sce.trustAsHtml("FR: Yes"),
             No: $sce.trustAsHtml("FR: No")
         }

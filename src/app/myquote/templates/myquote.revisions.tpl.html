@@ -7,8 +7,7 @@
     </div>
 </div>
 <hr />
-<div class="no-matches" ng-if="!revisions.Revisions.Items.length">
-    <b>FR: No matches found.</b>
+<div class="no-matches" ng-if="!revisions.Revisions.Items.length" ng-bind-html="revisions.labels.NoMatchesFound">
 </div>
 <div ng-if="revisions.Revisions.Items.length">
     <table class="table table-hover table-condensed oc-table-responsive">

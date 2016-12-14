@@ -1399,7 +1399,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 			MessageText2: "We will be in touch with you to discuss the items you have requested to be reviewed.",
 			MessageText3: "If your order needs to be revised we will send you an updated quote.",
 			Submit: "Submit",
-			Cancel: "Cancel"
+			Close: "Close"
 		},
 		fr: {
 			Title: $sce.trustAsHtml("Nous vous remercions. Votre commande a bien été soumise à la révision.​"),
@@ -1407,7 +1407,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 			MessageText2: $sce.trustAsHtml("Nous serons en contact avec vous pour discuter des éléments que vous avez demandé d'être examinés"),
 			MessageText3: $sce.trustAsHtml("Si votre commande doit être révisée, nous vous enverrons une cotation actualisé."),
             Submit: "Soumettre",
-            Cancel: "Annuler"
+            Close: "FR: Close"
 		}
 	};
 
@@ -1443,13 +1443,16 @@ function SubmitConfirmController($sce, WeirService, Quote, WithPO, $uibModalInst
 			Title: "Thank you. Your order has been submitted pending your PO.",
 			MessageText1: "We have sent you a confirmation email.",
 			MessageText2: "When we have received your PO we will confirm your order.",
-			MessageText3: "If your order needs to be revised we will send you an updated quote."
+			MessageText3: "If your order needs to be revised we will send you an updated quote.",
+            Close: "Close"
 		},
 		fr: {
 			Title: $sce.trustAsHtml("Nous vous remercions. Votre commande a été soumise en attendant votre commande"),
 			MessageText1: $sce.trustAsHtml("Nous vous avons envoyé un e-mail de confirmation"),
 			MessageText2: $sce.trustAsHtml("Nous confirmerons votre commande à la réception de votre bon de commande."),
-			MessageText3: $sce.trustAsHtml("Si votre commande doit être révisée, nous vous enverrons une cotation actualisée.")
+			MessageText3: $sce.trustAsHtml("Si votre commande doit être révisée, nous vous enverrons une cotation actualisée."),
+            Cancel: "Cancel",
+            Close: "FR: Close"
 		}
 	};
 

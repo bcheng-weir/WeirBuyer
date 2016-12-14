@@ -3,8 +3,8 @@
 		<div ng-if="!search.SelectingCustomer">
 			<div class="row" style="font-weight: bold;">
             <span ng-bind-html='search.labels.CustomerFilter'></span>
-                <span ng-if="!search.searchall">{{search.Customer.name}}</span>
-                <span ng-if="search.searchall">{{search.labels.NoFilter}}</span>
+                <span ng-if="!search.searchall" ng-bind-html="search.Customer.name"></span>
+                <span ng-if="search.searchall" ng-bind-html="search.labels.NoFilter"></span>
             </div>
 			<div class="row" ng-if="search.WeirGroup=='WPIFR'"><a href="#" ng-click="search.SelectCustomer()" ng-bind-html="search.labels.SelectCustomer"></a></div>
 		</div>
@@ -25,8 +25,8 @@
         <div ng-if="!search.SelectingCustomer">
             <div class="row" style="font-weight: bold;">
                 <span ng-bind-html='search.labels.CustomerFilter'></span>
-                <span ng-if="search.searchall">{{search.labels.AllValves}}</span>
-                <span ng-if="search.selfsearch">{{search.labels.MyValves}}</span>
+                <span ng-if="search.searchall" ng-bind-html="search.labels.AllValves"></span>
+                <span ng-if="search.selfsearch" ng-bind-html="search.labels.MyValves"></span>
             </div>
             <div class="row"><a href="#" ng-click="search.SelectCustomer()" ng-bind-html="search.labels.SelectCustomer"></a></div>
         </div>

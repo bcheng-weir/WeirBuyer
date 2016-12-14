@@ -2,10 +2,11 @@
     <div class="row">
         <div class="container-fluid">
             <div class="col-xs-5">
-                <h4><span ng-bind-html='review.labels.Customer'></span><span class="text-blue">{{myquote.Customer.name}}</span></h4>
-                <h4><span ng-bind-html='review.labels.QuoteNumber'></span><span class="text-blue"  ng-if="myquote.Quote.xp.Status != 'DR'">{{myquote.Quote.ID}}</span></h4>
-                <h4><span ng-bind-html='review.labels.QuoteName'></span><span class="text-blue">{{myquote.Quote.xp.Name}}</span></h4>
-                <h4><span ng-bind-html='review.labels.YourReference'></span><span class="text-blue">{{myquote.Quote.xp.RefNum}}</span></h4>
+                <h4><span ng-bind-html='review.labels.Customer'></span><span class="text-blue" ng-bind-html="myquote.Customer.name"></span></h4>
+                <h4><span ng-bind-html='review.labels.QuoteNumber'></span>
+                    <span class="text-blue"  ng-if="myquote.Quote.xp.Status != 'DR'" ng-bind-html="myquote.Quote.ID"></span></h4>
+                <h4><span ng-bind-html='review.labels.QuoteName'></span><span class="text-blue" ng-bind-html="myquote.Quote.xp.Name"></span></h4>
+                <h4><span ng-bind-html='review.labels.YourReference'></span><span class="text-blue" ng-bind-html="myquote.Quote.xp.RefNum"></span></h4>
             </div>
             <div class="col-xs-2">
                 <h2 class="pull-left">
@@ -15,9 +16,7 @@
             <div class="col-xs-5" ng-show="review.currentState=='myquote.review'">
                 <!-- MyQuote Navigation -->
                 <button class="btn btn-primary" ng-click="review.backToDelivery()" ng-bind-html="review.labels.BackToDelivery"></button>
-                <button class="btn btn-success" ng-click="myquote.proceedToSubmit()">
-                    {{review.labels.Submit}}
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                <button class="btn btn-success" ng-click="myquote.proceedToSubmit()" ng-bind-html="review.labels.Submit">
                 </button>
             </div>
             <div class="col-xs-5" ng-show="review.currentState=='false'">
@@ -52,7 +51,7 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-12">
-                                <div class="pull-right"><h6 class="pon-link"><a href="#pon">Enter PO Number</a></h6></div>
+                                <div class="pull-right"><h6 class="pon-link"><a href="#pon">FR: Enter PO Number</a></h6></div>
                             </div>
                         </div>
                     </div>
@@ -85,18 +84,18 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="line in review.LineItems">
-                        <td>{{line.xp.SN}}</td>
-                        <td>{{line.xp.TagNumber}}</td>
-                        <td>{{line.Product.Name}}</td>
-                        <td>{{line.Product.Description}}</td>
-                        <td>{{line.Product.xp.ReplacementSchedule}}</td>
-                        <td>{{line.Product.xp.LeadTime}}</td>
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">POA</td>
+                        <td ng-bind-html="line.xp.SN"></td>
+                        <td ng-bind-html="line.xp.TagNumber"></td>
+                        <td ng-bind-html="line.Product.Name"></td>
+                        <td ng-bind-html="line.Product.Description"></td>
+                        <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
+                        <td ng-bind-html="line.Product.xp.LeadTime"></td>
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">FR: POA</td>
                         <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
-                            <span ng-switch-when="USD">{{line.UnitPrice | currency:'&#36;'}}</span>
-                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163;'}}</span>
-                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&#128;'}}</span>
-                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163;'}}</span>
+                            <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="line.UnitPrice | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
                         </td>
                         <td class="form-inline">
                             <input  type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" ng-disabled="review.Step!='Review'" />
@@ -108,17 +107,17 @@
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='review.labels.Total'></td>
                         <td ng-switch on="review.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="USD">{{review.Quote.Total | currency:'&#36;'}}</span>
-                            <span ng-switch-when="GBP">{{review.Quote.Total | currency:'&#163;'}}</span>
-                            <span ng-switch-when="EUR">{{review.Quote.Total | currency:'&#128;'}}</span>
-                            <span ng-switch-default>{{review.Quote.Total | currency:'&#163;'}}</span>
+                            <span ng-switch-when="USD" ng-bind-html="review.Quote.Total | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="review.Quote.Total | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="review.Quote.Total | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="review.Quote.Total | currency:'&#163;'"></span>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="row" >
+    <div class="row">
         <div class="col-xs-6" > <!-- ng-if="!review.SubmittingToReview && !review.SubmittingWithPO" -->
             <!-- PO Documents and # -->
             <div class="row" ng-show="review.currentState=='myquote.submitorder'">
@@ -148,28 +147,28 @@
                 </div>
             </div>
 
-	        <p><b><span>{{review.labels.DeliveryAddress}}</span></b></p>
+	        <p><b><span ng-bind-html="review.labels.DeliveryAddress"></span></b></p>
             <div ng-if="myquote.ShippingAddress.Country=='FR'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                {{myquote.ShippingAddress.Street2}}<br>
-                {{myquote.ShippingAddress.Zip}} {{myquote.ShippingAddress.City}}<br>
-                {{review.country(myquote.ShippingAddress.Country)}}
+                <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
+                <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
+                <span ng-bind-html='myquote.ShippingAddress.Street2'></span><br>
+                <span><span ng-bind-html='myquote.ShippingAddress.Zip'></span> <span ng-bind-html='myquote.ShippingAddress.City'></span></span><br>
+                <span ng-bind-html='review.country(myquote.ShippingAddress.Country)'></span>
             </div>
             <div ng-if="myquote.ShippingAddress.Country=='GB'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                {{myquote.ShippingAddress.Street2}}<br>
-                {{myquote.ShippingAddress.City}}<br>
-                {{myquote.ShippingAddress.Zip}}<br>
-                {{review.country(myquote.ShippingAddress.Country)}}
+                <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
+                    <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
+                    <span ng-bind-html='myquote.ShippingAddress.Street2'></span><br>
+                    <span ng-bind-html='myquote.ShippingAddress.City'></span><br>
+                    <span ng-bind-html='myquote.ShippingAddress.Zip'></span><br>
+                    <span ng-bind-html='review.country(myquote.ShippingAddress.Country)'></span>
             </div>
             <div ng-if="myquote.ShippingAddress.Country!='GB' && myquote.ShippingAddress.Country!='FR'">
-                {{myquote.ShippingAddress.CompanyName}}<br>
-                {{myquote.ShippingAddress.Street1}}<br>
-                {{myquote.ShippingAddress.Street2}}<br>
-                {{myquote.ShippingAddress.City}}, {{myquote.ShippingAddress.State}} {{myquote.ShippingAddress.Zip}}<br>
-                {{review.country(myquote.ShippingAddress.Country)}}
+                <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
+                <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
+                <span ng-bind-html='myquote.ShippingAddress.Street2'></span><br>
+                <span><span ng-bind-html='myquote.ShippingAddress.City'></span>, <span ng-bind-html='myquote.ShippingAddress.State'></span> <span ng-bind-html='myquote.ShippingAddress.Zip'></span></span><br>
+                <span ng-bind-html='review.country(myquote.ShippingAddress.Country)'></span>
             </div>
             <span ng-if="review.Step=='Review'" ng-click="review.changeAddress()">
                 <a href="#" ng-html-bind="review.labels.ChangeAddr"></a>
@@ -187,7 +186,7 @@
         <div class="col-xs-6">
             <p><b><span ng-bind-html='review.labels.YourAttachments'></span><br></b></p>
             <p ng-repeat="fileName in review.Quote.xp.Files">
-                <a href="" ng-click="review.GetFile(fileName)" target="_blank">{{fileName}}</a>
+                <a href="" ng-click="review.GetFile(fileName)" target="_blank" ng-bind-html="fileName"></a>
             </p>
             <!--<p><b><span ng-bind-html='review.labels.CommentsHeader'></span></b></p>-->
             <div class="row">

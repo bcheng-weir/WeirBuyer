@@ -65,7 +65,7 @@
                 ng-if="application.$ocMedia('max-width:767px')"
                 class="btn btn-default btn-block btn-md"
                 ng-show="orders.list.Meta.Page < orders.list.Meta.TotalPages"
-                ng-click="orders.loadMore()">orders.labels.loadMore</button>
+                ng-click="orders.loadMore()" ng-bind-html="orders.labels.loadMore"></button>
         <p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>
     </div>
 </div>

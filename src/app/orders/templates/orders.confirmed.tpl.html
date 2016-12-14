@@ -1,6 +1,6 @@
 <!--====== LIST ======-->
 <div class="no-matches" ng-if="!orders.list.Items.length">
-    <b>{{orders.labels.NoMatches}}</b>
+    <b ng-bind-html="orders.labels.NoMatches"></b>
 </div>
 <div class="row" ng-if="orders.list.Items.length">
     <div class="col-md-12">

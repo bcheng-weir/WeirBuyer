@@ -90,13 +90,7 @@ function QuoteCommentsService(OrderCloud, QuoteShareService, Me, $q) {
 	return service;
 }
 
-function MyQuoteConfig($stateProvider, $sceDelegateProvider) {
-	$sceDelegateProvider.resourceUrlWhitelist([
-		'self',
-		'https://www.global.weir/brands/**',
-		'https://**.herokuapp.com/**',
-		'https://s3.us-east-2.amazonaws.com/ordercloudtest/**'
-	]);
+function MyQuoteConfig($stateProvider) {
 	$stateProvider
 		.state('myquote.termsandconditions',{
 			url: 'termsandconditions',

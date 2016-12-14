@@ -48,13 +48,13 @@
                                 </div>
                                 <div class="account-wall" ng-switch-when="forgot">
                                     <form class="panel-body" name="ForgotPasswordForm" ng-submit="login.forgotPassword()">
-                                        <h1 class="text-center">{{login.labels.SubmitLabel}}</h1>
+                                        <h1 class="text-center" ng-bind-html="login.labels.SubmitLabel"></h1>
                                         <div class="form-group">
-                                            <label for="Email">{{login.label.UsernameLabel}}</label>
+                                            <label for="Email" ng-bind-html="login.label.UsernameLabel"></label>
                                             <input type="text" class="form-control" id="Email" ng-model="login.credentials.Email" ng-required="true" />
                                         </div>
                                         <button type="submit" id="email_submit" class="btn btn-primary" ng-disabled="ForgotPasswordForm.$invalid" ng-bind-html="login.labels.SubmitLabel"></button>
-                                        <a id="back_to_login" class="btn btn-link" ng-click="login.setForm('login')">{{login.labels.BackToLoginLabel}}</a>
+                                        <a id="back_to_login" class="btn btn-link" ng-click="login.setForm('login')" ng-bind-html="login.labels.BackToLoginLabel"></a>
                                     </form>
                                 </div>
                             </div>

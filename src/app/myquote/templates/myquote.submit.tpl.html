@@ -130,7 +130,7 @@
                 </div>
             </div>
 
-            <p><b><span>{{submit.labels.DeliveryAddress}}</span></b></p>
+            <p><b><span ng-bind-html="submit.labels.DeliveryAddress"></span></b></p>
             <div ng-if="submit.ShippingAddress.Country=='FR'">
                 {{submit.ShippingAddress.CompanyName}}<br>
                 {{submit.ShippingAddress.Street1}}<br>

@@ -4,11 +4,11 @@
             <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
                 <div style="display:inline-block; float:left; text-align:left;">
                     <span ng-bind-html="revised.labels.Status"/><br/>
-                    <span style="font-weight:bold;">{{revised.GetStatusLabel() + " " + (revised.Quote.xp.StatusDate | weirdate)}}</span>
+                    <span style="font-weight:bold;" ng-bind-html="revised.GetStatusLabel() + ' ' + (revised.Quote.xp.StatusDate | weirdate)"></span>
                 </div>
                 <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
                     <span ng-bind-html="revised.labels.OrderDate" /><br />
-                    <span style="font-weight:bold;">{{(revised.Quote.DateSubmitted | weirdate)}}</span>
+                    <span style="font-weight:bold;" ng-bind-html="(revised.Quote.DateSubmitted | weirdate)"></span>
                 </div>
                 <!--<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="revised.Print()">
                     <a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('printer.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Print'></span></a>
@@ -26,10 +26,10 @@
     </div>
     <div class="row" style="padding-top:20px; padding-bottom:20px;">
         <div class="col-md-8">
-            <h4><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-blue"  ng-if="revised.Quote.xp.Status != 'DR'">{{revised.Quote.ID}}</span></h4>
-            <h4><span ng-bind-html='revised.labels.QuoteName'></span><span class="text-blue">{{revised.Quote.xp.Name}}</span></h4>
-            <h4><span ng-bind-html='revised.labels.YourReference'></span><span class="text-blue">{{revised.Quote.xp.RefNum}}</span></h4>
-            <h4><span ng-bind-html='revised.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50">{{revised.Quote.xp.PONumber}}</span></h4>
+            <h4><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-blue"  ng-if="revised.Quote.xp.Status != 'DR'" ng-bind-html="revised.Quote.ID"></span></h4>
+            <h4><span ng-bind-html='revised.labels.QuoteName'></span><span class="text-blue" ng-bind-html="revised.Quote.xp.Name"></span></h4>
+            <h4><span ng-bind-html='revised.labels.YourReference'></span><span class="text-blue" ng-bind-html="revised.Quote.xp.RefNum"></span></h4>
+            <h4><span ng-bind-html='revised.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="revised.Quote.xp.PONumber"></span></h4>
             <h4><a href="#" ng-click="revised.gotoRevisions()" ng-bind-html="revised.labels.ViewRevisions"></a></h4>
         </div>
 
@@ -56,21 +56,21 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="line in revised.LineItems">
-                        <td>{{line.xp.SN}}</td>
-                        <td>{{line.xp.TagNumber}}</td>
-                        <td>{{line.Product.Name}}</td>
-                        <td>{{line.Product.Description}}</td>
-                        <td>{{line.Product.xp.ReplacementSchedule}}</td>
+                        <td ng-bind-html="line.xp.SN"></td>
+                        <td ng-bind-html="line.xp.TagNumber"></td>
+                        <td ng-bind-html="line.Product.Name"></td>
+                        <td ng-bind-html="line.Product.Description"></td>
+                        <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
                         <td>
-                            <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
-                            <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
+                            <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
+                            <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
                         </td>
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">POA</td>
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">FR: POA</td>
                         <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
-                            <span ng-switch-when="USD">{{line.UnitPrice | currency:'&#36;'}}</span>
-                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163;'}}</span>
-                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&#128;'}}</span>
-                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163;'}}</span>
+                            <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="line.UnitPrice | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
                         </td>
                         <td class="form-inline">
                             <input  type="number" class="form-control" style="width:5em;" ng-model="line.Quantity" readonly />
@@ -84,23 +84,22 @@
                     </tr>
                     <!-- Show deleted items -->
                     <tr ng-repeat="line in revised.PreviousLineItems">
-                        <td>{{line.xp.SN}}</td>
-                        <td>{{line.xp.TagNumber}}</td>
-                        <td>{{line.Product.Name}}</td>
-                        <td>{{line.Product.Description}}</td>
-                        <td>{{line.Product.xp.ReplacementSchedule}}</td>
+                        <td ng-bind-html="line.xp.SN"></td>
+                        <td ng-bind-html="line.xp.TagNumber"></td>
+                        <td ng-bind-html="line.Product.Name"></td>
+                        <td ng-bind-html="line.Product.Description"></td>
+                        <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
 
-                        <td ng-if="revised.Quote.xp.Status!='RE'">{{line.Product.xp.LeadTime}}</td>
+                        <td ng-if="revised.Quote.xp.Status!='RE'" ng-bind-html="line.Product.xp.LeadTime"></td>
 
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'">POA</td>
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'"> FR: POA</td>
                         <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
-                            <span ng-switch-when="USD">{{line.UnitPrice | currency:'&#36;'}}</span>
-                            <span ng-switch-when="GBP">{{line.UnitPrice | currency:'&#163;'}}</span>
-                            <span ng-switch-when="EUR">{{line.UnitPrice | currency:'&#128;'}}</span>
-                            <span ng-switch-default>{{line.UnitPrice | currency:'&#163;'}}</span>
+                            <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR"ng-bind-html="line.UnitPrice | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
                         </td>
-                        <td ng-if="revised.Quote.xp.Status!='RE'">
-                            {{revised.Zero}}
+                        <td ng-if="revised.Quote.xp.Status!='RE'" ng-bind-html="revised.Zero">
                         </td>
 
                         <td ng-if="revised.Quote.xp.Status=='RE'">
@@ -123,10 +122,10 @@
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='revised.labels.Total'></td>
                         <td ng-switch on="revised.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="USD">{{revised.Quote.Total | currency:'&#36;'}}</span>
-                            <span ng-switch-when="GBP">{{revised.Quote.Total | currency:'&#163;'}}</span>
-                            <span ng-switch-when="EUR">{{revised.Quote.Total | currency:'&#128;'}}</span>
-                            <span ng-switch-default>{{revised.Quote.Total | currency:'&#163;'}}</span>
+                            <span ng-switch-when="USD" ng-bind-html="revised.Quote.Total | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="revised.Quote.Total | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="revised.Quote.Total | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="revised.Quote.Total | currency:'&#163;'"></span>
                         </td>
                     </tr>
                 </tbody>
@@ -164,28 +163,29 @@
                 </div>
             </div>
 
-            <p><b><span>{{revised.labels.DeliveryAddress}}</span></b></p>
+            <p><b><span ng-bind-html="revised.labels.DeliveryAddress"></span></b></p>
             <div ng-if="revised.ShippingAddress.Country=='FR'">
-                {{revised.ShippingAddress.CompanyName}}<br>
-                {{revised.ShippingAddress.Street1}}<br>
-                {{revised.ShippingAddress.Street2}}<br>
-                {{revised.ShippingAddress.Zip}} {{revised.ShippingAddress.City}}<br>
-                {{revised.country(revised.ShippingAddress.Country)}}
+                <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>
+                    <span><span ng-bind-html="revised.ShippingAddress.Zip"></span> <span ng-bind-html="revised.ShippingAddress.City"></span></span><br>
+                    <span ng-bind-html="revised.country(revised.ShippingAddress.Country)"></span>
             </div>
             <div ng-if="revised.ShippingAddress.Country=='GB'">
-                {{revised.ShippingAddress.CompanyName}}<br>
-                {{revised.ShippingAddress.Street1}}<br>
-                {{revised.ShippingAddress.Street2}}<br>
-                {{revised.ShippingAddress.City}}<br>
-                {{revised.ShippingAddress.Zip}}<br>
-                {{revised.country(revised.ShippingAddress.Country)}}
+                <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.City"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.Zip"></span><br>
+                <span ng-bind-html="revised.country(revised.ShippingAddress.Country)"></span>
             </div>
             <div ng-if="revised.ShippingAddress.Country!='GB' && revised.ShippingAddress.Country!='FR'">
-                {{revised.ShippingAddress.CompanyName}}<br>
-                {{revised.ShippingAddress.Street1}}<br>
-                {{revised.ShippingAddress.Street2}}<br>
-                {{revised.ShippingAddress.City}}, {{revised.ShippingAddress.State}} {{revised.ShippingAddress.Zip}}<br>
-                {{revised.country(revised.ShippingAddress.Country)}}
+                <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>
+                <span><span ng-bind-html="revised.ShippingAddress.City"></span>, <span ng-bind-html="revised.ShippingAddress.State"></span>
+                    <span ng-bind-html="revised.ShippingAddress.Zip"></span></span><br>
+                <span ng-bind-html="revised.country(revised.ShippingAddress.Country)"></span>
             </div>
             <hr>
             <div class="row">
@@ -203,7 +203,7 @@
                 <a href="" ng-click="revised.GetFile(fileName)" target="_blank">{{fileName}}</a>
             </p>
             <p>
-                <a href="" ng-click="revised.GetFile(revised.Quote.xp.PONumber)" target="_blank">{{revised.Quote.xp.PONumber}}</a>
+                <a href="" ng-click="revised.GetFile(revised.Quote.xp.PONumber)" target="_blank" ng-bind-html='revised.Quote.xp.PONumber'></a>
             </p>
             <div class="row">
                 <div class="col-xs-12">

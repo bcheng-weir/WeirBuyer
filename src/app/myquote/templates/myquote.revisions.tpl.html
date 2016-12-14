@@ -8,7 +8,7 @@
 </div>
 <hr />
 <div class="no-matches" ng-if="!revisions.Revisions.Items.length">
-    <b>No matches found.</b>
+    <b>FR: No matches found.</b>
 </div>
 <div ng-if="revisions.Revisions.Items.length">
     <table class="table table-hover table-condensed oc-table-responsive">
@@ -55,7 +55,7 @@
             <td>{{quote.xp.ReviewerName}}</td>
             <td>{{revisions.GetStatusLabel(quote.xp.Status) + " " + (quote.xp.StatusDate | weirdate)}}</td>
 
-            <td><button class="btn btn-primary" ng-click="revisions.View(quote)">{{revisions.labels.View}}</button></td>
+            <td><button class="btn btn-primary" ng-click="revisions.View(quote)" ng-bind-html="revisions.labels.View"></button></td>
         </tr>
         </tbody>
     </table>
@@ -68,5 +68,5 @@
             ng-if="application.$ocMedia('max-width:767px')"
             class="btn btn-default btn-block btn-md"
             ng-show="revisions.Revisions.Meta.Page < revisions.Revisions.Meta.TotalPages"
-            ng-click="revisions.loadMore()">revisions.labels.LoadMore</button>
+            ng-click="revisions.loadMore()" ng-bind-html="revisions.labels.LoadMore"></button>
 </div>

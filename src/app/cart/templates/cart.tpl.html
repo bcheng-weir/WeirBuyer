@@ -34,11 +34,11 @@
                             </figure>
                         </td>
                         <td>
-                            <a href="#">{{lineItem.Product.Name}}</a><br>
-                            <small class="text-muted">{{lineItem.ProductID}}</small>
+                            <a href="#" ng-bind-html="lineItem.Product.Name"></a><br>
+                            <small class="text-muted" ng-bind-html="lineItem.ProductID"></small>
                         </td>
                         <td>
-                            <small class="text-success">{{lineItem.LineTotal | currency}}</small>
+                            <small class="text-success" ng-bind-html="lineItem.LineTotal | currency"></small>
                         </td>
                         <td>
                             <div class="btn-group-vertical">

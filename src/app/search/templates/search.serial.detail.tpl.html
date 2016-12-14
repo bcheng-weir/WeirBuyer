@@ -7,10 +7,10 @@
             </h2>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-4" id="imgDiv" ng-if="serialDetail.serialNumber.xp.ImageName">
                 <figure id="imgPic">
-                    <img ng-if="serialDetail.serialNumber.xp.ImageName" ng-src="{{search.GetValveImageUrl(serialDetail.serialNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em; display:block; margin-left:auto; margin-right:auto;"
-                         onerror="window.document.getElementById('imgPic').style.display = 'assets/images/STARFLOW.png';"/>
+                    <img ng-src="{{search.GetValveImageUrl(serialDetail.serialNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em; display:block; margin-left:auto; margin-right:auto;"
+                         onerror="window.document.getElementById('imgDiv').style.display='none';"/>
                 </figure>
             </div>
             <div class="col-md-8">

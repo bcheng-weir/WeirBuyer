@@ -12,10 +12,12 @@ function HomeConfig($stateProvider) {
 			controller: 'HomeCtrl',
 			controllerAs: 'home',
             resolve: {
-                Language: function(OrderCloud, $cookieStore, WeirService) {
+                Language: function (OrderCloud, $cookieStore, $q, WeirService) {
                     var cust = OrderCloud.BuyerID.Get();
+
                     //if(!cust) cust = null; oc has a null check for api call- this is not needed anymore.
-                    OrderCloud.Buyers.Get(cust).then(function (buyer) {
+
+                    $q.when(OrderCloud.Buyers.Get(cust)).then(function (buyer) {
                         var lang = WeirService.Locale();
                         //set the expiration date of the cookie.
                         var now = new Date();
@@ -26,7 +28,6 @@ function HomeConfig($stateProvider) {
                             $cookieStore.put('language', 'fr', {
                                 expires: exp
                             });
-
                         }
                         if (buyer.xp.WeirGroup.id == 1) {
                             //make it en
@@ -34,8 +35,9 @@ function HomeConfig($stateProvider) {
                             $cookieStore.put('language', 'en', {
                                 expires: exp
                             });
-
                         }
+                    })
+                        .catch(function(ex){
                     });
                 }
             }

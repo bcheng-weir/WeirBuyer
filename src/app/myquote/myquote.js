@@ -606,8 +606,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             TagNum: "Tag Number (if available)",
             PartNum: "Part Number",
             PartDesc: "Description of Part",
-            RecRepl: "Recommended Replacement",
-            LeadTime: "Lead Time",
+            RecRepl: "Recommended Replacement (yrs)",
+            LeadTime: "Lead Time (days)",
             PricePer: "Price per Item or Set",
             Quantity: "Quantity",
             Total: "Total",
@@ -653,8 +653,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
 			PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
-			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
-			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute; (ans)"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
 			Total: $sce.trustAsHtml("Total"),
@@ -765,8 +765,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             TagNum: "Tag Number (if available)",
             PartNum: "Part Number",
             PartDesc: "Description of Part",
-            RecRepl: "Recommended Replacement",
-            LeadTime: "Lead Time",
+            RecRepl: "Recommended Replacement (yrs)",
+            LeadTime: "Lead Time (days)",
             PricePer: "Price per Item Or Set",
             Quantity: "Quantity",
             Total: "Total",
@@ -793,8 +793,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
 			PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
-			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
-			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute; (ans)"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
 			Total: $sce.trustAsHtml("Total"),
@@ -1016,8 +1016,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             TagNum: "Tag Number (if available)",
             PartNum: "Part Number",
             PartDesc: "Description of Part",
-            RecRepl: "Recommended Replacement",
-            LeadTime: "Lead Time",
+            RecRepl: "Recommended Replacement (yrs)",
+            LeadTime: "Lead Time (days)",
             PricePer: "Price per Item or Set",
             Quantity: "Quantity",
             Total: "Total",
@@ -1058,8 +1058,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
             PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
             PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
-            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
-            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute; (ans)"),
+            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
             PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
             Quantity: $sce.trustAsHtml("Quantit&eacute;"),
             Total: $sce.trustAsHtml("Total"),
@@ -1693,8 +1693,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
 			PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
-			RecRepl: $sce.trustAsHtml("Remplacement recommandé (ans);"),
-			LeadTime: $sce.trustAsHtml("Délai de livraision / Disponibilité (journées)"),
+			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute; (ans)"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
 			Total: $sce.trustAsHtml("Total"),
@@ -1764,7 +1764,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		if(item.xp) {
 			//return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && (item.Product.xp.LeadTime != item.xp.OriginalLeadTime));
 			//return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime != item.xp.OriginalLeadTime)));
-			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
+			//return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
+			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice===0 && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
 		} else {
 			return false;
 		}
@@ -1796,7 +1797,12 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			val: vm.CommentToWeir,
 			IsWeirComment: false
 		};
+
+		if (!vm.Quote.xp.CommentsToWeir || Object.prototype.toString.call(vm.Quote.xp.CommentsToWeir) !== '[object Array]') {
+			vm.Quote.xp.CommentsToWeir = [];
+		}
 		vm.Quote.xp.CommentsToWeir.push(comment);
+
 		OrderCloud.Orders.Patch(vm.Quote.ID, {xp:{CommentsToWeir: vm.Quote.xp.CommentsToWeir}}, OrderCloud.BuyerID.Get())
 			.then(function(order) {
 				vm.CommentToWeir = "";
@@ -1912,8 +1918,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
             TagNum: "Tag Number (if available)",
             PartNum: "Part Number",
             PartDesc: "Description of Part",
-            RecRepl: "Recommended Replacement",
-            LeadTime: "Lead Time",
+            RecRepl: "Recommended Replacement (yrs)",
+            LeadTime: "Lead Time (days)",
             PricePer: "Price per Item or Set",
             Quantity: "Quantity",
             Total: "Total",
@@ -1950,8 +1956,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
             TagNum: $sce.trustAsHtml("Numéro de repère soupape"),
             PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
             PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
-            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
-            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+            RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute; (ans)"),
+            LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
             PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
             Quantity: $sce.trustAsHtml("Quantit&eacute;"),
             Total: $sce.trustAsHtml("Total"),
@@ -2079,8 +2085,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			TagNum: "Tag Number (if available)",
 			PartNum: "Part Number",
 			PartDesc: "Description of Part",
-			RecRepl: "Recommended Replacement",
-			LeadTime: "Lead Yime",
+			RecRepl: "Recommended Replacement (yrs)",
+			LeadTime: "Lead Time (days)",
 			PricePer: "Price per Item or Set",
 			Quantity: "Quantity",
 			Total: "Total",
@@ -2127,8 +2133,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
 			PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
-			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute;"),
-			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison"),
+			RecRepl: $sce.trustAsHtml("Remplacement recommand&eacute; (ans)"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
 			Total: $sce.trustAsHtml("Total"),

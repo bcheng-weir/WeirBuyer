@@ -16,7 +16,8 @@
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{revised.CsvFilename}}">
                     <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
                 </div>
-                <div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">
+                <!--<div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">-->
+                <div ng-if="revised.Quote.xp.Status=='RV'||revised.Quote.xp.Status=='RO'" style="float:right;padding-top: 0.5em;">
                     <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
                     <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
                     <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
@@ -29,7 +30,7 @@
             <h4><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-blue"  ng-if="revised.Quote.xp.Status != 'DR'" ng-bind-html="revised.Quote.ID"></span></h4>
             <h4><span ng-bind-html='revised.labels.QuoteName'></span><span class="text-blue" ng-bind-html="revised.Quote.xp.Name"></span></h4>
             <h4><span ng-bind-html='revised.labels.YourReference'></span><span class="text-blue" ng-bind-html="revised.Quote.xp.RefNum"></span></h4>
-            <h4><span ng-bind-html='revised.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="revised.Quote.xp.PONumber"></span></h4>
+            <h4 ng-if="revised.Quote.xp.Type=='Order'"><span ng-bind-html='revised.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="revised.Quote.xp.PONumber"></span></h4>
             <h4><a href="#" ng-click="revised.gotoRevisions()" ng-bind-html="revised.labels.ViewRevisions"></a></h4>
         </div>
 

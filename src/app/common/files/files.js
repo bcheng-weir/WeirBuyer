@@ -148,8 +148,8 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
 			    Invalid: "Invalid File Type"
 		    },
 		    fr: {
-			    SelectFiles: $sce.trustAsHtml("FR: Select file to upload"),
-			    Invalid: $sce.trustAsHtml("FR: Invalid File Type")
+			    SelectFiles: $sce.trustAsHtml("Sélectionner le fichier à importer"),
+			    Invalid: $sce.trustAsHtml("Type de fichier invalide")
 		    }
 	    };
 	    scope.labels = WeirService.LocaleResources(labels);

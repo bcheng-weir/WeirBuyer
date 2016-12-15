@@ -180,12 +180,12 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			Search: "Search"
 		},
 		fr: {
-		    Saved: $sce.trustAsHtml("Sauv&eacute;"),
-		    InReview: $sce.trustAsHtml("Cotation soumise &agrave; r&eacute;vision"),
-		    Revised: $sce.trustAsHtml("Cotation r&eacute;vis&eacute;e"),
-		    Confirmed: $sce.trustAsHtml("Devis confirm&eacute;"),
-			LoadMore: $sce.trustAsHtml("FR: Load More"),
-            Search: "Rechercher"
+		    Saved: $sce.trustAsHtml("Sauvé"),
+		    InReview: $sce.trustAsHtml("Cotation soumise &agrave; révision"),
+		    Revised: $sce.trustAsHtml("Cotation révisée"),
+		    Confirmed: $sce.trustAsHtml("Devis confirmé"),
+			LoadMore: $sce.trustAsHtml("Afficher plus"),
+            Search: $sce.trustAsHtml("Rechercher")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -258,10 +258,10 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters")
 		},
 		fr: {
-		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) sauv&eacute;e(s)"),
-		    QuoteNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de cotation chez WEIR"),
+		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) sauvée(s)"),
+		    QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
 		    QuoteName: $sce.trustAsHtml("Nom de la cotation"),
-			QuoteRef: $sce.trustAsHtml("Votre R&eacute;f&eacute;rence de cotation"),
+			QuoteRef: $sce.trustAsHtml("Votre Référence de cotation"),
             Total: $sce.trustAsHtml("Total"),
             Customer: $sce.trustAsHtml("Client"),
             Status: $sce.trustAsHtml("Statut"),
@@ -269,10 +269,10 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             OwnProduct: $sce.trustAsHtml("Propre Produit"),
             View: $sce.trustAsHtml("Voir"),
             ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?"),
-            ConfirmedListMessage: $sce.trustAsHtml("Vous pouvez convertir des devis confirm&eacute;s en commandes. Affichez le devis confirm&eacute; et s&eacute;lectionnez: Soumettre l'ordre. Les devis confirm&eacute;s sont valables pendant 30 jours &agrave; partir de la confirmation."),
+            ConfirmedListMessage: $sce.trustAsHtml("Vous pouvez convertir des devis confirmés en commandes. Affichez le devis confirmé et sélectionnez: Soumettre l'ordre. Les devis confirmés sont valables pendant 30 jours &agrave; partir de la confirmation."),
 			Revisions: $sce.trustAsHtml("Révisions"),
-            Search: "Rechercher",
-            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> FR: Filters")
+            Search: $sce.trustAsHtml("Rechercher"),
+            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
 		}
 	};
 	if ($state.is('quotes.revised')) {
@@ -305,8 +305,8 @@ function InReviewQuotesController(WeirService, $state, $sce, $scope) {
 		},
 		fr: {
 		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation soumise à révision"),
-		    QuoteNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de cotation chez WEIR"),
-		    QuoteRef: $sce.trustAsHtml("Votre R&eacute;f&eacute;rence de cotation"),
+		    QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
+		    QuoteRef: $sce.trustAsHtml("Votre Référence de cotation"),
 		    Total: $sce.trustAsHtml("Total"),
 		    Customer: $sce.trustAsHtml("Client"),
 		    OwnProduct: $sce.trustAsHtml("Propre Produit"),
@@ -342,7 +342,14 @@ function RouteToQuoteController($rootScope, $state, OrderCloud, WeirService, toa
             });
         }
 	} else {
-		toastr.error("Quote not found");
+        var errorMsg="";
+        if(WeirService.Locale()=="fr"){
+            errorMsg="Cotation non trouvée";
+        }
+        else{
+            errorMsg="Quote not found";
+        }
+        toastr.error(errorMsg);
 		$state.go('quotes.saved');
 	}
 }

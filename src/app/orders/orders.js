@@ -228,9 +228,9 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		    DateDespatched: $sce.trustAsHtml("Date d'envoi"),
 		    DateInvoiced: $sce.trustAsHtml("Date de facturation"),
 		    EstDelivery: $sce.trustAsHtml("Délai de livraison estimé"),
-            NoMatches: $sce.trustAsHtml("FR:No matches found."),
-            Search: "Rechercher",
-            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> FR: Filters")
+            NoMatches: $sce.trustAsHtml("Aucun résultat"),
+            Search: $sce.trustAsHtml("Rechercher"),
+            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
 	    }
     };
     vm.labels = labels[WeirService.Locale()];
@@ -274,7 +274,14 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
             $state.go('quotes.goto', { quoteID: Order.ID });
         }
     } else {
-        toastr.error("Order not found");
+        var errorMsg="";
+        if(WeirService.Locale()=="fr"){
+            errorMsg="Commande non trouvée";
+        }
+        else{
+            errorMsg="Order not found";
+        }
+        toastr.error(errorMsg);
         $state.go('orders.submitted');
     }
     function reviewOrder(orderId, status, buyerId) {

@@ -174,7 +174,7 @@ function ConfirmPasswordController($uibModalInstance, $sce, WeirService) {
 	    },
 	    fr: {
 	        ChangePassword: $sce.trustAsHtml("Changer le mot de passe"),
-            PasswordConfirmPrompt: "Veuillez confirmer votre mot de passe",
+            PasswordConfirmPrompt: $sce.trustAsHtml("Veuillez confirmer votre mot de passe"),
 	        Submit: $sce.trustAsHtml("Soumettre"),
 	        Cancel: $sce.trustAsHtml("Annuler")
 	}

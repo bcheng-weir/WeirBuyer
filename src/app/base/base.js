@@ -141,14 +141,20 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             Batley: "About Batley",
             Blakeborough: "About Blakeborough",
             Hopkinsons: "About Hopkinsons",
-            Feedback: "Beta feedback"
+            Feedback: "Beta feedback",
+            Register: "Register/Login",
+            Logout: "Logout"
+
+
         },
         fr: {
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
             Feedback: $sce.trustAsHtml("Retour et commentaires sur la Beta"),
             bugDefect: $sce.trustAsHtml("Bogue ou erreur"),
             suggestion: $sce.trustAsHtml("Suggestion"),
-            Sarasin: $sce.trustAsHtml("FR: About Sarasin")
+            Sarasin: $sce.trustAsHtml("À propos de Sarasin"),
+            Register: $sce.trustAsHtml("Inscription / Connexion"),
+            Logout: $sce.trustAsHtml("FR: fermer la session")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -360,9 +366,9 @@ function NewQuoteModalController($uibModalInstance, WeirService) {
         },
         fr: {
             NQHeader: "",
-            NQBody: "Si vous créez actuellement une soumission ou une commande, enregistrez vos modifications avant de créer une nouvelle soumission",
-            ContinueBtn: "Continuer",
-            CancelBtn: "Annuler"
+            NQBody: $sce.trustAsHtml("Si vous créez actuellement une soumission ou une commande, enregistrez vos modifications avant de créer une nouvelle soumission"),
+            ContinueBtn: $sce.trustAsHtml("Continuer"),
+            CancelBtn: $sce.trustAsHtml("Annuler")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -402,12 +408,12 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirSer
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
             bugDefect: $sce.trustAsHtml("Bogue ou erreur"),
             suggestion: $sce.trustAsHtml("Suggestion"),
-            bug : "Si vous signalez un bogue, celui-ci sera soumit à notre équipe de développement.",
-            YourFeedback: "Votre commentaire",
-            TypeFeedback: "Type de commentaires",
-            Email: "Votre adresse E-mail",
-            Feedback: "Retour et commentaires sur la Beta",
-            Cancel: "Annuler"
+            bug : $sce.trustAsHtml("Si vous signalez un bogue, celui-ci sera soumit à notre équipe de développement."),
+            YourFeedback: $sce.trustAsHtml("Votre commentaire"),
+            TypeFeedback: $sce.trustAsHtml("Type de commentaires"),
+            Email: $sce.trustAsHtml("Votre adresse E-mail"),
+            Feedback: $sce.trustAsHtml("Retour et commentaires sur la Beta"),
+            Cancel: $sce.trustAsHtml("Annuler")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

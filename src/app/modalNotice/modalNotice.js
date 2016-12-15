@@ -6,7 +6,7 @@ function OrderCloudModalNoticeDirective() {
 
 }
 
-function ModalNoticeController() {
+function ModalNoticeController($sce) {
 	var vm = this;
 
 	vm.openModal = function(WeirService, $sce) {

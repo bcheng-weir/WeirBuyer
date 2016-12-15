@@ -235,20 +235,20 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 		    PartSearch: $sce.trustAsHtml("Rechercher par R&eacute;f&eacute;rence de Pi&egrave;ce"),
 		    TagSearch: $sce.trustAsHtml("Rechercher par numéro de repère soupape"),
 		    CustomerFilter: $sce.trustAsHtml("R&eacute;sultats filtr&eacute;s par: "),
-		    NoFilter: $sce.trustAsHtml("FR: Any customer"),
+		    NoFilter: $sce.trustAsHtml("Tout client"),
 		    SelectCustomer: $sce.trustAsHtml("Renouveler la recherche filtr&eacute;e"),
 		    SearchMine: $sce.trustAsHtml("Rechercher votre produit"),
-		    SearchAll: $sce.trustAsHtml("Search all valves"),
+		    SearchAll: $sce.trustAsHtml("Rechercher toutes les soupapes"),
 		    SearchOr: $sce.trustAsHtml("Ou"),
 		    FilterEndUser: $sce.trustAsHtml("Filtrer par clients finaux"),
-		    AllValves:  $sce.trustAsHtml("FR: All Valves"),
-		    MyValves: $sce.trustAsHtml("FR: My Valves"),
+		    AllValves:  $sce.trustAsHtml("Toutes les soupapes"),
+		    MyValves: $sce.trustAsHtml("Mes soupapes achetées"),
 		    Select: $sce.trustAsHtml("S&eacute;lectionner"),
 		    ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-		    POAGuidance: $sce.trustAsHtml("FR: Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
+		    POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
 		    PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
-		    NotAvailable: $sce.trustAsHtml("FR: N/A"),
-		    ApplyFilter: "FR: OK"
+		    NotAvailable: $sce.trustAsHtml("Non Applicable"),
+		    ApplyFilter: $sce.trustAsHtml("OK")
 	    }
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -278,6 +278,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
             EnterSerial: "Enter Serial Number",
             AddMore: "Add More Serial Numbers   +",
             ClearSearch: "Clear Search",
+            toastEnterSearchBox: "Please enter an item in the search box.",
             Search: "Search"
         },
         fr: {
@@ -285,7 +286,8 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
             EnterSerial: $sce.trustAsHtml("Entrer le Num&eacute;ro de S&eacute;rie"),
             AddMore: $sce.trustAsHtml("Ajouter plus de Num&eacute;ro de S&eacute;rie   +"),
             ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
-            Search: "Rechercher"
+            toastEnterSearchBox: $sce.trustAsHtml("Veuillez saisir un élément dans la barre de recherche."),
+            Search: $sce.trustAsHtml("Rechercher")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -303,7 +305,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
 
     vm.searchSerialNumbers = function () {
         if (!vm.serialNumbers[0] || vm.serialNumbers.length == 0) {
-            toastr.info("Please enter an item in the search box.", "Empty Search");
+            toastr.info(vm.labels.toastEnterSearchBox, "Empty Search");
         } else if (vm.serialNumbers.length == 1) {
             $state.go('search.serial.detail', { number: vm.serialNumbers[0], searchNumbers: vm.serialNumbers[0] });
         } else {
@@ -397,7 +399,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de s&eacute;rie: de " + numFound.toString() + " &agrave; " + SerialNumberResults.length.toString() + " num&eacute;ros de s&eacute;rie trouv&eacute;s."),
 			SerialNumber: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
 			TagNumber: $sce.trustAsHtml("Num&eacute;ro de Tag (si disponible)"),
-			ValveDesc: "Description de soupape",
+			ValveDesc: $sce.trustAsHtml("Description de soupape"),
 			NoResultsMsg: $sce.trustAsHtml("Pas de r&eacute;sultats pour:"),
 			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
 			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
@@ -444,7 +446,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 		    ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les Num&eacute;ros de s&eacute;rie: "),
 		    Tag: $sce.trustAsHtml("Num&eacute;ro de Tag (si disponible): "),
 			Customer: $sce.trustAsHtml("Client: "),
-			DeliveryDate: $sce.trustAsHtml("FR: Date delivered: "),
+			DeliveryDate: $sce.trustAsHtml("Date de livraison: "),
 			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
 			BackToResults: $sce.trustAsHtml("Retourner aux r&eacute;sultats"),
 			SpecHeader: $sce.trustAsHtml("Sp&eacute;cification"),
@@ -460,7 +462,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 			Temp: $sce.trustAsHtml("Temp&eacute;rature"),
 			Inlet: $sce.trustAsHtml("Entr&eacute;e"),
 			Outlet: $sce.trustAsHtml("Sortie"),
-            POA: "POA"
+            POA: $sce.trustAsHtml("POA")
 		}
 
 	};
@@ -482,8 +484,8 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 		    PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
 		    PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
 		    PartQty: $sce.trustAsHtml("Quantit&eacute; de pi&egrave;ce"),
-		    ReplSched: $sce.trustAsHtml("Remplacement recommand&eacute; (yrs)"),
-		    LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (days)"),
+		    ReplSched: $sce.trustAsHtml("Remplacement recommand&eacute; (ans)"),
+		    LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
 		    Price: $sce.trustAsHtml("Prix par item ou par kit"),
 			Qty: $sce.trustAsHtml("Quantit&eacute;"),
 			LeadTimeNotice: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es"),
@@ -556,8 +558,8 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 		    AddMore: $sce.trustAsHtml("Ajouter plus de r&eacute;f&eacute;rences de pi&egrave;ce   "),
 			
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
-		    Search: "Rechercher",
-            POA: "POA"
+		    Search: $sce.trustAsHtml("Rechercher"),
+            POA: $sce.trustAsHtml("POA")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -611,14 +613,14 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 			AddToQuote: "Add to Quote"
 		},
 		fr: {
-			Customer: "Client",
+			Customer: $sce.trustAsHtml("Client"),
 			ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les r&eacute;f&eacute;rences de pi&egrave;ces: de " + numFound.toString() + " &agrave; " + PartNumberResults.NumSearched.toString() + " r&eacute;f&eacute;rences de pi&egrave;ces trouv&eacute;es."),
 			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de pi&egrave;ce"),
 			PartDesc: $sce.trustAsHtml("Description de la pi&eacute;ce"),
 			PartQty: $sce.trustAsHtml("Quantit&eacute; de partie"),
-			ReplSched: $sce.trustAsHtml("Remplacement recommand&eacute; (yrs)"),
-			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (days)"),
+			ReplSched: $sce.trustAsHtml("Remplacement recommand&eacute; (ans)"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
 			Price: $sce.trustAsHtml("Prix par item ou par kit"),
 			Qty: $sce.trustAsHtml("Quantit&eacute;"),
 			LeadTimeNotice: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es"),
@@ -653,6 +655,7 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 			AddMore: "Add more tag numbers   +",
 			ClearSearch: "Clear Search",
 			Search: "Search",
+            toastEnterSearchBox: "Please enter an item in the search box.",
 			TagDisclaimer: "*Tag number data may be incomplete. For best results search by serial number or part number"
 		},
 		fr: {
@@ -660,8 +663,9 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 		    EnterTag: $sce.trustAsHtml("Entr&eacute;e un num&eacute;ro de tag"),
 		    AddMore: $sce.trustAsHtml("Ajouter plus de num&eacute;ro de tag   +"),
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
-		    Search: "Rechercher",
-		    TagDisclaimer: $sce.trustAsHtml("*Tag number data may be incomplete. For best results search by serial number or part number")
+		    Search: $sce.trustAsHtml("Rechercher"),
+			toastEnterSearchBox: $sce.trustAsHtml("Veuillez saisir un élément dans la barre de recherche."),
+		    TagDisclaimer: $sce.trustAsHtml("*La recherche par numéro de repère soupape peut afficher des résultats incomplet ou biasé. Pour obtenir les meilleurs résultats, recherchez par numéro de série ou numéro de pièce.")
 	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -681,7 +685,7 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 
 	vm.searchTags = function() {
 		if(!vm.tags[0] || vm.tags.length == 0) {
-			toastr.info("Please enter an item in the search box.", "Empty Search");
+			toastr.info(vm.labels.toastEnterSearchBox, "Empty Search");
 		}
 		else {
 			$state.go('search.tag.results', {numbers: vm.tags.join(',')});
@@ -749,7 +753,7 @@ function TagResultsController(WeirService, $stateParams, $state, TagNumberResult
             ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les Num&eacute;ro de tag : de " + numFound.toString() + " &agrave; " + numQueried.toString() + " Num&eacute;ros de tag trouv&eacute;s. "),
             SerialNumber: $sce.trustAsHtml("Num&eacute;ro de s&eacute;rie"),
             TagNumber: $sce.trustAsHtml("Num&eacute;ro de tag (si disponible)"),
-            ValveDesc: "Description de la soupape",
+            ValveDesc: $sce.trustAsHtml("Description de la soupape"),
             NoResultsMsg: $sce.trustAsHtml("Pas de r&eacute;sultats trouv&eacute;s pour:"),
             SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
             ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
@@ -796,7 +800,7 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 		    ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les num&eacute;ros de tag: "),
 			Tag: $sce.trustAsHtml("Num&eacute;ro de Tag (si disponible): "),
 			Customer: $sce.trustAsHtml("Client: "),
-			DeliveryDate: $sce.trustAsHtml("FR: Date delivered: "),
+			DeliveryDate: $sce.trustAsHtml("Date de livraison: "),
 			SearchAgain: $sce.trustAsHtml("Chercher &agrave; nouveau"),
 			BackToResults: $sce.trustAsHtml("Retourner aux r&eacute;sultats"),
 			SpecHeader: $sce.trustAsHtml("Sp&eacute;cification"),
@@ -833,8 +837,8 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence"),
 			PartDesc: $sce.trustAsHtml("Description de la partie"),
 			PartQty: $sce.trustAsHtml("Quantit&eacute; de partie"),
-			ReplSched: $sce.trustAsHtml("Remplacement recommand&eacute;e (yrs)"),
-			LeadTime: $sce.trustAsHtml("D&eacute;lai de mise en &oelig;uvre (days)"),
+			ReplSched: $sce.trustAsHtml("Remplacement recommand&eacute;e (ans)"),
+			LeadTime: $sce.trustAsHtml("D&eacute;lai de mise en &oelig;uvre (journées)"),
 			Price: $sce.trustAsHtml("Prix par article ou ensemble"),
 			Qty: $sce.trustAsHtml("Quantit&eacute;"),
 			LeadTimeNotice: $sce.trustAsHtml("D&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le plus long d&eacute;lai de la liste des pi&eacute;ces de rechange demand&eacute;es"),
@@ -904,15 +908,15 @@ function NoResultsController($state, $sce, WeirService, OrderCloud, toastr) {
             SubmittedMessage: "Your enquiry has been submitted"
         },
         fr: {
-            CantFindHeader: $sce.trustAsHtml("FR: Can't find what you are looking for?"),
-            CantFindText1: $sce.trustAsHtml("FR: If you can't find what you are looking for please try searching again"),
-            CantFindText2: $sce.trustAsHtml("FR: Alternatively please complete the simple form below and we will get in touch with you."),
-            SerNumPrompt: $sce.trustAsHtml("FR: Please provide Serial number, or part number or Tag number"),
-            SparesPrompt: $sce.trustAsHtml("FR: Please provide details of the spares you require a quote for."),
-            Submit: $sce.trustAsHtml("FR: Submit Enquiry"),
-            SearchAgain: $sce.trustAsHtml("FR: Chercher &agrave; nouveau"),
-            YourContact: $sce.trustAsHtml("FR: Your contact"),
-            SubmittedMessage: $sce.trustAsHtml("Your enquiry has been submitted")
+            CantFindHeader: $sce.trustAsHtml("Vous n'arrivez pas à trouver ce que vous cherchez?"),
+            CantFindText1: $sce.trustAsHtml("Si vous ne trouvez pas ce que vous cherchez, veuillez essayer de nouveau."),
+            CantFindText2: $sce.trustAsHtml("Vous pouvez également remplir le formulaire ci-dessous. Nos vous réponderons dans les plus brefs délais."),
+            SerNumPrompt: $sce.trustAsHtml("Veuillez fournir un numéro de série, un numéro de pièce ou un numéro de repère soupape."),
+            SparesPrompt: $sce.trustAsHtml("Veuillez fournir les détails des pièces de rechange dont vous avez besoin pour une cotation."),
+            Submit: $sce.trustAsHtml("Soumettre votre demande"),
+            SearchAgain: $sce.trustAsHtml("Nouvelle recherche"),
+            YourContact: $sce.trustAsHtml("Votre contact"),
+            SubmittedMessage: $sce.trustAsHtml("Votre demande a été soumise")
     }
     };
     vm.labels = WeirService.LocaleResources(labels);

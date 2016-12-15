@@ -21,17 +21,17 @@ function AddressFormDirective(OCGeography, WeirService, $sce) {
             PhoneNumber: "Phone Number"
         },
         fr: {
-            AddressName: $sce.trustAsHtml("FR: Address Name"),
-            CompanyName: $sce.trustAsHtml("FR: Company Name"),
-            FirstName: $sce.trustAsHtml("FR: First Name"),
-            LastName: $sce.trustAsHtml("FR: Last Name"),
-            StreetOne: $sce.trustAsHtml("FR: Street 1"),
-            StreetTwo: $sce.trustAsHtml("FR: Street 2"),
-            City: $sce.trustAsHtml("FR: City"),
-            County: $sce.trustAsHtml("FR: County"),
-            PostCode: $sce.trustAsHtml("FR: Post Code"),
-            Country: $sce.trustAsHtml("FR: Country"),
-            PhoneNumber: $sce.trustAsHtml("FR: Phone Number")
+            AddressName: $sce.trustAsHtml("Nom de l'adresse"),
+            CompanyName: $sce.trustAsHtml("Nom de l'entreprise"),
+            FirstName: $sce.trustAsHtml("Prénom"),
+            LastName: $sce.trustAsHtml("Nom"),
+            StreetOne: $sce.trustAsHtml("Rue 1"),
+            StreetTwo: $sce.trustAsHtml("Rue 2"),
+            City: $sce.trustAsHtml("Ville"),
+            County: $sce.trustAsHtml("Région"),
+            PostCode: $sce.trustAsHtml("Code postal"),
+            Country: $sce.trustAsHtml("Pays"),
+            PhoneNumber: $sce.trustAsHtml("Numéro de télephone")
         }
     };
     return {

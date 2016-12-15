@@ -31,11 +31,11 @@
                                 <li class="dropdown-header" ng-bind-html="base.currentUser.FirstName + ' ' + base.currentUser.LastName"></li>
                                 <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
                                 <li class="divider"></li>
-                                <li><a ng-click="application.logout()">Logout</a></li>
+                                <li><a ng-click="application.logout()" ng-bind-html="base.labels.Logout"></a></li>
                             </ul>
                         </li>
                         <li ng-if="base.currentUser.Anonymous && base.registrationAvailable">
-                            <a href="" ui-sref="registration" ui-sref-active="active">FR: Register/Login</a>
+                            <a href="" ui-sref="registration" ui-sref-active="active">{{base.labels.Register}}</a>
                         </li>
                         <li>
                             <ordercloud-minicart order="catalog.currentOrder"></ordercloud-minicart>

@@ -32,12 +32,20 @@ function CartConfig($stateProvider) {
                         $state.go('home');
                     }
                 },
-                LineItemsList: function($q, $state, toastr, Underscore, OrderCloud, LineItemHelpers, Order) {
+                LineItemsList: function($q, $state, toastr, Underscore, OrderCloud, WeirService, LineItemHelpers, Order) {
                     var dfd = $q.defer();
+                    //testing the locale to give appropiate toastr
+                    var errorMsg = "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "Votre commande ne contient pas d'éléments";
+                    }
+                    else{
+                        errorMsg = "Your order does not contain any line items";
+                    }
                     OrderCloud.LineItems.List(Order.ID)
                         .then(function(data) {
                             if (!data.Items.length) {
-                                toastr.error('Your order does not contain any line items.', 'Error');
+                                toastr.error(errorMsg , 'Error');
                                 if ($state.current.name === 'cart') {
                                     $state.go('home');
                                 }
@@ -51,7 +59,7 @@ function CartConfig($stateProvider) {
                             }
                         })
                         .catch(function() {
-                            toastr.error('Your order does not contain any line items.', 'Error');
+                            toastr.error(errorMsg , 'Error');
                             dfd.reject();
                         });
                     return dfd.promise;

@@ -107,18 +107,18 @@ function getMonthText(m, locale) {
 		11: 'Dec'
 	    },
 	    fr: {
-		0: 'FR-Jan',
-		1: 'FR-Feb',
-		2: 'FR-Mar',
-		3: 'FR-Apr',
-		4: 'FR-May',
-		5: 'FR-Jun',
-		6: 'FR-Jul',
-		7: 'FR-Aug',
-		8: 'FR-Sep',
-		9: 'FR-Oct',
-		10: 'FR-Nov',
-		11: 'FR-Dec'
+		0: 'Janv',
+		1: 'Févr',
+		2: 'Mars',
+		3: 'Avril',
+		4: 'Mai',
+		5: 'Juin',
+		6: 'Juil',
+		7: 'Août',
+		8: 'Sept',
+		9: 'Oct',
+		10: 'Nov',
+		11: 'Déc'
 	    }
     };
     switch(locale) {

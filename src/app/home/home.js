@@ -38,6 +38,7 @@ function HomeConfig($stateProvider) {
                         }
                     })
                         .catch(function(ex){
+                            //issue with the promise not returning 
                     });
                 }
             }

@@ -556,7 +556,6 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 		    EnterPart: $sce.trustAsHtml("Entrer une r&eacute;f&eacute;rence de pi&egrave;ce"),
 		    EnterParts: $sce.trustAsHtml("Entrer plusieurs r&eacute;f&eacute;rences de pi&egrave;ce"),
 		    AddMore: $sce.trustAsHtml("Ajouter plus de r&eacute;f&eacute;rences de pi&egrave;ce   "),
-			
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
 		    Search: $sce.trustAsHtml("Rechercher"),
             POA: $sce.trustAsHtml("POA")
@@ -596,6 +595,7 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 	var numFound = 0;
 	angular.forEach(PartNumberResults.Parts, function(entry) {
 		if (entry.Detail) numFound++;
+		console.log(entry.Detail.StandardPriceSchedule.PriceBreaks[0].Price);
 	});
 
 	var labels = {
@@ -610,7 +610,8 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 			Price: "Price per item or set",
 			Qty: "Quantity",
 			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
-			AddToQuote: "Add to Quote"
+			AddToQuote: "Add to Quote",
+			POA: "POA"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client"),
@@ -624,7 +625,8 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 			Price: $sce.trustAsHtml("Prix par item ou par kit"),
 			Qty: $sce.trustAsHtml("Quantit&eacute;"),
 			LeadTimeNotice: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es"),
-			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la cotation")
+			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la cotation"),
+			POA: $sce.trustAsHtml("POA")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

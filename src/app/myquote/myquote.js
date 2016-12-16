@@ -468,7 +468,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    if (vm.Quote.xp.Status) {
 	        var status = WeirService.LookupStatus(vm.Quote.xp.Status);
 	        if (status) {
-	            return status.label;
+	            return status.label[WeirService.Locale()];
 	            // TODO: Address localization
 	        }
 	    }
@@ -1529,7 +1529,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
         if (statusId) {
             var status = WeirService.LookupStatus(statusId);
             if (status) {
-                return status.label;
+	            return status.label[WeirService.Locale()];
                 // TODO: Address localization
             }
         }
@@ -1762,10 +1762,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.ShowUpdated = function (item) {
 		// return true if qty <> xp.originalQty and qty > 0
 		if(item.xp) {
-			//return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && (item.Product.xp.LeadTime != item.xp.OriginalLeadTime));
-			//return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime != item.xp.OriginalLeadTime)));
-			//return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
-			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice===0 && (item.UnitPrice != item.xp.OriginalUnitPrice)) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
+			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.xp.OriginalUnitPrice===0 || (item.UnitPrice != item.xp.OriginalUnitPrice))) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
 		} else {
 			return false;
 		}
@@ -1823,7 +1820,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		if (vm.Quote.xp.Status) {
 			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
 			if (status) {
-				return status.label;
+				return status.label[WeirService.Locale()];
 				// TODO: Address localization
 			}
 		}
@@ -2016,7 +2013,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		if (vm.Quote.xp.Status) {
 			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
 			if (status) {
-				return status.label;
+				return status.label[WeirService.Locale()];
 				// TODO: Address localization
 			}
 		}
@@ -2226,7 +2223,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 		if (vm.Quote.xp.Status) {
 			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
 			if (status) {
-				return status.label;
+				return status.label[WeirService.Locale()];
 				// TODO: Address localization
 			}
 		}

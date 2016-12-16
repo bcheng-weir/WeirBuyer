@@ -85,8 +85,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);
 		if (status) {
-			return status.label;
-			// TODO: Address localization
+			return status.label[WeirService.Locale()];
 		}
 	};
     vm.sortSelection = Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;

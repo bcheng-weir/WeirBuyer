@@ -95,8 +95,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);
 		if (status) {
-			return status.label;
-			// TODO: Address localization
+			return status.label[WeirService.Locale()];
 		}
 	};
 

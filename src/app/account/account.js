@@ -102,13 +102,46 @@ function AccountController($exceptionHandler, $state, toastr, AccountService, Cu
 	var vm = this;
 	vm.profile = angular.copy(CurrentUser);
 	var currentProfile = CurrentUser;
+    var labels = {
+        en: {
+            Account: "Account",
+            FirstName: "First Name",
+            LastName: "Last Name",
+            UserID: "User ID",
+            Username: "Username",
+            Email: "Email",
+            Phone: "Phone",
+            SaveChanges: "Save Changes",
+            RevertChanges: "Revert Changes",
+            ChangePassword: "Change Password",
+            Addresses: "Addresses",
+            AccountChanges: "Account changes were saved.",
+            Success: "Success"
+        },
+        fr: {
+            Account: $sce.trustAsHtml("Compte"),
+            FirstName: $sce.trustAsHtml("Pr&eacute;nom"),
+            LastName: $sce.trustAsHtml("Nom"),
+            UserID: $sce.trustAsHtml("Identifiant d'utilisateur"),
+            Username: $sce.trustAsHtml("Nom d'utilisateur"),
+            Email: $sce.trustAsHtml("Email"),
+            Phone: $sce.trustAsHtml("T&eacute;l&eacute;phone"),
+            SaveChanges: $sce.trustAsHtml("Sauvegarder les modifications"),
+            RevertChanges: $sce.trustAsHtml("R&eacute;tablir les modifications"),
+            ChangePassword: $sce.trustAsHtml("Changer le mot de passe"),
+            Addresses: $sce.trustAsHtml("Adresses"),
+            AccountChanges: $sce.trustAsHtml("Les modifications de compte ont été enregistrées"),
+            Success: $sce.trustAsHtml("Succès")
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
 
 	vm.update = function() {
 		AccountService.Update(currentProfile, vm.profile)
 			.then(function(data) {
 				vm.profile = angular.copy(data);
 				currentProfile = data;
-				toastr.success('Account changes were saved.', 'Success!');
+				toastr.success(vm.labels.AccountChanges , vm.labels.Success);
 			})
 			.catch(function(ex) {
 				vm.profile = currentProfile;
@@ -124,35 +157,6 @@ function AccountController($exceptionHandler, $state, toastr, AccountService, Cu
 	    $state.go('customers.edit', { buyerid: OrderCloud.BuyerID.Get() });
 	};
 
-	var labels = {
-	    en: {
-            Account: "Account",
-	        FirstName: "First Name",
-	        LastName: "Last Name",
-	        UserID: "User ID",
-	        Username: "Username",
-	        Email: "Email",
-	        Phone: "Phone",
-	        SaveChanges: "Save Changes",
-	        RevertChanges: "Revert Changes",
-	        ChangePassword: "Change Password",
-            Addresses: "Addresses"
-	    },
-	    fr: {
-	        Account: $sce.trustAsHtml("Compte"),
-	        FirstName: $sce.trustAsHtml("Pr&eacute;nom"),
-	        LastName: $sce.trustAsHtml("Nom"),
-	        UserID: $sce.trustAsHtml("Identifiant d'utilisateur"),
-	        Username: $sce.trustAsHtml("Nom d'utilisateur"),
-	        Email: $sce.trustAsHtml("Email"),
-	        Phone: $sce.trustAsHtml("T&eacute;l&eacute;phone"),
-	        SaveChanges: $sce.trustAsHtml("Sauvegarder les modifications"),
-	        RevertChanges: $sce.trustAsHtml("R&eacute;tablir les modifications"),
-	        ChangePassword: $sce.trustAsHtml("Changer le mot de passe"),
-	        Addresses: $sce.trustAsHtml("Adresses")
-	    }
-	};
-	vm.labels = WeirService.LocaleResources(labels);
 }
 
 function ConfirmPasswordController($uibModalInstance, $sce, WeirService) {
@@ -185,11 +189,33 @@ function ConfirmPasswordController($uibModalInstance, $sce, WeirService) {
 function ChangePasswordController($state, $exceptionHandler, toastr, AccountService, CurrentUser, $sce, WeirService) {
 	var vm = this;
 	vm.currentUser = CurrentUser;
-
+    var labels = {
+        en: {
+            ChangePwdHeader: "Change Password",
+            CurrentPwd: "Current Password",
+            Confirm: "Confirm Password",
+            NewPwd: "New Password",
+            Submit: "Submit",
+            BackToAcct: "Back to Account",
+			PasswordChange: "Password successfully changed",
+			Succes: "Success"
+        },
+        fr: {
+            ChangePwdHeader: $sce.trustAsHtml("Changer le mot de passe"),
+            CurrentPwd: $sce.trustAsHtml("Mot de passe actuel"),
+            NewPwd: $sce.trustAsHtml("Nouveau mot de passe"),
+            Confirm: $sce.trustAsHtml("Confirmer votre mot de passe"),
+            Submit: $sce.trustAsHtml("Soumettre"),
+            BackToAcct: $sce.trustAsHtml("Retour au compte"),
+            PasswordChange: "Mot de passe changé avec succès",
+            Succes: "Succès"
+        }
+    };
+    vm.labels = WeirService.LocaleResources(labels);
 	vm.changePassword = function() {
 		AccountService.ChangePassword(vm.currentUser)
 			.then(function() {
-				toastr.success('Password successfully changed', 'Success!');
+				toastr.success( vm.labels.PasswordChange, vm.labels.Succes);
 				vm.currentUser.CurrentPassword = null;
 				vm.currentUser.NewPassword = null;
 				vm.currentUser.ConfirmPassword = null;
@@ -200,23 +226,4 @@ function ChangePasswordController($state, $exceptionHandler, toastr, AccountServ
 			});
 	};
 
-	var labels = {
-	    en: {
-	        ChangePwdHeader: "Change Password",
-	        CurrentPwd: "Current Password",
-            Confirm: "Confirm Password",
-	        NewPwd: "New Password",
-	        Submit: "Submit",
-            BackToAcct: "Back to Account"
-	    },
-	    fr: {
-	        ChangePwdHeader: $sce.trustAsHtml("Changer le mot de passe"),
-	        CurrentPwd: $sce.trustAsHtml("Mot de passe actuel"),
-	        NewPwd: $sce.trustAsHtml("Nouveau mot de passe"),
-	        Confirm: $sce.trustAsHtml("Confirmer votre mot de passe"),
-	        Submit: $sce.trustAsHtml("Soumettre"),
-	        BackToAcct: $sce.trustAsHtml("Retour au compte")
-	    }
-	};
-	vm.labels = WeirService.LocaleResources(labels);
 }

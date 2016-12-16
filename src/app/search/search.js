@@ -279,7 +279,8 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
             AddMore: "Add More Serial Numbers   +",
             ClearSearch: "Clear Search",
             toastEnterSearchBox: "Please enter an item in the search box.",
-            Search: "Search"
+            Search: "Search",
+			EmptySearch: "Empty Search"
         },
         fr: {
             WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
@@ -287,7 +288,8 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
             AddMore: $sce.trustAsHtml("Ajouter plus de Num&eacute;ro de S&eacute;rie   +"),
             ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
             toastEnterSearchBox: $sce.trustAsHtml("Veuillez saisir un élément dans la barre de recherche."),
-            Search: $sce.trustAsHtml("Rechercher")
+            Search: $sce.trustAsHtml("Rechercher"),
+			EmptySearch: $sce.trustAsHtml("Recherche vide")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -305,7 +307,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
 
     vm.searchSerialNumbers = function () {
         if (!vm.serialNumbers[0] || vm.serialNumbers.length == 0) {
-            toastr.info(vm.labels.toastEnterSearchBox, "Empty Search");
+            toastr.info(vm.labels.toastEnterSearchBox, vm.labels.EmptySearch);
         } else if (vm.serialNumbers.length == 1) {
             $state.go('search.serial.detail', { number: vm.serialNumbers[0], searchNumbers: vm.serialNumbers[0] });
         } else {
@@ -656,7 +658,8 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 			ClearSearch: "Clear Search",
 			Search: "Search",
             toastEnterSearchBox: "Please enter an item in the search box.",
-			TagDisclaimer: "*Tag number data may be incomplete. For best results search by serial number or part number"
+			TagDisclaimer: "*Tag number data may be incomplete. For best results search by serial number or part number",
+			EmptySearch: "Empty Search"
 		},
 		fr: {
 			// WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
@@ -665,7 +668,8 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
 		    Search: $sce.trustAsHtml("Rechercher"),
 			toastEnterSearchBox: $sce.trustAsHtml("Veuillez saisir un élément dans la barre de recherche."),
-		    TagDisclaimer: $sce.trustAsHtml("*La recherche par numéro de repère soupape peut afficher des résultats incomplet ou biasé. Pour obtenir les meilleurs résultats, recherchez par numéro de série ou numéro de pièce.")
+		    TagDisclaimer: $sce.trustAsHtml("*La recherche par numéro de repère soupape peut afficher des résultats incomplet ou biasé. Pour obtenir les meilleurs résultats, recherchez par numéro de série ou numéro de pièce."),
+            EmptySearch: $sce.trustAsHtml("Recherche vide")
 	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -685,7 +689,7 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 
 	vm.searchTags = function() {
 		if(!vm.tags[0] || vm.tags.length == 0) {
-			toastr.info(vm.labels.toastEnterSearchBox, "Empty Search");
+			toastr.info(vm.labels.toastEnterSearchBox, vm.labels.EmptySearch);
 		}
 		else {
 			$state.go('search.tag.results', {numbers: vm.tags.join(',')});

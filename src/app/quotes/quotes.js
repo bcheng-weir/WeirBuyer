@@ -267,7 +267,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
             OwnProduct: $sce.trustAsHtml("Propre Produit"),
             View: $sce.trustAsHtml("Voir"),
-            ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action va changer votre panier pour cette cotation. Etes-vous s&ucirc;r de vouloir continuer?"),
+            ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action changera votre panier pour cette commande. Voulez-vous continuer?"),
             ConfirmedListMessage: $sce.trustAsHtml("Vous pouvez convertir des devis confirmés en commandes. Affichez le devis confirmé et sélectionnez: Soumettre l'ordre. Les devis confirmés sont valables pendant 30 jours &agrave; partir de la confirmation."),
 			Revisions: $sce.trustAsHtml("Révisions"),
             Search: $sce.trustAsHtml("Rechercher"),

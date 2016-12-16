@@ -36,16 +36,19 @@ function CartConfig($stateProvider) {
                     var dfd = $q.defer();
                     //testing the locale to give appropiate toastr
                     var errorMsg = "";
+                    var errorTitle= "";
                     if(WeirService.Locale() == "fr"){
                         errorMsg = "Votre commande ne contient pas d'éléments";
+                        errorTitle = "Erreur";
                     }
                     else{
                         errorMsg = "Your order does not contain any line items";
+                        errorTitle = "Error";
                     }
                     OrderCloud.LineItems.List(Order.ID)
                         .then(function(data) {
                             if (!data.Items.length) {
-                                toastr.error(errorMsg , 'Error');
+                                toastr.error(errorMsg , errorTitle);
                                 if ($state.current.name === 'cart') {
                                     $state.go('home');
                                 }
@@ -59,7 +62,7 @@ function CartConfig($stateProvider) {
                             }
                         })
                         .catch(function() {
-                            toastr.error(errorMsg , 'Error');
+                            toastr.error(errorMsg , errorTitle);
                             dfd.reject();
                         });
                     return dfd.promise;

@@ -154,7 +154,7 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             suggestion: $sce.trustAsHtml("Suggestion"),
             Sarasin: $sce.trustAsHtml("À propos de Sarasin"),
             Register: $sce.trustAsHtml("Inscription / Connexion"),
-            Logout: $sce.trustAsHtml("Fermer la session")
+            Logout: $sce.trustAsHtml("Se déconnecter")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

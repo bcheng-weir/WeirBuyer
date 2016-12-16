@@ -115,15 +115,25 @@ function MyQuoteConfig($stateProvider) {
 		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
 		            return null;
 		        },
-		        LineItems: function ($q, $state, toastr, Underscore, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService, Customer) {
+		        LineItems: function ($q, $state, toastr, Underscore, WeirService, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService, Customer) {
 		            QuoteShareService.LineItems.length = 0;
+                    var errorMsg = "";
+                    var errorTitle= "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "Votre cotation ne contient aucune ligne";
+                        errorTitle = "Erreur";
+                    }
+                    else{
+                        errorMsg = "Your quote does not contain any line items";
+                        errorTitle = "Error";
+                    }
 		            var dfd = $q.defer();
 		            CurrentOrder.GetID()
                         .then(function (id) {
                             OrderCloud.LineItems.List(id)
                                 .then(function (data) {
                                     if (!data.Items.length) {
-                                        toastr.error('Your quote does not contain any line items.', 'Error');
+                                        toastr.error(errorMsg , errorTitle);
                                         dfd.resolve({ Items: [] });
                                     } else {
 	                                    LineItemHelpers.GetBlankProductInfo(data.Items, Customer);
@@ -133,7 +143,7 @@ function MyQuoteConfig($stateProvider) {
                                 })
                         })
                         .catch(function () {
-                            toastr.error('Your quote does not contain any line items.', 'Error');
+                            toastr.error(errorMsg , errorTitle);
                             dfd.resolve({ Items: [] });
                         });
 		            return dfd.promise;
@@ -142,6 +152,16 @@ function MyQuoteConfig($stateProvider) {
 				    // We can't have a quantity of 0 on a line item. With show previous line items
 				    // Split the current order ID. If a rec exists, get, else do nothing.
 				    var pieces = Quote.ID.split('-Rev');
+                    var errorMsg = "";
+                    var errorTitle= "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "La cotation précédente ne contient aucune ligne";
+                        errorTitle = "Erreur";
+                    }
+                    else{
+                        errorMsg = "Previous quote does not contain any line items";
+                        errorTitle = "Error";
+                    }
 				    if(pieces.length > 1) {
 					    var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 					    var dfd = $q.defer();
@@ -156,7 +176,7 @@ function MyQuoteConfig($stateProvider) {
 							    }
 						    })
 						    .catch(function () {
-							    toastr.error('Previous quote does not contain any line items.', 'Error');
+							    toastr.error(errorMsg, errorTitle);
 							    dfd.resolve({ Items: [] });
 						    });
 					    return dfd.promise;
@@ -241,11 +261,21 @@ function MyQuoteConfig($stateProvider) {
 				},
 				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
 					//QuoteShareService.LineItems.length = 0;
+                    var errorMsg = "";
+                    var errorTitle= "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "Votre cotation ne contient aucune ligne";
+                        errorTitle = "Erreur";
+                    }
+                    else{
+                        errorMsg = "Your quote does not contain any line items";
+                        errorTitle = "Error";
+                    }
 					var dfd = $q.defer();
 					OrderCloud.LineItems.List(Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
-								toastr.error('Your quote does not contain any line items.', 'Error');
+								toastr.error(errorMsg, errorTitle);
 								dfd.resolve({ Items: [] });
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
@@ -254,7 +284,7 @@ function MyQuoteConfig($stateProvider) {
 							}
 						})
 						.catch(function () {
-							toastr.error('Your quote does not contain any line items.', 'Error');
+							toastr.error(errorMsg, errorTitle);
 							dfd.resolve({ Items: [] });
 						});
 					return dfd.promise;
@@ -262,6 +292,16 @@ function MyQuoteConfig($stateProvider) {
 				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me) {
 					// We can't have a quantity of 0 on a line item. With show previous line items
 					// Split the current order ID. If a rec exists, get, else do nothing.
+                    var errorMsg = "";
+                    var errorTitle= "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "La cotation précédente ne contient aucune ligne";
+                        errorTitle = "Erreur";
+                    }
+                    else{
+                        errorMsg = "Previous quote does not contain any line items";
+                        errorTitle = "Error";
+                    }
 					var pieces = Quote.ID.split('-Rev');
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
@@ -269,7 +309,7 @@ function MyQuoteConfig($stateProvider) {
 						OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,OrderCloud.BuyerID.Get())
 							.then(function(data) {
 								if (!data.Items.length) {
-									toastr.error('Previous quote does not contain any line items.', 'Error');
+									toastr.error(errorMsg, errorTitle);
 									dfd.resolve({ Items: [] });
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
@@ -306,11 +346,21 @@ function MyQuoteConfig($stateProvider) {
 			    },
 			    LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
 				    //QuoteShareService.LineItems.length = 0;
+                    var errorMsg = "";
+                    var errorTitle= "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "Votre cotation ne contient aucune ligne";
+                        errorTitle = "Erreur";
+                    }
+                    else{
+                        errorMsg = "Your quote does not contain any line items";
+                        errorTitle = "Error";
+                    }
 				    var dfd = $q.defer();
 				    OrderCloud.LineItems.List(Quote.ID)
 					    .then(function (data) {
 						    if (!data.Items.length) {
-							    toastr.error('Your quote does not contain any line items.', 'Error');
+							    toastr.error(errorMsg, errorTitle);
 							    dfd.resolve({ Items: [] });
 						    } else {
 							    LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
@@ -319,7 +369,7 @@ function MyQuoteConfig($stateProvider) {
 						    }
 					    })
 					    .catch(function () {
-						    toastr.error('Your quote does not contain any line items.', 'Error');
+                            toastr.error(errorMsg, errorTitle);
 						    dfd.resolve({ Items: [] });
 					    });
 				    return dfd.promise;
@@ -327,6 +377,16 @@ function MyQuoteConfig($stateProvider) {
 			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers,Me) {
 				    // We can't have a quantity of 0 on a line item. With show previous line items
 				    // Split the current order ID. If a rec exists, get, else do nothing.
+                    var errorMsg = "";
+                    var errorTitle= "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "La cotation précédente ne contient aucune ligne";
+                        errorTitle = "Erreur";
+                    }
+                    else{
+                        errorMsg = "Previous quote does not contain any line items";
+                        errorTitle = "Error";
+                    }
 				    var pieces = Quote.ID.split('-Rev');
 				    if(pieces.length > 1) {
 					    var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
@@ -334,7 +394,7 @@ function MyQuoteConfig($stateProvider) {
 					    OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,OrderCloud.BuyerID.Get())
 						    .then(function(data) {
 							    if (!data.Items.length) {
-								    toastr.error('Previous quote does not contain any line items.', 'Error');
+								    toastr.error(errorMsg, errorTitle);
 								    dfd.resolve({ Items: [] });
 							    } else {
 								    LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
@@ -372,10 +432,20 @@ function MyQuoteConfig($stateProvider) {
 				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
 					//QuoteShareService.LineItems.length = 0;
 					var dfd = $q.defer();
+                    var errorMsg = "";
+                    var errorTitle= "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "Votre cotation ne contient aucune ligne";
+                        errorTitle = "Erreur";
+                    }
+                    else{
+                        errorMsg = "Your quote does not contain any line items";
+                        errorTitle = "Error";
+                    }
 					OrderCloud.LineItems.List(Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
-								toastr.error('Your quote does not contain any line items.', 'Error');
+								toastr.error(errorMsg, errorTitle);
 								dfd.resolve({ Items: [] });
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
@@ -384,7 +454,7 @@ function MyQuoteConfig($stateProvider) {
 							}
 						})
 						.catch(function () {
-							toastr.error('Your quote does not contain any line items.', 'Error');
+                            toastr.error(errorMsg, errorTitle);
 							dfd.resolve({ Items: [] });
 						});
 					return dfd.promise;
@@ -392,6 +462,16 @@ function MyQuoteConfig($stateProvider) {
 				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me) {
 					// We can't have a quantity of 0 on a line item. With show previous line items
 					// Split the current order ID. If a rec exists, get, else do nothing.
+                    var errorMsg = "";
+                    var errorTitle= "";
+                    if(WeirService.Locale() == "fr"){
+                        errorMsg = "La cotation précédente ne contient aucune ligne";
+                        errorTitle = "Erreur";
+                    }
+                    else{
+                        errorMsg = "Previous quote does not contain any line items";
+                        errorTitle = "Error";
+                    }
 					var pieces = Quote.ID.split('-Rev');
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
@@ -399,7 +479,7 @@ function MyQuoteConfig($stateProvider) {
 						OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,OrderCloud.BuyerID.Get())
 							.then(function(data) {
 								if (!data.Items.length) {
-									toastr.error('Previous quote does not contain any line items.', 'Error');
+									toastr.error(errorMsg, errorTitle);
 									dfd.resolve({ Items: [] });
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
@@ -638,7 +718,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		    LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 		    Currency: "Currency",
 			Search: "Search",
-            EmptyComments: $sce.trustAsHtml("Cannot save an empty comment.")
+            EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
@@ -685,7 +766,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			Currency: $sce.trustAsHtml("Devise"),
             Search: $sce.trustAsHtml("Rechercher"),
-			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide.")
+			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
+			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
 		}
 	};
 
@@ -699,7 +781,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 					dfd.resolve(result);
 				})
 		} else {
-			toastr.info(vm.labels.EmptyComments,"Empty Comment");
+			toastr.info(vm.labels.EmptyComments,vm.labels.EmptyCommentTitle);
 			dfd.resolve();
 		}
 		return dfd.promise;
@@ -892,7 +974,9 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	        InfoText2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
 	        InfoText3: "Lead time for all orders will be based on the longest lead time from the list of spares requested.",
 			ShippingAddress: "Shipping address successfully selected.",
-			ShippingAddressSet: "Shipping address set to "
+			ShippingAddressSet: "Shipping address set to ",
+			Success: "Success",
+            ShippingAddressTitle: "Shipping Address Set"
 	    },
 	    fr: {
 	        DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
@@ -905,7 +989,9 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	        InfoText2: $sce.trustAsHtml("Les livraisons seront pr&eacute;par&eacute;es pour l'exp&eacute;dition sur la base de vos instructions de livraison standard."),
 	        InfoText3: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es"),
             ShippingAddress: $sce.trustAsHtml("Votre adresse de livraison a bien été séléctionnée"),
-            ShippingAddressSet: $sce.trustAsHtml("Livraison confirmée à cette adresse ")
+            ShippingAddressSet: $sce.trustAsHtml("Livraison confirmée à cette adresse "),
+            Success: $sce.trustAsHtml("Succès"),
+			ShippingAddressTitle: "Adresse de livraison"
 	    }
 	};
     vm.labels = WeirService.LocaleResources(labels);
@@ -924,7 +1010,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 		OrderCloud.Orders.SetShippingAddress(QuoteID, Address, OrderCloud.BuyerID.Get())
 			.then(function(order) {
 				$state.go($state.current, {}, {reload: true});
-				toastr.success(vm.labels.ShippingAddress,"Success!");
+				toastr.success(vm.labels.ShippingAddress, vm.labels.Success);
 			})
 			.catch(function(ex) {
 				$exceptionHandler(ex);
@@ -959,7 +1045,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 			})
 			.then(function() {
 				$state.go($state.current, {}, {reload: true});
-				toastr.success(vm.labels.ShippingAddressSet + newAddressResults.Name,"Shipping Address Set");
+				toastr.success(vm.labels.ShippingAddressSet + newAddressResults.Name, vm.labels.ShippingAddressTitle);
 			})
 			.catch(function(ex) {
 				if(ex !== 'cancel') {
@@ -2120,7 +2206,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			AddedComment: " added a comment - ",
 			PONumber: "PO Number;",
 			POA: "POA",
-            EmptyComments: $sce.trustAsHtml("Cannot save an empty comment.")
+            EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -2168,7 +2255,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
-            EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide.")
+            EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
+            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -2193,7 +2281,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 				});
 			vm.NewComment = null; //BE SURE TO DO THIS IN THE CHILD CONTROLLER
 		} else {
-			toastr.info(vm.labels.EmptyComments,"Empty Comment");
+			toastr.info(vm.labels.EmptyComments,vm.labels.EmptyCommentTitle);
 		}
 	};
 

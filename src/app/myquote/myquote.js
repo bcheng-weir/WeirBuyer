@@ -148,7 +148,7 @@ function MyQuoteConfig($stateProvider) {
                         });
 		            return dfd.promise;
 		        },
-			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Customer) {
+			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Customer, WeirService) {
 				    // We can't have a quantity of 0 on a line item. With show previous line items
 				    // Split the current order ID. If a rec exists, get, else do nothing.
 				    var pieces = Quote.ID.split('-Rev');
@@ -259,7 +259,7 @@ function MyQuoteConfig($stateProvider) {
 					if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
 					return null;
 				},
-				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
+				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me, WeirService) {
 					//QuoteShareService.LineItems.length = 0;
                     var errorMsg = "";
                     var errorTitle= "";
@@ -289,7 +289,7 @@ function MyQuoteConfig($stateProvider) {
 						});
 					return dfd.promise;
 				},
-				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me) {
+				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me, WeirService) {
 					// We can't have a quantity of 0 on a line item. With show previous line items
 					// Split the current order ID. If a rec exists, get, else do nothing.
                     var errorMsg = "";
@@ -344,7 +344,7 @@ function MyQuoteConfig($stateProvider) {
 				    if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
 				    return null;
 			    },
-			    LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
+			    LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me, WeirService) {
 				    //QuoteShareService.LineItems.length = 0;
                     var errorMsg = "";
                     var errorTitle= "";
@@ -374,7 +374,7 @@ function MyQuoteConfig($stateProvider) {
 					    });
 				    return dfd.promise;
 			    },
-			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers,Me) {
+			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me, WeirService) {
 				    // We can't have a quantity of 0 on a line item. With show previous line items
 				    // Split the current order ID. If a rec exists, get, else do nothing.
                     var errorMsg = "";
@@ -429,7 +429,7 @@ function MyQuoteConfig($stateProvider) {
 					if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
 					return null;
 				},
-				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me) {
+				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me, WeirService) {
 					//QuoteShareService.LineItems.length = 0;
 					var dfd = $q.defer();
                     var errorMsg = "";
@@ -459,7 +459,7 @@ function MyQuoteConfig($stateProvider) {
 						});
 					return dfd.promise;
 				},
-				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me) {
+				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me, WeirService) {
 					// We can't have a quantity of 0 on a line item. With show previous line items
 					// Split the current order ID. If a rec exists, get, else do nothing.
                     var errorMsg = "";

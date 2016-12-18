@@ -1,57 +1,15 @@
 <div ui-view>
 <h3 class="page-header">
-    <b>{{customerEdit.labels.EditCustomer}}:</b> {{customerEdit.buyerName}}
+    <b ng-bind-html="customers.labels.EditCustomer"></b>: <span ng-model="customerEdit.buyerName"></span>
 </h3>
 <form ng-submit="customerEdit.Submit()" name="CustomerEditForm" novalidate>
-    <!--<div class="row">
-        <div class="form-group col-md-6">
-            <label for="buyer_id">{{customerEdit.labels.ID}}</label>
-            <input id="buyer_id" type="text" pattern="([A-Za-z0-9\-\_]+)" pattern-err-type="ID_Name" ng-model="customerEdit.buyer.ID" class="form-control">
-        </div>
-        <div class="form-group col-md-6">
-            <label for="buyer_name">{{customerEdit.labels.Name}}</label>
-            <input id="buyer_name" type="text" ng-model="customerEdit.buyer.Name" class="form-control" required>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-3">
-            <label for="buyer_div">{{customerEdit.labels.WeirGroup}}</label>
-            <input id="buyer_div" type="text" ng-disabled="true" ng-model="customerEdit.buyer.xp.WeirGroup.label" />
-        </div>
-        <div class="form-group col-md-3">
-            <label for="buyer_type">{{customerEdit.labels.CustomerType}}</label>
-            <input id="buyer_type" type="text" ng-disabled="true" ng-model="customerEdit.buyer.xp.Type.label" />
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label for="buyer_active"></label>
-            <input id="buyer_active" type="checkbox" ng-model="customerEdit.buyer.Active"> Active
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label for="buyer_termsConditions" >{{customerEdit.labels.Terms}}</label>
-            <textarea rows="6" cols="40" id="buyer_termsConditions" type="text" ng-model="customerEdit.buyer.xp.termsConditions" class="form-control"/>
-        </div>
-        <div class="form-group col-md-6">
-            <label for="buyer_shippingDetails" >{{customerEdit.labels.ShippingDetails}}</label>
-            <textarea rows="6" cols="40" id="buyer_shippingDetails" type="text" ng-model="customerEdit.buyer.xp.ShippingDetails" class="form-control"/>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <button class="btn btn-primary" type="submit" ng-disabled="CustomerEditForm.$invalid || customerEdit.checkForPrimary()">{{customerEdit.labels.Save}}</button>
-        <button class="btn btn-default" ui-sref="^" type="button">{{customerEdit.labels.Cancel}}</button>
-    </div>-->
-        <!--TODO: The Address Edit state should also include Address Assignments-->
     <!--====== LIST ======-->
     <div class="page-header">
-        <button type="button" class="btn btn-success pull-right" ui-sref=".addressCreate({buyerid: customerEdit.buyer.ID})"><i class="fa fa-plus-circle"></i> {{customerEdit.labels.CreateNew}}</button>
-        <H3>{{customerEdit.labels.Addresses}}</H3>
+        <button type="button" class="btn btn-success pull-right" ui-sref=".addressCreate({buyerid: customerEdit.buyer.ID})"><i class="fa fa-plus-circle"></i> <span ng-bind-html="customers.labels.CreateNew"></span></button>
+        <H3 ng-bind-html="customers.labels.Addresses"></H3>
     </div>
     <div class="no-matches" ng-if="!customerEdit.list.Items.length">
-        <b>{{customerEdit.labels.NoMatch}}</b>
+        <b ng-bind-html="customers.labels.NoMatch"></b>
     </div>
     <div ng-if="customerEdit.list.Items.length">
         <b class="pull-right">{{(application.$ocMedia('min-width:768px') ? customerEdit.list.Meta.ItemRange[0] : '1') + ' - ' +
@@ -60,31 +18,31 @@
             <thead>
             <tr>
                 <th scope="col">
-                    {{customerEdit.labels.Primary}}
+                    {{customers.labels.Primary}}
                 </th>
                 <th scope="col">
                     <a href="#" role="button" ng-click="customerEdit.updateSort('AddressName')">
-                        {{customerEdit.labels.AddressName}}
+                        {{customers.labels.AddressName}}
                         <i class="fa fa-caret-down" ng-show="customerEdit.parameters.sortBy == 'AddressName'"></i>
                         <i class="fa fa-caret-up" ng-show="customerEdit.parameters.sortBy == '!AddressName'"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a href="#" role="button" ng-click="customerEdit.updateSort('CompanyName')">
-                        {{customerEdit.labels.CompanyName}}
+                        {{customers.labels.CompanyName}}
                         <i class="fa fa-caret-down" ng-show="customerEdit.parameters.sortBy == 'CompanyName'"></i>
                         <i class="fa fa-caret-up" ng-show="customerEdit.parameters.sortBy == '!CompanyName'"></i>
                     </a>
                 </th>
                 <th scope="col">
                     <a href="#" role="button" ng-click="customerEdit.updateSort('Street1')">
-                        {{customerEdit.labels.Address}}
+                        {{customers.labels.Address}}
                         <i class="fa fa-caret-down" ng-show="customerEdit.parameters.sortBy == 'Street1'"></i>
                         <i class="fa fa-caret-up" ng-show="customerEdit.parameters.sortBy == '!Street1'"></i>
                     </a>
                 </th>
                 <th scope="col">
-                    {{customerEdit.labels.PhoneNumber}}
+                    {{customers.labels.PhoneNumber}}
                 </th>
                 <th scope="col"></th>
             </tr>
@@ -92,8 +50,8 @@
             <tbody>
             <tr ng-repeat="address in customerEdit.list.Items">
                 <td>
-                    <span ng-if="address.xp.primary==true">{{customerEdit.labels.Yes}}</span>
-                    <span ng-if="address.xp.primary!=true">{{customerEdit.labels.No}}</span>
+                    <span ng-if="address.xp.primary==true">{{customers.labels.Yes}}</span>
+                    <span ng-if="address.xp.primary!=true">{{customers.labels.No}}</span>
                 </td>
                 <td data-title="Name">{{address.AddressName || '---'}}</td>
                 <td scope="row">{{address.CompanyName}}</td>
@@ -103,10 +61,8 @@
                 </td>
                 <td data-title="Phone">{{address.Phone || '---'}}</td>
                 <td class="actions-cell">
-                    <button type="button" class="btn btn-default btn-sm" ui-sref=".addressEdit({buyerid: customerEdit.buyer.ID,addressid: address.ID})">{{customerEdit.labels.Edit}}
+                    <button type="button" class="btn btn-default btn-sm" ui-sref=".addressEdit({buyerid: customerEdit.buyer.ID,addressid: address.ID})">{{customers.labels.Edit}}
                     </button>
-                    <!--<button type="button" class="btn btn-default btn-sm" ui-sref=".assign({addressid: address.ID})">Assign
-                    </button>-->
                 </td>
             </tr>
             </tbody>
@@ -120,7 +76,7 @@
                 ng-if="application.$ocMedia('max-width:767px')"
                 class="btn btn-default btn-block btn-lg"
                 ng-show="customerEdit.list.Meta.Page < customerEdit.list.Meta.TotalPages"
-                ng-click="customerEdit.loadMore()">{{customerEdit.labels.LoadMore}}
+                ng-click="customerEdit.loadMore()"><span ng-bind-html="customers.labels.LoadMore"></span>
         </button>
     </div>
 

@@ -1,5 +1,5 @@
 <h3 class="page-header">
-    {{customerAssign.labels.AssignmentsFor}} {{customerAssign.serviceCompany.Name}}
+    {{customers.labels.AssignmentsFor}} {{customerAssign.serviceCompany.Name}}
 </h3>
 
 <ordercloud-search servicename="Buyers" controlleras="customerAssign"></ordercloud-search>
@@ -14,8 +14,8 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th><div>{{customerAssign.labels.ID}}</div></th>
-                    <th><div>{{customerAssign.labels.Name}}</div></th>
+                    <th><div>{{customers.labels.ID}}</div></th>
+                    <th><div>{{customers.labels.Name}}</div></th>
                 </tr>
             </thead>
             <tbody>
@@ -34,5 +34,5 @@
         </table>
     </div>
 </section>
-<button type="button" class="btn btn-default" ui-sref="^"><i class="fa fa-arrow-left"></i> {{customerAssign.labels.Back}}</button>
-<button type="button" class="btn btn-primary" ng-click="customerAssign.saveAssignments()">{{customerAssign.labels.UpdateAssignments}}</button>
+<button type="button" class="btn btn-default" ui-sref="^"><i class="fa fa-arrow-left"></i> {{customers.labels.Back}}</button>
+<button type="button" class="btn btn-primary" ng-click="customerAssign.saveAssignments()">{{customers.labels.UpdateAssignments}}</button>

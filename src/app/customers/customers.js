@@ -16,7 +16,7 @@ function CustomerConfig($stateProvider) {
             templateUrl: 'customers/templates/customers.tpl.html',
             controller: 'CustomerCtrl',
             controllerAs: 'customers',
-            url: '/customers?search&page&pageSize',
+            url: '/customers?search&page&pageSize&searchOn&sortBy&filters',
             data: {componentName: 'Customers'},
             resolve: {
                 Parameters: function($stateParams, OrderCloudParameters) {
@@ -28,7 +28,7 @@ function CustomerConfig($stateProvider) {
             }
         })
         .state('customers.edit', {
-            url: '/:buyerid/edit?search&page&pageSize&searchOn&sortBy&filters',
+            url: '/:buyerid/edit',
             templateUrl: 'customers/templates/customerEdit.tpl.html',
             controller: 'CustomerEditCtrl',
             controllerAs: 'customerEdit',
@@ -45,7 +45,7 @@ function CustomerConfig($stateProvider) {
             }
         })
         .state('customers.edit.addressEdit', {
-            url: '/:buyerid/edit/:addressid',
+            url: '/:addressid',
             templateUrl: 'customers/templates/addressEdit.tpl.html',
             controller: 'CustomerAddressEditCtrl',
             controllerAs: 'customerAddressEdit',
@@ -61,7 +61,7 @@ function CustomerConfig($stateProvider) {
             }
         })
         .state('customers.edit.addressCreate', {
-            url: '/:buyerid/edit/address/create',
+            url: '/address/create',
             templateUrl: 'customers/templates/addressCreate.tpl.html',
             controller: 'CustomerAddressCreateCtrl',
             controllerAs:'customerAddressCreate',
@@ -96,7 +96,7 @@ function CustomerConfig($stateProvider) {
 function CustomerService($sce, OrderCloud, $exceptionHandler) {
     var _weirGroups = [{id: "1", label: "WCVUK"}, {id: "2", label: "WPIFR"}];
     var _customerTypes = [{id: "1", label: "End User"}, {id: "2", label: "Service Company"}];
-    var _componentLabels = {
+    var labels = {
         en: {
             NewCustomer: "New Customer",
             WeirGroup: "Weir Group",
@@ -214,16 +214,106 @@ function CustomerService($sce, OrderCloud, $exceptionHandler) {
         CreateBuyer: _createBuyer,
         CreateAddress: _createAddress,
         UpdateAddress: _updateAddress,
-        Labels: _componentLabels
     };
 }
 
-function CustomerCtrl($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, BuyerList, CustomerService, WeirService) {
+function CustomerCtrl($state, $ocMedia, OrderCloud, OrderCloudParameters, Parameters, BuyerList, CustomerService, WeirService, $sce) {
     var vm = this;
     vm.list = BuyerList;
     vm.parameters = Parameters;
     vm.sortSelection =  Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
-    vm.labels = CustomerService.Labels[WeirService.Locale()];
+
+    var labels = {
+        en: {
+            NewCustomer: "New Customer",
+            WeirGroup: "Weir Group",
+            CustomerType: "Customer Type",
+            SelectGroup: "(Select Weir Group)",
+            SelectType: "(Select Customer Type)",
+            Active: "Active",
+            Terms: "Terms and Conditions",
+            ShippingDetails: "Shipping Details",
+            NewAddress: "New Address",
+            AddressId:"Address ID",
+            AddressName:"Address Name",
+            CompanyName:"Company Name",
+            FirstName:"First Name",
+            LastName:"Last Name",
+            StreetOne: "Street 1",
+            StreetTwo: "Street 2",
+            City: "City",
+            County: "County",
+            PostCode: "Post Code",
+            Country: "Country",
+            PhoneNumber: "Phone Number",
+            Primary: "Primary",
+            Save: "Save",
+            Cancel: "Cancel",
+            Edit: "Edit",
+            EditAddress: "Edit Address",
+            SetInactive: "Set as Inactive",
+            AssignmentsFor: "Assignments for",
+            ID: "ID",
+            Name: "Name",
+            Back: "Back",
+            UpdateAssignments: "Update Assignments",
+            EditCustomer: "Edit Customer",
+            CreateNew: "Create New",
+            Address: "Address",
+            Addresses: "Addresses",
+            NoMatch: "No matches found.",
+            LoadMore: "Load More",
+            Customers: "Customers",
+            Search: "Search",
+            Yes: "Yes",
+            No: "No"
+        },
+        fr: {
+            NewCustomer: $sce.trustAsHtml("Nouveau client"),
+            WeirGroup: $sce.trustAsHtml("Groupe Weir"),
+            CustomerType: $sce.trustAsHtml("Type de client"),
+            SelectGroup: $sce.trustAsHtml("(Sélectionner le group Weir)"),
+            SelectType: $sce.trustAsHtml("(Sélectionner le group Weir)"),
+            Active: $sce.trustAsHtml("Actif"),
+            Terms: $sce.trustAsHtml("Réviser les termes et conditions"),
+            ShippingDetails: $sce.trustAsHtml("Détails de livraison"),
+            NewAddress: $sce.trustAsHtml("Nouvelle adresse"),
+            AddressId: $sce.trustAsHtml("Identification de l'adresse"),
+            AddressName: $sce.trustAsHtml("Nom de l'adresse"),
+            CompanyName: $sce.trustAsHtml("Nom de l'entreprise"),
+            FirstName: $sce.trustAsHtml("Prénom"),
+            LastName: $sce.trustAsHtml("Nom"),
+            StreetOne: $sce.trustAsHtml("Rue 1"),
+            StreetTwo: $sce.trustAsHtml("Rue 2"),
+            City: $sce.trustAsHtml("Ville"),
+            County: $sce.trustAsHtml("Région"),
+            PostCode: $sce.trustAsHtml("Code postal"),
+            Country: $sce.trustAsHtml("Pays"),
+            PhoneNumber: $sce.trustAsHtml("Numéro de télephone"),
+            Primary: $sce.trustAsHtml("Primaire"),
+            Save: $sce.trustAsHtml("Enregistrer"),
+            Cancel: $sce.trustAsHtml("Annuler"),
+            Edit: $sce.trustAsHtml("Éditer"),
+            EditAddress: $sce.trustAsHtml("Éditer l'adresse"),
+            SetInactive: $sce.trustAsHtml("Définir comme inactif"),
+            AssignmentsFor: $sce.trustAsHtml("Affectations pour"),
+            ID: $sce.trustAsHtml("Identification"),
+            Name: $sce.trustAsHtml("Nom"),
+            Back: $sce.trustAsHtml("Contre"),
+            UpdateAssignments: $sce.trustAsHtml("Changer l'affectation"),
+            EditCustomer: $sce.trustAsHtml("Modifier le client"),
+            CreateNew: $sce.trustAsHtml("Créer un nouveau client"),
+            Address: $sce.trustAsHtml("Adresse"),
+            Addresses: $sce.trustAsHtml("Adresses"),
+            NoMatch: $sce.trustAsHtml("Aucun résultat"),
+            LoadMore: $sce.trustAsHtml("Afficher plus"),
+            Customers: $sce.trustAsHtml("Clients"),
+            Search: $sce.trustAsHtml("Rechercher"),
+            Yes: $sce.trustAsHtml("Oui"),
+            No: $sce.trustAsHtml("Non")
+        }
+    };
+    vm.labels = labels[WeirService.Locale()];
 
     //check if filters are applied
     vm.filtersApplied = vm.parameters.filters || ($ocMedia('max-width:767px') && vm.sortSelection); //Sort by is a filter on mobile devices
@@ -292,13 +382,13 @@ function CustomerCtrl($state, $ocMedia, OrderCloud, OrderCloudParameters, Parame
     };
 }
 
-function CustomerEditCtrl($exceptionHandler, $scope, $state, $ocMedia, toastr, OrderCloud, SelectedBuyer, AddressList, CustomerService, Parameters, Underscore, OrderCloudParameters, WeirService) {
+function CustomerEditCtrl($exceptionHandler, $scope, $state, $ocMedia, toastr, OrderCloud, SelectedBuyer, AddressList, CustomerService, Parameters, Underscore, OrderCloudParameters) {
     var vm = this;
     $scope.$state = $state;
     vm.buyer = SelectedBuyer;
     vm.list = AddressList;
     vm.parameters = Parameters;
-    vm.labels = CustomerService.Labels[WeirService.Locale()];
+    //vm.labels = CustomerService.Labels[WeirService.Locale()];
     vm.sortSelection =  Parameters.sortBy ? (Parameters.sortBy.indexOf('!') == 0 ? Parameters.sortBy.split('!')[1] : Parameters.sortBy) : null;
 
     //check if filters are applied
@@ -401,7 +491,7 @@ function CustomerCreateCtrl($q, $state, toastr, CustomerService, OCGeography, We
     vm.types = CustomerService.CustomerTypes;
     vm.countries = OCGeography.Countries;
     vm.states = OCGeography.States;
-    vm.labels = CustomerService.Labels[WeirService.Locale()];
+    //vm.labels = CustomerService.Labels[WeirService.Locale()];
     vm.Submit = _submit;
 
     function _submit() {
@@ -439,7 +529,7 @@ function CustomerAddressEditCtrl($exceptionHandler, $state, $scope, toastr, Orde
     vm.address = SelectedAddress;
     vm.countries = OCGeography.Countries;
     vm.states = OCGeography.States;
-    vm.labels = CustomerService.Labels[WeirService.Locale()];
+    //vm.labels = CustomerService.Labels[WeirService.Locale()];
     var original = angular.copy(vm.address); //use this to make the copy if there are dirty items. Set the active to false and primary to false if versioning.
 
     vm.Submit = _submit;
@@ -558,7 +648,7 @@ function CustomerAddressCreateCtrl($exceptionHandler, $state, toastr, OrderCloud
     vm.countries = OCGeography.Countries;
     vm.states = OCGeography.States;
     vm.address = {Country: null};
-    vm.labels = CustomerService.Labels[WeirService.Locale()];
+    //vm.labels = CustomerService.Labels[WeirService.Locale()];
     vm.address.xp = {};
     vm.address.xp.active = true;
     vm.Submit = _submit;
@@ -617,7 +707,7 @@ function CustomerAssignCtrl($exceptionHandler, $scope, $state, toastr, Underscor
     vm.endUsers = angular.copy(EndUsers);
     vm.assignments = angular.copy(SelectedBuyer.xp.Customers);
     vm.serviceCompany = SelectedBuyer;
-    vm.labels = CustomerService.Labels[WeirService.Locale()];
+    //vm.labels = CustomerService.Labels[WeirService.Locale()];
     EndUsers.Items = Underscore.filter(EndUsers.Items, function(item) {
         return item.Active == true && item.xp.Type.id == 1 && item.xp.WeirGroup.id == vm.serviceCompany.xp.WeirGroup.id;
     });

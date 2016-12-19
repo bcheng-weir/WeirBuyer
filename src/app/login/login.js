@@ -15,7 +15,7 @@ function LoginConfig($stateProvider) {
     ;
 }
 
-function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, CurrentOrder, clientid, buyerid, anonymous, appname, $localForage) {
+function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, clientid, buyerid, anonymous, appname, $localForage) {
     return {
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
@@ -199,7 +199,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $sce, $cookieS
             PasswordLabel: $sce.trustAsHtml("Mot de passe"),
             BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
             ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
-            RememberMe: $sce.trustAsHtml("Souviens-toi de moi"),
+            RememberMe: $sce.trustAsHtml("souvenir de mes identifiants"),
             WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
             NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
             ConfirmPasswordLabel: $sce.trustAsHtml("Confirmer votre mot de passe"),
@@ -207,7 +207,7 @@ function LoginController($state, $stateParams, $exceptionHandler, $sce, $cookieS
             ForgotMessageLabel: $sce.trustAsHtml("Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe."),
             ResetPasswordLabel: $sce.trustAsHtml("Changer de mot de passe"),
             SubmitLabel: $sce.trustAsHtml("Soumettre  <i class='icon-right-arrow'></i>"),
-            BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de v&eacute;rifier vos identifiant, puis veuillez r&eacute;essayer.")
+            BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de vérifier vos identifiant, puis veuillez réessayer.")
         }
     };
     var navlabels = WeirService.navBarLabels();

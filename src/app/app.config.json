@@ -2,10 +2,9 @@
 	"appname": "store.flowcontrol.weir",
 	"tmpscope": "FullAccess",
 	"scope": "ProductReader BuyerReader CatalogReader CategoryReader AddressAdmin AddressReader OrderAdmin OrderReader UnsubmittedOrderReader PriceScheduleReader BuyerUserAdmin BuyerUserReader UserGroupAdmin UserGroupReader ApprovalRuleReader MeAdmin MeXpAdmin MeAddressAdmin",
-  	"clientid": "290DD50B-0085-4AB4-94F4-57F315AB9BE0",
-  	"qaclientid": "267E3A43-7997-4DAA-BF76-C6520CDA383C",
+	"clientid": "267E3A43-7997-4DAA-BF76-C6520CDA383C",
 	"buyerid": "",
-	"environment": "prod",
+	"environment": "qa",
 	"anonymous": false,
 	"searchglobal": false,
 	"base": {

@@ -10,38 +10,9 @@ function HomeConfig($stateProvider) {
 			url: '/home',
 			templateUrl: 'home/templates/home.tpl.html',
 			controller: 'HomeCtrl',
-			controllerAs: 'home',
-            resolve: {
-                Language: function (OrderCloud, $cookieStore, $q, WeirService) {
-                    var cust = OrderCloud.BuyerID.Get();
-
-                    //if(!cust) cust = null; oc has a null check for api call- this is not needed anymore.
-
-                    $q.when(OrderCloud.Buyers.Get(cust)).then(function (buyer) {
-                        var lang = WeirService.Locale();
-                        //set the expiration date of the cookie.
-                        var now = new Date();
-                        var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
-                        if (buyer.xp.WeirGroup.id == 2) {
-                            //make it fr
-                            lang = "fr";
-                            $cookieStore.put('language', 'fr', {
-                                expires: exp
-                            });
-                        }
-                        if (buyer.xp.WeirGroup.id == 1) {
-                            //make it en
-                            lang = "en";
-                            $cookieStore.put('language', 'en', {
-                                expires: exp
-                            });
-                        }
-                    })
-                        .catch(function(ex){
-                            //issue with the promise not returning 
-                    });
-                }
-            }
+			controllerAs: 'home'
+            //removing the resolve as it is not executing quickly enough to set language for the home and base. It is now
+            //line 247 of login.js and executes there.
 		});
 }
 

@@ -154,7 +154,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
     }
 }
 
-function LoginController($state, $stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
+function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $cookieStore, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
     var vm = this;
 	var username = null;
 	LoginService.GetUsername()
@@ -244,6 +244,24 @@ function LoginController($state, $stateParams, $exceptionHandler, $sce, $cookieS
                             .then(function () {
                                 return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
                             });
+                            var lang = WeirService.Locale();
+                            //set the expiration date of the cookie.
+                            var now = new Date();
+                            var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+                            if (buyer.xp.WeirGroup.id == 2) {
+                                //make it fr
+                                lang = "fr";
+                                $cookieStore.put('language', 'fr', {
+                                    expires: exp
+                                });
+                            }
+                            if (buyer.xp.WeirGroup.id == 1) {
+                                //make it en
+                                lang = "en";
+                                $cookieStore.put('language', 'en', {
+                                    expires: exp
+                                });
+                            }
                         LoginService.RouteAfterLogin();
                     }
                 });

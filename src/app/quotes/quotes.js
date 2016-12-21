@@ -179,10 +179,10 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			Search: "Search"
 		},
 		fr: {
-		    Saved: $sce.trustAsHtml("Sauvé"),
-		    InReview: $sce.trustAsHtml("Cotation soumise &agrave; révision"),
-		    Revised: $sce.trustAsHtml("Cotation révisée"),
-		    Confirmed: $sce.trustAsHtml("Devis confirmé"),
+		    Saved: $sce.trustAsHtml("Enregistrée(s)"),
+		    InReview: $sce.trustAsHtml("Cotation(s) soumise(s) à révision"),
+		    Revised: $sce.trustAsHtml("Cotation(s) révisée(s)"),
+		    Confirmed: $sce.trustAsHtml("Cotation(s) confirmée(s)"),
 			LoadMore: $sce.trustAsHtml("Afficher plus"),
             Search: $sce.trustAsHtml("Rechercher")
 		}

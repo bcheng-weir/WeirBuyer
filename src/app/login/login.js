@@ -199,7 +199,7 @@ function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $coo
             PasswordLabel: $sce.trustAsHtml("Mot de passe"),
             BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
             ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
-            RememberMe: $sce.trustAsHtml("souvenir de mes identifiants"),
+            RememberMe: $sce.trustAsHtml("Se souvenir de mes identifiants"),
             WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
             NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
             ConfirmPasswordLabel: $sce.trustAsHtml("Confirmer votre mot de passe"),

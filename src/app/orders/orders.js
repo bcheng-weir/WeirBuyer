@@ -25,6 +25,8 @@ function OrdersConfig($stateProvider) {
 	            Orders: function(OrderCloud, WeirService, Parameters, Me) {
                 	//return WeirService.FindOrders(Parameters, false);
 		            Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
+		            // Filter on Me.Profile.ID == FromUserID
+		            Parameters.filters.FromUserID = Me.Profile.ID;
                     return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 10, Parameters.searchOn, Parameters.sortBy, Parameters.filters, Me.Org.ID);
 				}
             }

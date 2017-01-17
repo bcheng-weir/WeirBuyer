@@ -596,8 +596,10 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 	if (!vm.partNumberResults || !vm.partNumberResults.Parts || vm.partNumberResults.Parts.length == 0) $state.go('search.noresults');
 	var numFound = 0;
 	angular.forEach(PartNumberResults.Parts, function(entry) {
-		if (entry.Detail) numFound++;
-		console.log(entry.Detail.StandardPriceSchedule.PriceBreaks[0].Price);
+	    if (entry.Detail) {
+	        numFound++;
+	        //console.log(entry.Detail.StandardPriceSchedule.PriceBreaks[0].Price);
+	    }
 	});
 
 	var labels = {

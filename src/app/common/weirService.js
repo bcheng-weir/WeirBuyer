@@ -482,11 +482,13 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                                     "ParentID": cust.id
                                 }, null, cust.id.substring(0, 5))
                                     .then(function (matches) {
-                                        if (matches.Items.length == 1) {
-                                            results.push({ Number: number, Detail: matches.Items[0] });
+                                        if (matches.Items.length > 0) {
+	                                        angular.forEach(matches.Items, function(match, key) {
+	                                            results.push({Number: number, Detail: match});
+	                                        });
                                         } else {
-                                            results.push({ Number: number, Detail: null });
-                                        }
+											results.push({ Number: number, Detail: null });
+	                                    }
                                         d.resolve();
                                     })
                                     .catch(function (ex) {

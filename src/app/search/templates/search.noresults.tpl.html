@@ -1,4 +1,4 @@
-<article>
+<article id="COMPONENT_NoResults">
     <div class="row">
         <div class="col-md-8">
             <h4 ng-bind-html="noResult.labels.CantFindHeader"></h4>
@@ -10,16 +10,19 @@
             </p>
         <form name="myForm" novalidate>
             <div class="form-group">
-                <h4><label for="numberOfItem" ng-bind-html="noResult.labels.SerNumPrompt"></label></h4>
-                <input type="text" class="form-control" id="numberOfItem" ng-model="noResult.searchTerm" required>
+                <div>
+                    <h4><label for="numberOfItem" ng-bind-html="noResult.labels.SerNumPrompt"></label></h4>
+                    <input type="text" class="form-control has-warning" id="numberOfItem" ng-model="noResult.searchTerm" required>
+                </div>
             </div>
             <div class="form-group">
-                <h4><label for="detailsOfSpare" ng-bind-html="noResult.labels.SparesPrompt"></label></h4>
-                <input type="text" class="form-control" id="detailsOfSpare" ng-model="noResult.info" required>
+                <div>
+                    <h4><label for="detailsOfSpare" ng-bind-html="noResult.labels.SparesPrompt"></label></h4>
+                    <input type="text" class="form-control has-warning" id="detailsOfSpare" ng-model="noResult.info" required>
+                </div>
             </div>
             <div class="pull-right">
-                <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%"
-			ng-click="noResult.submitEnquiry()" ng-disabled="myForm.$invalid" ng-bind-html="noResult.labels.Submit"></button>
+                <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%" ng-click="noResult.submitEnquiry()" ng-disabled="myForm.$invalid" ng-bind-html="noResult.labels.Submit"></button>
             </div>
         </form>
 

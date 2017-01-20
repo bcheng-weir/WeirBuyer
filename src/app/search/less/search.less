@@ -22,3 +22,18 @@
     width: 16em;
   }
 }
+
+#COMPONENT_NoResults {
+  .form-group div {
+    position:relative;
+    margin-right:2em;
+  }
+  .form-group div:after {
+    position:absolute;
+    content:'*';
+    color:red;
+    font-weight: bold;
+    right:-1em;
+    top:2em;
+  }
+}

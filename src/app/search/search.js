@@ -870,12 +870,12 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 	};
 }
 
-function NoResultsController($state, $sce, WeirService, OrderCloud, toastr) {
+function NoResultsController($state, $sce, WeirService, OrderCloud, toastr, Me) {
     var vm = this;
     vm.searchTerm = "";
     vm.info = "";
     vm.locale = WeirService.Locale();
-
+    console.log(Me);
 	vm.submitEnquiry = function (form) {
 	    var data = {
 	        xp: {
@@ -884,14 +884,15 @@ function NoResultsController($state, $sce, WeirService, OrderCloud, toastr) {
                     details: vm.info
 	            }
 	        }
-	    }
-	    OrderCloud.Me.Patch(data)
-        .then(function (usr) {
-            toastr.success(vm.labels.SubmittedMessage);
-            vm.searchTerm = "";
-            vm.info = "";
-	        form.$setPristine(true);
-        });
+	    };
+	    //OrderCloud.Me.Patch(data)
+		OrderCloud.Users.Patch(Me.Profile.ID, data, Me.Org.ID)
+	        .then(function (usr) {
+	            toastr.success(vm.labels.SubmittedMessage);
+	            vm.searchTerm = "";
+	            vm.info = "";
+		        form.$setPristine(true);
+	        });
     };
     vm.searchAgain = function () {
         var searchType = WeirService.GetLastSearchType();

@@ -876,7 +876,7 @@ function NoResultsController($state, $sce, WeirService, OrderCloud, toastr) {
     vm.info = "";
     vm.locale = WeirService.Locale();
 
-	vm.submitEnquiry = function () {
+	vm.submitEnquiry = function (form) {
 	    var data = {
 	        xp: {
 	            enquiry: {
@@ -890,6 +890,7 @@ function NoResultsController($state, $sce, WeirService, OrderCloud, toastr) {
             toastr.success(vm.labels.SubmittedMessage);
             vm.searchTerm = "";
             vm.info = "";
+	        form.$setPristine(true);
         });
     };
     vm.searchAgain = function () {

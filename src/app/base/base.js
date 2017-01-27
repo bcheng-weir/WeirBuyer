@@ -266,7 +266,7 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             },
             "orders.revised": {
                 "xp.Type": "Order",
-                "xp.Status": WeirService.OrderStatus.RevisedOrder.id,
+                "xp.Status": WeirService.OrderStatus.RevisedOrder.id+"|"+WeirService.OrderStatus.RejectedRevisedOrder.id,
                 "xp.Active": true
             },
             "orders.confirmed": {

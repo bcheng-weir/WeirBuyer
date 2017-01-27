@@ -250,7 +250,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 
 	vm.ReviewOrder = _reviewOrder;
 	function _reviewOrder(orderId, status, buyerId) {
-		if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id) {
+		if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id || status == WeirService.OrderStatus.RejectedRevisedOrder.id) {
 			$state.transitionTo('readonly', {quoteID: orderId, buyerID: buyerId});
 		} else if(status == WeirService.OrderStatus.RevisedOrder.id) {
 			$state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });

@@ -241,7 +241,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		var filter = {
 			"orders.submitted":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true},
 			"orders.pending":{"xp.Type":"Order", "xp.PendingPO":true, "xp.Active":true},
-			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id+"|"+WeirService.OrderStatus.RejectedRevisedOrder, "xp.Active":true},
+			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id+"|"+WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active":true},
 			"orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":true},
 			"orders.despatched":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.Despatched.id, "xp.Active":true}
 		};

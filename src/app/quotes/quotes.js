@@ -224,7 +224,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 	vm.CurrentOrderId = CurrentOrderId;
 	
 	function _reviewQuote(quoteId, status, buyerId) {
-	    if (status == WeirService.OrderStatus.ConfirmedQuote.id) {
+	    if (status == WeirService.OrderStatus.ConfirmedQuote.id || status == WeirService.OrderStatus.RejectedQuote.id) {
 		    $state.go('readonly', { quoteID: quoteId, buyerID: buyerId });
 	    } else if(status == WeirService.OrderStatus.RevisedQuote.id) {
 		    $state.go('revised', { quoteID: quoteId, buyerID: buyerId });

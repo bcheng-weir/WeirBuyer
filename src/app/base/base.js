@@ -346,7 +346,7 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
     };
 }
 
-function NewQuoteModalController($uibModalInstance, WeirService) {
+function NewQuoteModalController($uibModalInstance, WeirService, $sce) {
     var vm = this;
 
     vm.continue = function () {

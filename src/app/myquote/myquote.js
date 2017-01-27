@@ -1676,7 +1676,8 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
 }
 
 function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography,
-                                Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me, fileStore, FilesService, FileSaver) {
+                                Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me,
+                                fileStore, FilesService, FileSaver, QuoteToCsvService) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -1948,7 +1949,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		}
 	}
 	function toCsv() {
-		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, vm.labels);
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";

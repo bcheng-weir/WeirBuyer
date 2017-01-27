@@ -13,7 +13,7 @@
                 <!--<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-click="revised.Print()">
                     <a href="#"><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('printer.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Print'></span></a>
                 </div>-->
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{revised.CsvFilename}}">
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="revised.ToCsvJson" filename="{{revised.CsvFilename}}">
                     <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
                 </div>
                 <!--<div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">-->

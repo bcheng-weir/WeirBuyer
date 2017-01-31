@@ -27,7 +27,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
     };
 
     function _routeAfterLogin() {
-        //SetFSInfo();
+        SetFSInfo();
         var storageName = appname + '.routeto';
         $localForage.getItem(storageName)
         .then(function (rte) {

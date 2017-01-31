@@ -17,4 +17,5 @@ function StylesConfig($stateProvider) {
 
 function StylesController() {
 	var vm = this;
+	//This is the styles controller.
 }

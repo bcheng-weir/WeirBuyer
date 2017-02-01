@@ -81,12 +81,17 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
             },
             MyOrg: function($q, OrderCloud) {
                 var buyerId = OrderCloud.BuyerID.Get();
-                return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
+                //return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
+                if(buyerid) {
+                	return OrderCloud.Buyers.Get(buyerid);
+                } else {
+                	return null;
+                }
             },
             AnonymousUser: function($q, OrderCloud, CurrentUser) {
                 CurrentUser.Anonymous = angular.isDefined(JSON.parse(atob(OrderCloud.Auth.ReadToken().split('.')[1])).orderid);
             },
-            ComponentList: function($state, $q, Underscore, CurrentUser) {
+            ComponentList: function($state, $q, Underscore) {
                 var deferred = $q.defer();
                 var nonSpecific = ['Buyers', 'Products', 'Customers'];
                 var components = {

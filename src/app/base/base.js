@@ -82,8 +82,8 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
             MyOrg: function($q, OrderCloud) {
                 var buyerId = OrderCloud.BuyerID.Get();
                 //return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
-                if(buyerid) {
-                	return OrderCloud.Buyers.Get(buyerid);
+                if(buyerId) {
+                	return OrderCloud.Buyers.Get(buyerId);
                 } else {
                 	return null;
                 }

@@ -191,6 +191,7 @@
             <!--<p><b><span ng-bind-html='review.labels.CommentsHeader'></span></b></p>-->
             <div class="row">
                 <div class="col-xs-12">
+                    <p style="padding: 10px 0px 10px 0px"><strong><span ng-bind-html='myquote.labels.CommentNotice' ng-if="myquote.Quote.xp.Status == 'SV' || myquote.Quote.xp.Status == 'DR'"> </span></strong></p>
                     <ul class="nav nav-tabs">
                         <li class="active comments"><a href="#" id="Comments" ng-bind-html="review.labels.Comments"></a></li>
                     </ul>

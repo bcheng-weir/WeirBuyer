@@ -83,8 +83,9 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
                 var buyerId = OrderCloud.BuyerID.Get();
                 return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
             },
-            AnonymousUser: function($q, OrderCloud, CurrentUser) {
-                CurrentUser.Anonymous = angular.isDefined(JSON.parse(atob(OrderCloud.Auth.ReadToken().split('.')[1])).orderid);
+            AnonymousUser: function ($q, OrderCloud, CurrentUser) {
+                var tmp = OrderCloud.Auth.ReadToken();
+                CurrentUser.Anonymous = (tmp) ? angular.isDefined(JSON.parse(atob(OrderCloud.Auth.ReadToken().split('.')[1])).orderid) : false;
             },
             ComponentList: function($state, $q, Underscore) {
                 var deferred = $q.defer();

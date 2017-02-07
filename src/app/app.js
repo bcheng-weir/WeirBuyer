@@ -54,7 +54,8 @@ function Routing($urlRouterProvider, $urlMatcherFactoryProvider, $locationProvid
     $locationProvider.html5Mode(true);
 }
 
-function ErrorHandling($provide) {
+function ErrorHandling($provide, $qProvider) {
+    $qProvider.errorOnUnhandledRejections(false);
     $provide.decorator('$exceptionHandler', handler);
 
     function handler($delegate, $injector) {

@@ -12,7 +12,9 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
         'https://www.global.weir/**',
 	    'https://weirwebhooks.azurewebsites.net/**',
 	    'http://www.store.flowcontrol.weir/**',
-        'http://store.flowcontrol.weir/**'
+        'http://store.flowcontrol.weir/**',
+	    'https://s3.us-east-2.amazonaws.com/ordercloudtest/**',
+	    'https://s3.eu-west-2.amazonaws.com/ordercloudfiles/**'
     ]);
     var baseViews = {
         '': {

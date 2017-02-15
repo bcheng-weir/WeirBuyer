@@ -31,6 +31,7 @@ angular.module('orderCloud', [
     .config(Interceptor)
     .controller('AppCtrl', AppCtrl)
     .config(DatePickerConfig)
+    .directive('ngEnter', NgEnter)
 ;
 
 InitGA.$inject = ['$rootScope', '$location', '$window'];
@@ -137,4 +138,21 @@ function Interceptor($httpProvider) {
             }
         };
     });
+}
+
+/*
+This directive allows us to pass a function in on an enter key to do what we want.
+ */
+function NgEnter() {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.which === 13) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
 }

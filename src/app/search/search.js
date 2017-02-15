@@ -498,8 +498,9 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirSer
 	vm.headers = WeirService.LocaleResources(headers);
 
 	vm.addButtons = [];
-	vm.addPartToQuote = function(part, index) {
-		vm.addButtons[index] = true;
+	vm.addPartToQuote = function (part, index) {
+	    if (!part.Quantity) return;
+	    vm.addButtons[index] = true;
 		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
 		part.xp.SN = vm.serialNumber.Name;
 		part.xp.TagNumber = vm.serialNumber.xp.TagNumber;
@@ -638,7 +639,8 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 
 	vm.addButtons = [];
 	vm.addPartToQuote = function(part, index) {
-		vm.addButtons[index] = true;
+	    if (!part.Quantity) return;
+	    vm.addButtons[index] = true;
 		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
 		part.xp.SN = null;
 		part.xp.TagNumber = null;
@@ -858,7 +860,8 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 
 	vm.addButtons = [];
 	vm.addPartToQuote = function(part, index) {
-		vm.addButtons[index] = true;
+	    if (!part.Quantity) return;
+	    vm.addButtons[index] = true;
 		part.xp = typeof part.xp == "undefined" ? {} : part.xp;
 		part.xp.SN = vm.tagNumber.Name;
 		part.xp.TagNumber = vm.tagNumber.xp.TagNumber;

@@ -47,7 +47,7 @@
                         <th class="button-th"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="form-group">
                     <tr ng-repeat="line in detail.LineItems">
                         <td ng-bind-html="line.xp.SN"></td>
                         <td ng-bind-html="line.xp.TagNumber"></td>
@@ -63,7 +63,7 @@
                             <span ng-switch-default ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
                         </td>
                         <td class="form-inline">
-                            <input type="number" class="form-control" ng-model="line.Quantity" ng-min="0"
+                            <input type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-enter="detail.updateLineItem(myquote.Quote.ID,line)"
                                    ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" />
                             <button class="btn btn-default" ng-bind-html='detail.labels.Update' ng-click="detail.updateLineItem(myquote.Quote.ID,line)"></button>
                         </td>

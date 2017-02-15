@@ -769,7 +769,7 @@ function TagResultsController(WeirService, $stateParams, $state, TagNumberResult
             ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
         }
     };
-    //if (numFound == 0) $state.go('search.noresults');
+    if (numFound == 0) $state.go('search.noresults');
     vm.labels = WeirService.LocaleResources(labels);
 }
 

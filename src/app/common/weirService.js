@@ -477,7 +477,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                                         d.resolve();
                                     });
                             } else {
-                                OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
+                                OrderCloud.Me.ListCategories(null, 1, 50, null, null, {
                                     "xp.TagNumber": number,
                                     "ParentID": cust.id
                                 }, null, cust.id.substring(0, 5))

@@ -18,6 +18,7 @@ angular.module('orderCloud')
 	.controller('ChooseSubmitCtrl', ChooseSubmitController)
 	.controller('SubmitCtrl',SubmitController)
     .controller('TermsAndConditionsCtrl', TermsAndConditionsController)
+	.controller('CarriageModalCtrl', MissingCarriageDetailController)
 ;
 
 function QuoteShareService() {
@@ -192,7 +193,10 @@ function MyQuoteConfig($stateProvider) {
 		        },
 		        IsShopper: function (UserGroupsService) {
 		            return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Shoppers])
-		        }
+		        },
+				Catalog:  function (OrderCloud, $exceptionHandler) {
+                        return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
+                    }
 		    }
 		})
 		.state('myquote.detail', {
@@ -505,11 +509,12 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud) {
     var vm = this;
 	vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
+    vm.Catalog = Catalog;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
 	vm.ShippingAddress = ShippingAddress;
@@ -543,7 +548,9 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
-
+    vm.IsCarriageSelected = function() {
+        isCarriageReadyForBeyondDelivery();
+    };
 	function getStatusLabel() {
 	    if (vm.Quote.xp.Status) {
 	        var status = WeirService.LookupStatus(vm.Quote.xp.Status);
@@ -624,7 +631,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 
 		if (!$state.is("myquote.detail") || ((vm.Quote.xp.CommentsToWeir && vm.Quote.xp.CommentsToWeir.length > 0) && vm.Quote.xp.RefNum && vm.Quote.xp.Files && vm.Quote.xp.Files.length)) {
             $state.go("myquote.delivery");
-		} else {
+        } else {
             var modalInstance = $uibModal.open({
                 animation: true,
                 ariaLabelledBy: 'modal-title',
@@ -642,6 +649,24 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             modalInstance.result;
 		}
 	}
+	function isCarriageReadyForBeyondDelivery(){
+        //additional check if carriage rate type is set. if not show modal and do nothing.
+		var validForReview = true;
+        if(!vm.Quote.xp.CarriageRateType) {
+            validForReview = false;
+            var modalInstance = $uibModal.open({
+                animation: true,
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                templateUrl: 'myquote/templates/myquote.choosecarriagetypeErrorModal.tpl.html',
+                controller: 'CarriageModalCtrl',
+                controllerAs: 'carriageCtrl',
+                size: 'sm',
+            });
+            return false;
+        }//end of else where they dont have a carriageratetype
+        return true; //quote has carriage selected.
+    }
 	function noItemsMessage() {
         toastr.error(vm.labels.NoItemsError);
 	}
@@ -665,12 +690,28 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			"myquote.review":"myquote.submitquote"
 		};
 		var isValidForReview = function () {
-			return vm.Quote.ShippingAddressID != null && vm.HasLineItems();
+		    var validForReview = true;
+            validForReview = isCarriageReadyForBeyondDelivery() && validForReview;
+            validForReview = validForReview && (vm.Quote.ShippingAddressID != null);
+            validForReview = validForReview && vm.HasLineItems();
+		    return validForReview;
 		};
 		if(isValidForReview()) {
-			$state.go(goto[$state.current.name]);
+			//here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
+            OrderCloud.Orders.Patch(vm.Quote.ID, {xp:{CarriageRateType: vm.Quote.xp.CarriageRateType}}, OrderCloud.BuyerID.Get())
+                .then(function(order) {
+                    $state.go(goto[$state.current.name]);
+                })
+                .catch(function(ex) {
+                    $exceptionHandler(ex);
+                })
+
+		}
+		else{
+			$state.go($state.current, {}, {reload: false});
 		}
 	}
+
 
 	var labels = {
 	    en: {
@@ -829,6 +870,28 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.proceedToSubmit = _proceedToSubmit;
 }
 
+function MissingCarriageDetailController(WeirService, $state, $uibModalInstance, $sce, $exceptionHandler, $scope, $rootScope, OrderCloud) {
+    //translations
+    var vm = this;
+    var labels = {
+        en: {
+        	ModalMessage: "Please select your carriage option before reviewing your quote",
+            Close: "Close"
+		},
+        fr: {
+            ModalMessage: "FR: Please select your carriage option before reviewing your quote",
+            Close: "FR: Close"
+		}
+    };
+    vm.labels = WeirService.LocaleResources(labels);
+
+    //modal logic
+    var vm = this;
+    vm.Close = function () {
+        $uibModalInstance.close();
+    };
+}
+
 function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $scope, $rootScope, OrderCloud, QuoteShareService) {
     if ((QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) ||
         (QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id)) {
@@ -946,117 +1009,141 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography) {
-	var vm = this;
-	var activeAddress = function(address) { return address.xp.active == true; };
-	vm.addresses = Underscore.sortBy(Addresses.Items, function(address) {
-		return address.xp.primary;
-	}).filter(activeAddress).reverse();
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog) {
+    var vm = this;
+    var CarriageRate = Catalog.xp.StandardCarriage;
+    var activeAddress = function (address) {
+        return address.xp.active == true;
+    };
+    vm.addresses = Underscore.sortBy(Addresses.Items, function (address) {
+        return address.xp.primary;
+    }).filter(activeAddress).reverse();
 
-	//if the QuoteShareService.Quote.ShippingAddressID is null, set it to the vm.addresses[0] if the vm.addresses.length > 0
-	if(QuoteShareService.Quote.ShippingAddressID == null && vm.addresses.length > 0) {
-		//function _setShippingAddress(QuoteID, Address) {
-		_setShippingAddress(QuoteShareService.Quote.ID, vm.addresses[0]);
-	}
+    //if the QuoteShareService.Quote.ShippingAddressID is null, set it to the vm.addresses[0] if the vm.addresses.length > 0
+    if (QuoteShareService.Quote.ShippingAddressID == null && vm.addresses.length > 0) {
+        //function _setShippingAddress(QuoteID, Address) {
+        _setShippingAddress(QuoteShareService.Quote.ID, vm.addresses[0]);
+    }
 
-	vm.country = function(c) {
-		var result = Underscore.findWhere(OCGeography.Countries, {value:c});
-		return result ? result.label : '';
-	};
+    vm.country = function (c) {
+        var result = Underscore.findWhere(OCGeography.Countries, {value: c});
+        return result ? result.label : '';
+    };
 
-	var labels = {
-	    en: {
-	        DefaultAddress: "Your Default Address",
-	        AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Add a New Address"),
-	        DeliveryInfo: "Delivery Information",
-	        DeliverHere: "Deliver to this Address",
-	        ReviewQuote: "Review Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
-	        BackToQuote: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quote",
-	        InfoText1: "Delivery costs will be confirmed on Order.",
-	        InfoText2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
-	        InfoText3: "Lead time for all orders will be based on the longest lead time from the list of spares requested.",
-			ShippingAddress: "Shipping address successfully selected.",
-			ShippingAddressSet: "Shipping address set to ",
-			Success: "Success",
-            ShippingAddressTitle: "Shipping Address Set"
-	    },
-	    fr: {
-	        DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
-	        AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Ajouter une nouvelle adresse"),
-	        DeliveryInfo: $sce.trustAsHtml("Informations de livraison"),
-	        DeliverHere: $sce.trustAsHtml("Livrer &agrave; cette adresse"),
-	        ReviewQuote: $sce.trustAsHtml("Revue de cotation <i class='fa fa-angle-right' aria-hidden='true'></i>"),
-	        BackToQuote: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; votre cotation"),
-	        InfoText1: $sce.trustAsHtml("Les frais de livraison seront confirm&eacute;s &agrave; la commande."),
-	        InfoText2: $sce.trustAsHtml("Les livraisons seront pr&eacute;par&eacute;es pour l'exp&eacute;dition sur la base de vos instructions de livraison standard."),
-	        InfoText3: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es"),
+
+    var labels = {
+        en: {
+            DefaultAddress: "Your Default Address",
+            AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Add a New Address"),
+            DeliveryInfo: "Delivery Information",
+            DeliverHere: "Deliver to this Address",
+            ReviewQuote: "Review Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
+            BackToQuote: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quote",
+            InfoText1: "Delivery costs will be confirmed on Order.",
+            InfoText2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
+            InfoText3: "Lead time for all orders will be based on the longest lead time from the list of spares requested.",
+            ShippingAddress: "Shipping address successfully selected.",
+            ShippingAddressSet: "Shipping address set to ",
+            Success: "Success",
+            ShippingAddressTitle: "Shipping Address Set",
+            //carriage labels
+            CarriageOptionsMsg: "Carriage Options",
+            CarriageStandardPrice: "£ " + CarriageRate + " UK delivery",
+            CarriageExWorks: "Ex works",
+            SelectOption: "*please select your carriage option",
+            CarriageInfo: "Delivery Information",
+            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of "+ CarriageRate +  " per order to one UK address.",
+            CarriageInfoP2: "Shipping address successfully selected Deliveries will be prepared for shipping based on your standard delivery instructions.",
+            CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
+
+        },
+        fr: {
+            DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
+            AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Ajouter une nouvelle adresse"),
+            DeliveryInfo: $sce.trustAsHtml("Informations de livraison"),
+            DeliverHere: $sce.trustAsHtml("Livrer &agrave; cette adresse"),
+            ReviewQuote: $sce.trustAsHtml("Revue de cotation <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+            BackToQuote: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; votre cotation"),
+            InfoText1: $sce.trustAsHtml("Les frais de livraison seront confirm&eacute;s &agrave; la commande."),
+            InfoText2: $sce.trustAsHtml("Les livraisons seront pr&eacute;par&eacute;es pour l'exp&eacute;dition sur la base de vos instructions de livraison standard."),
+            InfoText3: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es"),
             ShippingAddress: $sce.trustAsHtml("Votre adresse de livraison a bien été séléctionnée"),
             ShippingAddressSet: $sce.trustAsHtml("Livraison confirmée à cette adresse "),
             Success: $sce.trustAsHtml("Succès"),
-			ShippingAddressTitle: "Adresse de livraison"
-	    }
-	};
+            ShippingAddressTitle: "Adresse de livraison",
+            //carriage labels
+            CarriageOptionsMsg: "FR:Carriage Options",
+            CarriageStandardPrice: "fr: £ " + CarriageRate + " UK delivery",
+            CarriageExWorks: "FR:Ex works",
+            SelectOption: "FR:*please select your carriage option",
+            CarriageInfo: "FR:Carriage Information",
+            CarriageInfoP1: "FR:For spares orders placed on this platform, we offer a flat rate carriage charge of "+ CarriageRate +  " per order to one UK address.",
+            CarriageInfoP2: "FR:Shipping address successfully selectedDeliveries will be prepared for shipping based on your standard delivery instructions.",
+            CarriageInfoP3: "FR:Lead time for all orders will be based on the longest lead time from the list of spares requested."
+
+        }
+    };
     vm.labels = WeirService.LocaleResources(labels);
-	// We do this so we can display the addresses in a two column table.
-	vm.ChunkedData = _chunkData(vm.addresses,2);
-	function _chunkData(arr,size) {
-		var newArray = [];
-		for(var i=0;i<arr.length;i+=size) {
-			newArray.push(arr.slice(i,i+size));
-		}
-		return newArray;
-	}
+    // We do this so we can display the addresses in a two column table.
+    vm.ChunkedData = _chunkData(vm.addresses, 2);
+    function _chunkData(arr, size) {
+        var newArray = [];
+        for (var i = 0; i < arr.length; i += size) {
+            newArray.push(arr.slice(i, i + size));
+        }
+        return newArray;
+    }
 
-	vm.setShippingAddress = _setShippingAddress;
-	function _setShippingAddress(QuoteID, Address) {
-		OrderCloud.Orders.SetShippingAddress(QuoteID, Address, OrderCloud.BuyerID.Get())
-			.then(function(order) {
-				$state.go($state.current, {}, {reload: true});
-				toastr.success(vm.labels.ShippingAddress, vm.labels.Success);
-			})
-			.catch(function(ex) {
-				$exceptionHandler(ex);
-			});
-	}
+    vm.setShippingAddress = _setShippingAddress;
+    function _setShippingAddress(QuoteID, Address) {
+        OrderCloud.Orders.SetShippingAddress(QuoteID, Address, OrderCloud.BuyerID.Get())
+            .then(function (order) {
+                $state.go($state.current, {}, {reload: true});
+                toastr.success(vm.labels.ShippingAddress, vm.labels.Success);
+            })
+            .catch(function (ex) {
+                $exceptionHandler(ex);
+            });
+    }
 
-	vm.SaveCustomAddress = _saveCustomAddress;
-	function _saveCustomAddress() { return true; }
+    vm.SaveCustomAddress = _saveCustomAddress;
+    function _saveCustomAddress() {
+        return true;
+    }
 
-	vm.CustomShipping = _customShipping;
-	function _customShipping(QuoteID) {
-		var modalInstance = $uibModal.open({
-			animation: true,
-			templateUrl: 'newAddress.html',
-			controller: 'NewAddressModalCtrl',
-			controllerAs: 'NewAddressModal',
-			size: 'lg'
-		});
+    vm.CustomShipping = _customShipping;
+    function _customShipping(QuoteID) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'newAddress.html',
+            controller: 'NewAddressModalCtrl',
+            controllerAs: 'NewAddressModal',
+            size: 'lg'
+        });
 
-		var newAddressResults = {};
-		modalInstance.result
-			.then(function (address) {
-				return OrderCloud.Addresses.Create(address, OrderCloud.BuyerID.Get());
-			})
-			.then(function(newAddress) {
-				newAddressResults.ID = newAddress.ID;
-				newAddressResults.Name = newAddress.AddressName;
-				return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, OrderCloud.BuyerID.Get());
-			})
-			.then(function() {
-				return WeirService.AssignAddressToGroups(newAddressResults.ID);
-			})
-			.then(function() {
-				$state.go($state.current, {}, {reload: true});
-				toastr.success(vm.labels.ShippingAddressSet + newAddressResults.Name, vm.labels.ShippingAddressTitle);
-			})
-			.catch(function(ex) {
-				if(ex !== 'cancel') {
-					$exceptionHandler(ex);
-				}
-			});
-	}
-
-
+        var newAddressResults = {};
+        modalInstance.result
+            .then(function (address) {
+                return OrderCloud.Addresses.Create(address, OrderCloud.BuyerID.Get());
+            })
+            .then(function (newAddress) {
+                newAddressResults.ID = newAddress.ID;
+                newAddressResults.Name = newAddress.AddressName;
+                return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, OrderCloud.BuyerID.Get());
+            })
+            .then(function () {
+                return WeirService.AssignAddressToGroups(newAddressResults.ID);
+            })
+            .then(function () {
+                $state.go($state.current, {}, {reload: true});
+                toastr.success(vm.labels.ShippingAddressSet + newAddressResults.Name, vm.labels.ShippingAddressTitle);
+            })
+            .catch(function (ex) {
+                if (ex !== 'cancel') {
+                    $exceptionHandler(ex);
+                }
+            });
+    }
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,

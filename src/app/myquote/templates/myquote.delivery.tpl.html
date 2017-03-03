@@ -50,6 +50,34 @@
                     <br>
                 </div>
             </div>
+                <div style="margin-top: 5%;">
+                    <div style=" background-color: #eff0f1;">
+                        <div class="row" style="margin-left: 0px">
+                            <div>
+                                <span><b>{{delivery.labels.CarriageOptionsMsg}}</b></span>
+                            </div>
+                            <div>
+                                <form name="carriageForm" style="margin-top:1%;">
+                                    <div class="row" style="margin-left: 5px"><label style="font-weight: 200;"><input type="radio" value="'standard'" ng-model="myquote.Quote.xp.CarriageRateType" ><span style="margin-left: 10px;">{{delivery.labels.CarriageStandardPrice}}</span></label></div><br />
+                                    <div class="row"  style="margin-top: -2%; margin-left: 5px"><label style="font-weight: 200;"><input type="radio" value="'exworks'" ng-model="myquote.Quote.xp.CarriageRateType" ><span style="margin-left: 10px;">{{delivery.labels.CarriageExWorks}}</span></label></div>
+                                </form>
+                            </div>
+                            <div style="margin-left: 2%; margin-top: 1%; margin-bottom: 2%">
+                                <span>{{delivery.labels.SelectOption}}</span>
+                            </div>
+                        </div>
+                    </div>
+                <div class="row" style="margin-left: 0px; margin-top: 2%; margin-bottom: 2%;">
+                    <div class="col-md-7" style="margin-left: 0px;">
+                        <span><b>{{delivery.labels.CarriageInfo}}</b></span>
+                        <ul style="margin-top: 2%;">
+                            <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP1}}</li>
+                            <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP2}}</li>
+                            <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP3}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-5">
             <div class="pull-right">
@@ -60,10 +88,12 @@
                 <div class="col-md-8 pull-right">
                     <br />
                     <br />
+                    <!--
                     <p style="font-weight:bold; margin-left:-4em;" ng-bind-html="delivery.labels.DeliveryInfo"></p>
                         <p style="font-style:italic; margin-left:-4em;" ng-bind-html="delivery.labels.InfoText1"></p>
                         <p style="font-style:italic; margin-left:-4em;" ng-if="delivery.labels.InfoText2" ng-bind-html="delivery.labels.InfoText2"></p>
                         <p style="font-style:italic;margin-left:-4em;" ng-if="delivery.labels.InfoText3" ng-bind-html="delivery.labels.InfoText3"></p>
+                    -->
                 </div>
             </div>
         </div>

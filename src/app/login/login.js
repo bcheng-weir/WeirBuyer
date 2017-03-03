@@ -254,6 +254,7 @@ function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $coo
                                 $cookieStore.put('language', 'fr', {
                                     expires: exp
                                 });
+                                OrderCloud.CatalogID.Set(buyer.xp.WeirGroup.label);
                             }
                             if (buyer.xp.WeirGroup.id == 1) {
                                 //make it en
@@ -261,6 +262,7 @@ function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $coo
                                 $cookieStore.put('language', 'en', {
                                     expires: exp
                                 });
+                                OrderCloud.CatalogID.Set(buyer.xp.WeirGroup.label);
                             }
                         LoginService.RouteAfterLogin();
                     }

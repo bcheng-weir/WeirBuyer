@@ -2,7 +2,8 @@ var gulp = require('gulp'),
     config = require('../../gulp.config'),
     del = require('del'),
     inject = require('gulp-inject'),
-    mainBowerFiles = require('main-bower-files');
+    mainBowerFiles = require('main-bower-files'),
+    replace = require('gulp-replace');
 
 gulp.task('clean:inject', function() {
     return del(config.build + '*.html');
@@ -16,5 +17,6 @@ gulp.task('inject', ['clean:inject', 'scripts', 'assets', 'app-config', 'bower-f
     return target
         .pipe(inject(bowerFiles, {name: 'bower'}))
         .pipe(inject(appFiles))
+	    .pipe(replace('"/build/assets/styles/app.css"','"/build/assets/styles/app.css" media="screen"'))
         .pipe(gulp.dest(config.build));
 });

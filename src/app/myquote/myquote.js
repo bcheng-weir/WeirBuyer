@@ -521,6 +521,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	QuoteShareService.Quote = Quote;
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
+	vm.lineItems = QuoteShareService.LineItems;
+	console.log(vm.lineItems);
 	QuoteShareService.Payments = Payments.Items;
 	QuoteShareService.Comments = Quote.xp.CommentsToWeir;
 
@@ -657,14 +659,11 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	}
 	function print() {
 		//$timeout($window.print,1);
-		// TODO update to use the print-order service.
 		$uibModal.open({
 			animate:true,
 			size:'lg',
-			templateUrl:'common/print-order/templates/printorder.tpl.html',
-			controller:''
+			templateUrl:'common/print-order/templates/printorder.tpl.html'
 		});
-
 	}
 	function _next() {
 		// ToDo combine gotoDelivery() and next(), iot handle the "workflow" in one spot.

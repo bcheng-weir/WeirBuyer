@@ -1,5 +1,66 @@
-<div class="modal-header">Header</div>
-<div class="modal-body">
-    This is the order to print!
+<div class="printable">
+    <div class="modal-header">
+        <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
+        <p>
+            Weir Valves & Controls UK Ltd<br>
+            Britannia House, Huddersfield Road, Elland,<br>
+            West Yorkshire, HX5 9JR, UK.<br>
+        </p>
+        <p>
+            Tel: +44 (0)1422 282000<br>
+            Fax: +44 (0)1422 282100
+        </p>
+    </div>
+    <div class="modal-body">
+        <table>
+            <tr>
+                <td>Quote Number</td>
+                <td><span ng-bind-html="printctrl.order.ID"></span></td>
+            </tr>
+            <tr>
+                <td>Your Reference No</td>
+                <td><span ng-bind-html="printctrl.order.xp.RefNum"></span></td>
+            </tr>
+            <tr>
+                <td>PO Number</td>
+                <td><span ng-bind-html="printctrl.order.xp.PONumber"></span></td>
+            </tr>
+        </table>
+        <p>
+            We thank you for the above referenced quote request. We trust that this meets with your requirements, but should you require any further information or assistance, please do not hesitate to contact us.
+        </p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Tag Number (if available)</th>
+                    <th>Part Number</th>
+                    <th>Description of Part</th>
+                    <th>Recommended Replacement (yrs)</th>
+                    <th>Lead Time (days)</th>
+                    <th>Price Per Item or Set</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in printctrl.items">
+                    <td><span ng-bind-html="item.xp.SN"></span></td>
+                    <td><span ng-bind-html="item.xp.TagNumber"></span></td>
+                    <td><span ng-bind-html="item.Product.Name"></span></td>
+                    <td><span ng-bind-html="item.Product.Description"></span></td>
+                    <td><span ng-bind-html="item.Product.xp.ReplacementSchedule"></span></td>
+                    <td><span ng-bind-html="item.Product.xp.LeadTime"></span></td>
+                    <td ng-if="!item.UnitPrice||item.UnitPrice=='0'">POA</td>
+                    <td ng-if="item.UnitPrice" ng-switch on="item.Product.StandardPriceSchedule.xp.Currency">
+                        <span ng-switch-when="USD" ng-bind-html="item.UnitPrice | currency:'&#36;'"></span>
+                        <span ng-switch-when="GBP" ng-bind-html="item.UnitPrice | currency:'&#163;'"></span>
+                        <span ng-switch-when="EUR" ng-bind-html="item.UnitPrice | currency:'&#128;'"></span>
+                        <span ng-switch-default ng-bind-html="item.UnitPrice | currency:'&#163;'"></span>
+                    </td>
+                    <td><span ng-bind-html="item.Quantity"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">Footer</div>
 </div>
-<div class="modal-footer">Footer</div>

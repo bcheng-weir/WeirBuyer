@@ -3,9 +3,10 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(order) {
+function PrintOrderController(printData) {
 	var vm = this;
-	console.log(order.ID);
+	vm.order = printData.order;
+	vm.items = printData.items;
 }
 
 function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal) {
@@ -24,8 +25,10 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal) {
 	};
 
 	vm.Print = function() {
-		console.log($scope.order.ID);
-		// TODO Launch the Modal Print Form.
+		var printData = {
+			order:$scope.order,
+			items:$scope.items
+		};
 		$uibModal.open({
 			animation:true,
 			size:'lg',
@@ -33,7 +36,7 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal) {
 			controller:'printOrderCtrl',
 			controllerAs:'printctrl',
 			resolve: {
-				order:$scope.order
+				printData:printData
 			}
 		});
 	}
@@ -43,7 +46,8 @@ function PrintOrderButtonDirective () {
 	return {
 		restrict:'E',
 		scope:{
-			order:'=order'
+			order:'=order',
+			items:'=items'
 		},
 		templateUrl:'common/print-order/templates/printorderbutton.tpl.html',
 		controller:'printOrderBtnCtrl',

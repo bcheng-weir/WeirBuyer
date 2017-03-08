@@ -526,6 +526,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	QuoteShareService.Quote = Quote;
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
+	vm.lineItems = QuoteShareService.LineItems;
+	console.log(vm.lineItems);
 	QuoteShareService.Payments = Payments.Items;
 	QuoteShareService.Comments = Quote.xp.CommentsToWeir;
 
@@ -676,11 +678,17 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	function share() {
 		alert("TODO: Implement share quote");
 	}
+	//TODO - Remove. We now use toCsv().
 	function download() {
 		$timeout($window.print,1);
 	}
 	function print() {
-		$timeout($window.print,1);
+		//$timeout($window.print,1);
+		$uibModal.open({
+			animate:true,
+			size:'lg',
+			templateUrl:'common/print-order/templates/printorder.tpl.html'
+		});
 	}
 	function _next() {
 		// ToDo combine gotoDelivery() and next(), iot handle the "workflow" in one spot.
@@ -1146,9 +1154,9 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
     }
 }
 
-function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore, FilesService,
-	$scope, FileSaver, CheckStateChangeService) {
+function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal,
+    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Customer, fileStore, FilesService,
+	$scope, FileSaver) {
 	//CheckStateChangeService.checkFormOnStateChange($scope);
 	var vm = this;
 	vm.currentState = $state.$current.name;
@@ -1502,7 +1510,7 @@ function ModalInstanceController($uibModalInstance, $state, quote, labels) {
 	}
 }
 
-function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService, quote) {
+function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService) {
     var vm = this;
     vm.Cancel = cancel;
     vm.Continue = gotoDelivery;
@@ -2057,7 +2065,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, Me, fileStore, OrderCloud, FilesService, FileSaver) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloud, FilesService, FileSaver) {
     var vm = this;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
@@ -2508,6 +2516,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.gotoQuotes = _gotoQuotes;
 	vm.submitOrder = _submitOrder;
 }
+
 function TermsAndConditionsController($sce,WeirService){
     var vm = this;
 	var labels = {

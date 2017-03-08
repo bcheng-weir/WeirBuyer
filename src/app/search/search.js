@@ -254,12 +254,14 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	vm.labels = WeirService.LocaleResources(labels);
         var searchType = WeirService.GetLastSearchType();
 	searchType = searchType || WeirService.SearchType.Serial;
-	if($state.current.name == 'search.noresults') $state.go('search.noresults');
+	if ($state.current.name == 'search.noresults') {
+        // No further transition
+	}
 	else if (searchType == WeirService.SearchType.Part) {
 	    $state.go('search.part');
 	} else if (searchType == WeirService.SearchType.Tag) {
 	    $state.go('search.tag');
-	} else if (searchType == WeirService.SearchType.Serial){
+	} else if (searchType == WeirService.SearchType.Serial) {
 	    $state.go('search.serial');
 	}
 

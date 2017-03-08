@@ -67,6 +67,51 @@
                 </tr>
             </tbody>
         </table>
+        <div>
+            <p class="bold" ng-bind-html="printctrl.order.xp.CustomerName"></p>
+        </div>
+        <div>
+            <span class="bold">Delivery Address</span><br>
+            <span ng-bind-html="printctrl.address.CompanyName"></span><br>
+            <span ng-bind-html="printctrl.address.Street1"></span><br>
+            <span ng-if="printctrl.address.Street2" ng-bind-html="printctrl.address.Street2"></span><br ng-if="printctrl.address.Street2">
+            <span ng-bind-html="printctrl.address.City"></span><br>
+            <span ng-bind-html="printctrl.address.Zip"></span><br>
+            <span ng-bind-html="printctrl.address.Country"></span>
+        </div>
+        <div>
+            <span></span>
+        </div>
+        <div>
+            <p>Prices stated do not include UK VAT.</p>
+        </div>
+        <div>
+            <p>Weir Valves & Controls Ltd standard documentation included, additional documentation will be a chargeable extra.</p>
+        </div>
+        <div>
+            <p>Weir Valves & Controls Conditions of Sale will apply.</p>
+        </div>
+        <div>
+            <span></span>
+        </div>
+        <div>
+            <span></span>
+        </div>
+        <div>
+            <p>Vat: extra</p>
+        </div>
+        <div>
+            <span></span>
+        </div>
+        <div>
+            <span></span>
+        </div>
+        <div>
+            <span></span>
+        </div>
+        <div>
+            <p>Weir Valves & Controls UK Ltd Registered in England - Number 869208 Registered Office: Britannia House, Elland.</p>
+        </div>
     </div>
-    <div class="modal-footer">Footer</div>
+    <!--<div class="modal-footer">Footer</div>-->
 </div>

@@ -7,6 +7,7 @@ function PrintOrderController(printData,$timeout,$window) {
 	var vm = this;
 	vm.order = printData.order;
 	vm.items = printData.items;
+	vm.address = printData.address;
 	$timeout($window.print,1);
 }
 
@@ -28,12 +29,17 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal) {
 	vm.Print = function() {
 		var printData = {
 			order:$scope.order,
-			items:$scope.items
+			items:$scope.items,
+			address:$scope.address
+		};
+		var templates = {
+			en:'common/print-order/templates/printorder.tpl.html',
+			fr:'common/print-order/templates/printorderfr.tpl.html'
 		};
 		$uibModal.open({
 			animation:true,
 			size:'lg',
-			templateUrl:'common/print-order/templates/printorder.tpl.html',
+			templateUrl:templates[WeirService.Locale()],
 			controller:'printOrderCtrl',
 			controllerAs:'printctrl',
 			resolve: {
@@ -48,7 +54,8 @@ function PrintOrderButtonDirective () {
 		restrict:'E',
 		scope:{
 			order:'=order',
-			items:'=items'
+			items:'=items',
+			address:'=address'
 		},
 		templateUrl:'common/print-order/templates/printorderbutton.tpl.html',
 		controller:'printOrderBtnCtrl',

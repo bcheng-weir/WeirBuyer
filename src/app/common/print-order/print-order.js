@@ -3,10 +3,11 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData) {
+function PrintOrderController(printData,$timeout,$window) {
 	var vm = this;
 	vm.order = printData.order;
 	vm.items = printData.items;
+	$timeout($window.print,1);
 }
 
 function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal) {

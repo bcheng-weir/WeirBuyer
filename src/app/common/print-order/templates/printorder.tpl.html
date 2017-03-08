@@ -12,7 +12,7 @@
         </p>
     </div>
     <div class="modal-body">
-        <table>
+        <table id="quoteData">
             <tr>
                 <td>Quote Number</td>
                 <td><span ng-bind-html="printctrl.order.ID"></span></td>
@@ -29,7 +29,7 @@
         <p>
             We thank you for the above referenced quote request. We trust that this meets with your requirements, but should you require any further information or assistance, please do not hesitate to contact us.
         </p>
-        <table>
+        <table id="lineItems">
             <thead>
                 <tr>
                     <th>Serial Number</th>
@@ -43,7 +43,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="item in printctrl.items">
+                <tr ng-repeat="item in printctrl.items track by $index">
                     <td><span ng-bind-html="item.xp.SN"></span></td>
                     <td><span ng-bind-html="item.xp.TagNumber"></span></td>
                     <td><span ng-bind-html="item.Product.Name"></span></td>
@@ -58,6 +58,12 @@
                         <span ng-switch-default ng-bind-html="item.UnitPrice | currency:'&#163;'"></span>
                     </td>
                     <td><span ng-bind-html="item.Quantity"></span></td>
+                </tr>
+                <tr class="totals">
+                    <td colspan="5"></td>
+                    <td>Total</td>
+                    <td><span ng-bind-html="printctrl.order.Total"></span></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>

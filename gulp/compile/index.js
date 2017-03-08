@@ -1,7 +1,8 @@
 var gulp = require('gulp'),
     config = require('../../gulp.config'),
     del = require('del'),
-    inject = require('gulp-inject');
+    inject = require('gulp-inject'),
+    replace = require('gulp-replace');
 
 gulp.task('clean-index', function() {
     return del(config.compile + '**/*.html');
@@ -11,6 +12,8 @@ gulp.task('index', ['clean-index', 'app-js', 'lib-js', 'app-css', 'fonts', 'imag
     var target = gulp.src(config.index),
         libFiles = gulp.src(config.compile + '**/lib*.js', {read: false}),
         appFiles = gulp.src([config.compile + '**/app*.js', config.compile + '**/*.css'], {read: false});
+    var regex = /(\"assets\/styles\/app-+.*\")/;
+    var subst = `$1 media="screen"`;
 
     return target
         .pipe(inject(libFiles, {
@@ -26,5 +29,6 @@ gulp.task('index', ['clean-index', 'app-js', 'lib-js', 'app-css', 'fonts', 'imag
             ignorePath: config.compile.replace('./', '').replace('/', ''),
             addRootSlash: false
         }))
+        .pipe(replace(regex, subst))
         .pipe(gulp.dest(config.compile));
 });

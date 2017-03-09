@@ -1,0 +1,57 @@
+<article id="COMPONENT_Enquiry" class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <h3 ng-bind-html="enquiry.labels.CantFindHeader"></h3>
+            <br />
+	        <p style="font-style: italic;"  ng-bind-html="enquiry.labels.CantFindText1"></p>
+            <div class="pull-right">
+                <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;" ng-click="enquiry.searchAgain()" ng-bind-html="enquiry.labels.SearchAgain"></button>
+            </div>
+            <br />
+		    <hr />
+            <p style="font-style: italic;" ng-bind-html="enquiry.labels.CantFindText2"></p>
+            <nav>
+                <ol class="cd-breadcrumb triangle">
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.filter"><a href="#" ng-bind-html='enquiry.labels.FilterStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.select"><a href="#" ng-bind-html='enquiry.labels.SelectStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.delivery"><a href="#" ng-bind-html='enquiry.labels.DeliveryStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.review"><a href="#" ng-bind-html='enquiry.labels.ReviewStep'></a></li>
+                </ol>
+            </nav>
+
+            <ui-view />
+        </div>
+
+        <div class="col-md-4" style="padding: 0px 5px 0px 60px;">
+            <div class="pull-right">
+                <h3 ng-bind-html="enquiry.labels.YourContact"></h3>
+                <p ng-if="enquiry.locale=='en'">
+                    Weir Valves & Controls UK<br/>
+                    Britannia House<br/>
+                    Huddersfield Road<br/>
+                    Elland<br/>
+                    West Yorkshire<br/>
+                    HX5 9JR<br/>
+                    <a href="mailto:valvesupport@weirgroup.com">valvesupport@weirgroup.com</a><br/>
+                    T: +44 (0)142 228 2000<br/>
+                    F: +44 (0)142 228 2100<br/>
+                    Or<br/>
+                    Sanjay Sharma<br/>
+                    Aftermarket Development Manager<br/>
+                    <a href="mailto:Sanjay.sharma@mail.weir">Sanjay.sharma@mail.weir</a><br/>
+                    M: +44 (0)7825 820041<br/>
+                    T: +44 (0)1422 282 314<br/>
+                </p>
+                <p ng-if="enquiry.locale=='fr'">
+                    Sarasin-RSBD <br />
+                    ZI Du Bois Rigault<br />
+                    Rue Jean Baptiste Grison<br />
+                    Vendin Le Vieil 62880<br />
+                    <a href="mailto:sarasin.rsbd@weirgroup.com">sarasin.rsbd@weirgroup.com</a><br />
+                    T: +33 (0)321 79 54 50<br />
+                    F: +33 (0)321 28 62 00<br />
+                </p>
+            </div>
+        </div>
+    </div>
+</article>

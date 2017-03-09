@@ -334,6 +334,9 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Payments: function ($stateParams, OrderCloud) {
 					return OrderCloud.Payments.List($stateParams.quoteID);
+				},
+				Catalog:  function (OrderCloud) {
+					return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
 				}
 			}
 		})
@@ -419,6 +422,9 @@ function MyQuoteConfig($stateProvider) {
 			    },
 			    Payments: function ($stateParams, OrderCloud) {
 				    return OrderCloud.Payments.List($stateParams.quoteID);
+			    },
+			    Catalog:  function (OrderCloud) {
+				    return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
 			    }
 		    }
 		})
@@ -504,6 +510,9 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Payments: function ($stateParams, OrderCloud) {
 					return OrderCloud.Payments.List($stateParams.quoteID);
+				},
+				Catalog:  function (OrderCloud) {
+					return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
 				}
 			}
 		})
@@ -512,7 +521,7 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud) {
     var vm = this;
 	vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
@@ -521,6 +530,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     var CarriageRate = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
+	vm.buyer = Me.Org; //For the print directive.
 	vm.ShippingAddress = ShippingAddress;
 	vm.ImageBaseUrl = imageRoot;
 	vm.SaveableStatuses = [
@@ -530,6 +540,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	QuoteShareService.Quote = Quote;
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
+	vm.lineItems = QuoteShareService.LineItems;
 	QuoteShareService.Payments = Payments.Items;
 	QuoteShareService.Comments = Quote.xp.CommentsToWeir;
 
@@ -665,7 +676,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
                 templateUrl: 'myquote/templates/myquote.choosecarriagetypeErrorModal.tpl.html',
                 controller: 'CarriageModalCtrl',
                 controllerAs: 'carriageCtrl',
-                size: 'sm',
+                size: 'sm'
             });
             return false;
         }//end of else where they dont have a carriageratetype
@@ -680,12 +691,11 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	function share() {
 		alert("TODO: Implement share quote");
 	}
+	//TODO - Remove. We now use toCsv().
 	function download() {
 		$timeout($window.print,1);
 	}
-	function print() {
-		$timeout($window.print,1);
-	}
+
 	function _next() {
 		// ToDo combine gotoDelivery() and next(), iot handle the "workflow" in one spot.
 		var goto = {
@@ -735,7 +745,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             else return "";
         }
     };
-
 
 	var labels = {
 	    en: {
@@ -835,7 +844,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			Currency: $sce.trustAsHtml("Devise"),
             Search: $sce.trustAsHtml("Rechercher"),
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
-			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
 		}
 	};
 
@@ -954,9 +963,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			AddedComment: " added a comment - ",
 			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			SaveToContinue: "*Save to Continue",
-			POA: "POA",
-            DescriptionOfShipping: $scope.$parent.myquote.SetCarriageLabelInTable('en'),
-            POAShipping: "POA"
+			POA: "POA"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -986,9 +993,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
 			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
 			SaveToContinue: $sce.trustAsHtml("Veuillez enregistrer afin de continuer"),
-            POA: $sce.trustAsHtml("POA"),
-            DescriptionOfShipping: $scope.$parent.myquote.SetCarriageLabelInTable('fr'),
-            POAShipping: "FR: POA"
+            POA: $sce.trustAsHtml("POA")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1038,10 +1043,9 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog, Buyer) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog) {
     var vm = this;
-    var CarriageRate = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
-    var FlatRate = Catalog.xp.StandardCarriage;
+    var CarriageRate = Catalog.xp.StandardCarriage;
     var activeAddress = function (address) {
         return address.xp.active == true;
     };
@@ -1082,7 +1086,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             CarriageExWorks: "Ex works",
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
-            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of "+ FlatRate +  " per order to one UK address.",
+            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of "+ CarriageRate +  " per order to one UK address.",
             CarriageInfoP2: "Shipping address successfully selected Deliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
 
@@ -1107,7 +1111,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             CarriageExWorks: "FR:Ex works",
             SelectOption: "FR:*please select your carriage option",
             CarriageInfo: "FR:Carriage Information",
-            CarriageInfoP1: "FR:For spares orders placed on this platform, we offer a flat rate carriage charge of "+ FlatRate +  " per order to one UK address.",
+            CarriageInfoP1: "FR:For spares orders placed on this platform, we offer a flat rate carriage charge of "+ CarriageRate +  " per order to one UK address.",
             CarriageInfoP2: "FR:Shipping address successfully selectedDeliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "FR:Lead time for all orders will be based on the longest lead time from the list of spares requested."
 
@@ -1176,9 +1180,9 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
     }
 }
 
-function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal, toastr,
-    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, Customer, fileStore, FilesService,
-	$scope, FileSaver, CheckStateChangeService) {
+function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal,
+    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Customer, fileStore, FilesService,
+	$scope, FileSaver) {
 	//CheckStateChangeService.checkFormOnStateChange($scope);
 	var vm = this;
 	vm.currentState = $state.$current.name;
@@ -1306,7 +1310,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				console.log(fileData);
+				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
 				//var fileURL = URL.createObjectURL(file);
@@ -1535,7 +1539,7 @@ function ModalInstanceController($uibModalInstance, $state, quote, labels) {
 	}
 }
 
-function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService, quote) {
+function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService) {
     var vm = this;
     vm.Cancel = cancel;
     vm.Continue = gotoDelivery;
@@ -1799,12 +1803,13 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
 
 function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography,
                                 Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me,
-                                fileStore, FilesService, FileSaver, QuoteToCsvService) {
+                                fileStore, FilesService, FileSaver, QuoteToCsvService, Catalog) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
 	vm.LineItems = LineItems.Items;
 	vm.BuyerID = OrderCloud.BuyerID.Get();
+	vm.Catalog = Catalog;
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if(item.ProductID == "PLACEHOLDER") {
@@ -1831,6 +1836,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	} else {
 		vm.PreviousLineItems = null;
 	}
+	vm.buyer = Me.Org;
 	vm.Quote = Quote;
 	vm.ShippingAddress = ShippingAddress;
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
@@ -1946,7 +1952,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				console.log(fileData);
+				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
 				//var fileURL = URL.createObjectURL(file);
@@ -2067,7 +2073,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 	function _comments() {
 		if (vm.Quote.Status == 'RV') {
-			console.log("Do something with comments ...");
+			//console.log("Do something with comments ...");
 		}
 	}
 	function toCsv() {
@@ -2090,8 +2096,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, Me, fileStore, OrderCloud, FilesService, FileSaver) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloud, FilesService, FileSaver, Catalog, Me) {
     var vm = this;
+	vm.Catalog = Catalog;
+	vm.buyer = Me.Org;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -2199,7 +2207,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				console.log(fileData);
+				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
 				//var fileURL = URL.createObjectURL(file);
@@ -2254,8 +2262,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 }
 
 function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
-                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, Me, FilesService, FileSaver) {
+                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, Me, FilesService, FileSaver, Catalog) {
 	var vm = this;
+	vm.Catalog = Catalog;
+	vm.buyer = Me.Org;
 	vm.NewComment = null;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -2412,7 +2422,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				console.log(fileData);
+				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
 			});
@@ -2541,6 +2551,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.gotoQuotes = _gotoQuotes;
 	vm.submitOrder = _submitOrder;
 }
+
 function TermsAndConditionsController($sce,WeirService){
     var vm = this;
 	var labels = {

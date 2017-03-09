@@ -119,7 +119,10 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 	    UpdateQuote: updateQuote,
         SetQuoteAsCurrentOrder: setQuoteAsCurrentOrder,
         FindCart: findCart,
-        GetValve: getValve
+        GetValve: getValve,
+        GetEnquiryBrands: getEnquiryBrands,
+        GetEnquiryValveTypes: getEnquiryValveTypes,
+        GetEnquiryParts: getEnquiryParts
     };
 
     function assignAddressToGroups(addressId) {
@@ -1084,6 +1087,49 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		    });
 
 	    return deferred.promise;
+    }
+
+    function getEnquiryBrands() {
+        var deferred = $q.defer();
+        OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get())
+        .then(function(b) {
+            if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
+                var enqCat = b.xp.WeirGroup.label + "_ENQ";
+                return OrderCloud.Me.ListCategories(null, null, 50, null, "Name", null, "1", enqCat);
+            } else {
+                deferred.resolve([]);
+            }
+        })
+        .then(function(brands) {
+            deferred.resolve(brands.Items);
+        })
+        .catch(function (ex) {
+            deferred.reject(ex);
+        });
+        return deferred.promise;
+    }
+    function getEnquiryValveTypes(brandId) {
+        var deferred = $q.defer();
+        OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get())
+        .then(function (b) {
+            //search, page, pageSize, searchOn, sortBy, filters, depth, catalogID
+            if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
+                var enqCat = b.xp.WeirGroup.label + "_ENQ";
+                return OrderCloud.Me.ListCategories(null, null, 50, null, "Name", { parentID: brandId }, "1", enqCat);
+            } else {
+                deferred.resolve([]);
+            }
+        })
+        .then(function (valveTypes) {
+            deferred.resolve(valveTypes.Items);
+        })
+        .catch(function (ex) {
+            deferred.reject(ex);
+        });
+        return deferred.promise;
+    }
+    function getEnquiryParts(valveTypeId) {
+
     }
 
     return service;

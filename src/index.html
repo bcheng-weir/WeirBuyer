@@ -24,20 +24,12 @@
         .printable {
             visibility: visible;
             z-index: 9;
-            /*position: absolute;*/
             font-family:Calibri;
             font-size: 8pt;
-            /*width: 50em;
-            left: 18em;
-            top: .25em;*/
-            /*margin-left: 0em;
-            margin-right: 0em;
-            margin-top: 0em;
-            margin-bottom: 0em;*/
         }
         #quoteData { width:50%; }
         #lineItems { page-break-inside:auto; width:100%; border-collapse: collapse; border-spacing: 0px !important; }
-        #lineItems tr    { page-break-inside:avoid; page-break-after:auto; font-size:10pt; }
+        #lineItems tr    { page-break-inside:avoid; page-break-after:auto; page-break-before: auto; font-size:10pt; }
         #lineItems td    { page-break-inside:avoid; page-break-after:auto; border: 1px solid lightgrey }
         #lineItems th    { background-color:blue; color:white; border: 1px solid lightgrey }
         #lineItems thead { display:table-header-group; }
@@ -45,6 +37,7 @@
         #lineItems tfoot { display:table-footer-group; }
         .totals td { font-weight:bold }
         .bold { font-weight:bold; }
+        * { overflow: visible !important; } /* This was the trick to get multi-page printing in Chrome. */
     </style>
     <base href="/">
     <script>

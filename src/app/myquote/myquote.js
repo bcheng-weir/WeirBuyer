@@ -195,8 +195,11 @@ function MyQuoteConfig($stateProvider) {
 		            return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Shoppers])
 		        },
 				Catalog:  function (OrderCloud, $exceptionHandler) {
-                        return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
-                    }
+                    return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
+                },
+                Buyer : function(OrderCloud, $exceptionHandler){
+			       return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
+                }
 		    }
 		})
 		.state('myquote.detail', {
@@ -509,12 +512,13 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer) {
     var vm = this;
 	vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
+    var CarriageRate = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
 	vm.ShippingAddress = ShippingAddress;
@@ -698,19 +702,39 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		};
 		if(isValidForReview()) {
 			//here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
-            OrderCloud.Orders.Patch(vm.Quote.ID, {xp:{CarriageRateType: vm.Quote.xp.CarriageRateType}}, OrderCloud.BuyerID.Get())
-                .then(function(order) {
-                    $state.go(goto[$state.current.name]);
-                })
-                .catch(function(ex) {
-                    $exceptionHandler(ex);
-                })
-
+			    //ex works does not have a set amount yet
+                OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType}}, OrderCloud.BuyerID.Get())
+                    .then(function () {
+                        $state.go(goto[$state.current.name]);
+                    })
+                    .catch(function (ex) {
+                        $exceptionHandler(ex);
+                    })
 		}
 		else{
 			$state.go($state.current, {}, {reload: false});
 		}
 	}
+	 vm.SetCarriageLabelInTable = function(language){
+	    if(language == 'en') {
+            if (vm.Quote.xp.CarriageRateType) {
+                if (vm.Quote.xp.CarriageRateType == 'standard') {
+                    return 'Carriage Charge';
+                }
+                else return 'Carriage - Ex Works'
+            }
+            else return "";
+        }
+        else{
+            if (vm.Quote.xp.CarriageRateType) {
+                if (vm.Quote.xp.CarriageRateType == 'standard') {
+                    return 'FR: Carriage Charge';
+                }
+                else return 'FR: Carriage - Ex Works'
+            }
+            else return "";
+        }
+    };
 
 
 	var labels = {
@@ -761,7 +785,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		    Currency: "Currency",
 			Search: "Search",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
-            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
@@ -810,7 +835,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			Currency: $sce.trustAsHtml("Devise"),
             Search: $sce.trustAsHtml("Rechercher"),
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
-			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
+			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
 		}
 	};
 
@@ -929,7 +954,9 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			AddedComment: " added a comment - ",
 			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			SaveToContinue: "*Save to Continue",
-			POA: "POA"
+			POA: "POA",
+            DescriptionOfShipping: $scope.$parent.myquote.SetCarriageLabelInTable('en'),
+            POAShipping: "POA"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -959,7 +986,9 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
 			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
 			SaveToContinue: $sce.trustAsHtml("Veuillez enregistrer afin de continuer"),
-            POA: $sce.trustAsHtml("POA")
+            POA: $sce.trustAsHtml("POA"),
+            DescriptionOfShipping: $scope.$parent.myquote.SetCarriageLabelInTable('fr'),
+            POAShipping: "FR: POA"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1009,9 +1038,10 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog, Buyer) {
     var vm = this;
-    var CarriageRate = Catalog.xp.StandardCarriage;
+    var CarriageRate = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+    var FlatRate = Catalog.xp.StandardCarriage;
     var activeAddress = function (address) {
         return address.xp.active == true;
     };
@@ -1052,7 +1082,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             CarriageExWorks: "Ex works",
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
-            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of "+ CarriageRate +  " per order to one UK address.",
+            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of "+ FlatRate +  " per order to one UK address.",
             CarriageInfoP2: "Shipping address successfully selected Deliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
 
@@ -1077,7 +1107,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             CarriageExWorks: "FR:Ex works",
             SelectOption: "FR:*please select your carriage option",
             CarriageInfo: "FR:Carriage Information",
-            CarriageInfoP1: "FR:For spares orders placed on this platform, we offer a flat rate carriage charge of "+ CarriageRate +  " per order to one UK address.",
+            CarriageInfoP1: "FR:For spares orders placed on this platform, we offer a flat rate carriage charge of "+ FlatRate +  " per order to one UK address.",
             CarriageInfoP2: "FR:Shipping address successfully selectedDeliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "FR:Lead time for all orders will be based on the longest lead time from the list of spares requested."
 
@@ -1220,7 +1250,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        Cancel: "Cancel",
 	        Comments: "Comments",
 	        AddedComment: " added a comment - ",
-			POA: "POA"
+			POA: "POA",
+            DescriptionOfShipping: $scope.$parent.myquote.SetCarriageLabelInTable('en'),
+            POAShipping: "POA"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -1262,8 +1294,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        Cancel: $sce.trustAsHtml("Annuler"),
 	        Comments: $sce.trustAsHtml("Commentaires"),
 	        AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),
-            POA: $sce.trustAsHtml("POA")
-
+            POA: $sce.trustAsHtml("POA"),
+            DescriptionOfShipping: $scope.$parent.myquote.SetCarriageLabelInTable('fr'),
+            POAShipping: "FR: POA"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

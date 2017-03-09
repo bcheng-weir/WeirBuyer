@@ -103,6 +103,25 @@
                         </td>
                         <td ng-if="review.Step=='Review'" ng-click="review.deleteLineItem(myquote.Quote.ID,line.ID)"><i class="fa fa-times" aria-hidden="true"></i></td>
                     </tr>
+                    <tr ng-if="myquote.Quote.xp.CarriageRateType != null">
+                        <!-- Filler to keep formatting -->
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td ng-bind-html="review.labels.DescriptionOfShipping"></td>
+                        <!-- Filler to keep formatting -->
+                        <td></td>
+                        <td></td>
+                        <td ng-if="myquote.Quote.ShippingCost != 0.00" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                            <span ng-switch-when="USD" ng-bind-html="review.Quote.ShippingCost | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="review.Quote.ShippingCost | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="review.Quote.ShippingCost | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="review.Quote.ShippingCost | currency:'&#163;'"></span>
+                        </td>
+                        <td ng-if="myquote.Quote.xp.CarriageRateType != 'standard'">
+                            <span ng-bind-html="review.labels.POAShipping"></span>
+                        </td>
+                    </tr>
                     <tr ng-if="review.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='review.labels.Total'></td>

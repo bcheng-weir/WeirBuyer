@@ -70,13 +70,14 @@
                         <td ng-click="detail.deleteLineItem(myquote.Quote.ID,line.ID)"><i class="fa fa-times" aria-hidden="true"></i></td>
                     </tr>
                     <tr ng-if="detail.LineItems.length > 0">
+                        <!-- using subtotal rather total -->
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='detail.labels.Total'></td>
                         <td ng-switch on="detail.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="USD" ng-bind-html="myquote.Quote.Total | currency:'&#36;'"></span>
-                            <span ng-switch-when="GBP" ng-bind-html="myquote.Quote.Total | currency:'&#163;'"></span>
-                            <span ng-switch-when="EUR" ng-bind-html="myquote.Quote.Total | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="myquote.Quote.Total | currency:'&#163;'"></span>
+                            <span ng-switch-when="USD" ng-bind-html="myquote.Quote.Subtotal | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="myquote.Quote.Subtotal | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="myquote.Quote.Subtotal | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="myquote.Quote.Subtotal | currency:'&#163;'"></span>
                         </td>
                     </tr>
                 </tbody>

@@ -52,7 +52,12 @@
                 <tr class="totals">
                     <td colspan="5"></td>
                     <td>Total</td>
-                    <td><span ng-bind-html="printctrl.order.Total"></span></td>
+                    <td ng-switch on="printctrl.items[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
+                        <span ng-switch-when="USD" ng-bind-html="printctrl.order.Total | currency:'&#36;'"></span>
+                        <span ng-switch-when="GBP" ng-bind-html="printctrl.order.Total | currency:'&#163;'"></span>
+                        <span ng-switch-when="EUR" ng-bind-html="printctrl.order.Total | currency:'&#128;'"></span>
+                        <span ng-switch-default ng-bind-html="printctrl.order.Total | currency:'&#163;'"></span>
+                    </td>
                     <td></td>
                 </tr>
             </tbody>
@@ -70,7 +75,7 @@
             <span ng-bind-html="printctrl.address.Country"></span>
         </div>
         <div>
-            <span></span>
+            <pre ng-bind-html="printctrl.buyer.xp.POContent.PriceQuote"></pre>
         </div>
         <div>
             <pre ng-bind-html="printctrl.pocontent.VATDisclaimer"></pre>
@@ -82,22 +87,22 @@
             <pre ng-bind-html="printctrl.pocontent.SalesDisclaimer"></pre>
         </div>
         <div>
-            <span></span>
+            <pre ng-bind-html="printctrl.buyer.xp.POContent.PaymentTerms"></pre>
         </div>
         <div>
-            <span></span>
+            <pre ng-bind-html="printctrl.buyer.xp.POContent.DeliveryTerms"></pre>
         </div>
         <div>
             <pre ng-bind-html="printctrl.pocontent.VatExtraNotice"></pre>
         </div>
         <div>
-            <span></span>
+            <pre ng-bind-html="printctrl.buyer.xp.POContent.Packing"></pre>
         </div>
         <div>
-            <span></span>
+            <pre ng-bind-html="printctrl.buyer.xp.POContent.CarriagePrice"></pre>
         </div>
         <div>
-            <span></span>
+            <span ng-bind-html="printctrl.order.xp.ReviewerName"></span>
         </div>
         <div>
             <pre ng-bind-html="printctrl.pocontent.RegisteredAddress"></pre>

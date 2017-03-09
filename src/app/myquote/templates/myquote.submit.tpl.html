@@ -10,6 +10,9 @@
                     <span ng-bind-html="submit.labels.OrderDate" /><br />
                     <span style="font-weight:bold;">{{(submit.Quote.DateSubmitted | weirdate)}}</span>
                 </div>
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
+                    <print-order-button buyer="submit.buyer" order="submit.Quote" items="submit.LineItems" address="submit.ShippingAddress" pocontent="submit.Catalog.xp.POContent"></print-order-button>
+                </div>
             </div>
         </div>
     </div>

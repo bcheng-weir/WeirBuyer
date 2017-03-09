@@ -6,6 +6,7 @@ angular.module('orderCloud')
 function PrintOrderController(printData,$timeout,$window,WeirService) {
 	var vm = this;
 	// ToDo Get the catalog (UK or FR) and buyer (WVCUIK-1352) data.
+	vm.buyer = printData.buyer;
 	vm.order = printData.order;
 	vm.items = printData.items;
 	vm.address = printData.address;
@@ -35,6 +36,7 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal) {
 
 	vm.Print = function() {
 		var printData = {
+			buyer:$scope.buyer,
 			order:$scope.order,
 			items:$scope.items,
 			address:$scope.address,
@@ -61,6 +63,7 @@ function PrintOrderButtonDirective () {
 	return {
 		restrict:'E',
 		scope:{
+			buyer:'=buyer',
 			order:'=order',
 			items:'=items',
 			address:'=address',

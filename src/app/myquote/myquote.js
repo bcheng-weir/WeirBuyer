@@ -331,6 +331,9 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Payments: function ($stateParams, OrderCloud) {
 					return OrderCloud.Payments.List($stateParams.quoteID);
+				},
+				Catalog:  function (OrderCloud) {
+					return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
 				}
 			}
 		})
@@ -416,6 +419,9 @@ function MyQuoteConfig($stateProvider) {
 			    },
 			    Payments: function ($stateParams, OrderCloud) {
 				    return OrderCloud.Payments.List($stateParams.quoteID);
+			    },
+			    Catalog:  function (OrderCloud) {
+				    return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
 			    }
 		    }
 		})
@@ -501,6 +507,9 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Payments: function ($stateParams, OrderCloud) {
 					return OrderCloud.Payments.List($stateParams.quoteID);
+				},
+				Catalog:  function (OrderCloud) {
+					return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
 				}
 			}
 		})
@@ -517,6 +526,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     vm.Catalog = Catalog;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
+	vm.buyer = Me.Org; //For the print directive.
 	vm.ShippingAddress = ShippingAddress;
 	vm.ImageBaseUrl = imageRoot;
 	vm.SaveableStatuses = [
@@ -662,7 +672,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
                 templateUrl: 'myquote/templates/myquote.choosecarriagetypeErrorModal.tpl.html',
                 controller: 'CarriageModalCtrl',
                 controllerAs: 'carriageCtrl',
-                size: 'sm',
+                size: 'sm'
             });
             return false;
         }//end of else where they dont have a carriageratetype
@@ -681,14 +691,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	function download() {
 		$timeout($window.print,1);
 	}
-	function print() {
-		//$timeout($window.print,1);
-		$uibModal.open({
-			animate:true,
-			size:'lg',
-			templateUrl:'common/print-order/templates/printorder.tpl.html'
-		});
-	}
+
 	function _next() {
 		// ToDo combine gotoDelivery() and next(), iot handle the "workflow" in one spot.
 		var goto = {
@@ -1772,12 +1775,13 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
 
 function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography,
                                 Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me,
-                                fileStore, FilesService, FileSaver, QuoteToCsvService) {
+                                fileStore, FilesService, FileSaver, QuoteToCsvService, Catalog) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
 	vm.LineItems = LineItems.Items;
 	vm.BuyerID = OrderCloud.BuyerID.Get();
+	vm.Catalog = Catalog;
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if(item.ProductID == "PLACEHOLDER") {
@@ -1804,6 +1808,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	} else {
 		vm.PreviousLineItems = null;
 	}
+	vm.buyer = Me.Org;
 	vm.Quote = Quote;
 	vm.ShippingAddress = ShippingAddress;
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
@@ -2063,8 +2068,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloud, FilesService, FileSaver) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloud, FilesService, FileSaver, Catalog, Me) {
     var vm = this;
+	vm.Catalog = Catalog;
+	vm.buyer = Me.Org;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -2227,8 +2234,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 }
 
 function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
-                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, Me, FilesService, FileSaver) {
+                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, Me, FilesService, FileSaver, Catalog) {
 	var vm = this;
+	vm.Catalog = Catalog;
+	vm.buyer = Me.Org;
 	vm.NewComment = null;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;

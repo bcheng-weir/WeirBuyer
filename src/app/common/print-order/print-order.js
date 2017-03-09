@@ -3,11 +3,18 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData,$timeout,$window) {
+function PrintOrderController(printData,$timeout,$window,WeirService) {
 	var vm = this;
+	// ToDo Get the catalog (UK or FR) and buyer (WVCUIK-1352) data.
 	vm.order = printData.order;
 	vm.items = printData.items;
 	vm.address = printData.address;
+	vm.pocontent = printData.pocontent;
+	var labels = {
+		en: {},
+		fr: {}
+	};
+	vm.labels = labels[WeirService.Locale()];
 	$timeout($window.print,1);
 }
 
@@ -30,7 +37,8 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal) {
 		var printData = {
 			order:$scope.order,
 			items:$scope.items,
-			address:$scope.address
+			address:$scope.address,
+			pocontent:$scope.pocontent
 		};
 		var templates = {
 			en:'common/print-order/templates/printorder.tpl.html',
@@ -55,7 +63,8 @@ function PrintOrderButtonDirective () {
 		scope:{
 			order:'=order',
 			items:'=items',
-			address:'=address'
+			address:'=address',
+			pocontent:'=pocontent'
 		},
 		templateUrl:'common/print-order/templates/printorderbutton.tpl.html',
 		controller:'printOrderBtnCtrl',

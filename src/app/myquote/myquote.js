@@ -194,9 +194,9 @@ function MyQuoteConfig($stateProvider) {
 		        IsShopper: function (UserGroupsService) {
 		            return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Shoppers])
 		        },
-				Catalog:  function (OrderCloud, $exceptionHandler) {
-                        return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
-                    }
+				Catalog:  function (OrderCloud) {
+                    return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
+				}
 		    }
 		})
 		.state('myquote.detail', {
@@ -527,7 +527,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
 	vm.lineItems = QuoteShareService.LineItems;
-	console.log(vm.lineItems);
 	QuoteShareService.Payments = Payments.Items;
 	QuoteShareService.Comments = Quote.xp.CommentsToWeir;
 
@@ -719,7 +718,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			$state.go($state.current, {}, {reload: false});
 		}
 	}
-
 
 	var labels = {
 	    en: {
@@ -1281,7 +1279,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				console.log(fileData);
+				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
 				//var fileURL = URL.createObjectURL(file);
@@ -1921,7 +1919,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				console.log(fileData);
+				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
 				//var fileURL = URL.createObjectURL(file);
@@ -2042,7 +2040,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 	function _comments() {
 		if (vm.Quote.Status == 'RV') {
-			console.log("Do something with comments ...");
+			//console.log("Do something with comments ...");
 		}
 	}
 	function toCsv() {
@@ -2174,7 +2172,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				console.log(fileData);
+				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
 				//var fileURL = URL.createObjectURL(file);
@@ -2387,7 +2385,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				console.log(fileData);
+				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
 			});

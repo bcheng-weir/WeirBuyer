@@ -1,15 +1,7 @@
 <div class="printable">
     <div class="modal-header">
         <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
-        <p>
-            Weir Valves & Controls UK Ltd<br>
-            Britannia House, Huddersfield Road, Elland,<br>
-            West Yorkshire, HX5 9JR, UK.<br>
-        </p>
-        <p>
-            Tel: +44 (0)1422 282000<br>
-            Fax: +44 (0)1422 282100
-        </p>
+        <pre ng-bind-html="printctrl.pocontent.Address"></pre>
     </div>
     <div class="modal-body">
         <table id="quoteData">
@@ -26,9 +18,7 @@
                 <td><span ng-bind-html="printctrl.order.xp.PONumber"></span></td>
             </tr>
         </table>
-        <p>
-            We thank you for the above referenced quote request. We trust that this meets with your requirements, but should you require any further information or assistance, please do not hesitate to contact us.
-        </p>
+        <pre ng-bind-html="printctrl.pocontent.Message"></pre>
         <table id="lineItems">
             <thead>
                 <tr>
@@ -83,22 +73,13 @@
             <span></span>
         </div>
         <div>
-            <p>Prices stated do not include UK VAT.</p>
+            <pre ng-bind-html="printctrl.pocontent.VATDisclaimer"></pre>
         </div>
         <div>
-            <p>Weir Valves & Controls Ltd standard documentation included, additional documentation will be a chargeable extra.</p>
+            <pre ng-bind-html="printctrl.pocontent.DocDisclaimer"></pre>
         </div>
         <div>
-            <p>Weir Valves & Controls Conditions of Sale will apply.</p>
-        </div>
-        <div>
-            <span></span>
-        </div>
-        <div>
-            <span></span>
-        </div>
-        <div>
-            <p>Vat: extra</p>
+            <pre ng-bind-html="printctrl.pocontent.SalesDisclaimer"></pre>
         </div>
         <div>
             <span></span>
@@ -107,10 +88,19 @@
             <span></span>
         </div>
         <div>
+            <pre ng-bind-html="printctrl.pocontent.VatExtraNotice"></pre>
+        </div>
+        <div>
             <span></span>
         </div>
         <div>
-            <p>Weir Valves & Controls UK Ltd Registered in England - Number 869208 Registered Office: Britannia House, Elland.</p>
+            <span></span>
+        </div>
+        <div>
+            <span></span>
+        </div>
+        <div>
+            <pre ng-bind-html="printctrl.pocontent.RegisteredAddress"></pre>
         </div>
     </div>
     <!--<div class="modal-footer">Footer</div>-->

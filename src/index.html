@@ -7,9 +7,15 @@
     <!-- OrderCloud will appear as the tab's title until Angular loads application.title's value -->
     <title ng-bind="application.title">OrderCloud</title>
     <style type="text/css" media="print">
-        body {
+        ui-view { /* was body*/
             background-color: white;
             visibility: hidden;
+            display: none;
+        }
+        .mce-container-body {
+            background-color: white;
+            visibility: hidden;
+            display: none;
         }
         pre {
             font-family: Calibri !important;
@@ -28,7 +34,7 @@
             font-size: 8pt;
         }
         #quoteData { width:50%; }
-        #lineItems { page-break-inside:auto; width:100%; border-collapse: collapse; border-spacing: 0px !important; }
+        #lineItems { page-break-inside:auto; border-collapse: collapse; border-spacing: 0px !important; }
         #lineItems tr    { page-break-inside:avoid; page-break-after:auto; font-size:10pt; }
         #lineItems td    { page-break-inside:avoid; page-break-after:auto; border: 1px solid lightgrey }
         #lineItems th    { background-color:blue; color:white; border: 1px solid lightgrey }

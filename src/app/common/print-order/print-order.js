@@ -74,12 +74,14 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$do
 			en:'common/print-order/templates/printorder.tpl.html',
 			fr:'common/print-order/templates/printorderfr.tpl.html'
 		};
+		var parentElem = angular.element($document[0].querySelector('body'));
 		$uibModal.open({
 			animation:true,
 			size:'lg',
 			templateUrl:templates[WeirService.Locale()],
 			controller:'printOrderCtrl',
 			controllerAs:'printctrl',
+			appendTo: parentElem,
 			resolve: {
 				printData:printData
 			}

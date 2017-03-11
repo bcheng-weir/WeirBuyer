@@ -112,11 +112,11 @@
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
-                        <td ng-if="myquote.Quote.ShippingCost != 0.00" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
-                            <span ng-switch-when="USD" ng-bind-html="review.Quote.ShippingCost | currency:'&#36;'"></span>
-                            <span ng-switch-when="GBP" ng-bind-html="review.Quote.ShippingCost | currency:'&#163;'"></span>
-                            <span ng-switch-when="EUR" ng-bind-html="review.Quote.ShippingCost | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="review.Quote.ShippingCost | currency:'&#163;'"></span>
+                        <td ng-if="myquote.Quote.ShippingCost > 0.00" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                            <span ng-switch-when="USD" ng-bind-html="myquote.Quote.ShippingCost | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="myquote.Quote.ShippingCost | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="myquote.Quote.ShippingCost | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="myquote.Quote.ShippingCost | currency:'&#163;'"></span>
                         </td>
                         <td ng-if="myquote.Quote.xp.CarriageRateType != 'standard'">
                             <span ng-bind-html="review.labels.POAShipping"></span>

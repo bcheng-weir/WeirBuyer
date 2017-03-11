@@ -42,24 +42,24 @@
                 <a href="#" ng-bind-html='myquote.labels.DeliveryOptions'></a></li>
 
 			<li role="presentation" ui-sref-active="active" ng-if="myquote.Quote.ShippingAddressID==null || myquote.Quote.xp.Status=='DR' || !myquote.HasLineItems()">
-                <a href="" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
+                <a href="" ng-click="myquote.IsCarriageSelected()" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
 			<!-- hide the real review quote ribbon and use a dummy version that will just show the carriage modal -->
 			<li role="presentation" ng-if="myquote.Quote.ShippingAddressID!=null && myquote.Quote.xp.Status!='DR' && myquote.Quote.xp.CarriageRateType == null" ng-disabled="myquote.Quote.xp.Status=='DR'">
 				<a href="" ng-click="myquote.IsCarriageSelected()" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
 			<!-- real review below -->
 			<li role="presentation" ui-sref-active="active" ui-sref="myquote.review" ng-if="myquote.Quote.ShippingAddressID!=null && myquote.Quote.xp.Status!='DR' && myquote.Quote.xp.CarriageRateType != null" ng-disabled="myquote.Quote.xp.Status=='DR'">
-                <a href="" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
+                <a href="" ng-click="myquote.SetShippingPrice()" ng-bind-html='myquote.labels.ReviewQuote'></a></li>
 
 			<li role="presentation" ui-sref-active="active" ui-sref="myquote.buyerreview" ng-if="myquote.UserIsBuyer()">
                 <a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 			<li role="presentation" class="quote-step" ui-sref-active="active" ng-if="myquote.Quote.ShippingAddressID==null || myquote.Quote.xp.Status=='DR' ||!myquote.HasLineItems()">
-                <a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
+                <a href="#" ng-click="myquote.IsCarriageSelected()" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 			<!-- hide the real submit quote ribbon and use a dummy version that will just show the carriage modal -->
 			<li role="presentation" ng-class="{active: myquote.isActive('myquote.submitquote') || myquote.isActive('myquote.submitorder')}" ng-if="myquote.Quote.ShippingAddressID!=null && myquote.Quote.xp.Status!='DR' && myquote.HasLineItems() && myquote.Quote.xp.CarriageRateType == null">
 				<a href="#" ng-click="myquote.IsCarriageSelected()" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 			<!-- real submit below -->
 			<li role="presentation" ng-class="{active: myquote.isActive('myquote.submitquote') || myquote.isActive('myquote.submitorder')}" ng-click="myquote.proceedToSubmit()" ng-if="myquote.Quote.ShippingAddressID!=null && myquote.Quote.xp.Status!='DR' && myquote.HasLineItems() && myquote.Quote.xp.CarriageRateType != null">
-                <a href="#" ng-bind-html='myquote.labels.SubmitQuote'></a></li>
+                <a href="#" ng-click="myquote.SetShippingPrice()"  ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 
 		</ol>
 	</nav>

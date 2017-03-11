@@ -527,7 +527,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
-    var CarriageRate = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+    vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	vm.Quote = Quote;
 	vm.Customer = Customer;
 	vm.buyer = Me.Org; //For the print directive.
@@ -725,6 +725,29 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			$state.go($state.current, {}, {reload: false});
 		}
 	}
+	vm.SetShippingPrice = 	function() {
+        var isValidForReview = function () {
+            var validForReview = true;
+            validForReview = isCarriageReadyForBeyondDelivery() && validForReview;
+            validForReview = validForReview && (vm.Quote.ShippingAddressID != null);
+            validForReview = validForReview && vm.HasLineItems();
+            return validForReview;
+        };
+        if(isValidForReview()) {
+            //here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
+            //ex works does not have a set amount yet
+            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType}}, OrderCloud.BuyerID.Get())
+                .then(function () {
+                    $state.go(goto[$state.current.name]);
+                })
+                .catch(function (ex) {
+                    $exceptionHandler(ex);
+                })
+        }
+        else{
+            $state.go($state.current, {}, {reload: false});
+        }
+    };
 	 vm.SetCarriageLabelInTable = function(language){
 	    if(language == 'en') {
             if (vm.Quote.xp.CarriageRateType) {
@@ -1042,7 +1065,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog, $scope) {
     var vm = this;
     var CarriageRate = Catalog.xp.StandardCarriage;
     var activeAddress = function (address) {
@@ -1081,7 +1104,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             ShippingAddressTitle: "Shipping Address Set",
             //carriage labels
             CarriageOptionsMsg: "Carriage Options",
-            CarriageStandardPrice: "£ " + CarriageRate + " UK delivery",
+            CarriageStandardPrice: "£ " + $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
             CarriageExWorks: "Ex works",
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
@@ -1106,7 +1129,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             ShippingAddressTitle: "Adresse de livraison",
             //carriage labels
             CarriageOptionsMsg: "FR:Carriage Options",
-            CarriageStandardPrice: "fr: £ " + CarriageRate + " UK delivery",
+            CarriageStandardPrice: "fr: £ " + $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
             CarriageExWorks: "FR:Ex works",
             SelectOption: "FR:*please select your carriage option",
             CarriageInfo: "FR:Carriage Information",

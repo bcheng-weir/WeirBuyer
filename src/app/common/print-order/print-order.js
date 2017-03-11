@@ -47,7 +47,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce) {
 	$timeout($window.print,1);
 }
 
-function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce) {
+function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$document) {
 	var vm = this;
 	var labels = {
 		en: {

@@ -1,0 +1,31 @@
+#PRINTORDER {
+  width: 98% !important; /* 297 x 210 */
+  height: 98% !important;
+  color: black;
+  font-size: 13px;
+  line-height: 20px;
+  padding: 8px;
+  font-family: Calibri !important;
+  pre {
+    font-family: Calibri !important;
+    margin: 0em !important;
+    padding: 0em !important;
+    border: none !important;
+    background-color: white !important;
+    overflow: auto !important;
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  }
+  div{ padding: 0px 0px 0px 0px !important; }
+  #quoteData { width:50%; }
+  #lineItems { border-collapse: collapse; border-spacing: 0px !important; }
+  #lineItems tr    { font-size:10pt; }
+  #lineItems td    { border: 1px solid lightgrey }
+  #lineItems th    { background-color:blue; color:white; border: 1px solid lightgrey }
+  .totals td { font-weight:bold }
+  .bold { font-weight:bold; }
+  * { overflow: visible !important; } /* This was the trick to get multi-page printing in Chrome. */
+}

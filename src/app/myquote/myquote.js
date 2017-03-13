@@ -223,7 +223,17 @@ function MyQuoteConfig($stateProvider) {
 			url: '/review',
 			templateUrl: 'myquote/templates/myquote.review.tpl.html',
 			controller: 'ReviewQuoteCtrl',
-			controllerAs: 'review'
+			controllerAs: 'review',
+			resolve: {
+				UITotal: function(Buyer, OrderCloud, Quote){
+					if(Quote.xp.CarriageRateType == 'standard'){
+                        return Buyer.xp.CarriageRateForBuyer + Quote.total;
+					}
+					else{
+						return 0;
+					}
+				}
+			}
 		})
 		.state('myquote.submitquote', {
 			url: '/submitquote',

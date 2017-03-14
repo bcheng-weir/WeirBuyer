@@ -31,40 +31,63 @@
         <div class="col-md-8">
             <h4><span ng-bind-html='readonly.labels.Customer'></span><span class="text-blue" style="margin-left: 1em;" ng-bind-html="readonly.Quote.xp.CustomerName"></span></h4>
             <h4><span ng-bind-html='readonly.labels.QuoteNumber'></span><span class="text-blue" style="margin-left: 1em;" ng-bind-html="readonly.Quote.ID"></span></h4>
-            <h4><span ng-bind-html='readonly.labels.QuoteName'></span><span class='text-blue' style="margin-left:1em;" maxlength="20" ng-bind-html="readonly.Quote.xp.Name"></span></h4>
-            <h4><span ng-bind-html='readonly.labels.YourReference'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="readonly.Quote.xp.RefNum"></span></h4>
+            <h4 ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><span ng-bind-html='readonly.labels.QuoteName'></span><span class='text-blue' style="margin-left:1em;" maxlength="20" ng-bind-html="readonly.Quote.xp.Name"></span></h4>
+            <h4 ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><span ng-bind-html='readonly.labels.YourReference'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="readonly.Quote.xp.RefNum"></span></h4>
             <h4 ng-if="readonly.Quote.xp.Type=='Order'"><span ng-bind-html='readonly.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="readonly.Quote.xp.PONumber"></span></h4>
-            <h4><a href="#" ng-click="readonly.gotoRevisions()" ng-bind-html="readonly.labels.ViewRevisions"></a></h4>
+            <h4 ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><a href="#" ng-click="readonly.gotoRevisions()" ng-bind-html="readonly.labels.ViewRevisions"></a></h4>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="col-md-12">
+            <table ng-if="readonly.Order.xp.Status=='EN' || readonly.Order.xp.Status=='ER'" class="enquiry">
+                <thead>
+                    <tr>
+                        <th colspan="2" ng-bind-html="readonly.labels.PartTypes"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td ng-bind-html="readonly.labels.SerialNum"></td>
+                        <td class="data">hardcoded 40001694/0010/1</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html="readonly.labels.Brand"></td>
+                        <td class="data">hardcoded test brand</td>
+                    </tr>
+                    <tr>
+                        <td ng-bind-html="readonly.labels.ValveType"></td>
+                        <td class="data">hardcoded valve type</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
             <table class="table table-bordered oc-table-responsive weir-results-table">
                 <thead class="header-cell">
                     <tr>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.SerialNum'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.TagNum'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.PartNum'></h4></th>
+                        <th ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.SerialNum'></h4></th>
+                        <th ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.TagNum'></h4></th>
+                        <th ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.PartNum'></h4></th>
                         <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.PartDesc'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.RecRepl'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.LeadTime'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.PricePer'></h4></th>
+                        <th ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.RecRepl'></h4></th>
+                        <th ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.LeadTime'></h4></th>
+                        <th ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.PricePer'></h4></th>
                         <th><h4 class="list-group-item-heading" ng-bind-html='readonly.labels.Quantity'></h4></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="line in readonly.LineItems">
-                        <td ng-bind-html="line.xp.SN"></td>
-                        <td ng-bind-html="line.xp.TagNumber"></td>
-                        <td ng-bind-html="line.Product.Name"></td>
+                        <td ng-bind-html="line.xp.SN" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                        <td ng-bind-html="line.xp.TagNumber" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                        <td ng-bind-html="line.Product.Name" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
                         <td ng-bind-html="line.Product.Description"></td>
-                        <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
-                        <td>
+                        <td ng-bind-html="line.Product.xp.ReplacementSchedule" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                        <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
                             <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
                             <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
                         </td>
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="readonly.labels.POA"></td>
-                        <td ng-if="line.UnitPrice>0" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="readonly.labels.POA" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                        <td ng-if="line.UnitPrice>0" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
                             <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
                             <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
                             <span ng-switch-when="EUR" ng-bind-html="line.UnitPrice | currency:'&#128;'"></span>
@@ -72,7 +95,7 @@
                         </td>
                         <td class="text-right" ng-bind-html="line.Quantity"></td>
                     </tr>
-                    <tr ng-if="readonly.LineItems.length > 0">
+                    <tr ng-if="readonly.LineItems.length > 0" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='readonly.labels.Total'></td>
                         <td ng-switch on="readonly.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
@@ -120,14 +143,14 @@
             <div ng-if="readonly.ShippingAddress.Country=='FR'">
                 <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br>
+                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
                 <span><span ng-bind-html="readonly.ShippingAddress.Zip"></span> <span ng-bind-html="readonly.ShippingAddress.City"></span></span><br>
                 <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
             </div>
             <div ng-if="readonly.ShippingAddress.Country=='GB'">
                 <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br>
+                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
                 <span ng-bind-html="readonly.ShippingAddress.City"></span><br>
                 <span ng-bind-html="readonly.ShippingAddress.Zip"></span><br>
                 <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
@@ -135,14 +158,14 @@
             <div ng-if="readonly.ShippingAddress.Country!='GB' && readonly.ShippingAddress.Country!='FR'">
                 <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br>
+                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
                     <span><span ng-bind-html="readonly.ShippingAddress.City"></span>,
                         <span ng-bind-html="readonly.ShippingAddress.State"></span>
                      <span ng-bind-html="readonly.ShippingAddress.Zip"></span></span><br>
                     <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
             </div>
             <hr>
-            <div class="row">
+            <div class="row" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
                 <div class="col-xs-8">
                     <p><span ng-bind-html='readonly.labels.ReplacementGuidance'></span></p>
                     <p><span style="font-style:italic;" ng-bind-html='readonly.labels.POAGuidance'></span></p>

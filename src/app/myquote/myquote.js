@@ -2192,7 +2192,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
 	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 	        PONumber: "PO Number;",
-            POA: "POA"
+            POA: "POA",
+	        PartTypes: "Part types for;",
+	        Brand: "Brand",
+	        ValveType: "Valve Type"
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -2230,7 +2233,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
 	        LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
-            POA: $sce.trustAsHtml("POA")
+            POA: $sce.trustAsHtml("POA"),
+	        PartTypes: $sce.trustAsHtml("FR: Part types for;"),
+	        Brand: $sce.trustAsHtml("FR: Brand"),
+	        ValveType: $sce.trustAsHtml("FR: Valve type")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

@@ -1,32 +1,32 @@
 <article id="COMPONENT_Readonly" class="container-fluid">
-    <div class="panel-default">
-        <div class="row">
-            <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
-                <div style="display:inline-block; float:left; text-align:left;">
-                    <span ng-bind-html="readonly.labels.Status"/><br/>
-                    <span style="font-weight:bold;" ng-bind-html="readonly.GetStatusLabel() + ' ' + (readonly.Quote.xp.StatusDate | weirdate)"></span>
+    <!--<div class="panel-default">-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:2.5em;">
+                <div style="display:inline-block; float:left; text-align:left;margin-top: 10px;">
+                    <span ng-bind-html="readonly.labels.Status"/>:&nbsp;<span style="font-weight:bold;" ng-bind-html="readonly.GetStatusLabel() + ' ' + (readonly.Quote.xp.StatusDate | weirdate)"></span>
                 </div>
-                <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
-                    <span ng-bind-html="readonly.labels.OrderDate" /><br />
-                    <span style="font-weight:bold;" ng-bind-html="(readonly.Quote.DateSubmitted | weirdate)"></span>
+                <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;margin-top: 10px;">
+                    <span ng-bind-html="readonly.labels.OrderDate" />&nbsp;<span style="font-weight:bold;" ng-bind-html="(readonly.Quote.DateSubmitted | weirdate)"></span>
                 </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;">
                     <print-order-button buyer="readonly.buyer" order="readonly.Quote" items="readonly.LineItems" address="readonly.ShippingAddress" pocontent="readonly.Catalog.xp.POContent"></print-order-button>
                 </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
-                    <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
+                    <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
                 </div>
                 <div ng-if="application.$state.current.name=='revised'" style="float:right;">
                     <button class="btn btn-success" ng-click="readonly.Approve()" ng-bind-html="readonly.labels.Approve"></button>
                     <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="readonly.Reject()" ng-bind-html="readonly.labels.Reject"></button>
                     <button class="btn btn-default" style="margin-left:0.5em;" ng-click="readonly.Comments()" ng-bind-html="readonly.labels.Comments"></button>
                 </div>
-                <div style="float:right;padding-top: 0.5em;" ng-if="readonly.Quote.xp.Status=='SE' || readonly.Quote.xp.Status=='CQ'">
+                <div style="float:right;" ng-if="readonly.Quote.xp.Status=='SE' || readonly.Quote.xp.Status=='CQ'">
                     <button class="btn btn-success" ui-sref="submit({quoteID:readonly.Quote.ID, buyerID:readonly.Quote.xp.BuyerID})" ng-bind-html="readonly.labels.SubmitWithPO"></button>
                 </div>
             </div>
         </div>
     </div>
+    <!--</div>-->
     <div class="row" style="padding-top:20px;">
         <div class="col-md-8">
             <h4><span ng-bind-html='readonly.labels.Customer'></span><span class="text-blue" style="margin-left: 1em;" ng-bind-html="readonly.Quote.xp.CustomerName"></span></h4>
@@ -37,7 +37,7 @@
             <h4 ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"><a href="#" ng-click="readonly.gotoRevisions()" ng-bind-html="readonly.labels.ViewRevisions"></a></h4>
         </div>
     </div>
-    <br>
+    <!--<br>-->
     <div class="row">
         <div class="col-md-12">
             <table ng-if="readonly.Order.xp.Status=='EN' || readonly.Order.xp.Status=='ER'" class="enquiry">
@@ -138,33 +138,36 @@
                     </div>
                 </div>
             </div>
-
-            <p><b><span ng-bind-html="readonly.labels.DeliveryAddress"></span></b></p>
-            <div ng-if="readonly.ShippingAddress.Country=='FR'">
-                <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
-                <span><span ng-bind-html="readonly.ShippingAddress.Zip"></span> <span ng-bind-html="readonly.ShippingAddress.City"></span></span><br>
-                <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
+            <div class="row">
+                <div class="col-xs-12">
+                    <p><b><span ng-bind-html="readonly.labels.DeliveryAddress"></span></b></p>
+                    <div ng-if="readonly.ShippingAddress.Country=='FR'">
+                        <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
+                        <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
+                        <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
+                        <span><span ng-bind-html="readonly.ShippingAddress.Zip"></span> <span ng-bind-html="readonly.ShippingAddress.City"></span></span><br>
+                        <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
+                    </div>
+                    <div ng-if="readonly.ShippingAddress.Country=='GB'">
+                        <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
+                        <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
+                        <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
+                        <span ng-bind-html="readonly.ShippingAddress.City"></span><br>
+                        <span ng-bind-html="readonly.ShippingAddress.Zip"></span><br>
+                        <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
+                    </div>
+                    <div ng-if="readonly.ShippingAddress.Country!='GB' && readonly.ShippingAddress.Country!='FR'">
+                        <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
+                        <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
+                        <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
+                            <span><span ng-bind-html="readonly.ShippingAddress.City"></span>,
+                                <span ng-bind-html="readonly.ShippingAddress.State"></span>
+                             <span ng-bind-html="readonly.ShippingAddress.Zip"></span></span><br>
+                            <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
+                    </div>
+                </div>
             </div>
-            <div ng-if="readonly.ShippingAddress.Country=='GB'">
-                <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
-                <span ng-bind-html="readonly.ShippingAddress.City"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Zip"></span><br>
-                <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
-            </div>
-            <div ng-if="readonly.ShippingAddress.Country!='GB' && readonly.ShippingAddress.Country!='FR'">
-                <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street1"></span><br>
-                <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
-                    <span><span ng-bind-html="readonly.ShippingAddress.City"></span>,
-                        <span ng-bind-html="readonly.ShippingAddress.State"></span>
-                     <span ng-bind-html="readonly.ShippingAddress.Zip"></span></span><br>
-                    <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
-            </div>
-            <hr>
+            <!--<hr>-->
             <div class="row" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
                 <div class="col-xs-8">
                     <p><span ng-bind-html='readonly.labels.ReplacementGuidance'></span></p>
@@ -175,13 +178,17 @@
             </div>
         </div>
         <div class="col-xs-6">
-            <p><b><span ng-bind-html='readonly.labels.YourAttachments'></span><br></b></p>
-            <p ng-repeat="fileName in readonly.Quote.xp.Files">
-                <a href="" ng-click="readonly.GetFile(fileName)" target="_blank" ng-bind-html="fileName"></a>
-            </p>
-            <p>
-                <a href="" ng-click="readonly.GetFile(readonly.Quote.xp.PODocument)" target="_blank" ng-bind-html="readonly.Quote.xp.PODocument"></a>
-            </p>
+            <div class="row">
+                <div class="col-xs-12">
+                    <p><b><span ng-bind-html='readonly.labels.YourAttachments'></span><br></b></p>
+                    <p ng-repeat="fileName in readonly.Quote.xp.Files">
+                        <a href="" ng-click="readonly.GetFile(fileName)" target="_blank" ng-bind-html="fileName"></a>
+                    </p>
+                    <p>
+                        <a href="" ng-click="readonly.GetFile(readonly.Quote.xp.PODocument)" target="_blank" ng-bind-html="readonly.Quote.xp.PODocument"></a>
+                    </p>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-xs-12">
                     <ul class="nav nav-tabs">
@@ -189,7 +196,7 @@
                     </ul>
                 </div>
             </div>
-            <br>
+            <!--<br>-->
             <div class="row" ng-repeat="comment in readonly.Quote.xp.CommentsToWeir | reverseComments"> <!-- ng-repeat comment in comments to weir -->
                 <div class="col-xs-12">
                     <div>

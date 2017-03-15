@@ -827,7 +827,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		    Currency: "Currency",
 			Search: "Search",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
-            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+		    AddNew: "Add New Items"
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
@@ -876,7 +877,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			Currency: $sce.trustAsHtml("Devise"),
             Search: $sce.trustAsHtml("Rechercher"),
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
-			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
+			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+			AddNew: $sce.trustAsHtml("Ajouter un item")
 		}
 	};
 

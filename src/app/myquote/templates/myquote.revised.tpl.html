@@ -1,26 +1,26 @@
 <article id="COMPONENT_Revised" class="container-fluid">
     <div class="panel-default">
         <div class="row">
-            <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
-                <div style="display:inline-block; float:left; text-align:left;">
-                    <span ng-bind-html="revised.labels.Status"/><br/>
-                    <span style="font-weight:bold;" ng-bind-html="revised.GetStatusLabel() + ' ' + (revised.Quote.xp.StatusDate | weirdate)"></span>
-                </div>
-                <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
-                    <span ng-bind-html="revised.labels.OrderDate" /><br />
-                    <span style="font-weight:bold;" ng-bind-html="(revised.Quote.DateSubmitted | weirdate)"></span>
-                </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
-                    <print-order-button buyer="revised.buyer" order="revised.Quote" items="revised.LineItems" address="revised.ShippingAddress" pocontent="revised.Catalog.xp.POContent"></print-order-button>
-                </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="revised.ToCsvJson" filename="{{revised.CsvFilename}}">
-                    <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
-                </div>
-                <!--<div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">-->
-                <div ng-if="revised.Quote.xp.Status=='RV'||revised.Quote.xp.Status=='RO'" style="float:right;padding-top: 0.5em;">
-                    <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
-                    <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
-                    <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
+            <div class="col-md-12">
+                <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:2.5em;">
+                    <div style="display:inline-block; float:left; text-align:left;margin-top: 10px;">
+                        <span ng-bind-html="revised.labels.Status"/>:&nbsp;<span style="font-weight:bold;" ng-bind-html="revised.GetStatusLabel() + ' ' + (revised.Quote.xp.StatusDate | weirdate)"></span>
+                    </div>
+                    <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;margin-top: 10px;">
+                        <span ng-bind-html="revised.labels.OrderDate" />&nbsp;<span style="font-weight:bold;" ng-bind-html="(revised.Quote.DateSubmitted | weirdate)"></span>
+                    </div>
+                    <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;">
+                        <print-order-button buyer="revised.buyer" order="revised.Quote" items="revised.LineItems" address="revised.ShippingAddress" pocontent="revised.Catalog.xp.POContent"></print-order-button>
+                    </div>
+                    <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;" ng-csv="revised.ToCsvJson" filename="{{revised.CsvFilename}}">
+                        <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
+                    </div>
+                    <!--<div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">-->
+                    <div ng-if="revised.Quote.xp.Status=='RV'||revised.Quote.xp.Status=='RO'" style="float:right;">
+                        <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
+                        <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
+                        <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
+                    </div>
                 </div>
             </div>
         </div>

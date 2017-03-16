@@ -11,7 +11,7 @@
 						<span style="font-weight:bold;">{{(myquote.Quote.DateSubmitted | weirdate)}}</span>
 					</div>
 					<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
-						<print-order-button buyer="myquote.buyer" order="myquote.Quote" items="myquote.lineItems" address="myquote.ShippingAddress" pocontent="myquote.Catalog.xp.POContent"></print-order-button>
+						<print-order-button catalog="myquote.Catalog" buyer="myquote.buyer" order="myquote.Quote" items="myquote.lineItems" address="myquote.ShippingAddress" pocontent="myquote.Catalog.xp.POContent"></print-order-button>
 					</div>
 					<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="myquote.ToCsvJson" add-bom="true" filename="{{myquote.CsvFilename}}"> <!-- ng-click="myquote.Download()"> -->
 						<a href=""><img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Download'></span></a>

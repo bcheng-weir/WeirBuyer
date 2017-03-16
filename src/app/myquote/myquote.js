@@ -194,13 +194,13 @@ function MyQuoteConfig($stateProvider) {
 		        IsShopper: function (UserGroupsService) {
 		            return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Shoppers])
 		        },
-				Catalog:  function (OrderCloud, $exceptionHandler) {
+				Catalog:  function (OrderCloud) {
                     return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
                 },
-                Buyer : function(OrderCloud, $exceptionHandler){
+                Buyer : function(OrderCloud){
 			       return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
                 },
-                UITotal: function(Buyer, OrderCloud, Quote){
+                UITotal: function(Catalog, Buyer, OrderCloud, Quote){
                     var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
                     if(Quote.xp.CarriageRateType == 'standard'){
                         return (rateToUse + Quote.Subtotal).toFixed(2);
@@ -234,7 +234,7 @@ function MyQuoteConfig($stateProvider) {
 			controller: 'ReviewQuoteCtrl',
 			controllerAs: 'review',
 			resolve: {
-				UITotal: function(Buyer, OrderCloud, Quote){
+				UITotal: function(Catalog, Buyer, OrderCloud, Quote){
 					var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 					if(Quote.xp.CarriageRateType == 'standard'){
                         return (rateToUse + Quote.Subtotal).toFixed(2);

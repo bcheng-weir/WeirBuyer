@@ -108,7 +108,8 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td ng-bind-html="review.labels.DescriptionOfShipping"></td>
+                        <td ng-if="myquote.Quote.xp.ShippingDescription == null || myquote.Quote.xp.CarriageRateType == 'standard'" ng-bind-html="review.labels.DescriptionOfShipping"></td>
+                        <td ng-if="myquote.Quote.xp.ShippingDescription != null || myquote.Quote.xp.CarriageRateType == 'exworks'" ng-bind-html="myquote.Quote.xp.ShippingDescription"></td>
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>

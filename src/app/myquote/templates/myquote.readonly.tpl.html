@@ -72,6 +72,26 @@
                         </td>
                         <td class="text-right" ng-bind-html="line.Quantity"></td>
                     </tr>
+
+                    <tr ng-if="readonly.Quote.xp.CarriageRateType != null">
+                        <!-- Filler to keep formatting -->
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td ng-if="readonly.Quote.xp.ShippingDescription == null || readonly.Quote.xp.CarriageRateType == 'standard'" ng-bind-html="readonly.labels.DescriptionOfShipping"></td>
+                        <td ng-if="readonly.Quote.xp.ShippingDescription != null || readonly.Quote.xp.CarriageRateType == 'exworks'" ng-bind-html="readonly.Quote.xp.ShippingDescription"></td>
+                        <!-- Filler to keep formatting -->
+                        <td></td>
+                        <td></td>
+                        <td ng-if="readonly.Quote.ShippingCost != 0" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                            <span ng-switch-when="USD" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="readonly.Quote.ShippingCost | currency:'&#163;'"></span>
+                        </td>
+                        <td ng-if="readonly.Quote.ShippingCost == 0" ng-bind="readonly.labels.POAShipping"></td>
+                    </tr>
+
                     <tr ng-if="readonly.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='readonly.labels.Total'></td>

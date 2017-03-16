@@ -199,6 +199,15 @@ function MyQuoteConfig($stateProvider) {
                 },
                 Buyer : function(OrderCloud, $exceptionHandler){
 			       return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
+                },
+                UITotal: function(Buyer, OrderCloud, Quote){
+                    var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+                    if(Quote.xp.CarriageRateType == 'standard'){
+                        return (rateToUse + Quote.Subtotal).toFixed(2);
+                    }
+                    else{
+                        return Quote.Subtotal.toFixed(2);
+                    }
                 }
 		    }
 		})
@@ -226,11 +235,12 @@ function MyQuoteConfig($stateProvider) {
 			controllerAs: 'review',
 			resolve: {
 				UITotal: function(Buyer, OrderCloud, Quote){
+					var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 					if(Quote.xp.CarriageRateType == 'standard'){
-                        return Buyer.xp.CarriageRateForBuyer + Quote.total;
+                        return (rateToUse + Quote.Subtotal).toFixed(2);
 					}
 					else{
-						return 0;
+						return Quote.Subtotal.toFixed(2);
 					}
 				}
 			}
@@ -541,6 +551,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+    vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	vm.Quote = Quote;
 	vm.Customer = Customer;
 	vm.buyer = Me.Org; //For the print directive.
@@ -910,7 +921,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			ariaDescribedBy: 'modal-body',
 			templateUrl: 'myquote/templates/myquote.submitorconfirm.tpl.html',
 			controller: 'ChooseSubmitCtrl',
-			controllerAs: 'choosesubmit'
+			controllerAs: 'choosesubmit',
 		});
 		modalInstance.result.then(
 			function (val) {
@@ -950,7 +961,7 @@ function MissingCarriageDetailController(WeirService, $state, $uibModalInstance,
 		},
         fr: {
             ModalMessage: "FR: Please select your carriage option before reviewing your quote",
-            Close: "FR: Close"
+            Close: "Fermer"
 		}
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1118,11 +1129,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             ShippingAddressTitle: "Shipping Address Set",
             //carriage labels
             CarriageOptionsMsg: "Carriage Options",
-            CarriageStandardPrice: "£ " + $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
+            CarriageStandardPrice: "£ " +  $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
             CarriageExWorks: "Ex works",
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
-            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of £"+ CarriageRate +  " per order to one UK address.",
+            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of £"+ CarriageRate.toFixed(2) +  " per order to one UK address.",
             CarriageInfoP2: "Shipping address successfully selected Deliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
 
@@ -1143,11 +1154,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             ShippingAddressTitle: "Adresse de livraison",
             //carriage labels
             CarriageOptionsMsg: "Options de transport",
-            CarriageStandardPrice: $scope.$parent.myquote.CarriageRateForBuyer + " € livraison FR",
+            CarriageStandardPrice: $scope.$parent.myquote.CarriageRateForBuyer + " € livraison",
             CarriageExWorks: "Départ Usine",
             SelectOption: "Veuillez sélectionner votre option de transport",
             CarriageInfo: "Informations de livraison",
-            CarriageInfoP1: "Pour les commandes de pièces de rechange effectuées sur cette plate-forme, le prix forfaitaire est de "+ CarriageRate +  "  €  par commande.",
+            CarriageInfoP1: "Pour les commandes de pièces de rechange effectuées sur cette plate-forme, le prix forfaitaire est de "+ CarriageRate.toFixed(2) +  "  €  par commande.",
             CarriageInfoP2: "La livraison sera préparé en fonction de vos instructions.",
             CarriageInfoP3: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"
 
@@ -1218,7 +1229,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal,
     OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Customer, fileStore, FilesService,
-	$scope, FileSaver) {
+	$scope, FileSaver, UITotal) {
 	//CheckStateChangeService.checkFormOnStateChange($scope);
 	var vm = this;
 	vm.currentState = $state.$current.name;
@@ -1226,6 +1237,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	vm.LineItems = QuoteShareService.LineItems;
     vm.Quote = QuoteShareService.Quote;
 	vm.Comments = QuoteShareService.Comments;
+	//due to latency from the webhook need to set the ui to render a mock total value.
+	vm.TotalUsingUI = UITotal;
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
     if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
@@ -1876,7 +1889,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.Quote = Quote;
 	vm.ShippingAddress = ShippingAddress;
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
-	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;;
+	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+	vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	vm.PONumber = "";
 	vm.Payments = Payments.Items;
 	var payment = (vm.Payments.length > 0) ? vm.Payments[0] : null;

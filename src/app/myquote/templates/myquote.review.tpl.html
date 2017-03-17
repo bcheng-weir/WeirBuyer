@@ -113,10 +113,10 @@
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
-                        <td ng-if="myquote.Quote.xp.CarriageRateType == 'standard'" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
+                        <td ng-if="myquote.Quote.xp.CarriageRateType == 'standard'" ng-switch on="myquote.Catalog.ID">
                             <span ng-switch-when="USD" ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#36;'"></span>
-                            <span ng-switch-when="GBP" ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#163;'"></span>
-                            <span ng-switch-when="EUR" ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#128;'"></span>
+                            <span ng-switch-when="WVCUK" ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#163;'"></span>
+                            <span ng-switch-when="WPIFR" ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#128;'"></span>
                             <span ng-switch-default ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#163;'"></span>
                         </td>
                         <td ng-if="myquote.Quote.xp.CarriageRateType != 'standard'">

@@ -13,6 +13,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce) {
 	vm.address = printData.address;
 	vm.pocontent = printData.pocontent;
 	vm.CarriageRateForBuyer = vm.buyer.xp.UseCustomCarriageRate == true ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;
+	console.log(vm.CarriageRateForBuyer);
 	vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	vm.SetCarriageLabelInTable = function(language){
 		if(language == 'en') {

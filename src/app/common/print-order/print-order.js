@@ -6,11 +6,35 @@ angular.module('orderCloud')
 function PrintOrderController(printData,$timeout,$window,WeirService,$sce) {
 	var vm = this;
 	// ToDo Get the catalog (UK or FR) and buyer (WVCUIK-1352) data.
+	vm.catalog = printData.catalog;
 	vm.buyer = printData.buyer;
 	vm.order = printData.order;
 	vm.items = printData.items;
 	vm.address = printData.address;
 	vm.pocontent = printData.pocontent;
+	vm.CarriageRateForBuyer = vm.buyer.xp.UseCustomCarriageRate == true ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;
+	console.log(vm.CarriageRateForBuyer);
+	vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
+	vm.SetCarriageLabelInTable = function(language){
+		if(language == 'en') {
+			if (vm.order.xp.CarriageRateType) {
+				if (vm.order.xp.CarriageRateType == 'standard') {
+					return 'Carriage Charge';
+				}
+				else return 'Carriage - Ex Works'
+			}
+			else return "";
+		}
+		else{
+			if (vm.order.xp.CarriageRateType) {
+				if (vm.order.xp.CarriageRateType == 'standard') {
+					return 'FR: Carriage Charge';
+				}
+				else return 'FR: Carriage - Ex Works'
+			}
+			else return "";
+		}
+	};
 	var labels = {
 		en: {
 			QuoteNumber: "Quote Number; ",
@@ -25,7 +49,9 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce) {
 			PricePer: "Price per Item or Set",
 			Quantity: "Quantity",
 			Total: "Total",
-			DeliveryAddress: "Delivery Address"
+			DeliveryAddress: "Delivery Address",
+			POAShipping: "POA",
+			DescriptionOfShipping: vm.SetCarriageLabelInTable('en')
 		},
 		fr: {
 			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
@@ -40,7 +66,9 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce) {
 			PricePer: $sce.trustAsHtml("Prix par item ou par kit"),
 			Quantity: $sce.trustAsHtml("Quantit&eacute;"),
 			Total: $sce.trustAsHtml("Total"),
-			DeliveryAddress: $sce.trustAsHtml("Adresse de livraison")
+			DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
+			POAShipping: "POA",
+			DescriptionOfShipping: vm.SetCarriageLabelInTable('fr')
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];
@@ -64,6 +92,7 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$do
 
 	vm.Print = function() {
 		var printData = {
+			catalog:$scope.catalog,
 			buyer:$scope.buyer,
 			order:$scope.order,
 			items:$scope.items,
@@ -93,6 +122,7 @@ function PrintOrderButtonDirective () {
 	return {
 		restrict:'E',
 		scope:{
+			catalog:'=catalog',
 			buyer:'=buyer',
 			order:'=order',
 			items:'=items',

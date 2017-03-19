@@ -60,7 +60,7 @@
                     <td ng-bind-html="printctrl.labels.DescriptionOfShipping[printctrl.order.xp.CarriageRateType]"></td>
                     <td></td>
                     <td></td>
-                    <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'" ng-switch on="printctrl.Catalog.ID">
+                    <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'" ng-switch on="printctrl.catalog.ID">
                         <span ng-switch-when="USD" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#36;'"></span>
                         <span ng-switch-when="WVCUK" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#163;'"></span>
                         <span ng-switch-when="WPIFR" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#128;'"></span>

@@ -104,14 +104,10 @@
                         <td ng-if="review.Step=='Review'" ng-click="review.deleteLineItem(myquote.Quote.ID,line.ID)"><i class="fa fa-times" aria-hidden="true"></i></td>
                     </tr>
                     <tr ng-if="myquote.Quote.xp.CarriageRateType != null">
-                        <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
                         <td></td>
-                        <!--<td ng-if="myquote.Quote.xp.ShippingDescription == null && myquote.Quote.xp.CarriageRateType == 'standard'" ng-bind-html="review.labels.DescriptionOfShipping"></td>
-                        <td ng-if="(myquote.Quote.xp.ShippingDescription != null || myquote.Quote.xp.CarriageRateType == 'exworks') && myquote.Quote.xp.CarriageRateType != 'standard'" ng-bind-html="myquote.Quote.xp.ShippingDescription"></td>-->
                         <td ng-bind-html="myquote.labels.DescriptionOfShipping[myquote.Quote.xp.CarriageRateType]"></td>
-                        <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
                         <td ng-if="myquote.Quote.xp.CarriageRateType == 'standard'" ng-switch on="myquote.Catalog.ID">

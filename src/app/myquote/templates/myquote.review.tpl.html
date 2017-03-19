@@ -108,8 +108,9 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td ng-if="myquote.Quote.xp.ShippingDescription == null && myquote.Quote.xp.CarriageRateType == 'standard'" ng-bind-html="review.labels.DescriptionOfShipping"></td>
-                        <td ng-if="(myquote.Quote.xp.ShippingDescription != null || myquote.Quote.xp.CarriageRateType == 'exworks') && myquote.Quote.xp.CarriageRateType != 'standard'" ng-bind-html="myquote.Quote.xp.ShippingDescription"></td>
+                        <!--<td ng-if="myquote.Quote.xp.ShippingDescription == null && myquote.Quote.xp.CarriageRateType == 'standard'" ng-bind-html="review.labels.DescriptionOfShipping"></td>
+                        <td ng-if="(myquote.Quote.xp.ShippingDescription != null || myquote.Quote.xp.CarriageRateType == 'exworks') && myquote.Quote.xp.CarriageRateType != 'standard'" ng-bind-html="myquote.Quote.xp.ShippingDescription"></td>-->
+                        <td ng-bind-html="myquote.labels.DescriptionOfShipping[myquote.Quote.xp.CarriageRateType]"></td>
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
@@ -122,16 +123,20 @@
                         <td ng-if="myquote.Quote.xp.CarriageRateType != 'standard'">
                             <span ng-bind-html="review.labels.POAShipping"></span>
                         </td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr ng-if="review.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='review.labels.Total'></td>
                         <td ng-switch on="review.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="USD" ng-bind-html="review.TotalUsingUI | currency:'&#36;'"></span>
-                            <span ng-switch-when="GBP" ng-bind-html="review.TotalUsingUI | currency:'&#163;'"></span>
-                            <span ng-switch-when="EUR" ng-bind-html="review.TotalUsingUI | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="review.TotalUsingUI | currency:'&#163;'"></span>
+                            <span ng-switch-when="USD" ng-bind-html="myquote.UiTotal | currency:'&#36;'"></span>
+                            <span ng-switch-when="GBP" ng-bind-html="myquote.UiTotal | currency:'&#163;'"></span>
+                            <span ng-switch-when="EUR" ng-bind-html="myquote.UiTotal | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="myquote.UiTotal | currency:'&#163;'"></span>
                         </td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>

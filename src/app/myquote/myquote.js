@@ -28,6 +28,7 @@ function QuoteShareService() {
 	    Comments: [],
 	    Quote: null,
 	    Me: null,
+	    UiTotal: null,
 	    IsPOA: _isPOA
     };
 
@@ -232,18 +233,7 @@ function MyQuoteConfig($stateProvider) {
 			url: '/review',
 			templateUrl: 'myquote/templates/myquote.review.tpl.html',
 			controller: 'ReviewQuoteCtrl',
-			controllerAs: 'review',
-			resolve: {
-				UITotal: function(Catalog, Buyer, OrderCloud, Quote){
-					var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
-					if(Quote.xp.CarriageRateType == 'standard'){
-                        return (rateToUse + Quote.Subtotal).toFixed(2);
-					}
-					else{
-						return Quote.Subtotal.toFixed(2);
-					}
-				}
-			}
+			controllerAs: 'review'
 		})
 		.state('myquote.submitquote', {
 			url: '/submitquote',
@@ -544,7 +534,7 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer, UITotal) {
     var vm = this;
 	vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
@@ -567,6 +557,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.lineItems = QuoteShareService.LineItems;
 	QuoteShareService.Payments = Payments.Items;
 	QuoteShareService.Comments = Quote.xp.CommentsToWeir;
+	QuoteShareService.UiTotal = UITotal;
+	vm.UiTotal = QuoteShareService.UiTotal;
 
 	vm.isActive = function(viewLocation) {
 		return viewLocation == $state.current.name;
@@ -609,7 +601,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		    xp: {
 		        StatusDate: new Date(),
 				RefNum: vm.Quote.xp.RefNum,
-				Name: vm.Quote.xp.Name
+				Name: vm.Quote.xp.Name,
+			    CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null
 		    }
 		};
 		var assignQuoteNumber = false;
@@ -623,13 +616,20 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		WeirService.UpdateQuote(vm.Quote, mods, assignQuoteNumber, vm.Customer.id)
 			.then(function(quote) {
 				QuoteShareService.Quote = quote;
+				var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+				if(Quote.xp.CarriageRateType == 'standard'){
+					QuoteShareService.UiTotal = (rateToUse + Quote.Subtotal).toFixed(2);
+				}
+				else{
+					QuoteShareService.UiTotal = Quote.Subtotal.toFixed(2);
+				}
 				return CurrentOrder.Set(quote.ID);
 			})
 			.then(function() {
 				toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
 				if(assignQuoteNumber) {
 					vm.Quote = QuoteShareService.Quote;
-					//$window.location.reload();
+					$window.location.reload();
 				}
 			});
 	}
@@ -737,14 +737,14 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		if(isValidForReview()) {
 			//here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
 			    //ex works does not have a set amount yet
-			//admin side setting exworks shipping description so first time they edit they have a default value
-                OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null}}, OrderCloud.BuyerID.Get())
-                    .then(function () {
-                        $state.go(goto[$state.current.name]);
-                    })
-                    .catch(function (ex) {
-                        $exceptionHandler(ex);
-                    })
+				//admin side setting exworks shipping description so first time they edit they have a default value
+            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null}}, OrderCloud.BuyerID.Get())
+                .then(function () {
+                    $state.go(goto[$state.current.name]);
+                })
+                .catch(function (ex) {
+                    $exceptionHandler(ex);
+                })
 		}
 		else{
 			$state.go($state.current, {}, {reload: false});
@@ -761,8 +761,16 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
         if(isValidForReview()) {
             //here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
             //ex works does not have a set amount yet
-            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType}}, OrderCloud.BuyerID.Get())
-                .then(function () {
+            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null}}, OrderCloud.BuyerID.Get())
+                .then(function (Quote) {
+	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+	                if(Quote.xp.CarriageRateType == 'standard'){
+		                vm.UiTotal = (rateToUse + Quote.Subtotal).toFixed(2);
+	                }
+	                else{
+		                vm.UiTotal = Quote.Subtotal.toFixed(2);
+	                }
+	                QuoteShareService.UiTotal = vm.UiTotal;
                     $state.go(goto[$state.current.name]);
                 })
                 .catch(function (ex) {
@@ -771,26 +779,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
         }
         else{
             $state.go($state.current, {}, {reload: false});
-        }
-    };
-	 vm.SetCarriageLabelInTable = function(language){
-	    if(language == 'en') {
-            if (vm.Quote.xp.CarriageRateType) {
-                if (vm.Quote.xp.CarriageRateType == 'standard') {
-                    return 'Carriage Charge';
-                }
-                else return 'Carriage - Ex Works'
-            }
-            else return "";
-        }
-        else{
-            if (vm.Quote.xp.CarriageRateType) {
-                if (vm.Quote.xp.CarriageRateType == 'standard') {
-                    return 'FR: Carriage Charge';
-                }
-                else return 'FR: Carriage - Ex Works'
-            }
-            else return "";
         }
     };
 
@@ -842,7 +830,11 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		    Currency: "Currency",
 			Search: "Search",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
-            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+		    DescriptionOfShipping: {
+			    exworks:'Carriage - Ex Works',
+			    standard:'Carriage Charge'
+		    }
 	    },
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
@@ -891,7 +883,11 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			Currency: $sce.trustAsHtml("Devise"),
             Search: $sce.trustAsHtml("Rechercher"),
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
-			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
+			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+			DescriptionOfShipping: {
+				exworks:'FR: Carriage - Ex Works',
+				standard:'FR: Carriage Charge'
+			}
 		}
 	};
 
@@ -951,7 +947,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.proceedToSubmit = _proceedToSubmit;
 }
 
-function MissingCarriageDetailController(WeirService, $state, $uibModalInstance, $sce, $exceptionHandler, $scope, $rootScope, OrderCloud) {
+function MissingCarriageDetailController(WeirService, $uibModalInstance) {
     //translations
     var vm = this;
     var labels = {
@@ -1110,7 +1106,6 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
         var result = Underscore.findWhere(OCGeography.Countries, {value: c});
         return result ? result.label : '';
     };
-
 
     var labels = {
         en: {
@@ -1304,7 +1299,10 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        Comments: "Comments",
 	        AddedComment: " added a comment - ",
 			POA: "POA",
-            DescriptionOfShipping: $scope.$parent.myquote.SetCarriageLabelInTable('en'),
+	        DescriptionOfShipping: {
+		        exworks:'Carriage - Ex Works',
+		        standard:'Carriage Charge'
+	        },
             POAShipping: "POA"
         },
         fr: {
@@ -1348,7 +1346,10 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        Comments: $sce.trustAsHtml("Commentaires"),
 	        AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),
             POA: $sce.trustAsHtml("POA"),
-            DescriptionOfShipping: $scope.$parent.myquote.SetCarriageLabelInTable('fr'),
+	        DescriptionOfShipping: {
+		        exworks:'Carriage - Ex Works',
+		        standard:'Carriage Charge'
+	        },
             POAShipping: "POA"
         }
     };
@@ -1902,26 +1903,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.ShowCommentBox = false;
 	vm.CommentToWeir = "";
 	vm.fileStore = fileStore;
-    vm.SetCarriageLabelInTable = function(language){
-        if(language == 'en') {
-            if (vm.Quote.xp.CarriageRateType) {
-                if (vm.Quote.xp.CarriageRateType == 'standard') {
-                    return 'Carriage Charge';
-                }
-                else return 'Carriage - Ex Works'
-            }
-            else return "";
-        }
-        else{
-            if (vm.Quote.xp.CarriageRateType) {
-                if (vm.Quote.xp.CarriageRateType == 'standard') {
-                    return 'FR: Carriage Charge';
-                }
-                else return 'FR: Carriage - Ex Works'
-            }
-            else return "";
-        }
-    };
     vm.ShowUpdatedShipping = function () {
         if(vm.Quote.xp.OldShippingData) {
             if (vm.Quote.ShippingCost != vm.Quote.xp.OldShippingData.ShippingCost || vm.Quote.xp.ShippingDescription != vm.Quote.xp.OldShippingData.ShippingDescription) {
@@ -1980,7 +1961,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			PONumber: "PO Number;",
 			POA: "POA",
-            DescriptionOfShipping: vm.SetCarriageLabelInTable('en'),
+			DescriptionOfShipping: {
+				exworks:'Carriage - Ex Works',
+				standard:'Carriage Charge'
+			},
             POAShipping: "POA"
 		},
 		fr: {
@@ -2028,7 +2012,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
-            DescriptionOfShipping: vm.SetCarriageLabelInTable('fr'),
+			DescriptionOfShipping: {
+				exworks:'Carriage - Ex Works',
+				standard:'Carriage Charge'
+			},
             POAShipping: "POA"
 		}
 	};
@@ -2209,26 +2196,6 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
 		return result ? result.label : '';
 	};
-    vm.SetCarriageLabelInTable = function(language){
-        if(language == 'en') {
-            if (vm.Quote.xp.CarriageRateType) {
-                if (vm.Quote.xp.CarriageRateType == 'standard') {
-                    return 'Carriage Charge';
-                }
-                else return 'Carriage - Ex Works'
-            }
-            else return "";
-        }
-        else{
-            if (vm.Quote.xp.CarriageRateType) {
-                if (vm.Quote.xp.CarriageRateType == 'standard') {
-                    return 'FR: Carriage Charge';
-                }
-                else return 'FR: Carriage - Ex Works'
-            }
-            else return "";
-        }
-    };
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -2267,7 +2234,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 	        PONumber: "PO Number;",
             POA: "POA",
-            DescriptionOfShipping: vm.SetCarriageLabelInTable('en'),
+	        DescriptionOfShipping: {
+                exworks:'Carriage - Ex Works',
+		        standard:'Carriage Charge'
+	        },
             POAShipping: "POA"
         },
         fr: {
@@ -2307,7 +2277,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
-            DescriptionOfShipping: vm.SetCarriageLabelInTable('fr'),
+	        DescriptionOfShipping: {
+		        exworks:'Carriage - Ex Works',
+		        standard:'Carriage Charge'
+	        },
             POAShipping: "POA"
         }
     };

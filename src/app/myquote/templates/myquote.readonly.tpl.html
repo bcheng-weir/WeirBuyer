@@ -11,7 +11,7 @@
                     <span style="font-weight:bold;" ng-bind-html="(readonly.Quote.DateSubmitted | weirdate)"></span>
                 </div>
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
-                    <print-order-button catalog="readonly.Catalog" buyer="readonly.buyer" order="readonly.Quote" items="readonly.LineItems" address="readonly.ShippingAddress" pocontent="readonly.Catalog.xp.POContent"></print-order-button>
+                    <print-order-button catalog="readonly.Catalog" buyer="readonly.buyer" order="readonly.Quote" items="readonly.LineItems" address="readonly.ShippingAddress" pocontent="readonly.Catalog.xp.POContent" uitotal="1"></print-order-button>
                 </div>
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
                     <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
@@ -78,8 +78,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td ng-if="readonly.Quote.xp.ShippingDescription == null || readonly.Quote.xp.CarriageRateType == 'standard'" ng-bind-html="readonly.labels.DescriptionOfShipping"></td>
-                        <td ng-if="readonly.Quote.xp.ShippingDescription != null || readonly.Quote.xp.CarriageRateType == 'exworks'" ng-bind-html="readonly.Quote.xp.ShippingDescription"></td>
+                        <td ng-bind-html="readonly.labels.DescriptionOfShipping[readonly.Quote.xp.CarriageRateType]"></td>
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>

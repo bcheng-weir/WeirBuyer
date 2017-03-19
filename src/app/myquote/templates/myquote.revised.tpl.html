@@ -11,7 +11,7 @@
                     <span style="font-weight:bold;" ng-bind-html="(revised.Quote.DateSubmitted | weirdate)"></span>
                 </div>
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
-                    <print-order-button catalog="revised.Catalog" buyer="revised.buyer" order="revised.Quote" items="revised.LineItems" address="revised.ShippingAddress" pocontent="revised.Catalog.xp.POContent"></print-order-button>
+                    <print-order-button catalog="revised.Catalog" buyer="revised.buyer" order="revised.Quote" items="revised.LineItems" address="revised.ShippingAddress" pocontent="revised.Catalog.xp.POContent" uitotal="1"></print-order-button>
                 </div>
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="revised.ToCsvJson" filename="{{revised.CsvFilename}}">
                     <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
@@ -123,8 +123,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td ng-if="revised.Quote.xp.ShippingDescription == null || revised.Quote.xp.CarriageRateType == 'standard'" ng-bind-html="revised.labels.DescriptionOfShipping"></td>
-                        <td ng-if="revised.Quote.xp.ShippingDescription != null || revised.Quote.xp.CarriageRateType == 'exworks'" ng-bind-html="revised.Quote.xp.ShippingDescription"></td>
+                        <td ng-bind-html="revised.labels.DescriptionOfShipping[revised.Quote.xp.CarriageRateType]"></td>
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
@@ -135,6 +134,7 @@
                             <span ng-switch-default ng-bind-html="revised.Quote.ShippingCost | currency:'&#163;'"></span>
                         </td>
                         <td ng-if="revised.Quote.ShippingCost == 0" ng-bind="revised.labels.POAShipping"></td>
+                        <td></td>
                         <td style="border:0;width:100px;">
                             <h4>
                                 <span class="label label-warning" ng-show="revised.ShowUpdatedShipping()" ng-bind-html="revised.labels.Updated"></span>

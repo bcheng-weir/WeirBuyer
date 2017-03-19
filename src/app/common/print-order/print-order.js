@@ -3,38 +3,25 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData,$timeout,$window,WeirService,$sce) {
+function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteShareService) {
+	//ToDo use the QuoteShareService
 	var vm = this;
-	// ToDo Get the catalog (UK or FR) and buyer (WVCUIK-1352) data.
 	vm.catalog = printData.catalog;
 	vm.buyer = printData.buyer;
 	vm.order = printData.order;
 	vm.items = printData.items;
 	vm.address = printData.address;
 	vm.pocontent = printData.pocontent;
-	vm.CarriageRateForBuyer = vm.buyer.xp.UseCustomCarriageRate == true ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;
-	console.log(vm.CarriageRateForBuyer);
-	vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
-	vm.SetCarriageLabelInTable = function(language){
-		if(language == 'en') {
-			if (vm.order.xp.CarriageRateType) {
-				if (vm.order.xp.CarriageRateType == 'standard') {
-					return 'Carriage Charge';
-				}
-				else return 'Carriage - Ex Works'
-			}
-			else return "";
-		}
-		else{
-			if (vm.order.xp.CarriageRateType) {
-				if (vm.order.xp.CarriageRateType == 'standard') {
-					return 'FR: Carriage Charge';
-				}
-				else return 'FR: Carriage - Ex Works'
-			}
-			else return "";
-		}
-	};
+	if(printData.uitotal == -1) {
+		vm.uitotal = QuoteShareService.UiTotal;
+		vm.CarriageRateForBuyer = vm.buyer.xp.UseCustomCarriageRate == true ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;
+		vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
+	} else {
+		vm.uitotal = printData.order.Total;
+		vm.CarriageRateForBuyer = vm.order.ShippingCost;
+		vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
+	}
+
 	var labels = {
 		en: {
 			QuoteNumber: "Quote Number; ",
@@ -51,7 +38,10 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce) {
 			Total: "Total",
 			DeliveryAddress: "Delivery Address",
 			POAShipping: "POA",
-			DescriptionOfShipping: vm.SetCarriageLabelInTable('en')
+			DescriptionOfShipping: {
+				exworks:'Carriage - Ex Works',
+				standard:'Carriage Charge'
+			}
 		},
 		fr: {
 			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
@@ -68,7 +58,10 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce) {
 			Total: $sce.trustAsHtml("Total"),
 			DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
 			POAShipping: "POA",
-			DescriptionOfShipping: vm.SetCarriageLabelInTable('fr')
+			DescriptionOfShipping: {
+				exworks:'Carriage - Ex Works',
+				standard:'Carriage Charge'
+			}
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];
@@ -97,7 +90,8 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$do
 			order:$scope.order,
 			items:$scope.items,
 			address:$scope.address,
-			pocontent:$scope.pocontent
+			pocontent:$scope.pocontent,
+			uitotal:$scope.uitotal
 		};
 		var templates = {
 			en:'common/print-order/templates/printorder.tpl.html',
@@ -121,13 +115,14 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$do
 function PrintOrderButtonDirective () {
 	return {
 		restrict:'E',
-		scope:{
+		scope: {
 			catalog:'=catalog',
 			buyer:'=buyer',
 			order:'=order',
 			items:'=items',
 			address:'=address',
-			pocontent:'=pocontent'
+			pocontent:'=pocontent',
+			uitotal:'=uitotal'
 		},
 		templateUrl:'common/print-order/templates/printorderbutton.tpl.html',
 		controller:'printOrderBtnCtrl',

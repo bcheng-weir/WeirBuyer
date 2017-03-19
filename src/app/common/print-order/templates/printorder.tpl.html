@@ -54,16 +54,13 @@
                     <td><span ng-bind-html="item.Quantity"></span></td>
                 </tr>
                 <tr ng-if="printctrl.order.xp.CarriageRateType != null">
-                    <!-- Filler to keep formatting -->
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td ng-if="printctrl.order.xp.ShippingDescription == null && printctrl.order.xp.CarriageRateType == 'standard'" ng-bind-html="printctrl.labels.DescriptionOfShipping"></td>
-                    <td ng-if="(printctrl.order.xp.ShippingDescription != null || printctrl.order.xp.CarriageRateType == 'exworks') && printctrl.order.xp.CarriageRateType != 'standard'" ng-bind-html="printctrl.order.xp.ShippingDescription"></td>
-                    <!-- Filler to keep formatting -->
+                    <td ng-bind-html="printctrl.labels.DescriptionOfShipping[printctrl.order.xp.CarriageRateType]"></td>
                     <td></td>
                     <td></td>
-                    <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'" ng-switch on="printctrl.Catalog.ID">
+                    <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'" ng-switch on="printctrl.catalog.ID">
                         <span ng-switch-when="USD" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#36;'"></span>
                         <span ng-switch-when="WVCUK" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#163;'"></span>
                         <span ng-switch-when="WPIFR" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#128;'"></span>
@@ -72,15 +69,16 @@
                     <td ng-if="printctrl.order.xp.CarriageRateType != 'standard'">
                         <span ng-bind-html="printctrl.labels.POAShipping"></span>
                     </td>
+                    <td></td>
                 </tr>
-                <tr class="totals">
+                <tr class="totals" >
                     <td colspan="5"></td>
                     <td>Total</td>
                     <td ng-switch on="printctrl.items[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                        <span ng-switch-when="USD" ng-bind-html="printctrl.order.Total | currency:'&#36;'"></span>
-                        <span ng-switch-when="GBP" ng-bind-html="printctrl.order.Total | currency:'&#163;'"></span>
-                        <span ng-switch-when="EUR" ng-bind-html="printctrl.order.Total | currency:'&#128;'"></span>
-                        <span ng-switch-default ng-bind-html="printctrl.order.Total | currency:'&#163;'"></span>
+                        <span ng-switch-when="USD" ng-bind-html="printctrl.uitotal | currency:'&#36;'"></span>
+                        <span ng-switch-when="GBP" ng-bind-html="printctrl.uitotal | currency:'&#163;'"></span>
+                        <span ng-switch-when="EUR" ng-bind-html="printctrl.uitotal | currency:'&#128;'"></span>
+                        <span ng-switch-default ng-bind-html="printctrl.uitotal | currency:'&#163;'"></span>
                     </td>
                     <td></td>
                 </tr>

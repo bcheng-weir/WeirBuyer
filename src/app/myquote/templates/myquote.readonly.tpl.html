@@ -9,7 +9,7 @@
                 <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;margin-top: 10px;">
                     <span ng-bind-html="readonly.labels.OrderDate" />&nbsp;<span style="font-weight:bold;" ng-bind-html="(readonly.Quote.DateSubmitted | weirdate)"></span>
                 </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;">
                     <print-order-button catalog="readonly.Catalog" buyer="readonly.buyer" order="readonly.Quote" items="readonly.LineItems" address="readonly.ShippingAddress" pocontent="readonly.Catalog.xp.POContent" uitotal="1"></print-order-button>
                 </div>
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">

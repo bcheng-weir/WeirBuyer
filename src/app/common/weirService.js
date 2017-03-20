@@ -51,7 +51,8 @@ function UserGroupsService($q, OrderCloud) {
 
 function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, SearchTypeService) {
     var orderStatuses = {
-        Enquiry: { id: "EN", label: { en: "Enquiry", fr: "TODO: Enquiry" }, desc: "An enquiry for parts not found" },
+        Enquiry: { id: "EN", label: { en: "Enquiry Submitted", fr: "FR: Enquiry Submitted" }, desc: "An enquiry for parts not found" },
+	    EnquiryReview: {id: "ER", label:{ en: "Enquiry Submitted", fr: "FR: Enquiry Submitted" },desc: "An enquiry under administrator review."},
         Draft: { id: "DR", label: { en: "Draft", fr: "Brouillon" }, desc: "This is the current quote under construction" },
         Saved: { id: "SV", label: { en: "Saved", fr: "Cotation(s) enregistrée(s)" }, desc: "Quote has been saved but not yet submitted to weir as quote or order" },
         Submitted: { id: "SB", label: { en: "Quote Submitted for Review", fr: "Cotation(s) soumise(s) à révision" }, desc: "Customer has selected to request review OR review status is conditional based on POA items being included in quote" },
@@ -79,7 +80,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		orderStatuses.Draft, orderStatuses.Saved, orderStatuses.Submitted, orderStatuses.RevisedQuote,
 		orderStatuses.RejectedQuote, orderStatuses.ConfirmedQuote, orderStatuses.SubmittedWithPO, orderStatuses.RevisedOrder,
 		orderStatuses.RejectedRevisedOrder, orderStatuses.ConfirmedOrder, orderStatuses.Despatched, orderStatuses.Invoiced,
-        orderStatuses.SubmittedPendingPO, orderStatuses.Review, orderStatuses.Enquiry
+        orderStatuses.SubmittedPendingPO, orderStatuses.Review, orderStatuses.Enquiry, orderStatuses.EnquiryReview
     ];
 
     function getStatus(id) {
@@ -201,7 +202,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 confirmed: "Confirmed",
                 despatched: "Despatched",
                 invoiced: "Invoiced",
-                home: "Home"
+                home: "Home",
+                EnquiryQuotes: "Enquiries"
             },
             fr: {
                 privacyTitle: $sce.trustAsHtml("Déclaration de confidentialité"),
@@ -226,7 +228,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 confirmed: $sce.trustAsHtml("Commande(s) confirm&eacute;e(s)"),
                 despatched: $sce.trustAsHtml("Commande(s) exp&eacute;di&eacute;e(s)"),
                 invoiced: $sce.trustAsHtml("Facturée"),
-                home: $sce.trustAsHtml("Accueil")
+                home: $sce.trustAsHtml("Accueil"),
+                EnquiryQuotes: "Demandes"
             }
         };
         return navLabels;

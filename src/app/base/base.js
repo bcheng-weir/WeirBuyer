@@ -286,9 +286,9 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
                 "xp.Active":true
             },
             "quotes.enquiry" : {
-                "xp.Type":"Quote",
+	            "xp.Type": "Quote",
                 "xp.Status": WeirService.OrderStatus.Enquiry.id+"|"+WeirService.OrderStatus.EnquiryReview.id,
-                "xp.Active":true
+	            "xp.Active":true
             },
 	        "quotes.inreview": {
 		        "xp.Type": "Quote",

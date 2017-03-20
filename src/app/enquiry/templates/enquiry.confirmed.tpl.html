@@ -1,0 +1,15 @@
+<div class="source-list-modal" role="dialog">
+    <div class="modal-content">
+        <div class="modal-header" style="padding-bottom: 5px;">
+	        <span style="font-weight: bold;" ng-bind-html="confirm.labels.Title"></span>
+        </div>
+        <div class="modal-body" style="margin-top: -5px;" >
+            <p ng-if="confirm.labels.MessageText1" ng-bind-html="confirm.labels.MessageText1"></p>
+            <p ng-if="confirm.labels.MessageText2" ng-bind-html="confirm.labels.MessageText2" style="font-weight: bold;"></p>
+            <p ng-if="confirm.labels.MessageText3" ng-bind-html="confirm.labels.MessageText3"></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" ng-click="confirm.Close()" ng-bind-html="confirm.labels.Close"></button>
+        </div>
+    </div>
+</div>

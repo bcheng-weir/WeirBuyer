@@ -13,9 +13,9 @@
             <nav>
                 <ol class="cd-breadcrumb triangle">
                     <li role="presentation" ui-sref-active="active" ui-sref="enquiry.filter"><a href="#" ng-bind-html='enquiry.labels.FilterStep'></a></li>
-                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.select"><a href="#" ng-bind-html='enquiry.labels.SelectStep'></a></li>
-                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.delivery"><a href="#" ng-bind-html='enquiry.labels.DeliveryStep'></a></li>
-                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.review"><a href="#" ng-bind-html='enquiry.labels.ReviewStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.select" ng-disabled="enquiry.info.Step &lt; 2"><a href="#" ng-bind-html='enquiry.labels.SelectStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.delivery" ng-disabled="enquiry.info.Step &lt; 3"><a href="#" ng-bind-html='enquiry.labels.DeliveryStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.review" ng-disabled="enquiry.info.Step &lt; 4"><a href="#" ng-if="enquiry.info.Step &gt; 3" ng-bind-html='enquiry.labels.ReviewStep'></a><span ng-if="enquiry.info.Step &lt; 4" ng-bind-html='enquiry.labels.ReviewStep'></span></li>
                 </ol>
             </nav>
 

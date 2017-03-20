@@ -740,6 +740,14 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 				//admin side setting exworks shipping description so first time they edit they have a default value
             OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null}}, OrderCloud.BuyerID.Get())
                 .then(function () {
+	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+	                if(Quote.xp.CarriageRateType == 'standard'){
+		                vm.UiTotal = (rateToUse + Quote.Subtotal).toFixed(2);
+	                }
+	                else{
+		                vm.UiTotal = Quote.Subtotal.toFixed(2);
+	                }
+	                QuoteShareService.UiTotal = vm.UiTotal;
                     $state.go(goto[$state.current.name]);
                 })
                 .catch(function (ex) {
@@ -750,6 +758,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			$state.go($state.current, {}, {reload: false});
 		}
 	}
+
 	vm.SetShippingPrice = 	function() {
         var isValidForReview = function () {
             var validForReview = true;

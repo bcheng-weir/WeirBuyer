@@ -894,8 +894,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
 			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
 			DescriptionOfShipping: {
-				exworks:'FR: Carriage - Ex Works',
-				standard:'FR: Carriage Charge'
+				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+				standard:$sce.trustAsHtml('Frais de livraison')
 			}
 		}
 	};
@@ -1356,8 +1356,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),
             POA: $sce.trustAsHtml("POA"),
 	        DescriptionOfShipping: {
-		        exworks:'Carriage - Ex Works',
-		        standard:'Carriage Charge'
+		        exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+		        standard:$sce.trustAsHtml('Frais de livraison')
 	        },
             POAShipping: "POA"
         }
@@ -2022,8 +2022,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 			DescriptionOfShipping: {
-				exworks:'Carriage - Ex Works',
-				standard:'Carriage Charge'
+				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+				standard:$sce.trustAsHtml('Frais de livraison')
 			},
             POAShipping: "POA"
 		}
@@ -2287,8 +2287,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 	        DescriptionOfShipping: {
-		        exworks:'Carriage - Ex Works',
-		        standard:'Carriage Charge'
+		        exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+		        standard:$sce.trustAsHtml('Frais de livraison')
 	        },
             POAShipping: "POA"
         }

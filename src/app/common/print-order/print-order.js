@@ -59,8 +59,8 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 			DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
 			POAShipping: "POA",
 			DescriptionOfShipping: {
-				exworks:'Carriage - Ex Works',
-				standard:'Carriage Charge'
+				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+				standard:$sce.trustAsHtml('Frais de livraison')
 			}
 		}
 	};

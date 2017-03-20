@@ -24,7 +24,7 @@
                 <div class="col-md-5 address-cell" ng-repeat="item in rows" ng-if="item.Country=='FR'">
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
-                    <span ng-bind-html="item.Street2"></span><br>
+                    <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
                     <span><span ng-bind-html="item.Zip"></span>, <span ng-bind-html="item.City"></span></span><br />
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
                     <button ng-class="(myquote.Quote.ShippingAddressID==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverHere' ng-click="delivery.setShippingAddress(myquote.Quote.ID,item)"></button>
@@ -33,7 +33,7 @@
                 <div class="col-md-5 address-cell" ng-repeat="item in rows" ng-if="item.Country=='GB'">
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
-                   <span ng-bind-html="item.Street2"></span><br>
+                    <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
                     <span ng-bind-html="item.City"></span><br>
                     <span ng-bind-html="item.Zip"></span><br>
                     <span ng-bind-html="delivery.country(item.Country)"></span><br>
@@ -43,16 +43,27 @@
                 <div class="col-md-5 address-cell" ng-repeat="item in rows" ng-if="item.Country!='GB' && item.Country!='FR'">
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
-                    <span ng-bind-html="item.Street2"></span><br>
+                    <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
                     <p><span ng-bind-html="item.City"></span>, <span ng-bind-html="item.State"></span>, <span ng-bind-html="item.Zip"></span></p><br>
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
                     <button ng-class="(myquote.Quote.ShippingAddressID==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverHere' ng-click="delivery.setShippingAddress(myquote.Quote.ID,item)"></button>
                     <br>
                 </div>
             </div>
-                <div style="margin-top: 5%;">
-                    <div style=" background-color: #eff0f1;">
-                        <div class="row" style="margin-left: 0px">
+        </div>
+        <div class="col-md-5">
+            <div class="row" style="margin-left: 0px;">
+                <div class="col-md-12">
+                    <div class="pull-right">
+                        <button class="btn btn-primary" ui-sref="myquote.detail" ng-bind-html="delivery.labels.BackToQuote"></button>
+                        <button class="btn btn-success" style="margin-left: 1em;" ng-click="myquote.Next()" ng-bind-html="delivery.labels.ReviewQuote"></button>
+                    </div>
+                </div>
+            </div>
+            <!--<div style="margin-top: 5%;">
+                <div style=" ">-->
+                    <div class="row" style="margin-left: 0px; margin-top:8px; background-color: #eff0f1;">
+                        <div class="col-md-12">
                             <div>
                                 <span><b>{{delivery.labels.CarriageOptionsMsg}}</b></span>
                             </div>
@@ -67,8 +78,9 @@
                             </div>
                         </div>
                     </div>
+                <!--</div>-->
                 <div class="row" style="margin-left: 0px; margin-top: 2%; margin-bottom: 2%;">
-                    <div class="col-md-7" style="margin-left: 0px;">
+                    <div class="col-md-12" style="margin-left: 0px;">
                         <span><b>{{delivery.labels.CarriageInfo}}</b></span>
                         <ul style="margin-top: 2%;">
                             <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP1}}</li>
@@ -77,25 +89,7 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-5">
-            <div class="pull-right">
-                <button class="btn btn-primary" ui-sref="myquote.detail" ng-bind-html="delivery.labels.BackToQuote"></button>
-                <button class="btn btn-success" style="margin-left: 1em;" ng-click="myquote.Next()" ng-bind-html="delivery.labels.ReviewQuote"></button>
-            </div>
-            <div class="row">
-                <div class="col-md-8 pull-right">
-                    <br />
-                    <br />
-                    <!--
-                    <p style="font-weight:bold; margin-left:-4em;" ng-bind-html="delivery.labels.DeliveryInfo"></p>
-                        <p style="font-style:italic; margin-left:-4em;" ng-bind-html="delivery.labels.InfoText1"></p>
-                        <p style="font-style:italic; margin-left:-4em;" ng-if="delivery.labels.InfoText2" ng-bind-html="delivery.labels.InfoText2"></p>
-                        <p style="font-style:italic;margin-left:-4em;" ng-if="delivery.labels.InfoText3" ng-bind-html="delivery.labels.InfoText3"></p>
-                    -->
-                </div>
-            </div>
+            <!--</div>-->
         </div>
     </div>
 </ui-view>

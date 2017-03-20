@@ -1,3 +1,95 @@
-<div>
- <h3> Placeholder for the Review step</h3>
+<div class="row container-fluid">
+    <div class="col-xs-6 pull-left">
+        <p><span class="text-blue" ng-bind-html='enquiry.labels.PartTypesHeader'></span></p>
+        <p><span ng-bind-html='enquiry.labels.SerNumLabel'></span><span class="text-blue" ng-bind-html="review.enq.SerialNumber"></span></p>
+        <p><span ng-bind-html='enquiry.labels.BrandLabel'></span><span class="text-blue" ng-bind-html="review.enq.Manufacturer.Name"></span></p>
+        <p><span ng-bind-html='enquiry.labels.ValveTypeLabel'></span><span class="text-blue" ng-bind-html="review.enq.ValveType.Name"></span></p>
+    </div>
 </div>
+<div class="row">
+    <div class="col-xs-8">
+        <table class="table table-bordered oc-table-responsive weir-results-table">
+            <thead class="header-cell">
+                <tr>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='enquiry.labels.DescriptionHeader'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='enquiry.labels.QuantityHeader'></h4></th>
+                </tr>
+            </thead>
+            <tbody class="form-group">
+                <tr ng-repeat="p in review.enq.PartList">
+                    <td ng-bind-html="p.Description" style="text-align:left;"></td>
+                    <td class="form-inline">
+                        <input type="number" class="form-control" ng-model="review.enq.Parts[p.ID]" disabled="disabled" style="width:40%" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Comments to Weir -->
+    <div class="col-xs-12">
+        <ul class="nav nav-tabs">
+            <li class="active comments"><a href="#" id="Comments" ng-bind-html="enquiry.labels.CommentsAction"></a></li>
+        </ul>
+    </div>
+</div>
+<div class="row" >
+    <div class="col-xs-12">
+        <div ng-if="review.enq.Comment.val">
+            <span ng-bind-html="review.enq.Comment.by"></span>
+            <span ng-bind-html="detail.labels.AddedComment"></span>
+            <span ng-bind-html="review.enq.Comment.date | weirdate"></span>
+        </div>
+        <br>
+        <div>
+            <span ng-bind-html="review.enq.Comment.val"></span>
+        </div>
+        <hr>
+    </div>
+</div>
+
+<div style="margin-left: 0.3em; margin-top: 20px; margin-bottom: 10px; background-color: #E0E0E0;">
+    <div class="row" >
+        <div class="col-md-7">
+            <span style="font-weight: bold; " ng-bind-html="review.labels.DeliveryAddress"></span>
+        </div>
+    </div>
+
+    <div class="row" style="margin-left: 0.5em;">
+        <div class="col-md-5 address-cell" ng-if="review.enq.Shipping.Country=='FR'">
+            <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street2"></span><br>
+            <span><span ng-bind-html="review.enq.Shipping.Zip"></span>, <span ng-bind-html="review.enq.Shipping.City"></span></span><br />
+            <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br><br>
+        </div>
+        <div class="col-md-5 address-cell" ng-if="review.enq.Shipping.Country=='GB'">
+            <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street2"></span><br>
+            <span ng-bind-html="review.enq.Shipping.City"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Zip"></span><br>
+            <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br>
+        </div>
+        <div class="col-md-5 address-cell" ng-if="review.enq.Shipping.Country!='GB' && review.enq.Shipping.Country!='FR'">
+            <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street2"></span><br>
+            <p><span ng-bind-html="review.enq.Shipping.City"></span>, <span ng-bind-html="review.enq.Shipping.State"></span>, <span ng-bind-html="review.enq.Shipping.Zip"></span></p><br>
+            <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br><br>
+        </div>
+    </div>
+</div>
+
+    <div class="row container-fluid">
+        <div class="col-xs-4 pull-left">
+            <button type="submit" class="btn btn-primary" style="height: 15%; width: 100%;" ng-click="review.back()" ng-bind-html="review.labels.BackCommand"></button>
+        </div>
+        <div class="col-xs-2">
+        </div>
+        <div class="col-xs-4 pull-right">
+            <button type="submit" class="btn btn-warning" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;" ng-click="review.next()" ng-bind-html="review.labels.SubmitCommand"></button>
+        </div>
+    </div>

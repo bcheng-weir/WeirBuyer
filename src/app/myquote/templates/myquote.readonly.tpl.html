@@ -9,8 +9,8 @@
                 <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;margin-top: 10px;">
                     <span ng-bind-html="readonly.labels.OrderDate" />&nbsp;<span style="font-weight:bold;" ng-bind-html="(readonly.Quote.DateSubmitted | weirdate)"></span>
                 </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;">
-                    <print-order-button buyer="readonly.buyer" order="readonly.Quote" items="readonly.LineItems" address="readonly.ShippingAddress" pocontent="readonly.Catalog.xp.POContent"></print-order-button>
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
+                    <print-order-button catalog="readonly.Catalog" buyer="readonly.buyer" order="readonly.Quote" items="readonly.LineItems" address="readonly.ShippingAddress" pocontent="readonly.Catalog.xp.POContent" uitotal="1"></print-order-button>
                 </div>
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
                     <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
@@ -95,7 +95,26 @@
                         </td>
                         <td class="text-right" ng-bind-html="line.Quantity"></td>
                     </tr>
-                    <tr ng-if="readonly.LineItems.length > 0" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                    <!--<tr ng-if="readonly.LineItems.length > 0" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">-->
+                    <tr ng-if="readonly.Quote.xp.CarriageRateType != null">
+                        <!-- Filler to keep formatting -->
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td ng-bind-html="readonly.labels.DescriptionOfShipping[readonly.Quote.xp.CarriageRateType]"></td>
+                        <!-- Filler to keep formatting -->
+                        <td></td>
+                        <td></td>
+                        <td ng-if="readonly.Quote.ShippingCost != 0" ng-switch on="readonly.Catalog.ID">
+                            <span ng-switch-when="USD" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#36;'"></span>
+                            <span ng-switch-when="WVCUK" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#163;'"></span>
+                            <span ng-switch-when="WPIFR" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#128;'"></span>
+                            <span ng-switch-default ng-bind-html="readonly.Quote.ShippingCost | currency:'&#163;'"></span>
+                        </td>
+                        <td ng-if="readonly.Quote.ShippingCost == 0" ng-bind="readonly.labels.POAShipping"></td>
+                    </tr>
+
+                    <tr ng-if="readonly.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='readonly.labels.Total'></td>
                         <td ng-switch on="readonly.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">

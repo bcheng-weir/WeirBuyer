@@ -1138,7 +1138,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
             CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of £"+ CarriageRate.toFixed(2) +  " per order to one UK address.",
-            CarriageInfoP2: "Shipping address successfully selected Deliveries will be prepared for shipping based on your standard delivery instructions.",
+            CarriageInfoP2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
 
         },

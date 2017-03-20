@@ -170,7 +170,7 @@ function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryS
     vm.labels = WeirService.LocaleResources(labels);
     vm.showSpares = function () {
         $state.go('enquiry.select');
-    }
+    };
     vm.updateValveTypes = function (preserveParts) {
         vm.valveTypes = [];
         if (vm.info.Manufacturer) {
@@ -183,7 +183,7 @@ function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryS
         } else if (vm.info.Step < 1) {
             vm.info.Step = 1;
         }
-    }
+    };
     vm.valveTypeChanged = function () {
         vm.info.Parts = {};
         vm.info.Comment = null;
@@ -223,14 +223,14 @@ function EnquirySelectController($state, $sce, WeirService, OrderCloud, PartList
     vm.labels = WeirService.LocaleResources(labels);
     vm.newFilter= function () {
         $state.go('enquiry.filter');
-    }
+    };
     vm.toDelivery = function () {
         $state.go('enquiry.delivery');
-    }
+    };
     vm.updateLineItem = function (part) {
         part.origQty = part.quantity;
         vm.enq.Parts[part.ID] = part.quantity;
-    }
+    };
     vm.hasParts = function () {
         for (var p in vm.enq.Parts) {
             if (vm.enq.Parts[p]) return true;
@@ -407,7 +407,7 @@ function EnquiryReviewController($state, $sce, $uibModal, WeirService, OrderClou
 			        vm.enq.Comment = null;
 			        vm.enq.PartList = null;
 			        vm.enq.Shipping = {};
-			        vm.enq.Quote = null
+			        vm.enq.Quote = null;
 			        $state.go('home');
 			    });
 			})

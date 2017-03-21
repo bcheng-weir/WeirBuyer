@@ -122,13 +122,13 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud
             CantFindText2: $sce.trustAsHtml("Vous pouvez également remplir le formulaire ci-dessous – Entrez simplement le numéro de série de la soupape voulue. Sélectionnez la marque et le type de soupape pour afficher une liste des types de pièces associés au type de soupape. "),
             SearchAgain: $sce.trustAsHtml("Chercher à nouveau"),
             YourContact: $sce.trustAsHtml("Votre contact"),
-            PartTypesHeader: "Part types for; ",
+            PartTypesHeader: $sce.trustAsHtml("Pi&egrave;ces pour: "),
             SerNumLabel: $sce.trustAsHtml("Numéro de série"),
-            BrandLabel: $sce.trustAsHtml("TODO: Brand; "),
-            ValveTypeLabel: "TODO: Valve type; ",
-            DescriptionHeader: "TODO: Description of part",
-            QuantityHeader: "TODO: Quantity",
-            CommentsAction: "TODO: Comments",
+            BrandLabel: $sce.trustAsHtml("Marque: "),
+            ValveTypeLabel: $sce.trustAsHtml("Type: "),
+            DescriptionHeader: $sce.trustAsHtml("Désignation"),
+            QuantityHeader: $sce.trustAsHtml("Quantité"),
+            CommentsAction: $sce.trustAsHtml("Commentaires"),
             FilterStep: "Filtre",
             SelectStep: "Selection",
             DeliveryStep: "Livraison",
@@ -152,19 +152,19 @@ function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryS
             SerNumPrompt: "Enter Serial number",
             BrandPrompt: "Select brand of valve.",
             ValveTypePrompt: "Select valve type.",
-            SerNumPlaceholder: "",
+            SerNumPlaceholder: "Serial number",
             BrandPlaceholder: "Brand name",
             ValveTypePlaceholder: "Valve type",
             Submit: "Show spares list"
         },
         fr: {
             SerNumPrompt: $sce.trustAsHtml("Entrée le numéro de série"),
-            BrandPrompt: $sce.trustAsHtml("TODO: Select brand of valve."),
-            ValveTypePrompt: $sce.trustAsHtml("TODO: Select valve type."),
+            BrandPrompt: $sce.trustAsHtml("S&eacute;lectionner une marque"),
+            ValveTypePrompt: $sce.trustAsHtml("S&eacute;lectionner un type de soupape"),
             SerNumPlaceholder: "Champ libre",
             BrandPlaceholder: "Marque",
             ValveTypePlaceholder: "Type de soupape",
-            Submit: $sce.trustAsHtml("Suivant")
+            Submit: $sce.trustAsHtml("Afficher la liste de pi&egrave;ce")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -215,9 +215,9 @@ function EnquirySelectController($state, $sce, WeirService, OrderCloud, PartList
             AddLabel: "Add"
         },
         fr: {
-            ChangeAction: "TODO: Change",
-            AddedLabel: "TODO: Added",
-            AddLabel: "TODO: Add"
+            ChangeAction: "Changer",
+            AddedLabel: "Ajouter",
+            AddLabel: $sce.trustAsHtml("Ajouté")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -310,17 +310,17 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
             Success: "Success",
             ShippingAddressTitle: "Shipping Address Set",
             BackCommand: "Back",
-            ReviewCommand: "Review & Submit"
+            ReviewCommand: "Review and Submit"
         },
         fr: {
-            DefaultAddress: $sce.trustAsHtml("TODO: Your Default Address"),
-            DeliverToLabel: $sce.trustAsHtml("TODO: Deliver to this Address"),
-            AddAddress: $sce.trustAsHtml("TODO: Add a New Address"),
+            DefaultAddress: $sce.trustAsHtml("Votre adresse par défaut"),
+            DeliverToLabel: $sce.trustAsHtml("Livrer à cette adresse"),
+            AddAddress: $sce.trustAsHtml("Ajouter une adresse"),
             ShippingAddressSet: $sce.trustAsHtml("Livraison confirmée à cette adresse "),
             Success: $sce.trustAsHtml("Succès"),
             ShippingAddressTitle: "Adresse de livraison",
-            BackCommand: $sce.trustAsHtml("TODO: Back"),
-            ReviewCommand: $sce.trustAsHtml("TODO: Review & Submit")
+            BackCommand: $sce.trustAsHtml("Retour"),
+            ReviewCommand: $sce.trustAsHtml("Récap et soumission")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -369,9 +369,9 @@ function EnquiryReviewController($state, $sce, $uibModal, WeirService, OrderClou
             SubmitCommand: "Submit enquiry"
         },
         fr: {
-            DeliveryAddress: "TODO: Delivery Address",
-            BackCommand: $sce.trustAsHtml("TODO: Back"),
-            SubmitCommand: $sce.trustAsHtml("TODO: Submit enquiry")
+            DeliveryAddress: "Adresse de livraison",
+            BackCommand: $sce.trustAsHtml("Retour"),
+            SubmitCommand: $sce.trustAsHtml("Soumettre demande")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -426,15 +426,15 @@ function ConfirmEnquiryController($state, $sce, $uibModalInstance, Enquiry) {
         en: {
             Title: "Thank you. Your enquiry has been submitted",
             MessageText1: "We have sent you a confirmation email.",
-            MessageText2: "Order number; " + vm.Enquiry.Quote.ID,
-            MessageText3: "We will notify you etc., etc.",
+            MessageText2: "Enquiry number; " + vm.Enquiry.Quote.ID,
+            MessageText3: "You will be able to view your enquiry in Your Quotes. We will respond to enquiry as soon as possible.",
             Close: "Close"
         },
         fr: {
-            Title: "TODO: Thank you. Your enquiry has been submitted",
-            MessageText1: "TODO: We have sent you a confirmation email.",
-            MessageText2: "TODO: Order number; " + vm.Enquiry.Quote.ID,
-            MessageText3: "TODO: We will notify you etc., etc.",
+            Title: $sce.trustAsHtml("Merci. Votre demande a été soumise."),
+            MessageText1: $sce.trustAsHtml("TODO: We have sent you a confirmation email."),
+            MessageText2: $sce.trustAsHtml("Reference d’offre: " + vm.Enquiry.Quote.ID),
+            MessageText3: $sce.trustAsHtml("Vous pouvez consulter votre demande dans l’onglet “Vos Cotations”. Nous vous réponderons dans les plus brefs délais."),
             Close: $sce.trustAsHtml("Fermer")
         }
     };

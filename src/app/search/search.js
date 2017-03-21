@@ -413,15 +413,19 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirService, SerialNumberDetail ) {
+function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, WeirService, SerialNumberDetail ) {
 	var vm = this;
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
 	vm.PartQuantity = function(partId) {
 		return SerialNumberDetail.xp.Parts[partId];
 	};
-	if(typeof vm.serialNumber != 'object') {
-		$state.go('search.noresults', {}, {reload:true});
+	if (typeof vm.serialNumber != 'object') {
+	    if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+	        $state.go('enquiry.filter');
+	    } else {
+	        $state.go('search.noresults', {}, { reload: true });
+	    }
 	}
 	var labels = {
 		en: {
@@ -593,10 +597,16 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 	};
 }
 
-function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults ) {
+function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults, Me ) {
 	var vm = this;
 	vm.partNumberResults = PartNumberResults;
-	if (!vm.partNumberResults || !vm.partNumberResults.Parts || vm.partNumberResults.Parts.length == 0) $state.go('search.noresults');
+	if (!vm.partNumberResults || !vm.partNumberResults.Parts || vm.partNumberResults.Parts.length == 0) {
+	    if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+	        $state.go('enquiry.filter');
+	    } else {
+	        $state.go('search.noresults');
+	    }
+    }
 	var numFound = 0;
 	angular.forEach(PartNumberResults.Parts, function(entry) {
 	    if (entry.Detail) {
@@ -637,7 +647,13 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
-	if(numFound == 0) $state.go('search.noresults');
+	if (numFound == 0) {
+	    if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+	        $state.go('enquiry.filter');
+	    } else {
+	        $state.go('search.noresults');
+	    }
+    }
 
 	vm.addButtons = [];
 	vm.addPartToQuote = function(part, index) {
@@ -717,7 +733,7 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 	};
 }
 
-function TagResultsController(WeirService, $stateParams, $state, TagNumberResults, $sce) {
+function TagResultsController(WeirService, $stateParams, $state, TagNumberResults, $sce, Me) {
     var vm = this;
     vm.tagNumberResults = TagNumberResults;
     vm.searchNumbers = $stateParams.numbers;
@@ -773,7 +789,11 @@ function TagResultsController(WeirService, $stateParams, $state, TagNumberResult
     };
 
     if (numFound == 0) {
-        $state.go('search.noresults');
+        if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+            $state.go('enquiry.filter');
+        } else {
+            $state.go('search.noresults');
+        }
     } else if (numFound == 1 && numQueried == 1) {
         $state.go('search.tag.detail', { id: TagNumberResults[0].Detail.ID });
     }
@@ -781,13 +801,17 @@ function TagResultsController(WeirService, $stateParams, $state, TagNumberResult
     vm.labels = WeirService.LocaleResources(labels);
 }
 
-function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirService, TagNumberDetail ) {
+function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirService, TagNumberDetail, Me ) {
 	var vm = this;
 	vm.tagNumber = TagNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
 	if(typeof vm.tagNumber != 'object') {
-		$state.go('search.noresults', {}, {reload:true});
-	}
+		if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+		    $state.go('enquiry.filter');
+		} else {
+		    $state.go('search.noresults', {}, { reload: true });
+		}
+    }
 	vm.PartQuantity = function(partId) {
 		return TagNumberDetail.xp.Parts[partId];
 	};

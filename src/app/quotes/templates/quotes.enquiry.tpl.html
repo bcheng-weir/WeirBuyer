@@ -1,0 +1,32 @@
+<ui-view>
+    <div class="row">
+        <div class="col-md-12">
+            <h3><span ng-bind-html='enquiry.labels.Header'></h3>
+            <table class="table table-hover table-condensed oc-table-responsive">
+                <thead>
+                <tr>
+                    <th scope="col">
+                        <a href="#" role="button" ng-click="quotes.updateSort('ID')">
+                            {{enquiry.labels.QuoteNum}}
+                            <i class="fa fa-caret-down" ng-show="quotes.parameters.sortBy == 'ID'"></i>
+                            <i class="fa fa-caret-up" ng-show="quotes.parameters.sortBy == '!ID'"></i>
+                        </a>
+                    </th>
+                    <th ng-bind-html='enquiry.labels.Status'></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="quote in quotes.list.Items">
+                    <td class="text-blue">{{quote.ID}}</td>
+                    <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
+                    <td>
+                        <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="enquiry.labels.View"></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>
+        </div>
+    </div>
+</ui-view>

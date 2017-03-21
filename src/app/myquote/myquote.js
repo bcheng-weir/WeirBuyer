@@ -831,6 +831,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			Search: "Search",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
             EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+		    AddNew: "Add New Items",
 		    DescriptionOfShipping: {
 			    exworks:'Carriage - Ex Works',
 			    standard:'Carriage Charge'
@@ -884,6 +885,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             Search: $sce.trustAsHtml("Rechercher"),
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
 			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+			AddNew: $sce.trustAsHtml("Ajouter un item"),
 			DescriptionOfShipping: {
 				exworks:'FR: Carriage - Ex Works',
 				standard:'FR: Carriage Charge'
@@ -2234,6 +2236,9 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 	        PONumber: "PO Number;",
             POA: "POA",
+	        PartTypes: "Part types for;",
+	        Brand: "Brand",
+	        ValveType: "Valve Type",
 	        DescriptionOfShipping: {
                 exworks:'Carriage - Ex Works',
 		        standard:'Carriage Charge'
@@ -2277,6 +2282,9 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
+	        PartTypes: $sce.trustAsHtml("FR: Part types for;"),
+	        Brand: $sce.trustAsHtml("FR: Brand"),
+	        ValveType: $sce.trustAsHtml("FR: Valve type"),
 	        DescriptionOfShipping: {
 		        exworks:'Carriage - Ex Works',
 		        standard:'Carriage Charge'

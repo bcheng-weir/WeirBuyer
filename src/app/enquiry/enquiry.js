@@ -358,7 +358,7 @@ function NewEnquiryAddressModalController($uibModalInstance, $sce, WeirService) 
     };
 }
 
-function EnquiryReviewController($state, $sce, $uibModal, WeirService, OrderCloud, EnquiryService, Underscore, OCGeography, toastr, Me) {
+function EnquiryReviewController($state, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography) {
     var vm = this;
     vm.enq = EnquiryService;
     if (vm.enq.Step < 4) vm.enq.Step = 4;
@@ -384,10 +384,8 @@ function EnquiryReviewController($state, $sce, $uibModal, WeirService, OrderClou
         WeirService.SubmitEnquiry(vm.enq)
 			.then(function (info) {
 			    vm.enq.Quote = info;
-			    var modalInstance = $uibModal.open({
+			    $uibModal.open({
 			        animation: true,
-			        ariaLabelledBy: 'modal-title',
-			        ariaDescribedBy: 'modal-body',
 			        templateUrl: 'enquiry/templates/enquiry.confirmed.tpl.html',
 			        size: 'lg',
 			        controller: 'ConfirmEnquiryCtrl',
@@ -409,7 +407,7 @@ function EnquiryReviewController($state, $sce, $uibModal, WeirService, OrderClou
 			        vm.enq.Shipping = {};
 			        vm.enq.Quote = null;
 			        $state.go('home');
-			    });
+			    })
 			})
            .catch(function (ex) {
                 deferred.reject(ex);
@@ -418,7 +416,7 @@ function EnquiryReviewController($state, $sce, $uibModal, WeirService, OrderClou
 
 }
 
-function ConfirmEnquiryController($state, $sce, $uibModalInstance, Enquiry) {
+function ConfirmEnquiryController($sce, $uibModalInstance, Enquiry, WeirService) {
     var vm = this;
     vm.Enquiry = Enquiry;
 
@@ -440,7 +438,7 @@ function ConfirmEnquiryController($state, $sce, $uibModalInstance, Enquiry) {
     };
 
     vm.Close = function () {
-        $uibModalInstance.dismiss();
+        $uibModalInstance.close();
     };
     vm.labels = WeirService.LocaleResources(labels);
 }

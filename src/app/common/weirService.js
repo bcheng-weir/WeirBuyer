@@ -1168,13 +1168,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
         return OrderCloud.Me.ListProducts(null, 1, 50, null, "Name", null, valveType.ID, catalogID);
     }
 
-
     function submitEnquiry(enq) {
         var deferred = $q.defer();
-        // TODO: Get prefix from enq info
-        var prefix = 'WPIFR';
-        var newQuoteId = createQuoteNumber(prefix);
-        var buyerId = OrderCloud.BuyerID.Get();
+	    var buyerId = OrderCloud.BuyerID.Get();
+        //var prefix = 'WPIFR';
+        var newQuoteId = createQuoteNumber(buyerId);
         var data = {
             ID: newQuoteId,
             Type: "Standard",

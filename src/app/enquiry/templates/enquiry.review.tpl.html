@@ -61,14 +61,14 @@
         <div class="col-md-5 address-cell" ng-if="review.enq.Shipping.Country=='FR'">
             <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
             <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
-            <span ng-bind-html="review.enq.Shipping.Street2"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">
             <span><span ng-bind-html="review.enq.Shipping.Zip"></span>, <span ng-bind-html="review.enq.Shipping.City"></span></span><br />
             <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br><br>
         </div>
         <div class="col-md-5 address-cell" ng-if="review.enq.Shipping.Country=='GB'">
             <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
             <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
-            <span ng-bind-html="review.enq.Shipping.Street2"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">
             <span ng-bind-html="review.enq.Shipping.City"></span><br>
             <span ng-bind-html="review.enq.Shipping.Zip"></span><br>
             <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br>
@@ -76,7 +76,7 @@
         <div class="col-md-5 address-cell" ng-if="review.enq.Shipping.Country!='GB' && review.enq.Shipping.Country!='FR'">
             <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
             <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
-            <span ng-bind-html="review.enq.Shipping.Street2"></span><br>
+            <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">
             <p><span ng-bind-html="review.enq.Shipping.City"></span>, <span ng-bind-html="review.enq.Shipping.State"></span>, <span ng-bind-html="review.enq.Shipping.Zip"></span></p><br>
             <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br><br>
         </div>

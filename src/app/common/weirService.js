@@ -1180,7 +1180,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 "CommentsToWeir": [],                //"CustomerID": customer.id,
                 //"CustomerName": customer.name,
                 "Status": "EN",
-                "Active": true
+                "Active": true,
+                "WasEnquiry": true
             }
         };
         if (enq.Comment.val) {

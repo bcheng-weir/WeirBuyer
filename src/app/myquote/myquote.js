@@ -956,7 +956,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.proceedToSubmit = _proceedToSubmit;
 }
 
-function MissingCarriageDetailController(WeirService, $uibModalInstance) {
+function MissingCarriageDetailController(WeirService, $uibModalInstance, $sce) {
     //translations
     var vm = this;
     var labels = {
@@ -965,7 +965,7 @@ function MissingCarriageDetailController(WeirService, $uibModalInstance) {
             Close: "Close"
 		},
         fr: {
-            ModalMessage: "FR: Please select your carriage option before reviewing your quote",
+            ModalMessage: $sce.trustAsHtml("Veuillez sélectionner votre option de livraison avant d’examiner le récap de votre cotation"),
             Close: "Fermer"
 		}
     };

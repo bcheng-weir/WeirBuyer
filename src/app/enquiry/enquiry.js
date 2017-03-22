@@ -123,7 +123,7 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud
             SearchAgain: $sce.trustAsHtml("Chercher à nouveau"),
             YourContact: $sce.trustAsHtml("Votre contact"),
             PartTypesHeader: $sce.trustAsHtml("Pi&egrave;ces pour: "),
-            SerNumLabel: $sce.trustAsHtml("Numéro de série"),
+            SerNumLabel: $sce.trustAsHtml("Numéro de série "),
             BrandLabel: $sce.trustAsHtml("Marque: "),
             ValveTypeLabel: $sce.trustAsHtml("Type: "),
             DescriptionHeader: $sce.trustAsHtml("Désignation"),

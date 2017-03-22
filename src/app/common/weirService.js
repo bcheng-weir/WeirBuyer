@@ -1188,6 +1188,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 "Active": true,
                 "StatusDate": new Date(),
                 "WasEnquiry": true,
+                "SN":enq.SerialNumber,
                 "Brand":enq.Manufacturer.Name,
                 "ValveType":enq.ValveType.Name
             }

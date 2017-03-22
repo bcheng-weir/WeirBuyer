@@ -310,8 +310,8 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
     vm.searchSerialNumbers = function () {
         if (!vm.serialNumbers[0] || vm.serialNumbers.length == 0) {
             toastr.info(vm.labels.toastEnterSearchBox, vm.labels.EmptySearch);
-        } else if (vm.serialNumbers.length == 1) {
-            $state.go('search.serial.detail', { number: vm.serialNumbers[0], searchNumbers: vm.serialNumbers[0] });
+        //} else if (vm.serialNumbers.length == 1) {
+        //    $state.go('search.serial.detail', { number: vm.serialNumbers[0], searchNumbers: vm.serialNumbers[0] });
         } else {
             $state.go('search.serial.results', { numbers: vm.serialNumbers.join(',') });
         }
@@ -334,32 +334,6 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
 
     vm.updateSerialList = function (input) {
     	return SearchProducts.GetPart(input, $scope.search.Customer);
-        /*if (input.length >= 3) {
-            var cust = $scope.search.Customer.id;
-            if (SearchTypeService.IsGlobalSearch()) {
-                return OrderCloud.Me.ListCategories(null, 1, 20, null, "Name",
-                    { "xp.SN": input + "*" }, "all", cust.substring(0, 5))
-                    .then(function (newList) {
-                        vm.SerialNumberMatches.length = 0;
-                        vm.SerialNumberMatches.push.apply(vm.SerialNumberMatches, newList.Items);
-                    })
-                    .catch(function (ex) {
-                        console.log("Error: " + JSON.stringify(ex));
-                    });
-            } else if (cust) {
-                return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {
-                    "ParentID": cust,
-                    "xp.SN": input + "*"
-                }, null, cust.substring(0, 5))
-                    .then(function (newList) {
-                        vm.SerialNumberMatches.length = 0;
-                        vm.SerialNumberMatches.push.apply(vm.SerialNumberMatches, newList.Items);
-                    })
-                    .catch(function (ex) {
-                        console.log("Error: " + JSON.stringify(ex));
-                    });
-            }
-        }*/
     };
 }
 
@@ -409,7 +383,15 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
 		}
 	};
-	//if(numFound == 0) $state.go('search.noresults');
+	if (numFound == 0) {
+	    if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+	        $state.go('enquiry.filter');
+	    } else {
+	        $state.go('search.noresults');
+	    }
+	} else if (numFound == 1 && numQueried == 1) {
+	    $state.go('search.serial.detail', { id: SerialNumberResults[0].Detail.ID });
+	}
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
@@ -573,27 +555,6 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.updatePartList = function (input) {
 		return SearchProducts.GetPart(input, null);
-	    /*if (input.length >= 3) {
-	        var results = [];
-	        OrderCloud.Me.ListProducts(vm.WeirGroup, 1, 20, "ID", "Name", { "Name": input + "*" }, null, null)
-                .then(function (newList) {
-                    results = newList.Items;
-                })
-                .then(function () {
-                    if (vm.WeirGroup == 'WVCUK') {
-                        OrderCloud.Me.ListProducts(vm.WeirGroup, 1, 20, "ID", "Name", { "xp.AlternatePartNumber": input + "*" }, null, null)
-                            .then(function (newList) {
-                                results.push.apply(results, newList.Items);
-                                vm.PartMatches.length = 0;
-                                vm.PartMatches.push.apply(vm.PartMatches, results);
-                            });
-                    } else {
-                        vm.PartMatches.length = 0;
-                        vm.PartMatches.push.apply(vm.PartMatches, results);
-                    }
-                })
-                .catch(function (ex) {});
-	    }*/
 	};
 }
 

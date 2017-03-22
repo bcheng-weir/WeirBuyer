@@ -49,7 +49,7 @@ function UserGroupsService($q, OrderCloud) {
     }
 }
 
-function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, SearchTypeService) {
+function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, SearchTypeService, Me) {
     var orderStatuses = {
         Enquiry: { id: "EN", label: { en: "Enquiry Submitted", fr: "FR: Enquiry Submitted" }, desc: "An enquiry for parts not found" },
 	    EnquiryReview: {id: "ER", label:{ en: "Enquiry Submitted", fr: "FR: Enquiry Submitted" },desc: "An enquiry under administrator review."},
@@ -1182,8 +1182,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 "BuyerID": buyerId,
                 "Type": "Quote",
                 "CommentsToWeir": [],
-                //"CustomerID": customer.id,
-                //"CustomerName": customer.name,
+                "CustomerID": Me.Org.ID,
+                "CustomerName": Me.Org.Name,
                 "Status": "EN",
                 "Active": true,
                 "StatusDate": new Date(),

@@ -1187,7 +1187,9 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 "Status": "EN",
                 "Active": true,
                 "StatusDate": new Date(),
-                "WasEnquiry": true
+                "WasEnquiry": true,
+                "Brand":enq.Manufacturer.Name,
+                "ValveType":enq.ValveType.Name
             }
         };
         if (enq.Comment.val) {

@@ -430,7 +430,7 @@ function ConfirmEnquiryController($sce, $uibModalInstance, Enquiry, WeirService)
         },
         fr: {
             Title: $sce.trustAsHtml("Merci. Votre demande a été soumise."),
-            MessageText1: $sce.trustAsHtml("TODO: We have sent you a confirmation email."),
+            MessageText1: $sce.trustAsHtml("Nous vous avons envoyé un e-mail de confirmation."),
             MessageText2: $sce.trustAsHtml("Reference d’offre: " + vm.Enquiry.Quote.ID),
             MessageText3: $sce.trustAsHtml("Vous pouvez consulter votre demande dans l’onglet “Vos Cotations”. Nous vous réponderons dans les plus brefs délais."),
             Close: $sce.trustAsHtml("Fermer")

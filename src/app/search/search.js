@@ -337,7 +337,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
     };
 }
 
-function SerialResultsController(WeirService, $stateParams, $state, SerialNumberResults, $sce ) {
+function SerialResultsController(WeirService, $stateParams, $state, SerialNumberResults, $sce, Me ) {
 	var vm = this;
 	vm.serialNumberResults = SerialNumberResults;
 	vm.searchNumbers = $stateParams.numbers;

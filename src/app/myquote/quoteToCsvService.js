@@ -22,6 +22,8 @@ function QuoteToCsvService($filter) {
             [Labels.SerialNum, Labels.TagNum, Labels.PartNum, Labels.PartDesc, Labels.RecRepl, Labels.LeadTime, Labels.Currency, Labels.PricePer, Labels.Quantity]
         ];
 
+        var currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+
         angular.forEach(LineItems, function (item) {
             var line = [];
             line.push((item.xp.SN) ? item.xp.SN : "");
@@ -30,12 +32,12 @@ function QuoteToCsvService($filter) {
             line.push((item.Product.Description) ? item.Product.Description : "");
             line.push((item.Product.xp.ReplacementSchedule) ? item.Product.xp.ReplacementSchedule : "");
             line.push((item.Product.xp.LeadTime) ? item.Product.xp.LeadTime : "");
-	        line.push((item.Product.StandardPriceSchedule.xp.Currency) ? item.Product.StandardPriceSchedule.xp.Currency : "");
+            line.push(currency);
             line.push(item.UnitPrice);
             line.push(item.Quantity);
             data.push(line);
         });
-        data.push(["", "", "", "", "", Labels.Total, LineItems[0].Product.StandardPriceSchedule.xp.Currency, Quote.Total]);
+	    data.push(["", "", "", "", "", Labels.Total, currency, Quote.Total]);
         data.push(["", ""]);
         data.push([Labels.DeliveryAddress]);
         if (DeliveryAddress) {

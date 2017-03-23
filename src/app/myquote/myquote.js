@@ -559,6 +559,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	QuoteShareService.Comments = Quote.xp.CommentsToWeir;
 	QuoteShareService.UiTotal = UITotal;
 	vm.UiTotal = QuoteShareService.UiTotal;
+	vm.currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
 
 	vm.isActive = function(viewLocation) {
 		return viewLocation == $state.current.name;
@@ -1890,6 +1891,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 	vm.buyer = Me.Org;
 	vm.Quote = Quote;
+	vm.currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
 	vm.ShippingAddress = ShippingAddress;
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
 	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
@@ -2179,6 +2181,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
     vm.Quote = Quote;
+	vm.currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
     vm.ShippingAddress = ShippingAddress;
     vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = OrderCloud.BuyerID.Get();
@@ -2362,6 +2365,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Zero = 0;
 	vm.PONumber = "";
 	vm.Quote = Quote;
+	vm.currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
 	vm.ShippingAddress = ShippingAddress;
 	vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = OrderCloud.BuyerID.Get();

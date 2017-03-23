@@ -53,11 +53,8 @@
                             <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
                             <td ng-bind-html="line.Product.xp.LeadTime"></td>
                             <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="detail.labels.POA"></td>
-                            <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
-                                <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
-                                <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
-                                <span ng-switch-when="EUR" ng-bind-html="line.UnitPrice | currency:'&#128;'"></span>
-                                <span ng-switch-default ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
+                            <td ng-if="line.UnitPrice">
+                                <span ng-bind-html="line.UnitPrice | currency:myquote.currency"></span>
                             </td>
                             <td class="form-inline">
                                 <input type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-enter="detail.updateLineItem(myquote.Quote.ID,line)"
@@ -70,11 +67,8 @@
                             <!-- using subtotal rather total -->
                             <td class="button-th" colspan="5"></td>
                             <td style="font-weight:bold;" ng-bind-html='detail.labels.Total'></td>
-                            <td ng-switch on="detail.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                                <span ng-switch-when="USD" ng-bind-html="myquote.Quote.Subtotal | currency:'&#36;'"></span>
-                                <span ng-switch-when="GBP" ng-bind-html="myquote.Quote.Subtotal | currency:'&#163;'"></span>
-                                <span ng-switch-when="EUR" ng-bind-html="myquote.Quote.Subtotal | currency:'&#128;'"></span>
-                                <span ng-switch-default ng-bind-html="myquote.Quote.Subtotal | currency:'&#163;'"></span>
+                            <td class='text-right' style="font-weight:bold;">
+                                <span ng-bind-html="myquote.Quote.Subtotal | currency:myquote.currency"></span>
                             </td>
                         </tr>
                     </tbody>

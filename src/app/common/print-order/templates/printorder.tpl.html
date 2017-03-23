@@ -45,11 +45,8 @@
                     <td><span ng-bind-html="item.Product.xp.ReplacementSchedule"></span></td>
                     <td><span ng-bind-html="item.Product.xp.LeadTime"></span></td>
                     <td ng-if="!item.UnitPrice||item.UnitPrice=='0'">POA</td>
-                    <td ng-if="item.UnitPrice" ng-switch on="item.Product.StandardPriceSchedule.xp.Currency">
-                        <span ng-switch-when="USD" ng-bind-html="item.UnitPrice | currency:'&#36;'"></span>
-                        <span ng-switch-when="GBP" ng-bind-html="item.UnitPrice | currency:'&#163;'"></span>
-                        <span ng-switch-when="EUR" ng-bind-html="item.UnitPrice | currency:'&#128;'"></span>
-                        <span ng-switch-default ng-bind-html="item.UnitPrice | currency:'&#163;'"></span>
+                    <td ng-if="item.UnitPrice">
+                        <span ng-bind-html="item.UnitPrice | currency:printctrl.currency"></span>
                     </td>
                     <td><span ng-bind-html="item.Quantity"></span></td>
                 </tr>
@@ -60,11 +57,8 @@
                     <td ng-bind-html="printctrl.labels.DescriptionOfShipping[printctrl.order.xp.CarriageRateType]"></td>
                     <td></td>
                     <td></td>
-                    <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'" ng-switch on="printctrl.catalog.ID">
-                        <span ng-switch-when="USD" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#36;'"></span>
-                        <span ng-switch-when="WVCUK" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#163;'"></span>
-                        <span ng-switch-when="WPIFR" ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#128;'"></span>
-                        <span ng-switch-default ng-bind-html="printctrl.CarriageRateForBuyer | currency:'&#163;'"></span>
+                    <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'">
+                        <span ng-bind-html="printctrl.CarriageRateForBuyer | currency:printctrl.currency"></span>
                     </td>
                     <td ng-if="printctrl.order.xp.CarriageRateType != 'standard'">
                         <span ng-bind-html="printctrl.labels.POAShipping"></span>
@@ -74,11 +68,8 @@
                 <tr class="totals" >
                     <td colspan="5"></td>
                     <td>Total</td>
-                    <td ng-switch on="printctrl.items[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                        <span ng-switch-when="USD" ng-bind-html="printctrl.uitotal | currency:'&#36;'"></span>
-                        <span ng-switch-when="GBP" ng-bind-html="printctrl.uitotal | currency:'&#163;'"></span>
-                        <span ng-switch-when="EUR" ng-bind-html="printctrl.uitotal | currency:'&#128;'"></span>
-                        <span ng-switch-default ng-bind-html="printctrl.uitotal | currency:'&#163;'"></span>
+                    <td class='text-right' style="font-weight:bold;">
+                        <span ng-bind-html="printctrl.uitotal | currency:printctrl.currency"></span>
                     </td>
                     <td></td>
                 </tr>

@@ -190,7 +190,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 		},
 		fr: {
 		    Saved: $sce.trustAsHtml("Enregistrée(s)"),
-			Enquiry: $sce.trustAsHtml("FR: Enquiry"),
+			Enquiry: $sce.trustAsHtml("Demande"),
 		    InReview: $sce.trustAsHtml("Cotation(s) soumise(s) à révision"),
 		    Revised: $sce.trustAsHtml("Cotation(s) révisée(s)"),
 		    Confirmed: $sce.trustAsHtml("Cotation(s) confirmée(s)"),
@@ -311,7 +311,7 @@ function EnquiryQuotesController (WeirService,$scope,$sce) {
 			View: "View"
 		},
 		fr: {
-			Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " FR: Cotation soumise à révision"),
+			Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation soumise à révision"),
 			QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
 			Status: $sce.trustAsHtml("Statut"),
 			View: $sce.trustAsHtml("Voir")

@@ -887,8 +887,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
 			AddNew: $sce.trustAsHtml("Ajouter un item"),
 			DescriptionOfShipping: {
-				exworks:'FR: Carriage - Ex Works',
-				standard:'FR: Carriage Charge'
+				exworks:'Livraison Départ-Usine (EXW)',
+				standard:'Frais de livraison'
 			}
 		}
 	};
@@ -958,7 +958,7 @@ function MissingCarriageDetailController(WeirService, $uibModalInstance) {
             Close: "Close"
 		},
         fr: {
-            ModalMessage: "FR: Please select your carriage option before reviewing your quote",
+            ModalMessage: "Veuillez sélectionner votre option de livraison avant d’examiner le récap de votre cotation",
             Close: "Fermer"
 		}
     };
@@ -1349,8 +1349,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),
             POA: $sce.trustAsHtml("POA"),
 	        DescriptionOfShipping: {
-		        exworks:'Carriage - Ex Works',
-		        standard:'Carriage Charge'
+		        exworks:'Livraison Départ-Usine (EXW)',
+		        standard:'Frais de livraison'
 	        },
             POAShipping: "POA"
         }
@@ -2015,8 +2015,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 			DescriptionOfShipping: {
-				exworks:'Carriage - Ex Works',
-				standard:'Carriage Charge'
+				exworks:'Livraison Départ-Usine (EXW)',
+				standard:'Frais de livraison'
 			},
             POAShipping: "POA"
 		}
@@ -2282,12 +2282,12 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
-	        PartTypes: $sce.trustAsHtml("FR: Part types for;"),
-	        Brand: $sce.trustAsHtml("FR: Brand"),
-	        ValveType: $sce.trustAsHtml("FR: Valve type"),
+	        PartTypes: $sce.trustAsHtml("Pièces pour:"),
+	        Brand: $sce.trustAsHtml("Marque:"),
+	        ValveType: $sce.trustAsHtml("Type:"),
 	        DescriptionOfShipping: {
-		        exworks:'Carriage - Ex Works',
-		        standard:'Carriage Charge'
+		        exworks:'Livraison Départ-Usine (EXW)',
+		        standard:'Frais de livraison'
 	        },
             POAShipping: "POA"
         }

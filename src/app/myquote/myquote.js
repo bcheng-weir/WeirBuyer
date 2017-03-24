@@ -559,6 +559,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	QuoteShareService.Comments = Quote.xp.CommentsToWeir;
 	QuoteShareService.UiTotal = UITotal;
 	vm.UiTotal = QuoteShareService.UiTotal;
+	vm.currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
 
 	vm.isActive = function(viewLocation) {
 		return viewLocation == $state.current.name;
@@ -575,7 +576,11 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	};
 	vm.imageRoot = imageRoot;
 	function toCsv() {
-	    return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+		var printLabels = angular.copy(vm.labels);
+		var printQuote = angular.copy(vm.Quote);
+		printQuote.ShippingCost = vm.CarriageRateForBuyer;
+		printQuote.Total = vm.UiTotal;
+	    return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
@@ -1890,6 +1895,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 	vm.buyer = Me.Org;
 	vm.Quote = Quote;
+	vm.currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
 	vm.ShippingAddress = ShippingAddress;
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
 	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
@@ -2002,7 +2008,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			OrderDate: $sce.trustAsHtml("Date de commande"),
             RejectedMessage: $sce.trustAsHtml("La cotation révisée a ét&eacute; rejetée."),
 			RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
-			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
+			ApprovedMessage: $sce.trustAsHtml("La cotation révisée a été acceptée"),
 			ApprovedTitle: $sce.trustAsHtml("Cotation mise à jour"),
 			Comment: $sce.trustAsHtml("Commentaire"),
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
@@ -2052,7 +2058,34 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.ShowUpdated = function (item) {
 		// return true if qty <> xp.originalQty and qty > 0
 		if(item.xp) {
-			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.xp.OriginalUnitPrice===0 || (item.UnitPrice != item.xp.OriginalUnitPrice))) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
+			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) ||
+				(item.xp.OriginalUnitPrice && (item.xp.OriginalUnitPrice===0 || (item.UnitPrice != item.xp.OriginalUnitPrice))) ||
+				(typeof item.xp.OriginalLeadTime !== "undefined" &&
+					(
+						(typeof item.Product.xp.LeadTime !== "undefined" && (item.xp.OriginalLeadTime !== item.Product.xp.LeadTime)) ||
+						(typeof item.xp.LeadTime !== "undefined" && (item.xp.OriginalLeadTime !== item.xp.LeadTime))
+					)
+				) ||
+				(typeof item.xp.OriginalReplacementSchedule !== "undefined" &&
+					(
+						(typeof item.Product.xp.ReplacementSchedule !== "undefined" && (item.xp.OriginalReplacementSchedule !== item.Product.xp.ReplacementSchedule)) ||
+						(typeof item.xp.ReplacementSchedule !== "undefined" && (item.xp.OriginalReplacementSchedule !== item.xp.ReplacementSchedule))
+					)
+				) ||
+				(typeof item.xp.OriginalDescription !== "undefined" &&
+					(
+						(typeof item.Product.xp.Description !== "undefined" && (item.xp.OriginalDescription !== item.Product.xp.Description)) ||
+						(typeof item.xp.Description !== "undefined" && (item.xp.OriginalDescription !== item.xp.Description))
+					)
+				) ||
+				(typeof item.xp.OriginalProductName !== "undefined" &&
+					(
+						(typeof item.Product.xp.Name !== "undefined" && (item.xp.OriginalProductName !== item.Product.xp.Name)) ||
+						(typeof item.xp.ProductName !== "undefined" && (item.xp.OriginalProductName !== item.xp.ProductName))
+					)
+				) ||
+				(typeof item.xp.OriginalTagNumber !== "undefined" && (item.xp.TagNumber !== item.xp.OriginalTagNumber)) ||
+				(typeof item.xp.OriginalSN !== "undefined" && (item.xp.SN !== item.xp.OriginalSN))
 		} else {
 			return false;
 		}
@@ -2152,7 +2185,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		}
 	}
 	function toCsv() {
-		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, vm.labels);
+		var printLabels = angular.copy(vm.labels);
+		var printQuote = angular.copy(vm.Quote);
+		return QuoteToCsvService.ToCsvJson(printQuote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
@@ -2179,6 +2214,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
     vm.Quote = Quote;
+	vm.currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
     vm.ShippingAddress = ShippingAddress;
     vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = OrderCloud.BuyerID.Get();
@@ -2328,7 +2364,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		return "";
 	}
 	function toCsv() {
-		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, vm.labels);
+		var printLabels = angular.copy(vm.labels);
+		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
 	}
 
 	function _gotoQuotes() {
@@ -2362,6 +2399,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Zero = 0;
 	vm.PONumber = "";
 	vm.Quote = Quote;
+	vm.currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
 	vm.ShippingAddress = ShippingAddress;
 	vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = OrderCloud.BuyerID.Get();
@@ -2542,7 +2580,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 		return "";
 	}
 	function toCsv() {
-		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+		var printLabels = angular.copy(vm.labels);
+		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {

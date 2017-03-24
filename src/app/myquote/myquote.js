@@ -576,9 +576,11 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	};
 	vm.imageRoot = imageRoot;
 	function toCsv() {
-		vm.Quote.CarriageRateForBuyer = vm.CarriageRateForBuyer;
-		vm.Quote.UiTotal = vm.UiTotal;
-	    return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+		var printLabels = angular.copy(vm.labels);
+		var printQuote = angular.copy(vm.Quote);
+		printQuote.ShippingCost = vm.CarriageRateForBuyer;
+		printQuote.Total = vm.UiTotal;
+	    return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
@@ -2183,7 +2185,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		}
 	}
 	function toCsv() {
-		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, vm.labels);
+		var printLabels = angular.copy(vm.labels);
+		var printQuote = angular.copy(vm.Quote);
+		return QuoteToCsvService.ToCsvJson(printQuote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
@@ -2360,7 +2364,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		return "";
 	}
 	function toCsv() {
-		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, vm.labels);
+		var printLabels = angular.copy(vm.labels);
+		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
 	}
 
 	function _gotoQuotes() {
@@ -2575,7 +2580,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 		return "";
 	}
 	function toCsv() {
-		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, vm.labels);
+		var printLabels = angular.copy(vm.labels);
+		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {

@@ -9,8 +9,10 @@ function QuoteToCsvService($filter) {
             payment = Payments[0];
         }
         angular.forEach(Labels, function(value, key) {
-            value = value.toString().replace(/&eacute;/g,'é').replace(/&egrave;/g,'è');
-            Labels[key] = value;
+	        if (typeof value !== 'object') {
+                value = value.toString().replace(/&eacute;/g, 'é').replace(/&egrave;/g, 'è');
+                Labels[key] = value;
+            }
         });
 
         var data = [
@@ -37,10 +39,8 @@ function QuoteToCsvService($filter) {
             line.push(item.Quantity);
             data.push(line);
         });
-        var shippingRate = Quote.CarriageRateForBuyer ? Quote.CarriageRateForBuyer : Quote.ShippingCost;
-        var total = Quote.UiTotal ? Quote.UiTotal : Quote.Total;
-        data.push(["","","",Labels.DescriptionOfShipping[Quote.xp.CarriageRateType],"","",currency,shippingRate,""]);
-	    data.push(["", "", "", "", "", Labels.Total, currency, total]);
+        data.push(["","","",Labels.DescriptionOfShipping[Quote.xp.CarriageRateType],"","",currency,Quote.ShippingCost,""]);
+	    data.push(["", "", "", "", "", Labels.Total, currency, Quote.Total]);
         data.push(["", ""]);
         data.push([Labels.DeliveryAddress]);
         if (DeliveryAddress) {

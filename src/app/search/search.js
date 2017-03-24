@@ -345,6 +345,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 	var multiCust = false;
 	var cust = "";
 	var numFound = 0;
+	var numQueried = 0;
 	for(var i=0; i< SerialNumberResults.length; i++) {
 		var tmp = SerialNumberResults[i].Detail;
 		if (tmp) {

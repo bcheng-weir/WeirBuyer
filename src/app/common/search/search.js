@@ -130,19 +130,26 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 	var partResults = {};
     //First three are the home page search methods.
     function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
-    	var dfd = $q.defer();
-    	var filter = {
-    		"xp.SN":lookForThisPartialSerialNumber+"*"
-	    };
-	    if(Me.Org.xp.WeirGroup.id=="1") { // No global search for UK.
-	    	filter.ParentID = Me.Org.ID;
-	    }
+        var dfd = $q.defer();
+        var filter = {
+            "xp.SN": lookForThisPartialSerialNumber + "*"
+        };
+        if (Me.Org.xp.WeirGroup.id == "1") { // No global search for UK.
+            filter.ParentID = Me.Org.ID;
+        }
 
-    	OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
+        OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id == "1" ? null : "all", Me.Org.xp.WeirGroup.label)
             .then(function(response) {
-            	dfd.resolve(response.Items);
+                    OrderCloud.Me.ListCategories(lookForThisPartialSerialNumber, 1, 50, "Description", null, null, "all", Me.Org.xp.WeirGroup.label)
+                        .then(function (responseDescription) {
+                            var returnResults = response.Items.concat(responseDescription.Items);
+                            returnResults = _.uniq(returnResults, false, function (cat) {
+                                return cat.xp.SN
+                            });
+                            dfd.resolve(returnResults);
+                        });
             });
-	    return dfd.promise;
+        return dfd.promise;
     }
 
     function _getAllTagNumbers(lookForThisPartialTagNumber) {
@@ -230,9 +237,10 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
             if(SearchTypeService.GetLastSearchType() == "s") {
                 return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, Me.Org.xp.WeirGroup.label)
                     .then(function (response) {
-                        return  OrderCloud.Me.ListCategories(lookForThisProduct, 1, 20, "Description", null, null , "all" /*Depth of 1 returns no parts for this search. Please code review this piece for req */, Me.Org.xp.WeirGroup.label)
+                        return  OrderCloud.Me.ListCategories(lookForThisProduct, 1, 20, "Description", null, null , Me.Org.xp.WeirGroup.id == "1" ? null : (SearchTypeService.IsGlobalService() ? "all" : null), Me.Org.xp.WeirGroup.label)
                             .then(function(responseDescription){
                                 var returnResults = response.Items.concat(responseDescription.Items);
+                                returnResults = _.uniq(returnResults, false, function(cat){return cat.xp.SN});
                                 return returnResults;
                             });
                     });

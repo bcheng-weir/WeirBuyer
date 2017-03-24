@@ -386,69 +386,101 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
         var results = [];
         var queue = [];
         CurrentOrder.GetCurrentCustomer()
-			.then(function (cust) {
-			    if (cust) {
-			        if (SearchTypeService.IsGlobalSearch()) {
-			            angular.forEach(serialNumbers, function (number) {
-			                if (number) {
-			                    queue.push((function () {
-			                        var d = $q.defer();
-			                        OrderCloud.Me.ListCategories(null, 1, 50, null, "Name", {
-			                            "xp.SN": number
-			                        }, "all", cust.id.substring(0, 5))
-                                        .then(function (matches) {
-                                            if (matches.Items.length == 1) {
-                                                results.push({ Number: number, Detail: matches.Items[0] });
+            .then(function (cust) {
+                if (cust) {
+                    if (SearchTypeService.IsGlobalSearch()) {
+                        angular.forEach(serialNumbers, function (number) {
+                            if (number) {
+                                queue.push((function () {
+                                    var d = $q.defer();
+                                    OrderCloud.Me.ListCategories(null, 1, 50, null, "Name", {
+                                        "xp.SN": number
+                                    }, "all", cust.id.substring(0, 5))
+                                        .then(function (matchesSN) {
+                                            if (matchesSN.Items.length == 1) {
+                                                results.push({Number: number, Detail: matchesSN.Items[0]});
                                             } else {
-                                                results.push({ Number: number, Detail: null });
+                                                results.push({Number: number, Detail: null});
                                             }
-                                            d.resolve();
+                                            OrderCloud.Me.ListCategories(number, 1, 50, "Description", null, null, "all", cust.id.substring(0, 5))
+                                                .then(function (matchesDescription) {
+                                                    if (matchesDescription.Items.length == 1) {
+                                                        results.push({Number:  matchesDescription.Items[0].xp.SN, Detail: matchesSN.Items[0]});
+                                                    } else {
+                                                        for (var i = 0; i < matchesDescription.Items.length - 1 ; i++) {
+                                                            results.push({
+                                                                Number: matchesDescription.Items[i].xp.SN,
+                                                                Detail: matchesDescription.Items[i]
+                                                            });
+                                                        }
+                                                    }
+                                                    results = _.uniq(results, false, function(cat){return cat.Number});
+                                                    d.resolve();
+                                                })
+                                                .catch(function (ex) {
+                                                    results.push({Number: number, Detail: null});
+                                                    d.resolve();
+                                                });
+                                        });
+                                    return d.promise;
+                                })());
+                            }
+                        });
+                    } else {
+                        angular.forEach(serialNumbers, function (number) {
+                            if (number) {
+                                queue.push((function () {
+                                    var d = $q.defer();
+                                    OrderCloud.Me.ListCategories(null, 1, 50, null, "Name", {
+                                        "xp.SN": number
+                                    }, "all", cust.id.substring(0, 5))
+                                        .then(function (matchesSN) {
+                                            if (matchesSN.Items.length == 1) {
+                                                results.push({Number: number, Detail: matchesSN.Items[0]});
+                                            } else {
+                                                results.push({Number: number, Detail: null});
+                                            }
+                                            OrderCloud.Me.ListCategories(number, 1, 50, "Description", null, null, "all", cust.id.substring(0, 5))
+                                                .then(function (matchesDescription) {
+                                                    if (matchesDescription.Items.length == 1) {
+                                                        results.push({
+                                                            Number: matchesDescription.Items[0].xp.SN,
+                                                            Detail: matchesDescription.Items[0]
+                                                        });
+                                                    } else {
+                                                        for(var i = 0; i < matchesDescription.Items.length-1; i++){
+                                                            results.push({
+                                                                Number: matchesDescription.Items[i].xp.SN,
+                                                                Detail: matchesDescription.Items[i]
+                                                            });
+                                                        }
+                                                    }
+                                                    results = _.uniq(results, false, function (cat) {
+                                                        return cat.Number
+                                                    });
+                                                    d.resolve();
+                                                });
                                         })
                                         .catch(function (ex) {
                                             results.push({ Number: number, Detail: null });
                                             d.resolve();
                                         });
-			                        return d.promise;
-			                    })());
-			                }
-			            });
-			        } else {
-			            angular.forEach(serialNumbers, function (number) {
-			                if (number) {
-			                    queue.push((function () {
-			                        var d = $q.defer();
-			                        OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
-			                            "xp.SN": number,
-			                            "ParentID": cust.id
-			                        }, null, cust.id.substring(0, 5))
-                                        .then(function (matches) {
-                                            if (matches.Items.length == 1) {
-                                                results.push({ Number: number, Detail: matches.Items[0] });
-                                            } else {
-                                                results.push({ Number: number, Detail: null });
-                                            }
-                                            d.resolve();
-                                        })
-                                        .catch(function (ex) {
-                                            results.push({ Number: number, Detail: null });
-                                            d.resolve();
-                                        });
-			                        return d.promise;
-			                    })());
-			                }
-			            });
-			        }
-			        $q.all(queue)
+                                    return d.promise;
+                                })());
+                            }
+                        });
+                    }
+                    $q.all(queue)
                         .then(function () {
                             deferred.resolve(results);
                         });
-			    } else {
-			        deferred.resolve(results);
-			    }
-			})
-			.catch(function (ex) {
-			    d.resolve();
-			});
+                } else {
+                    deferred.resolve(results);
+                }
+            })
+            .catch(function (ex) {
+                d.resolve();
+            });
         return deferred.promise;
     }
 

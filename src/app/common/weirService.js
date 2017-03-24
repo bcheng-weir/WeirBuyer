@@ -399,15 +399,15 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
-                                            } else {
+                                            } /*else {
                                                 results.push({Number: number, Detail: null});
-                                            }
+                                            }*/
                                             OrderCloud.Me.ListCategories(number, 1, 50, "Description", null, null, "all", cust.id.substring(0, 5))
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
                                                         results.push({Number:  matchesDescription.Items[0].xp.SN, Detail: matchesSN.Items[0]});
                                                     } else {
-                                                        for (var i = 0; i < matchesDescription.Items.length - 1 ; i++) {
+                                                        for (var i = 0; i <= matchesDescription.Items.length - 1 ; i++) {
                                                             results.push({
                                                                 Number: matchesDescription.Items[i].xp.SN,
                                                                 Detail: matchesDescription.Items[i]
@@ -437,9 +437,9 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
-                                            } else {
+                                            }/* else {
                                                 results.push({Number: number, Detail: null});
-                                            }
+                                            }*/
                                             OrderCloud.Me.ListCategories(number, 1, 50, "Description", null, null, "all", cust.id.substring(0, 5))
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
@@ -448,7 +448,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                                                             Detail: matchesDescription.Items[0]
                                                         });
                                                     } else {
-                                                        for(var i = 0; i < matchesDescription.Items.length-1; i++){
+                                                        for(var i = 0; i <= matchesDescription.Items.length-1; i++){
                                                             results.push({
                                                                 Number: matchesDescription.Items[i].xp.SN,
                                                                 Detail: matchesDescription.Items[i]

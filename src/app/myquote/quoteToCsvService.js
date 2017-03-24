@@ -28,16 +28,19 @@ function QuoteToCsvService($filter) {
             var line = [];
             line.push((item.xp.SN) ? item.xp.SN : "");
             line.push((item.xp.TagNumber) ? item.xp.TagNumber : "");
-            line.push((item.Product.Name) ? item.Product.Name : "");
-            line.push((item.Product.Description) ? item.Product.Description : "");
-            line.push((item.Product.xp.ReplacementSchedule) ? item.Product.xp.ReplacementSchedule : "");
-            line.push((item.Product.xp.LeadTime) ? item.Product.xp.LeadTime : "");
+            line.push((item.xp.ProductName) ? item.xp.ProductName : item.Product.Name);
+            line.push((item.xp.Description) ? item.xp.Description : item.Product.Description);
+            line.push((item.xp.ReplacementSchedule) ? item.xp.ReplacementSchedule : item.Product.xp.ReplacementSchedule);
+            line.push((item.xp.LeadTime) ? item.xp.LeadTime : item.Product.xp.LeadTime);
             line.push(currency);
             line.push(item.UnitPrice);
             line.push(item.Quantity);
             data.push(line);
         });
-	    data.push(["", "", "", "", "", Labels.Total, currency, Quote.Total]);
+        var shippingRate = Quote.CarriageRateForBuyer ? Quote.CarriageRateForBuyer : Quote.ShippingCost;
+        var total = Quote.UiTotal ? Quote.UiTotal : Quote.Total;
+        data.push(["","","",Labels.DescriptionOfShipping[Quote.xp.CarriageRateType],"","",currency,shippingRate,""]);
+	    data.push(["", "", "", "", "", Labels.Total, currency, total]);
         data.push(["", ""]);
         data.push([Labels.DeliveryAddress]);
         if (DeliveryAddress) {

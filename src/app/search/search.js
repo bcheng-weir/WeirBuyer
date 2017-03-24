@@ -389,7 +389,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 	    } else {
 	        $state.go('search.noresults');
 	    }
-	} else if (numFound == 1 && numQueried == 1) {
+	} else if (numFound == 1) {
 	    $state.go('search.serial.detail', { id: SerialNumberResults[0].Detail.ID });
 	}
 	vm.labels = WeirService.LocaleResources(labels);

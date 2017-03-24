@@ -543,6 +543,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
     vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	vm.Quote = Quote;
+	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.Customer = Customer;
 	vm.buyer = Me.Org; //For the print directive.
 	vm.ShippingAddress = ShippingAddress;
@@ -576,7 +577,10 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.imageRoot = imageRoot;
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
-	    return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
+		var printQuote = angular.copy(vm.Quote);
+		printQuote.ShippingCost = vm.CarriageRateForBuyer;
+		printQuote.Total = vm.UiTotal;
+		return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
@@ -1898,6 +1902,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 	vm.buyer = Me.Org;
 	vm.Quote = Quote;
+	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
 	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
@@ -1957,6 +1962,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Comments: "Comments",
 			Status: "Status",
 			OrderDate: "Order Date;",
+			Currency: "Currency",
 			RejectedMessage: "The Revised Quote has been Rejected.",
 			RejectedTitle: "Quote Updated",
 			ApprovedMessage: "The Revised Quote has been Accepted",
@@ -2008,6 +2014,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande"),
+			Currency: $sce.trustAsHtml("Devise"),
             RejectedMessage: $sce.trustAsHtml("La cotation révisée a ét&eacute; rejetée."),
 			RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
 			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
@@ -2161,7 +2168,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
-		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
+		var printQuote = angular.copy(vm.Quote);
+		return QuoteToCsvService.ToCsvJson(printQuote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
@@ -2188,6 +2196,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
     vm.Quote = Quote;
+	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
     vm.ShippingAddress = ShippingAddress;
     vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = OrderCloud.BuyerID.Get();
@@ -2236,6 +2245,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Comments: "Comments",
 	        Status: "Status",
 	        OrderDate: "Order Date;",
+	        Currency: "Currency",
 	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order",
 	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
@@ -2279,6 +2289,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Comments: $sce.trustAsHtml("Commentaires"),
 	        Status: $sce.trustAsHtml("Statut"),
 	        OrderDate: $sce.trustAsHtml("Date de commande;"),
+	        Currency: $sce.trustAsHtml("Devise"),
 	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos cotations"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 	        PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
@@ -2332,7 +2343,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	}
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
-		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
+		var printQuote = angular.copy(vm.Quote);
+		return QuoteToCsvService.ToCsvJson(printQuote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
 	}
 
 	function _gotoQuotes() {
@@ -2366,6 +2378,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Zero = 0;
 	vm.PONumber = "";
 	vm.Quote = Quote;
+	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
 	vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = OrderCloud.BuyerID.Get();
@@ -2416,6 +2429,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Comments: "Comments",
 			Status: "Status",
 			OrderDate: "Order Date;",
+			Currency: "Currency",
 			BackToQuotes: "Back to your Quotes",
 			SubmitWithPO: "Submit Order",
 			SubmitOrderAndEmail: "Submit Order & Email PO",
@@ -2435,7 +2449,12 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			PONumber: "PO Number;",
 			POA: "POA",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
-            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+			DescriptionOfShipping: {
+				exworks:'Carriage - Ex Works',
+				standard:'Carriage Charge'
+			},
+			POAShipping: "POA"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -2465,6 +2484,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande;"),
+			Currency: $sce.trustAsHtml("Devise"),
 			BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
 			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 			SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande<br>& E-Mail de pi&egrave;ce de rechange"),
@@ -2484,7 +2504,12 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
             EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
-            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
+            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+			DescriptionOfShipping: {
+				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+				standard:$sce.trustAsHtml('Frais de livraison')
+			},
+			POAShipping: "POA"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -2547,7 +2572,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	}
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
-		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
+		var printQuote = angular.copy(vm.Quote);
+		return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {

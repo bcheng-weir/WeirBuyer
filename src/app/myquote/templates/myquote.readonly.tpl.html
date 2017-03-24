@@ -13,7 +13,7 @@
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
                     <print-order-button catalog="readonly.Catalog" buyer="readonly.buyer" order="readonly.Quote" items="readonly.LineItems" address="readonly.ShippingAddress" pocontent="readonly.Catalog.xp.POContent" uitotal="1"></print-order-button>
                 </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" filename="{{readonly.CsvFilename}}">
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="readonly.ToCsvJson" add-bom="true" filename="{{readonly.CsvFilename}}">
                     <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{readonly.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='readonly.labels.Download'></span></a>
                 </div>
                 <div ng-if="application.$state.current.name=='revised'" style="float:right;">
@@ -64,11 +64,8 @@
                             <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
                         </td>
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="readonly.labels.POA"></td>
-                        <td ng-if="line.UnitPrice>0" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
-                            <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
-                            <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
-                            <span ng-switch-when="EUR" ng-bind-html="line.UnitPrice | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
+                        <td ng-if="line.UnitPrice>0">
+                            <span ng-bind-html="line.UnitPrice | currency:readonly.currency"></span>
                         </td>
                         <td class="text-right" ng-bind-html="line.Quantity"></td>
                     </tr>
@@ -82,11 +79,8 @@
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
-                        <td ng-if="readonly.Quote.ShippingCost != 0" ng-switch on="readonly.Catalog.ID">
-                            <span ng-switch-when="USD" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#36;'"></span>
-                            <span ng-switch-when="WVCUK" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#163;'"></span>
-                            <span ng-switch-when="WPIFR" ng-bind-html="readonly.Quote.ShippingCost | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="readonly.Quote.ShippingCost | currency:'&#163;'"></span>
+                        <td ng-if="readonly.Quote.ShippingCost != 0">
+                            <span ng-bind-html="readonly.Quote.ShippingCost | currency:readonly.currency"></span>
                         </td>
                         <td ng-if="readonly.Quote.ShippingCost == 0" ng-bind="readonly.labels.POAShipping"></td>
                     </tr>
@@ -94,11 +88,8 @@
                     <tr ng-if="readonly.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='readonly.labels.Total'></td>
-                        <td ng-switch on="readonly.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="USD" ng-bind-html="readonly.Quote.Total | currency:'&#36;'"></span>
-                            <span ng-switch-when="GBP" ng-bind-html="readonly.Quote.Total | currency:'&#163;'"></span>
-                            <span ng-switch-when="EUR" ng-bind-html="readonly.Quote.Total | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="readonly.Quote.Total | currency:'&#163;'"></span>
+                        <td class='text-right' style="font-weight:bold;">
+                            <span ng-bind-html="readonly.Quote.Total | currency:readonly.currency"></span>
                         </td>
                     </tr>
                 </tbody>

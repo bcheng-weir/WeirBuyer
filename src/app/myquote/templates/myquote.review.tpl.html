@@ -91,11 +91,8 @@
                         <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
                         <td ng-bind-html="line.Product.xp.LeadTime"></td>
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="review.labels.POA"></td>
-                        <td ng-if="line.UnitPrice" ng-switch on="line.Product.StandardPriceSchedule.xp.Currency">
-                            <span ng-switch-when="USD" ng-bind-html="line.UnitPrice | currency:'&#36;'"></span>
-                            <span ng-switch-when="GBP" ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
-                            <span ng-switch-when="EUR" ng-bind-html="line.UnitPrice | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="line.UnitPrice | currency:'&#163;'"></span>
+                        <td ng-if="line.UnitPrice">
+                            <span ng-bind-html="line.UnitPrice | currency:review.currency"></span>
                         </td>
                         <td class="form-inline">
                             <input  type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" ng-disabled="review.Step!='Review'" />
@@ -110,11 +107,8 @@
                         <td ng-bind-html="myquote.labels.DescriptionOfShipping[myquote.Quote.xp.CarriageRateType]"></td>
                         <td></td>
                         <td></td>
-                        <td ng-if="myquote.Quote.xp.CarriageRateType == 'standard'" ng-switch on="myquote.Catalog.ID">
-                            <span ng-switch-when="USD" ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#36;'"></span>
-                            <span ng-switch-when="WVCUK" ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#163;'"></span>
-                            <span ng-switch-when="WPIFR" ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="myquote.CarriageRateForBuyer | currency:'&#163;'"></span>
+                        <td ng-if="myquote.Quote.xp.CarriageRateType == 'standard'">
+                            <span ng-bind-html="myquote.CarriageRateForBuyer | currency:myquote.currency"></span>
                         </td>
                         <td ng-if="myquote.Quote.xp.CarriageRateType != 'standard'">
                             <span ng-bind-html="review.labels.POAShipping"></span>
@@ -125,11 +119,8 @@
                     <tr ng-if="review.LineItems.length > 0">
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='review.labels.Total'></td>
-                        <td ng-switch on="review.LineItems[0].Product.StandardPriceSchedule.xp.Currency" class='text-right' style="font-weight:bold;">
-                            <span ng-switch-when="USD" ng-bind-html="myquote.UiTotal | currency:'&#36;'"></span>
-                            <span ng-switch-when="GBP" ng-bind-html="myquote.UiTotal | currency:'&#163;'"></span>
-                            <span ng-switch-when="EUR" ng-bind-html="myquote.UiTotal | currency:'&#128;'"></span>
-                            <span ng-switch-default ng-bind-html="myquote.UiTotal | currency:'&#163;'"></span>
+                        <td class='text-right' style="font-weight:bold;">
+                            <span ng-bind-html="myquote.UiTotal | currency:myquote.currency"></span>
                         </td>
                         <td></td>
                         <td></td>

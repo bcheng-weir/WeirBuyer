@@ -237,7 +237,7 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
             if(SearchTypeService.GetLastSearchType() == "s") {
                 return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, Me.Org.xp.WeirGroup.label)
                     .then(function (response) {
-                        return  OrderCloud.Me.ListCategories(lookForThisProduct, 1, 20, "Description", null, null , Me.Org.xp.WeirGroup.id == "1" ? null : (SearchTypeService.IsGlobalService() ? "all" : null), Me.Org.xp.WeirGroup.label)
+                        return  OrderCloud.Me.ListCategories(lookForThisProduct, 1, 20, "Description", null, null , "all" , Me.Org.xp.WeirGroup.label)
                             .then(function(responseDescription){
                                 var returnResults = response.Items.concat(responseDescription.Items);
                                 returnResults = _.uniq(returnResults, false, function(cat){return cat.xp.SN});

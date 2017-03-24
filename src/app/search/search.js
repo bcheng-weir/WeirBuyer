@@ -350,6 +350,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 		var tmp = SerialNumberResults[i].Detail;
 		if (tmp) {
 		    numFound++;
+		    numQueried++;
 		    if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
 		        if (cust != "") {
 			        multiCust = true;
@@ -357,6 +358,9 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 			        cust = tmp.xp.Customer;
 		        }
 		    }
+		}
+		else{
+			numQueried++;
 		}
 	}
 	vm.MultipleCustomers = multiCust;

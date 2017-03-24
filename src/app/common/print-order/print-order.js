@@ -12,6 +12,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 	vm.items = printData.items;
 	vm.address = printData.address;
 	vm.pocontent = printData.pocontent;
+	vm.currency = (vm.order.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.order.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	if(printData.uitotal == -1) {
 		vm.uitotal = QuoteShareService.UiTotal;
 		vm.CarriageRateForBuyer = vm.buyer.xp.UseCustomCarriageRate == true ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;

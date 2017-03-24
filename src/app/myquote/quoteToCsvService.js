@@ -1,7 +1,7 @@
 angular.module('orderCloud')
 	.service('QuoteToCsvService', QuoteToCsvService);
 
-function QuoteToCsvService($filter) {
+function QuoteToCsvService($filter,$sce) {
 	function ToCsvJson(Quote, LineItems, DeliveryAddress, Payments, Labels) {
 
 		var payment = null;
@@ -9,9 +9,10 @@ function QuoteToCsvService($filter) {
 			payment = Payments[0];
 		}
 		angular.forEach(Labels, function(value, key) {
-			if (typeof value !== 'object') {
-				value = value.toString().replace(/&eacute;/g, 'é').replace(/&egrave;/g, 'è');
-				Labels[key] = value;
+			var result =  $sce.getTrustedHtml(value);
+			if (typeof result !== 'object') {
+				result = result.toString().replace(/&eacute;/g, 'é').replace(/&egrave;/g, 'è');
+				Labels[key] = result;
 			}
 		});
 

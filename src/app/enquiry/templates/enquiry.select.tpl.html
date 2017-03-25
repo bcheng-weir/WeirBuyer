@@ -1,61 +1,60 @@
-<div class="row container-fluid">
-    <div class="col-xs-6 pull-left">
-        <p><span class="text-blue" ng-bind-html='enquiry.labels.PartTypesHeader'></span></p>
-        <p><span ng-bind-html='enquiry.labels.SerNumLabel'></span><span class="text-blue" ng-bind-html="enquiry.info.SerialNumber"></span></p>
-        <p><span ng-bind-html='enquiry.labels.BrandLabel'></span><span class="text-blue" ng-bind-html="enquiry.info.Manufacturer.Name"></span></p>
-        <p><span ng-bind-html='enquiry.labels.ValveTypeLabel'></span><span class="text-blue" ng-bind-html="enquiry.info.ValveType.Name"></span></p>
-    </div>
-    <div class="col-xs-2 pull-right">
-        <button type="submit" class="btn btn-default" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;" ng-click="select.newFilter()" ng-bind-html="select.labels.ChangeAction"></button>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-8">
-        <table class="table table-bordered oc-table-responsive weir-results-table">
-            <thead class="header-cell">
-                <tr>
-                    <th><h4 class="list-group-item-heading" ng-bind-html='enquiry.labels.DescriptionHeader'></h4></th>
-                    <th><h4 class="list-group-item-heading" ng-bind-html='enquiry.labels.QuantityHeader'></h4></th>
-
-                </tr>
-            </thead>
-            <tbody class="form-group">
-                <tr ng-repeat="p in select.parts">
-                    <td ng-bind-html="p.Description" style="text-align:left;"></td>
-                    <td class="form-inline">
-                        <input type="number" class="form-control" ng-model="p.quantity" ng-min="0" ng-enter="select.updateLineItem(p)"
-                               ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" />
-                    </td>
-                    <td>
-                        <button ng-if="p.origQty" class="btn btn-success" ng-bind-html='select.labels.AddedLabel' ng-click="select.updateLineItem(p)"></button>
-                        <button ng-if="!p.origQty" class="btn btn-primary" ng-bind-html='select.labels.AddLabel' ng-click="select.updateLineItem(p)"></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
- 
-    <div class="col-xs-6">
-        <!-- Comments to Weir -->
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <ul class="nav nav-tabs">
-                            <li class="active comments"><a href="#" id="Comments" ng-bind-html="enquiry.labels.CommentsAction"></a></li>
-                        </ul>
-                    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12" style="background-color: #f2f2f2;">
+            <div class="row">
+                <div class="col-xs-9 pull-left">
+                    <p><span class="text-blue" ng-bind-html='enquiry.labels.PartTypesHeader'></span></p>
+                    <p><span ng-bind-html='enquiry.labels.SerNumLabel'></span><span class="text-blue" ng-bind-html="enquiry.info.SerialNumber"></span></p>
+                    <p><span ng-bind-html='enquiry.labels.BrandLabel'></span><span class="text-blue" ng-bind-html="enquiry.info.Manufacturer.Name"></span></p>
+                    <p><span ng-bind-html='enquiry.labels.ValveTypeLabel'></span><span class="text-blue" ng-bind-html="enquiry.info.ValveType.Name"></span></p>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <textarea cols="50" rows="6" ng-model="select.enq.Comment.val"></textarea>
-                    </div>
+                <div class="col-xs-3">
+                    <br><br><br>
+                    <button type="submit" class="btn btn-default pull-right" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;" ng-click="select.newFilter()" ng-bind-html="select.labels.ChangeAction"></button>
                 </div>
             </div>
         </div>
-        <div class="pull-right">
-            <button type="submit" class="btn btn-warning" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%" ng-click="select.toDelivery()"
-                    ng-disabled="myForm.$invalid || !select.hasParts()" ng-bind-html="enquiry.labels.DeliveryStep"></button>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-bordered oc-table-responsive weir-results-table">
+                <thead class="header-cell">
+                    <tr>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='enquiry.labels.DescriptionHeader'></h4></th>
+                        <th><h4 class="list-group-item-heading" ng-bind-html='enquiry.labels.QuantityHeader'></h4></th>
+                    </tr>
+                </thead>
+                <tbody class="form-group">
+                    <tr ng-repeat="p in select.parts">
+                        <td ng-bind-html="p.Description" style="text-align:left;"></td>
+                        <td class="form-inline">
+                            <input type="number" class="form-control" ng-model="p.quantity" ng-min="0" ng-enter="select.updateLineItem(p)"
+                                   ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" />
+                        </td>
+                        <td>
+                            <button ng-if="p.origQty" class="btn btn-success" ng-bind-html='select.labels.AddedLabel' ng-click="select.updateLineItem(p)"></button>
+                            <button ng-if="!p.origQty" class="btn btn-primary" ng-bind-html='select.labels.AddLabel' ng-click="select.updateLineItem(p)"></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-12">
+            <!-- Comments to Weir -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="nav nav-tabs">
+                        <li class="active comments"><a href="#" id="Comments" ng-bind-html="enquiry.labels.CommentsAction"></a></li>
+                    </ul>
+                    <textarea style="width:100%" rows="6" ng-model="select.enq.Comment.val"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button type="submit" class="btn btn-warning pull-right" ng-click="select.toDelivery()"
+                            ng-disabled="myForm.$invalid || !select.hasParts()" ng-bind-html="enquiry.labels.DeliveryStep"></button>
+                </div>
+            </div>
         </div>
     </div>
+</div>

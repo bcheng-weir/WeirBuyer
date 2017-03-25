@@ -113,7 +113,7 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud
             CommentsAction: "Comments",
             FilterStep: "Filter",
             SelectStep: "Select",
-            DeliveryStep: "Delivery",
+            DeliveryStep: "Delivery <i class='fa fa-angle-right' aria-hidden='true'></i>",
             ReviewStep: "Review & Submit"
         },
         fr: {
@@ -131,7 +131,7 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud
             CommentsAction: $sce.trustAsHtml("Commentaires"),
             FilterStep: "Filtre",
             SelectStep: "Selection",
-            DeliveryStep: "Livraison",
+            DeliveryStep: "Livraison <i class='fa fa-angle-right' aria-hidden='true'></i>",
             ReviewStep: $sce.trustAsHtml("R&eacute;cap et soumission")
         }
     };
@@ -155,7 +155,7 @@ function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryS
             SerNumPlaceholder: "Serial number",
             BrandPlaceholder: "Brand name",
             ValveTypePlaceholder: "Valve type",
-            Submit: "Show spares list"
+            Submit: "Show spares list <i class='fa fa-angle-right' aria-hidden='true'></i>"
         },
         fr: {
             SerNumPrompt: $sce.trustAsHtml("Entrée le numéro de série"),
@@ -164,7 +164,7 @@ function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryS
             SerNumPlaceholder: "Champ libre",
             BrandPlaceholder: "Marque",
             ValveTypePlaceholder: "Type de soupape",
-            Submit: $sce.trustAsHtml("Afficher la liste de pi&egrave;ce")
+            Submit: $sce.trustAsHtml("Afficher la liste de pi&egrave;ce <i class='fa fa-angle-right' aria-hidden='true'></i>")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -190,7 +190,7 @@ function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryS
     };
     vm.updateValveTypes(true);
 }
-function EnquirySelectController($state, $sce, WeirService, OrderCloud, PartList, EnquiryService, toastr, Me) {
+function EnquirySelectController($state, $sce, WeirService, PartList, EnquiryService, Me) {
     var vm = this;
     vm.enq = EnquiryService;
     vm.enq.Comment = vm.enq.Comment || {
@@ -315,12 +315,12 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
         fr: {
             DefaultAddress: $sce.trustAsHtml("Votre adresse par défaut"),
             DeliverToLabel: $sce.trustAsHtml("Livrer à cette adresse"),
-            AddAddress: $sce.trustAsHtml("Ajouter une adresse"),
+            AddAddress: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Ajouter une adresse"),
             ShippingAddressSet: $sce.trustAsHtml("Livraison confirmée à cette adresse "),
             Success: $sce.trustAsHtml("Succès"),
             ShippingAddressTitle: "Adresse de livraison",
-            BackCommand: $sce.trustAsHtml("Retour"),
-            ReviewCommand: $sce.trustAsHtml("Récap et soumission")
+            BackCommand: $sce.trustAsHtml(" <i class='fa fa-angle-left' aria-hidden='true'></i> Retour"),
+            ReviewCommand: $sce.trustAsHtml("Récap et soumission <i class='fa fa-angle-right' aria-hidden='true'></i>")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

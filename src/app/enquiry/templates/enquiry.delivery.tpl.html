@@ -11,53 +11,54 @@
         </div>
     </div>
 </script>
-
-<div class="row" style="margin-top: 20px;">
-    <div class="col-md-7">
-        <div class="row">
-            <span style="font-weight: bold; margin-left: 0.5em;" ng-bind-html="delivery.labels.DefaultAddress"></span>
-            <button class="btn btn-success pull-right" ng-click="delivery.CustomShipping()" ng-bind-html="delivery.labels.AddAddress"></button>
+<div class="container-fluid">
+    <div class="row" style="margin-top: 20px;background-color:#f2f2f2;">
+        <div class="col-md-12">
+            <div class="row">
+                <span style="font-weight: bold; margin-left: 0.5em;" ng-bind-html="delivery.labels.DefaultAddress"></span>
+                <button class="btn btn-success pull-right" ng-click="delivery.CustomShipping()" ng-bind-html="delivery.labels.AddAddress"></button>
+            </div>
+            <div class="row" ng-repeat="rows in delivery.ChunkedData">
+                <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country=='FR'">
+                    <span ng-bind-html="item.CompanyName"></span><br>
+                    <span ng-bind-html="item.Street1"></span><br>
+                    <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <span><span ng-bind-html="item.Zip"></span>, <span ng-bind-html="item.City"></span></span><br />
+                    <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
+                    <button ng-class="(delivery.enq.Shipping.ID ==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverToLabel' ng-click="delivery.setShippingAddress(item)"></button>
+                    <br>
+                </div>
+                <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country=='GB'">
+                    <span ng-bind-html="item.CompanyName"></span><br>
+                    <span ng-bind-html="item.Street1"></span><br>
+                    <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <span ng-bind-html="item.City"></span><br>
+                    <span ng-bind-html="item.Zip"></span><br>
+                    <span ng-bind-html="delivery.country(item.Country)"></span><br>
+                    <button ng-class="(delivery.enq.Shipping.ID ==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverToLabel' ng-click="delivery.setShippingAddress(item)"></button>
+                    <br>
+                </div>
+                <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country!='GB' && item.Country!='FR'">
+                    <span ng-bind-html="item.CompanyName"></span><br>
+                    <span ng-bind-html="item.Street1"></span><br>
+                    <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <p><span ng-bind-html="item.City"></span>, <span ng-bind-html="item.State"></span>, <span ng-bind-html="item.Zip"></span></p><br>
+                    <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
+                    <button ng-class="(delivery.enq.Shipping.ID ==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverToLabel' ng-click="delivery.setShippingAddress(item)"></button>
+                    <br>
+                </div>
+            </div>
         </div>
-        <div class="row" ng-repeat="rows in delivery.ChunkedData">
-            <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country=='FR'">
-                <span ng-bind-html="item.CompanyName"></span><br>
-                <span ng-bind-html="item.Street1"></span><br>
-                <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
-                <span><span ng-bind-html="item.Zip"></span>, <span ng-bind-html="item.City"></span></span><br />
-                <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
-                <button ng-class="(delivery.enq.Shipping.ID ==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverToLabel' ng-click="delivery.setShippingAddress(item)"></button>
-                <br>
-            </div>
-            <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country=='GB'">
-                <span ng-bind-html="item.CompanyName"></span><br>
-                <span ng-bind-html="item.Street1"></span><br>
-                <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
-                <span ng-bind-html="item.City"></span><br>
-                <span ng-bind-html="item.Zip"></span><br>
-                <span ng-bind-html="delivery.country(item.Country)"></span><br>
-                <button ng-class="(delivery.enq.Shipping.ID ==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverToLabel' ng-click="delivery.setShippingAddress(item)"></button>
-                <br>
-            </div>
-            <div class="col-md-6 address-cell" ng-repeat="item in rows" ng-if="item.Country!='GB' && item.Country!='FR'">
-                <span ng-bind-html="item.CompanyName"></span><br>
-                <span ng-bind-html="item.Street1"></span><br>
-                <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
-                <p><span ng-bind-html="item.City"></span>, <span ng-bind-html="item.State"></span>, <span ng-bind-html="item.Zip"></span></p><br>
-                <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
-                <button ng-class="(delivery.enq.Shipping.ID ==item.ID ? 'btn btn-success' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverToLabel' ng-click="delivery.setShippingAddress(item)"></button>
-                <br>
-            </div>
+     </div>
+    <br>
+    <div class="row">
+        <div class="col-xs-4 pull-left">
+            <button type="submit" class="btn btn-primary" ng-click="delivery.back()" ng-bind-html="delivery.labels.BackCommand"></button>
         </div>
-    </div>
- </div>
-
-<div class="row container-fluid">
-    <div class="col-xs-2 pull-left">
-        <button type="submit" class="btn btn-primary" style="background-color: #1e59ae; color: #fff; border-color: #1e59ae; height: 15%; width: 100%;" ng-click="delivery.back()" ng-bind-html="delivery.labels.BackCommand"></button>
-    </div>
-    <div class="col-xs-4">
-    </div>
-    <div class="col-xs-4 pull-right">
-        <button type="submit" class="btn btn-warning" style="height: 15%; width: 100%;" ng-click="delivery.next()" ng-bind-html="delivery.labels.ReviewCommand"></button>
+        <div class="col-xs-4">
+        </div>
+        <div class="col-xs-4 pull-right">
+            <button type="submit" class="btn btn-warning" style="height: 15%; width: 100%;" ng-click="delivery.next()" ng-bind-html="delivery.labels.ReviewCommand"></button>
+        </div>
     </div>
 </div>

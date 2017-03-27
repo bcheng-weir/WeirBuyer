@@ -10,7 +10,7 @@ function QuoteToCsvService($filter,$sce) {
 		}
 		angular.forEach(Labels, function(value, key) {
 			var result =  $sce.getTrustedHtml(value);
-			if (typeof result !== 'object') {
+			if (result !== "[object Object]") {
 				result = result.toString().replace(/&eacute;/g, 'é').replace(/&egrave;/g, 'è');
 				Labels[key] = result;
 			}

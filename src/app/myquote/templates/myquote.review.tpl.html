@@ -92,7 +92,7 @@
                         <td ng-bind-html="line.Product.xp.LeadTime"></td>
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="review.labels.POA"></td>
                         <td ng-if="line.UnitPrice">
-                            <span ng-bind-html="line.UnitPrice | currency:review.currency"></span>
+                            <span ng-bind-html="line.UnitPrice | currency:myquote.currency"></span>
                         </td>
                         <td class="form-inline">
                             <input  type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" ng-disabled="review.Step!='Review'" />

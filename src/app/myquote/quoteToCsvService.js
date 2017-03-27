@@ -1,7 +1,7 @@
 angular.module('orderCloud')
     .service('QuoteToCsvService', QuoteToCsvService);
 
-function QuoteToCsvService($filter) {
+function QuoteToCsvService($filter,$sce) {
     function ToCsvJson(Quote, LineItems, DeliveryAddress, Payments, Labels) {
 
         var payment = null;

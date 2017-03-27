@@ -578,7 +578,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
 		var printQuote = angular.copy(vm.Quote);
-		printQuote.ShippingCost = vm.CarriageRateForBuyer;
+		printQuote.ShippingCost = printQuote.xp.CarriageRateType == 'standard' ? vm.CarriageRateForBuyer : 0.00;
 		printQuote.Total = vm.UiTotal;
 		return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}

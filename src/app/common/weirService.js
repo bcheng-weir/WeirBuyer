@@ -265,7 +265,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		            OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
 		                "xp.SN": serialNumber,
 		                "ParentID": cust.id
-		            }, null, cust.id.substring(0, 5))
+		            }, "all", cust.id.substring(0, 5))
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];

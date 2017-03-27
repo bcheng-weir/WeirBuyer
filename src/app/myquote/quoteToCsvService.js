@@ -8,12 +8,13 @@ function QuoteToCsvService($filter) {
         if (Payments && Payments.length) {
             payment = Payments[0];
         }
-        angular.forEach(Labels, function(value, key) {
-	        if (typeof value !== 'object') {
-                value = value.toString().replace(/&eacute;/g, 'é').replace(/&egrave;/g, 'è');
-                Labels[key] = value;
-            }
-        });
+	    angular.forEach(Labels, function(value, key) {
+		    var result =  $sce.getTrustedHtml(value);
+		    if (result !== "[object Object]") {
+			    result = result.toString().replace(/&eacute;/g, 'é').replace(/&egrave;/g, 'è');
+			    Labels[key] = result;
+		    }
+	    });
 
         var data = [
             [Labels.Status, Quote.xp.Status],

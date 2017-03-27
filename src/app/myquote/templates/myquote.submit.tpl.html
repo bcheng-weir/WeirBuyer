@@ -2,18 +2,18 @@
 
         <div class="row">
             <div class="col-md-12">
-            <div class="panel-heading">
-                <div style="display:inline-block; float:left; text-align:left;margin-top: 10px;">
-                    <span ng-bind-html="submit.labels.Status"/>: <span style="font-weight:bold;">{{submit.GetStatusLabel() + " " + (submit.Quote.xp.StatusDate | weirdate)}}</span>
+                <div class="panel-heading">
+                    <div style="display:inline-block; float:left; text-align:left;margin-top: 10px;">
+                        <span ng-bind-html="submit.labels.Status"/>: <span style="font-weight:bold;">{{submit.GetStatusLabel() + " " + (submit.Quote.xp.StatusDate | weirdate)}}</span>
+                    </div>
+                    <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
+                        <span ng-bind-html="submit.labels.OrderDate" /><br />
+                        <span style="font-weight:bold;">{{(submit.Quote.DateSubmitted | weirdate)}}</span>
+                    </div>
+                    <div class="panelButton">
+                        <print-order-button buyer="submit.buyer" order="submit.Quote" items="submit.LineItems" address="submit.ShippingAddress" pocontent="submit.Catalog.xp.POContent"></print-order-button>
+                    </div>
                 </div>
-                <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
-                    <span ng-bind-html="submit.labels.OrderDate" /><br />
-                    <span style="font-weight:bold;">{{(submit.Quote.DateSubmitted | weirdate)}}</span>
-                </div>
-                <div class="panelButton">
-                    <print-order-button buyer="submit.buyer" order="submit.Quote" items="submit.LineItems" address="submit.ShippingAddress" pocontent="submit.Catalog.xp.POContent"></print-order-button>
-                </div>
-            </div>
             </div>
         </div>
 

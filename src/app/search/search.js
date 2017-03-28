@@ -30,7 +30,12 @@ function SearchConfig($stateProvider) {
 			url: '/serial',
 			templateUrl: 'search/templates/search.serial.tpl.html',
 			controller: 'SerialCtrl',
-			controllerAs: 'serial'
+			controllerAs: 'serial',
+			resolve: {
+				Group: function(Me){
+					return Me.Org.xp.WeirGroup.label;
+				}
+			}
 		})
 		.state( 'search.serial.results', {
 			url: '/search?numbers',
@@ -121,6 +126,9 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
     vm.ImageBaseUrl = imageRoot;
     vm.GetValveImageUrl = function (img) {
         return vm.ImageBaseUrl + "Valves/" + img;
+    };
+    vm.GetSearchImageUrl = function (img) {
+        return vm.ImageBaseUrl + "SerialSearch/" + img;
     };
 
 	if (!vm.IsServiceOrg) {
@@ -270,10 +278,10 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	};
 }
 
-function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts) {
+function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts, Group) {
     var vm = this;
     vm.SerialNumberMatches = [];
-
+	vm.WeirGroup = Group;
     var labels = {
         en: {
             WhereToFind: "where to find your serial number",
@@ -282,7 +290,26 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
             ClearSearch: "Clear Search",
             toastEnterSearchBox: "Please enter an item in the search box.",
             Search: "Search",
-			EmptySearch: "Empty Search"
+			EmptySearch: "Empty Search",
+			SearchBySerialNumberTitle: "Search by serial number or valve description",
+			SearchBySerialNumberSecondLine: "Serial number example; 4210078",
+        	SearchBySerialNumberThirdLine: "Valve description example; A21915W",
+			TipsForSearching: "Tips for searching;",
+            TipsForSearchingSecondLine : "Type in the first 3-4 characters of your serial number or valve description and wait for the results to load",
+            TipsForSearchingThirdLine: "Enter serial number without forward slash /",
+            WhereToFindYourSerialNumberTitle: "Where to find your serial numbers",
+			WhereToFindYourSerialNumberContent: "Serial numbers are available on the valve tags or may be referred to on your GA drawings or data sheets.",
+			BatleyTitle: "Batley™ Valves",
+			BatleyDescription: "Batley™ data sheets",
+            BatleyDescriptionLine2: "Order number / line number is our serial number on this platform. ",
+            BatleyDescriptionLine3: "This can be found on the top right of the data sheets.",
+            BlakeboroughTitle: "Blakeborough® Valves",
+            BlakeboroughDescription: $sce.trustAsHtml("Blakeborough® data sheets"),
+            BlakeboroughDescriptionLine2:"Order number / line number is our serial number on this platform.",
+            BlakeboroughDescriptionLine3: "This can be found on the top right of the data sheets",
+            HopkinsonsTitle: "Hopkinsons® Valves",
+            HopkinsonsDescription: $sce.trustAsHtml("Hopkinsons® GA drawings;"),
+            HopkinsonsDescriptionLine2: "Hopskinsons contract number on the GA drawing is our serial number on this platform"
         },
         fr: {
             WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
@@ -291,7 +318,23 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
             ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
             toastEnterSearchBox: $sce.trustAsHtml("Veuillez saisir un élément dans la barre de recherche."),
             Search: $sce.trustAsHtml("Rechercher"),
-			EmptySearch: $sce.trustAsHtml("Recherche vide")
+			EmptySearch: $sce.trustAsHtml("Recherche vide"),
+            SearchBySerialNumberTitle: $sce.trustAsHtml("Rechercher par numéro de série ou  description de la soupape."),
+            SearchBySerialNumberSecondLine: $sce.trustAsHtml("Exemple de numéro de série: 004443020002 (12 Caractères - numéro de 2006 à aujourd'hui)"),
+            SearchBySerialNumberThirdLine: $sce.trustAsHtml("Exemple de numéro de série: 001/054845 (3 Caractères, 1 barre de slash, 6 caractères - numéro de 1996 à 2006)"),
+            SearchBySerialNumberFourthLine: $sce.trustAsHtml("Exemple de description de soupape:<br />9DX2HGPFL<br />P12D1330A-D-MM"),
+            TipsForSearching: $sce.trustAsHtml("Aides à la recherche"),
+            TipsForSearchingSecondLine : $sce.trustAsHtml("Entrez les 3-4 premiers caractères de votre numéro de série et attendez que les résultats s'affiche."),
+            TipsForSearchingThirdLine: $sce.trustAsHtml("Saisissez le numéro de série sans la barre de slash /"),
+            WhereToFindYourSerialNumberTitle: "Où trouver vos numéros de séries",
+            CheckNamePlate: "Vérifier la plaque d'estampille de la soupape",
+            CheckNamePlateDescription: "La plaque d'estampille est située sur le côté des soupapes",
+            IdentifySNTitle: " Identifier votre Numéro de Série",
+            IdentifySNDescriptionLine1: $sce.trustAsHtml("Les nouveaux numéros de séries sont composés de 12 caractères, pas plus, pas moins."),
+            IdentifySNDescriptionLine2:"Les anciens numéros de séries sont composés comme suit: 001/054845",
+            TypeSNTitle: "Entrer votre numéro de série sur la plateforme",
+            TypeSNTitleDescriptionLine1: "/!\ Ne saisissez pas les 4 derniers carractères et la barre de slash des nouveaux numéros de série",
+            TypeSNTitleDescriptionLine2: $sce.trustAsHtml("Pour les anciens numéros de série, saisissez les premiers 3 premiers caractères, la barre de slash et les 6 caractères suivants.<br />Ne saisissez pas la deuxième barre de slash et les deux derniers caractères.")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

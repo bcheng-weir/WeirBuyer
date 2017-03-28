@@ -159,7 +159,8 @@
                                 <p ng-bind-html="serial.labels.CheckNamePlateDescription"></p>
                                 <div id="imgDiv1">
                                     <figure id="imgPic1">
-                                        <img ng-src="{{search.GetSearchImageUrl('Sarasin 1 No background.jpg')}}" style="height: 18em; margin-top: 2em; display:block; margin-left:auto; margin-right:auto;"
+
+                                        <img ng-src="{{search.GetSearchImageUrl('Sarasin 1 No background.jpg')}}" style="max-width: 100%;max-height: 100%; margin-top: auto; display:block; margin-left:auto; margin-right:auto;"
                                              onerror="window.document.getElementById('imgDiv1').style.display='none';"/>
                                     </figure>
                                 </div>
@@ -175,7 +176,7 @@
                                 <p ng-bind-html="serial.labels.IdentifySNDescriptionLine2"></p>
                                 <div id="imgDiv2">
                                     <figure id="imgPic2">
-                                        <img ng-src="{{search.GetSearchImageUrl('Square Nameplate - French.jpg')}}" style="height: 18em; margin-top: 2em; display:block; margin-left:auto; margin-right:auto;"
+                                        <img ng-src="{{search.GetSearchImageUrl('Square Nameplate - French.jpg')}}" style="max-width: 100%;max-height: 100%; margin-top: auto; display:block; margin-left:auto; margin-right:auto;"
                                              onerror="window.document.getElementById('imgDiv2').style.display='none';"/>
                                     </figure>
                                 </div>
@@ -189,14 +190,13 @@
                                 <h4 ng-bind-html="serial.labels.TypeSNTitle" style="font-weight: bold;"></h4>
                                 <p ng-bind-html="serial.labels.TypeSNTitleDescriptionLine1"></p>
                                 <p ng-bind-html="serial.labels.TypeSNTitleDescriptionLine2"></p>
-                                <!--
+
                                 <div id="imgDiv3">
                                     <figure id="imgPic3">
-                                        <img ng-src="{{search.GetValveImageUrl(serialDetail.serialNumber.xp.ImageName)}}" style="height: 18em; margin-top: 2em; display:block; margin-left:auto; margin-right:auto;"
+                                        <img ng-src="{{search.GetSearchImageUrl('FrenchTypeAhead.png')}}" style="max-width: 100%;max-height: 100%; margin-top: auto; display:block; margin-left:auto; margin-right:auto;"
                                              onerror="window.document.getElementById('imgDiv3').style.display='none';"/>
                                     </figure>
                                 </div>
-                                -->
                             </div>
                         </div>
                     </div>

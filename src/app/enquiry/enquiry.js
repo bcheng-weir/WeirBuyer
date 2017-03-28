@@ -113,7 +113,8 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud
             CommentsAction: "Comments",
             FilterStep: "Filter",
             SelectStep: "Select",
-            DeliveryStep: "Delivery <i class='fa fa-angle-right' aria-hidden='true'></i>",
+	        DeliveryStep: "Delivery",
+	        DeliveryArrow: $sce.trustAsHtml("Delivery <i class='fa fa-angle-right' aria-hidden='true'></i>"),
             ReviewStep: "Review & Submit"
         },
         fr: {
@@ -131,7 +132,8 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud
             CommentsAction: $sce.trustAsHtml("Commentaires"),
             FilterStep: "Filtre",
             SelectStep: "Selection",
-            DeliveryStep: "Livraison <i class='fa fa-angle-right' aria-hidden='true'></i>",
+            DeliveryStep: "Livraison",
+	        DeliveryArrow: $sce.trustAsHtml("Livraison <i class='fa fa-angle-right' aria-hidden='true'></i>"),
             ReviewStep: $sce.trustAsHtml("R&eacute;cap et soumission")
         }
     };
@@ -155,7 +157,7 @@ function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryS
             SerNumPlaceholder: "Serial number",
             BrandPlaceholder: "Brand name",
             ValveTypePlaceholder: "Valve type",
-            Submit: "Show spares list <i class='fa fa-angle-right' aria-hidden='true'></i>"
+            Submit: $sce.trustAsHtml("Show spares list <i class='fa fa-angle-right' aria-hidden='true'></i>")
         },
         fr: {
             SerNumPrompt: $sce.trustAsHtml("Entrée le numéro de série"),
@@ -309,8 +311,8 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
             ShippingAddressSet: "Shipping address set to ",
             Success: "Success",
             ShippingAddressTitle: "Shipping Address Set",
-            BackCommand: "Back",
-            ReviewCommand: "Review and Submit"
+            BackCommand: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Back"),
+            ReviewCommand: "Review and Submit <i class='fa fa-angle-right' aria-hidden='true'></i>"
         },
         fr: {
             DefaultAddress: $sce.trustAsHtml("Votre adresse par défaut"),
@@ -319,7 +321,7 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
             ShippingAddressSet: $sce.trustAsHtml("Livraison confirmée à cette adresse "),
             Success: $sce.trustAsHtml("Succès"),
             ShippingAddressTitle: "Adresse de livraison",
-            BackCommand: $sce.trustAsHtml(" <i class='fa fa-angle-left' aria-hidden='true'></i> Retour"),
+            BackCommand: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour"),
             ReviewCommand: $sce.trustAsHtml("Récap et soumission <i class='fa fa-angle-right' aria-hidden='true'></i>")
         }
     };
@@ -365,13 +367,13 @@ function EnquiryReviewController($state, $sce, $uibModal, WeirService, EnquirySe
     var labels = {
         en: {
             DeliveryAddress: "Delivery Address",
-            BackCommand: "Back",
-            SubmitCommand: "Submit enquiry"
+            BackCommand: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back",
+            SubmitCommand: "Submit enquiry <i class='fa fa-angle-right' aria-hidden='true'></i>"
         },
         fr: {
             DeliveryAddress: "Adresse de livraison",
-            BackCommand: $sce.trustAsHtml("Retour"),
-            SubmitCommand: $sce.trustAsHtml("Soumettre demande")
+            BackCommand: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour"),
+            SubmitCommand: $sce.trustAsHtml("Soumettre demande <i class='fa fa-angle-right' aria-hidden='true'></i>")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

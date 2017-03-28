@@ -600,16 +600,15 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    return "";
 	}
 	function save() {
-		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
-		    // TODO: FAIL if no line items
-		}
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) { /*TODO: FAIL if no line items*/ }
 		var mods = {
 		    Comments: vm.Quote.Comments,
 		    xp: {
 		        StatusDate: new Date(),
 				RefNum: vm.Quote.xp.RefNum,
 				Name: vm.Quote.xp.Name,
-			    CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null
+			    CarriageRateType: vm.Quote.xp.CarriageRateType,
+			    ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])
 		    }
 		};
 		var assignQuoteNumber = false;
@@ -745,7 +744,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			//here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
 			    //ex works does not have a set amount yet
 				//admin side setting exworks shipping description so first time they edit they have a default value
-            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null}}, OrderCloud.BuyerID.Get())
+            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}}, OrderCloud.BuyerID.Get())
                 .then(function () {
 	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	                if(Quote.xp.CarriageRateType == 'standard'){
@@ -777,7 +776,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
         if(isValidForReview()) {
             //here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
             //ex works does not have a set amount yet
-            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null}}, OrderCloud.BuyerID.Get())
+            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}}, OrderCloud.BuyerID.Get())
                 .then(function (Quote) {
 	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	                if(Quote.xp.CarriageRateType == 'standard'){
@@ -1104,7 +1103,6 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog, $scope) {
     var vm = this;
-    var CarriageRate = Catalog.xp.StandardCarriage;
     var activeAddress = function (address) {
         return address.xp.active == true;
     };
@@ -2058,7 +2056,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {
-			$state.go("quotes.revised");
+			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
 		} else {
 			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
 		}
@@ -2355,7 +2353,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {
-			$state.go("quotes.revised");
+			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
 		} else {
 			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
 		}
@@ -2583,9 +2581,9 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	}
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {
-			$state.go("quotes.revised");
+			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
 		} else {
-			$state.go("orders.revised");
+			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
 		}
 	}
 	// ToDo Accept a parameter withPO. It will be true or false.

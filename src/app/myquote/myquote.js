@@ -29,6 +29,7 @@ function QuoteShareService() {
 	    Quote: null,
 	    Me: null,
 	    UiTotal: null,
+	    ShippingAddress: null,
 	    IsPOA: _isPOA
     };
 
@@ -553,6 +554,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		WeirService.OrderStatus.Saved.id
 	];
 	QuoteShareService.Quote = Quote;
+	QuoteShareService.ShippingAddress = ShippingAddress;
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
 	vm.lineItems = QuoteShareService.LineItems;
@@ -1187,7 +1189,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
     vm.setShippingAddress = _setShippingAddress;
     function _setShippingAddress(QuoteID, Address) {
         OrderCloud.Orders.SetShippingAddress(QuoteID, Address, OrderCloud.BuyerID.Get())
-            .then(function (order) {
+	        .then(function(order) {
+	        	return OrderCloud.Addresses.Get(order.ShippingAddressID, OrderCloud.BuyerID.Get())
+	        })
+            .then(function (address) {
+            	QuoteShareService.ShippingAddress = address;
                 $state.go($state.current, {}, {reload: true});
                 toastr.success(vm.labels.ShippingAddress, vm.labels.Success);
             })

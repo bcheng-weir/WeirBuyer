@@ -277,7 +277,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
     var labels = {
         en: {
             WhereToFind: "where to find your serial number",
-            EnterSerial: "Enter Serial Number",
+            EnterSerial: "Enter serial number or valve description",
             AddMore: "Add More Serial Numbers   +",
             ClearSearch: "Clear Search",
             toastEnterSearchBox: "Please enter an item in the search box.",
@@ -286,7 +286,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
         },
         fr: {
             WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
-            EnterSerial: $sce.trustAsHtml("Entrer le Num&eacute;ro de S&eacute;rie"),
+            EnterSerial: $sce.trustAsHtml("Entrer le numéro de série ou  description de la soupape"),
             AddMore: $sce.trustAsHtml("Ajouter plus de Num&eacute;ro de S&eacute;rie   +"),
             ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
             toastEnterSearchBox: $sce.trustAsHtml("Veuillez saisir un élément dans la barre de recherche."),
@@ -550,6 +550,7 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 		en: {
 			WhereToFind: "where to find your part number",
 			EnterPart: "Enter part number",
+			EnterPartPlaceHolder: "Enter part number",
 			EnterParts: "Enter part numbers",
 			AddMore: "Add more part numbers   ",
 			ClearSearch: "Clear search",
@@ -559,6 +560,7 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 		fr: {
 		    WhereToFind: $sce.trustAsHtml("O&ugrave; trouver vos r&eacute;f&eacute;rences de pi&egrave;ces"),
 		    EnterPart: $sce.trustAsHtml("Entrer une r&eacute;f&eacute;rence de pi&egrave;ce"),
+			EnterPartPlaceHolder: $sce.trustAsHtml("Entrer une référence de pièce"),
 		    EnterParts: $sce.trustAsHtml("Entrer plusieurs r&eacute;f&eacute;rences de pi&egrave;ce"),
 		    AddMore: $sce.trustAsHtml("Ajouter plus de r&eacute;f&eacute;rences de pi&egrave;ce   "),
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
@@ -662,6 +664,7 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 		en: {
 			// WhereToFind: "where to find your serial number",
 			EnterTag: "Enter Tag number",
+			EnterTagPlaceHolder: "Enter Tag number",
 			AddMore: "Add more tag numbers   +",
 			ClearSearch: "Clear Search",
 			Search: "Search",
@@ -671,7 +674,8 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 		},
 		fr: {
 			// WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
-		    EnterTag: $sce.trustAsHtml("Entr&eacute;e un num&eacute;ro de tag"),
+			EnterTag: $sce.trustAsHtml("Entr&eacute;e un num&eacute;ro de tag"),
+			EnterTagPlaceHolder: $sce.trustAsHtml("Entrée un numéro de tag"),
 		    AddMore: $sce.trustAsHtml("Ajouter plus de num&eacute;ro de tag   +"),
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
 		    Search: $sce.trustAsHtml("Rechercher"),

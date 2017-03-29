@@ -88,7 +88,7 @@
             <span ng-bind-html='printctrl.address.Street1'></span><br>
             <span ng-bind-html='printctrl.address.Street2' ng-if="printctrl.address.Street2"></span><br ng-if="printctrl.address.Street2">
             <span><span ng-bind-html='printctrl.address.Zip'></span> <span ng-bind-html='printctrl.address.City'></span></span><br>
-            <span ng-bind-html='printctrl.address.Country'></span><br>
+            <span ng-bind-html='printctrl.country(printctrl.address.Country)'></span><br>
         </div>
         <div>
             <br>

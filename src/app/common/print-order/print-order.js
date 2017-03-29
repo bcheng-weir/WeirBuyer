@@ -3,7 +3,7 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteShareService) {
+function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteShareService,OCGeography,Underscore) {
 	//ToDo use the QuoteShareService
 	var vm = this;
 	vm.catalog = printData.catalog;
@@ -22,6 +22,11 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 		vm.CarriageRateForBuyer = vm.order.ShippingCost;
 		vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	}
+
+	vm.country = function (c) {
+		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
+		return result ? result.label : '';
+	};
 
 	var labels = {
 		en: {

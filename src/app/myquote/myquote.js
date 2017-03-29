@@ -537,13 +537,14 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
                            IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer, UITotal) {
     var vm = this;
-	vm.currentState = $state.$current.name;
+	QuoteShareService.Quote = Quote;
+    vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
     vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
-	vm.Quote = Quote;
+	vm.Quote = QuoteShareService.Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.Customer = Customer;
 	vm.buyer = Me.Org; //For the print directive.
@@ -553,7 +554,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		WeirService.OrderStatus.Draft.id,
 		WeirService.OrderStatus.Saved.id
 	];
-	QuoteShareService.Quote = Quote;
 	QuoteShareService.ShippingAddress = ShippingAddress;
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
@@ -579,7 +579,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.imageRoot = imageRoot;
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
-		var printQuote = angular.copy(vm.Quote);
+		var printQuote = angular.copy(QuoteShareService.Quote);
 		printQuote.ShippingCost = printQuote.xp.CarriageRateType == 'standard' ? vm.CarriageRateForBuyer : 0.00;
 		printQuote.Total = vm.UiTotal;
 		return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
@@ -745,14 +745,15 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			    //ex works does not have a set amount yet
 				//admin side setting exworks shipping description so first time they edit they have a default value
             OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}}, OrderCloud.BuyerID.Get())
-                .then(function () {
+                .then(function (Quote) {
 	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
-	                if(Quote.xp.CarriageRateType == 'standard'){
+	                if(Quote.xp.CarriageRateType == 'standard') {
 		                vm.UiTotal = (rateToUse + Quote.Subtotal).toFixed(2);
 	                }
 	                else{
 		                vm.UiTotal = Quote.Subtotal.toFixed(2);
 	                }
+	                QuoteShareService.Quote = Quote;
 	                QuoteShareService.UiTotal = vm.UiTotal;
                     $state.go(goto[$state.current.name]);
                 })
@@ -785,6 +786,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	                else{
 		                vm.UiTotal = Quote.Subtotal.toFixed(2);
 	                }
+	                QuoteShareService.Quote = Quote;
 	                QuoteShareService.UiTotal = vm.UiTotal;
                     $state.go(goto[$state.current.name]);
                 })

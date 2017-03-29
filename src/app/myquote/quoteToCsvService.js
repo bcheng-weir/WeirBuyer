@@ -45,7 +45,7 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 			line.push(item.Quantity);
 			data.push(line);
 		});
-		data.push(["","","",Labels.DescriptionOfShipping[Quote.xp.CarriageRateType],"","",currency,Quote.ShippingCost,""]);
+		data.push(["","","",Quote.xp.ShippingDescription,"","",currency,Quote.ShippingCost,""]);
 		data.push(["", "", "", "", "", Labels.Total, currency, Quote.Total]);
 		data.push(["", ""]);
 		data.push([Labels.DeliveryAddress]);

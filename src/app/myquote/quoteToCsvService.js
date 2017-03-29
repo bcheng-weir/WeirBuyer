@@ -1,7 +1,12 @@
 angular.module('orderCloud')
 	.service('QuoteToCsvService', QuoteToCsvService);
 
-function QuoteToCsvService($filter,$sce) {
+function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
+	function country (c) {
+		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
+		return result ? result.label : '';
+	}
+
 	function ToCsvJson(Quote, LineItems, DeliveryAddress, Payments, Labels) {
 
 		var payment = null;
@@ -45,11 +50,22 @@ function QuoteToCsvService($filter,$sce) {
 		data.push(["", ""]);
 		data.push([Labels.DeliveryAddress]);
 		if (DeliveryAddress) {
-			data.push([DeliveryAddress.FirstName + " " + DeliveryAddress.LastName, ""]);
-			data.push([DeliveryAddress.CompanyName]);
-			data.push([DeliveryAddress.Street1]);
-			data.push([DeliveryAddress.Street2]);
-			data.push([DeliveryAddress.City]);
+			if(DeliveryAddress.Country=="GB") {
+				data.push([DeliveryAddress.FirstName + " " + DeliveryAddress.LastName, ""]);
+				data.push([DeliveryAddress.CompanyName]);
+				data.push([DeliveryAddress.Street1]);
+				DeliveryAddress.Street2 ? data.push([DeliveryAddress.Street2]) : null;
+				data.push([DeliveryAddress.City]);
+				data.push([DeliveryAddress.Zip]);
+				data.push([country(DeliveryAddress.Country)]);
+			} else if (DeliveryAddress.Country=="FR") {
+				data.push([DeliveryAddress.FirstName + " " + DeliveryAddress.LastName, ""]);
+				data.push([DeliveryAddress.CompanyName]);
+				data.push([DeliveryAddress.Street1]);
+				DeliveryAddress.Street2 ? data.push([DeliveryAddress.Street2]) : null;
+				data.push([DeliveryAddress.Zip, "", DeliveryAddress.City]);
+				data.push([country(DeliveryAddress.Country)]);
+			}
 		}
 		data.push(["", ""]);
 		data.push([Labels.Comments]);

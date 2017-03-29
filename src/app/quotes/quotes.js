@@ -100,6 +100,9 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 	vm.parameters = Parameters;
 	vm.Customer = CurrentCustomer;
 	vm.MyOrg = Me.Org;
+	vm.EnquiryAllowed = function() {
+		return Me.Org.xp.WeirGroup.label == "WPIFR";
+	};
 	vm.CurrentOrderId = CurrentOrderId;
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);

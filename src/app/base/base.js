@@ -129,6 +129,9 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
     vm.right = base.right;
     Me.Profile = CurrentUser;
     Me.Org = MyOrg;
+    vm.EnquiryAllowed = function() {
+        return Me.Org.xp.WeirGroup.label == "WPIFR";
+    };
     vm.OrganizationUsed = MyOrg;
     vm.currentUser = CurrentUser;
     vm.catalogItems = ComponentList.nonSpecific;

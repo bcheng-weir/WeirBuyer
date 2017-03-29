@@ -1,7 +1,7 @@
 <article id="COMPONENT_Quotes" class="container-fluid">
 	<ul class="nav nav-pills nav-justified" ng-if="['quotes.saved', 'quotes.inreview', 'quotes.enquiry', 'quotes.revised', 'quotes.confirmed'].indexOf(application.$state.current.name) > -1">
 		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.saved({filters:quotes.FilterActions('quotes.saved')})"><a href="#" ng-bind-html='quotes.labels.Saved'></a></li>
-		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.enquiry({filters:quotes.FilterActions('quotes.enquiry')})"><a href="#" ng-bind-html='quotes.labels.Enquiry'></a></li>
+		<li ng-if="quotes.EnquiryAllowed()" role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.enquiry({filters:quotes.FilterActions('quotes.enquiry')})"><a href="#" ng-bind-html='quotes.labels.Enquiry'></a></li>
 		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.inreview({filters:quotes.FilterActions('quotes.inreview')})"><a href="#" ng-bind-html='quotes.labels.InReview'></a></li>
 		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.revised({filters:quotes.FilterActions('quotes.revised')})"><a href="#" ng-bind-html='quotes.labels.Revised'></a></li>
 		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.confirmed({filters:quotes.FilterActions('quotes.confirmed')})"><a href="#" ng-bind-html='quotes.labels.Confirmed'></a></li>

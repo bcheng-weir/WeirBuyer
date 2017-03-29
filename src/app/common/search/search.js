@@ -129,21 +129,28 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
     };
 	var partResults = {};
     //First three are the home page search methods.
-    function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
-    	var dfd = $q.defer();
-    	var filter = {
-    		"xp.SN":lookForThisPartialSerialNumber+"*"
-	    };
-	    if(Me.Org.xp.WeirGroup.id=="1") { // No global search for UK.
-	    	filter.ParentID = Me.Org.ID;
-	    }
+	function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
+		var dfd = $q.defer();
+		var filter = {
+			"xp.SN": lookForThisPartialSerialNumber + "*"
+		};
+		if (Me.Org.xp.WeirGroup.id == "1") { // No global search for UK.
+			filter.ParentID = Me.Org.ID;
+		}
 
-    	OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
-            .then(function(response) {
-            	dfd.resolve(response.Items);
-            });
-	    return dfd.promise;
-    }
+		OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id == "1" ? null : "all", Me.Org.xp.WeirGroup.label)
+			.then(function(response) {
+				OrderCloud.Me.ListCategories(lookForThisPartialSerialNumber, 1, 50, "Description", null, null, "all", Me.Org.xp.WeirGroup.label)
+					.then(function (responseDescription) {
+						var returnResults = response.Items.concat(responseDescription.Items);
+						returnResults = _.uniq(returnResults, false, function (cat) {
+							return cat.xp.SN
+						});
+						dfd.resolve(returnResults);
+					});
+			});
+		return dfd.promise;
+	}
 
     function _getAllTagNumbers(lookForThisPartialTagNumber) {
     	var dfd = $q.defer();

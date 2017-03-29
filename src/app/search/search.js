@@ -356,7 +356,11 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
         //} else if (vm.serialNumbers.length == 1) {
         //    $state.go('search.serial.detail', { number: vm.serialNumbers[0], searchNumbers: vm.serialNumbers[0] });
         } else {
-            $state.go('search.serial.results', { numbers: vm.serialNumbers.join(',') });
+        	var serNums = angular.copy(vm.serialNumbers);
+        	angular.forEach(serNums, function(value, key) {
+        		serNums[key] = value.split(" - ")[0];
+	        });
+            $state.go('search.serial.results', { numbers: serNums.join(',') });
         }
     };
 

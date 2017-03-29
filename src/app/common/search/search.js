@@ -190,6 +190,7 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 
     //This method is used in the main search that is NOT the home page.
 	function _getPart(lookForThisProduct, forThisCustomer) {
+
 		var filter = {
 			"s":{
 				"xp.SN":lookForThisProduct+"*"

@@ -16,7 +16,7 @@
                             spellcheck="false"
                             type="text"
                             typeahead-min-length="3"
-                            uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in serial.updateSerialList($viewValue)">
+                            uib-typeahead="cat.xp.SN+' - '+cat.Description as (cat.xp.SN + ' - ' + cat.Description) for cat in serial.updateSerialList($viewValue)">
                         <span class="input-group-addon" ng-if="serial.serialNumbers.length > 1" ng-click="serial.removeSerialNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>

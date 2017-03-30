@@ -333,7 +333,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
             IdentifySNDescriptionLine1: $sce.trustAsHtml("Les nouveaux numéros de séries sont composés de 12 caractères, pas plus, pas moins."),
             IdentifySNDescriptionLine2:"Les anciens numéros de séries sont composés comme suit: 001/054845",
             TypeSNTitle: "Entrer votre numéro de série sur la plateforme",
-            TypeSNTitleDescriptionLine1: "/!\ Ne saisissez pas les 4 derniers carractères et la barre de slash des nouveaux numéros de série",
+            TypeSNTitleDescriptionLine1: "/!\\ Ne saisissez pas les 4 derniers carractères et la barre de slash des nouveaux numéros de série",
             TypeSNTitleDescriptionLine2: $sce.trustAsHtml("Pour les anciens numéros de série, saisissez les premiers 3 premiers caractères, la barre de slash et les 6 caractères suivants.<br />Ne saisissez pas la deuxième barre de slash et les deux derniers caractères.")
         }
     };

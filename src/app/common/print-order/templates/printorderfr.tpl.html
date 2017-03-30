@@ -84,6 +84,7 @@
         </div>
         <div>
             <span class="bold" ng-bind-html="printctrl.labels.DeliveryAddress"></span><br>
+            <span ng-bind-html="printctrl.address.FirstName"></span> <span ng-bind-html="printctrl.address.LastName"></span><br>
             <span ng-bind-html='printctrl.address.CompanyName'></span><br>
             <span ng-bind-html='printctrl.address.Street1'></span><br>
             <span ng-bind-html='printctrl.address.Street2' ng-if="printctrl.address.Street2"></span><br ng-if="printctrl.address.Street2">

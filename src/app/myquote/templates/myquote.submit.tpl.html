@@ -142,6 +142,7 @@
 
             <p><b><span ng-bind-html="submit.labels.DeliveryAddress"></span></b></p>
             <div ng-if="submit.ShippingAddress.Country=='FR'">
+                <span ng-bind-html="submit.ShippingAddress.FirstName"></span> <span ng-bind-html="submit.ShippingAddress.LastName"></span><br>
                 {{submit.ShippingAddress.CompanyName}}<br>
                 {{submit.ShippingAddress.Street1}}<br>
                 {{submit.ShippingAddress.Street2}}<br>
@@ -149,6 +150,7 @@
                 {{submit.country(submit.ShippingAddress.Country)}}
             </div>
             <div ng-if="submit.ShippingAddress.Country=='GB'">
+                <span ng-bind-html="submit.ShippingAddress.FirstName"></span> <span ng-bind-html="submit.ShippingAddress.LastName"></span><br>
                 {{submit.ShippingAddress.CompanyName}}<br>
                 {{submit.ShippingAddress.Street1}}<br>
                 {{submit.ShippingAddress.Street2}}<br>
@@ -157,6 +159,7 @@
                 {{submit.country(submit.ShippingAddress.Country)}}
             </div>
             <div ng-if="submit.ShippingAddress.Country!='GB' && submit.ShippingAddress.Country!='FR'">
+                <span ng-bind-html="submit.ShippingAddress.FirstName"></span> <span ng-bind-html="submit.ShippingAddress.LastName"></span><br>
                 {{submit.ShippingAddress.CompanyName}}<br>
                 {{submit.ShippingAddress.Street1}}<br>
                 {{submit.ShippingAddress.Street2}}<br>

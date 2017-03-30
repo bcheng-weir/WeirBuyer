@@ -161,6 +161,7 @@
 
 	        <p><b><span ng-bind-html="review.labels.DeliveryAddress"></span></b></p>
             <div ng-if="myquote.ShippingAddress.Country=='FR'">
+                <span ng-bind-html="myquote.ShippingAddress.FirstName"></span> <span ng-bind-html="myquote.ShippingAddress.LastName"></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.Street2' ng-if="myquote.ShippingAddress.Street2"></span><br ng-if="myquote.ShippingAddress.Street2">
@@ -168,6 +169,7 @@
                 <span ng-bind-html='review.country(myquote.ShippingAddress.Country)'></span>
             </div>
             <div ng-if="myquote.ShippingAddress.Country=='GB'">
+                <span ng-bind-html="myquote.ShippingAddress.FirstName"></span> <span ng-bind-html="myquote.ShippingAddress.LastName"></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.Street2' ng-if="myquote.ShippingAddress.Street2"></span><br ng-if="myquote.ShippingAddress.Street2">
@@ -176,6 +178,7 @@
                 <span ng-bind-html='review.country(myquote.ShippingAddress.Country)'></span>
             </div>
             <div ng-if="myquote.ShippingAddress.Country!='GB' && myquote.ShippingAddress.Country!='FR'">
+                <span ng-bind-html="myquote.ShippingAddress.FirstName"></span> <span ng-bind-html="myquote.ShippingAddress.LastName"></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.Street2' ng-if="myquote.ShippingAddress.Street2"></span><br ng-if="myquote.ShippingAddress.Street2">

@@ -1004,7 +1004,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             UploadHeader: "Upload your Service or Operating Condition Document",
             RefNumHeader: "Add your Reference Number ",
             CommentsHeader: "Your Comments or Instructions",
-		    DeliveryOptions: $sce.trustAsHtml("Delivery Options <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+		    DeliveryOptions: $sce.trustAsHtml("Continue to Delivery Options <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			Update: "Update",
 			DragAndDrop: "Save your Draft before Uploading Documents.",
 			Add: "Add",

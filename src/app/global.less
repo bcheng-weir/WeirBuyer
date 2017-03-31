@@ -1109,35 +1109,6 @@ footer {
 
 /* button styles*/
 
-.btn {
-  display: inline-block;
-  margin-bottom: 0;
-  font-weight: 400;
-  text-align: center;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-  cursor: pointer;
-  background-image: none;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  padding: 5px 10.2px;
-  font-size: 12px;
-  line-height: 1;
-  border-radius: 0px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.btn-group-lg>.btn, .btn-lg {
-  padding: 8.5px 13.5px;
-  font-size: 15px;
-  line-height: 1.3333333;
-  border-radius: 0px;
-}
-
 .btn-primary {
   color: #fff;
   background-color: #425563;
@@ -1674,7 +1645,7 @@ label {
   white-space: nowrap;
   padding: 6px 12px;
   font-size: 14px;
-  line-height: 1.42857143;
+  line-height: 1;
   border-radius: 0px;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -1685,15 +1656,8 @@ label {
 .btn-group-lg>.btn, .btn-lg {
   padding: 10px 16px;
   font-size: 18px;
-  line-height: 1.3333333;
+  line-height: 1;
   border-radius: 0px;
-}
-
-
-.btn-primary {
-  color: #fff;
-  background-color: #425563;
-  border-color: #425563;
 }
 
 .btn-default {
@@ -1701,7 +1665,6 @@ label {
   background-color: #fff;
   border-color: #425563;
 }
-
 
 .weir-tabs.nav-tabs>li {
   background: #4086ca;
@@ -1719,7 +1682,7 @@ label {
 
 .weir-tabs.nav-tabs>li>a {
   margin-right: 2px;
-  line-height: 1.42857143;
+  line-height: 1;
   border: 0;
   border-radius: 0;
   font-size: 16px;
@@ -1777,7 +1740,6 @@ label {
   font-size: 14px;
 }
 
-
 .nav-steps{
   background-color: transparent;
   padding: 0;
@@ -1795,7 +1757,6 @@ label {
   margin-right: 0;
 }
 
-
 .nav-steps li:last-of-type > * {
   padding-right: 1.6em;
   border-radius: 0 .25em .25em 0;
@@ -1808,7 +1769,6 @@ label {
   background-color: #edeff0;
   border-color: #edeff0;
 }
-
 
 .nav-steps li {
   position: relative;
@@ -1944,212 +1904,6 @@ a {
 Basic Style
 
 -------------------------------- */
-.cd-breadcrumb, .cd-multi-steps {
-  padding: 0.5em 1em;
-  margin: 1em auto;
-  background-color: #edeff0;
-  border-radius: .25em;
-}
-.cd-breadcrumb:after, .cd-multi-steps:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-.cd-breadcrumb li, .cd-multi-steps li {
-  display: inline-block;
-  float: left;
-  margin: 0.5em 0;
-}
-.cd-breadcrumb li::after, .cd-multi-steps li::after {
-  /* this is the separator between items */
-  display: inline-block;
-  content: '\00bb';
-  margin: 0 .6em;
-  color: #959fa5;
-}
-.cd-breadcrumb li:last-of-type::after, .cd-multi-steps li:last-of-type::after {
-  /* hide separator after the last item */
-  display: none;
-}
-.cd-breadcrumb li > *, .cd-multi-steps li > * {
-  /* single step */
-  display: inline-block;
-  font-size: 1.4rem;
-  color: #2c3f4c;
-}
-.cd-breadcrumb li.current > *, .cd-multi-steps li.current > * {
-  /* selected step */
-  color: #96c03d;
-}
-.no-touch .cd-breadcrumb a:hover, .no-touch .cd-multi-steps a:hover {
-  /* steps already visited */
-  color: #96c03d;
-}
-.cd-breadcrumb.custom-separator li::after, .cd-multi-steps.custom-separator li::after {
-  /* replace the default arrow separator with a custom icon */
-  content: '';
-  height: 16px;
-  width: 16px;
-  background: url(../assets/cd-custom-separator.svg) no-repeat center center;
-  vertical-align: middle;
-}
-.cd-breadcrumb.custom-icons li > *::before, .cd-multi-steps.custom-icons li > *::before {
-  /* add a custom icon before each item */
-  content: '';
-  display: inline-block;
-  height: 20px;
-  width: 20px;
-  margin-right: .4em;
-  margin-top: -2px;
-  background: url(../assets/cd-custom-icons-01.svg) no-repeat 0 0;
-  vertical-align: middle;
-}
-.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(2) > *::before, .cd-multi-steps.custom-icons li:not(.current):nth-of-type(2) > *::before {
-  /* change custom icon using image sprites */
-  background-position: -20px 0;
-}
-.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(3) > *::before, .cd-multi-steps.custom-icons li:not(.current):nth-of-type(3) > *::before {
-  background-position: -40px 0;
-}
-.cd-breadcrumb.custom-icons li:not(.current):nth-of-type(4) > *::before, .cd-multi-steps.custom-icons li:not(.current):nth-of-type(4) > *::before {
-  background-position: -60px 0;
-}
-.cd-breadcrumb.custom-icons li.current:first-of-type > *::before, .cd-multi-steps.custom-icons li.current:first-of-type > *::before {
-  /* change custom icon for the current item */
-  background-position: 0 -20px;
-}
-.cd-breadcrumb.custom-icons li.current:nth-of-type(2) > *::before, .cd-multi-steps.custom-icons li.current:nth-of-type(2) > *::before {
-  background-position: -20px -20px;
-}
-.cd-breadcrumb.custom-icons li.current:nth-of-type(3) > *::before, .cd-multi-steps.custom-icons li.current:nth-of-type(3) > *::before {
-  background-position: -40px -20px;
-}
-.cd-breadcrumb.custom-icons li.current:nth-of-type(4) > *::before, .cd-multi-steps.custom-icons li.current:nth-of-type(4) > *::before {
-  background-position: -60px -20px;
-}
-@media only screen and (min-width: 768px) {
-  .cd-breadcrumb, .cd-multi-steps {
-    padding: 0 1.2em;
-  }
-  .cd-breadcrumb li, .cd-multi-steps li {
-    margin: 1.2em 0;
-  }
-  .cd-breadcrumb li::after, .cd-multi-steps li::after {
-    margin: 0 1em;
-  }
-  .cd-breadcrumb li > *, .cd-multi-steps li > * {
-    font-size: 1.6rem;
-  }
-}
-/*
-Triangle breadcrumb
-
--------------------------------- */
-@media only screen and (min-width: 768px) {
-  .cd-breadcrumb.triangle {
-    /* reset basic style */
-    background-color: transparent;
-    padding: 0;
-  }
-  .cd-breadcrumb.triangle li {
-    position: relative;
-    padding: 0;
-    margin: 4px 4px 4px 0;
-  }
-  .cd-breadcrumb.triangle li:last-of-type {
-    margin-right: 0;
-  }
-  .cd-breadcrumb.triangle li > * {
-    position: relative;
-    padding: 1em .8em 1em 2.5em;
-    color: #2c3f4c;
-    background-color: #edeff0;
-    border-color: #edeff0;
-  }
-  .cd-breadcrumb.triangle li.current > * {
-    /* selected step */
-    color: #ffffff;
-    background-color: #96c03d;
-    border-color: #96c03d;
-  }
-  .cd-breadcrumb.triangle li:first-of-type > * {
-    padding-left: 1.6em;
-    border-radius: .25em 0 0 .25em;
-  }
-  .cd-breadcrumb.triangle li:last-of-type > * {
-    padding-right: 1.6em;
-    border-radius: 0 .25em .25em 0;
-  }
-  .no-touch .cd-breadcrumb.triangle a:hover {
-    /* steps already visited */
-    color: #ffffff;
-    background-color: #2c3f4c;
-    border-color: #2c3f4c;
-  }
-  .cd-breadcrumb.triangle li::after, .cd-breadcrumb.triangle li > *::after {
-    /*
-    	li > *::after is the colored triangle after each item
-    	li::after is the white separator between two items
-    */
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 100%;
-    content: '';
-    height: 0;
-    width: 0;
-    /* 48px is the height of the <a> element */
-    border: 28px solid transparent;
-    border-right-width: 0;
-    border-left-width: 20px;
-  }
-  .cd-breadcrumb.triangle li::after {
-    /* this is the white separator between two items */
-    z-index: 1;
-    -webkit-transform: translateX(4px);
-    -moz-transform: translateX(4px);
-    -ms-transform: translateX(4px);
-    -o-transform: translateX(4px);
-    transform: translateX(4px);
-    border-left-color: #ffffff;
-    /* reset style */
-    margin: 0;
-  }
-  .cd-breadcrumb.triangle li > *::after {
-    /* this is the colored triangle after each element */
-    z-index: 2;
-    border-left-color: inherit;
-  }
-  .cd-breadcrumb.triangle li:last-of-type::after, .cd-breadcrumb.triangle li:last-of-type > *::after {
-    /* hide the triangle after the last step */
-    display: none;
-  }
-  .cd-breadcrumb.triangle.custom-separator li::after {
-    /* reset style */
-    background-image: none;
-  }
-  .cd-breadcrumb.triangle.custom-icons li::after, .cd-breadcrumb.triangle.custom-icons li > *::after {
-    /* 50px is the height of the <a> element */
-    border-top-width: 25px;
-    border-bottom-width: 25px;
-  }
-
-  @-moz-document url-prefix() {
-    .cd-breadcrumb.triangle li::after,
-    .cd-breadcrumb.triangle li > *::after {
-      /* fix a bug on Firefix - tooth edge on css triangle */
-      border-left-style: dashed;
-    }
-  }
-}
-
-.cd-breadcrumb.triangle a:hover {
-  color: #ffffff;
-  background-color: #425563;
-  border-color: #425563;
-  text-decoration:none;
-}
-
 .btn-success {
   color: #fff;
   background-color: #96c03d;
@@ -2160,12 +1914,6 @@ Triangle breadcrumb
   color: #fff;
   background-color: #f0ad4e;
   border-color: #eea236;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: #425563;
-  border-color: #425563;
 }
 
 .paddingBetweenElements{

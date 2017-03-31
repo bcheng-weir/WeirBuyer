@@ -93,6 +93,21 @@
                         <span>{{submit.Quote.Total | currency:submit.currency}}</span>
                     </td>
                 </tr>
+                <tr ng-if="submit.Quote.xp.ShippingDescription != null">
+                    <!-- Filler to keep formatting -->
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td ng-bind-html="submit.Quote.xp.ShippingDescription"></td>
+                    <!-- Filler to keep formatting -->
+                    <td></td>
+                    <td></td>
+                    <td ng-if="submit.Quote.ShippingCost != 0">
+                        <span ng-bind-html="submit.Quote.ShippingCost | currency:submit.currency"></span>
+                    </td>
+                    <td ng-if="submit.Quote.ShippingCost == 0" ng-bind="submit.labels.POAShipping"></td>
+                    <td></td>
+                </tr>
                 </tbody>
             </table>
         </div>

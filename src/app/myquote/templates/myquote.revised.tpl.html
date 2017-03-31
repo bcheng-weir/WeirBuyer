@@ -128,12 +128,12 @@
                             </h4>
                         </td>
                     </tr>
-                    <tr ng-if="revised.Quote.xp.CarriageRateType != null">
+                    <tr ng-if="revised.Quote.xp.ShippingDescription != null">
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td ng-bind-html="revised.labels.DescriptionOfShipping[revised.Quote.xp.CarriageRateType]"></td>
+                        <td ng-bind-html="revised.Quote.xp.ShippingDescription"></td>
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>

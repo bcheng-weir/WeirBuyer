@@ -93,12 +93,12 @@
                         <td class="text-right" ng-bind-html="line.Quantity"></td>
                     </tr>
                     <!--<tr ng-if="readonly.LineItems.length > 0" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">-->
-                    <tr ng-if="readonly.Quote.xp.CarriageRateType != null">
+                    <tr ng-if="readonly.Quote.xp.ShippingDescription != null">
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td ng-bind-html="readonly.labels.DescriptionOfShipping[readonly.Quote.xp.CarriageRateType]"></td>
+                        <td ng-bind-html="readonly.Quote.xp.ShippingDescription"></td>
                         <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>

@@ -8,6 +8,10 @@
 }
 
 #COMPONENT_MyQuote {
+  .save-to-continue {
+    text-decoration: underline;
+  }
+
   .nav-tabs > li > a {
     line-height: 1 !important;
   }
@@ -103,6 +107,12 @@
   }
   .btn-warning {
     color: white;
+  }
+
+  .btn-success {
+    color: #fff;
+    background-color: #96c03d;
+    border-color: #96c03d;
   }
 
   li.comments a:link, li.comments a:visited, li.comments a:hover, li.comments a:active {
@@ -355,18 +365,50 @@
   }
 
   .cd-breadcrumb.triangle li.active a {
-    /* DAVE MODIFY THIS */
     color: #ffffff;
     background-color: #ec971f;
     border-color: #ec971f;
     text-decoration:none;
   }
 
-  .btn-success {
-    color: #fff;
-    background-color: #96c03d;
-    border-color: #96c03d;
+  @media screen and (device-aspect-ratio: 1280/720) {
+    .address-cell .btn, .address-cell .btn-lg, .nav-buttons .btn, .nav-buttons .btn-lrg {
+      font-size:10px !important;
+    }
   }
+
+  @media screen and (device-aspect-ratio: 1920/1080) {
+    .address-cell .btn, .address-cell .btn-lg, .nav-buttons .btn, .nav-buttons .btn-lrg {
+      font-size:14px !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .address-cell .btn, .address-cell .btn-lg {
+      //font-size:10px !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .address-cell .btn, .address-cell .btn-lg {
+      //font-size:10px !important;
+    }
+  }
+
+  @media (min-width: 1200px) {
+
+  }
+
+  .address-cell {
+    padding:8px;
+    margin: 0px 4px 0px 4px;
+    border:1px solid #eeeeee;
+  }
+
+  .address-cell-btn {
+    text-align: center;
+  }
+
 }
 
 #COMPONENT_Readonly {
@@ -2639,10 +2681,6 @@
 .fa-5 {
   font-size: 5em !important;}
 
-.address-cell {
- padding:8px;
-}
-
 .header-cell {
     color:#fff;
     background-color: #1e59ae;
@@ -2652,11 +2690,6 @@
 .quote-step a {
   color: black;
   border: 1px solid lightgrey;
-}
-
-.email-message {
-  //font-size: small;
-  text-align: center;
 }
 
 .message-break {

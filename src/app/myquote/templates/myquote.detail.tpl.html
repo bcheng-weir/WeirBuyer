@@ -9,18 +9,20 @@
             </div>
             <div class="col-xs-6 pull-right">
                 <div class="row">
-                    <div class="col-xs-6">
+                    <div class="col-xs-4">
                         <h2 class="pull-right"></h2>
                     </div>
                     <div class="col-xs-6">
-                        <button class="btn btn-success" ng-disabled="myquote.Quote.xp.Status=='DR'" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html="detail.labels.DeliveryOptions"></button>
+                        <button class="btn btn-lg btn-success" ng-disabled="myquote.Quote.xp.Status=='DR'" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html="detail.labels.DeliveryOptions"></button>
                         <br>
-                        <h6 class="pull-left" ng-bind-html="detail.labels.SaveToContinue" ng-if="myquote.Quote.xp.Status=='DR'" ng-click="myquote.Save()"></h6>
+                        <h6 class="pull-left save-to-continue" ng-bind-html="detail.labels.SaveToContinue" ng-if="myquote.Quote.xp.Status=='DR'" ng-click="myquote.Save()"></h6>
                     </div>
+                    <div class="col-xs-2"></div>
                 </div>
             </div>
         </div>
 
+        <br>
 
         <div class="row">
             <div class="col-xs-12">
@@ -124,8 +126,8 @@
                             <div class="col-xs-12">
                                 <textarea cols="50" rows="6" ng-model="detail.NewComment"></textarea>
                                 <br>
-                                <button class="btn btn-lg btn-primary" ng-bind-html="detail.labels.Add" ng-click="detail.AddComment()"></button>
-                                <button class="btn btn-lg btn-default" ng-bind-html="detail.labels.Cancel" ng-click="detail.NewComment=null"></button>
+                                <button class="btn btn-primary" ng-bind-html="detail.labels.Add" ng-click="detail.AddComment()"></button>
+                                <button class="btn btn-default" ng-bind-html="detail.labels.Cancel" ng-click="detail.NewComment=null"></button>
                             </div>
                         </div>
                     </div>

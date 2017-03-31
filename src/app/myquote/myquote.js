@@ -683,7 +683,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
                 templateUrl: 'myquote/templates/myquote.missingdetail.tpl.html',
                 controller: 'MoreQuoteInfoCtrl',
                 controllerAs: 'moreInfo',
-				size: 'sm',
                 resolve: {
                     quote: function() {
                         return vm.Quote;
@@ -1034,7 +1033,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             RefNumHeader: $sce.trustAsHtml("Ajouter votre num&eacute;ro de r&eacute;f&eacute;rence "),
             CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
             CommentsInstr: $sce.trustAsHtml("Veuillez ajouter tout commentaire ou instructions sp&eacute;cifiques pour cette cotation"),
-            DeliveryOptions: $sce.trustAsHtml("Options de livraison <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+            DeliveryOptions: $sce.trustAsHtml("Continuer vers les options de livraison <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			Update: $sce.trustAsHtml("Mettre &agrave; jour"),
 			DragAndDrop: $sce.trustAsHtml("Enregistrez votre ébauche avant de télécharger des documents."),
 			Add: $sce.trustAsHtml("Ajouter"),
@@ -1042,7 +1041,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Comments: $sce.trustAsHtml("Commentaires"),
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
 			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
-			SaveToContinue: $sce.trustAsHtml("Veuillez enregistrer afin de continuer"),
+			SaveToContinue: $sce.trustAsHtml("*Veuillez enregistrer afin de continuer"),
             POA: $sce.trustAsHtml("POA")
 		}
 	};
@@ -1120,7 +1119,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Add a New Address"),
             DeliveryInfo: "Delivery Information",
             DeliverHere: "Deliver to this Address",
-            ReviewQuote: "Review Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
+            ReviewQuote: "Continue to Review Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
             BackToQuote: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quote",
             InfoText1: "Delivery costs will be confirmed on Order.",
             InfoText2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
@@ -1145,7 +1144,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Ajouter une nouvelle adresse"),
             DeliveryInfo: $sce.trustAsHtml("Informations de livraison"),
             DeliverHere: $sce.trustAsHtml("Livrer &agrave; cette adresse"),
-            ReviewQuote: $sce.trustAsHtml("Revue de cotation <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+            ReviewQuote: $sce.trustAsHtml("Continuer vers le récapitulatif <i class='fa fa-angle-right' aria-hidden='true'></i>"),
             BackToQuote: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; votre cotation"),
             InfoText1: $sce.trustAsHtml("Les frais de livraison seront confirm&eacute;s &agrave; la commande."),
             InfoText2: $sce.trustAsHtml("Les livraisons seront pr&eacute;par&eacute;es pour l'exp&eacute;dition sur la base de vos instructions de livraison standard."),
@@ -1298,7 +1297,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             POUpload: "Upload PO Document",
             POEntry: "Enter PO Number",
             SubmitOrderAndEmail: "Submit Order & Email PO <i class='fa fa-angle-right' aria-hidden='true'></i>",
-	        SubmitOrderWithPO: "Submit Order <i class='fa fa-angle-right' aria-hidden='true'></i>",
+	        SubmitOrderWithPO: "Submit Order with PO <i class='fa fa-angle-right' aria-hidden='true'></i>",
 	        SerialNum: "Serial Number",
 	        EmailPoMessage: "*Your order will be confirmed<br class='message-break'>following receipt of your PO.",
 	        Add: "Add",
@@ -1608,14 +1607,14 @@ function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService) {
 		    Documents: "Add Service Documentation",
 		    RefNum: "Add your References",
 		    Comments: "Add Comments to your Quote",
-		    Continue: "Continue to Delivery Options"
+		    Continue: "Continue to Delivery Options <i class='fa fa-angle-right' aria-hidden='true'></i>"
 		},
 		fr: {
 			Title: $sce.trustAsHtml("Vous avez la possibilité d'ajouter plus d'informations à cette cotation;"),
 		    Documents: $sce.trustAsHtml("Ajouter des documents sur les conditions de services"),
 		    RefNum: $sce.trustAsHtml("Ajouter votre référence"),
 		    Comments: $sce.trustAsHtml("Ajouter des commentaires à votre cotation"),
-		    Continue: $sce.trustAsHtml("Continuer vers les options de livraison")
+		    Continue: $sce.trustAsHtml("Continuer vers les options de livraison <i class='fa fa-angle-right' aria-hidden='true'></i>")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

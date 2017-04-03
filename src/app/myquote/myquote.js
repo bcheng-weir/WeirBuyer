@@ -534,7 +534,7 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer, UITotal) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer, UITotal, $rootScope) {
     var vm = this;
 	vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
@@ -923,19 +923,59 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			ariaDescribedBy: 'modal-body',
 			templateUrl: 'myquote/templates/myquote.submitorconfirm.tpl.html',
 			controller: 'ChooseSubmitCtrl',
-			controllerAs: 'choosesubmit',
+			controllerAs: 'choosesubmit'
 		});
 		modalInstance.result.then(
 			function (val) {
 				if (val == "Review") {
-					vm.SubmittingToReview = true;
-					$state.go('myquote.submitquote');
+					_submitForReview(true); //POC-410 udpate this to not need a param.
+					//vm.SubmittingToReview = true;
+					//$state.go('myquote.submitquote');
 				} else if (val == "Submit") {
 					vm.SubmittingWithPO = true;
 					$state.go('myquote.submitorder');
 				}
 			}
 		);
+	}
+
+	// Moved from Review Controller.
+	function _submitForReview(dirty) {
+		var data = {
+			xp: {
+				Status: WeirService.OrderStatus.Submitted.id,
+				StatusDate: new Date(),
+				Revised: false
+			}
+		};
+
+		WeirService.UpdateQuote(vm.Quote, data)
+			.then(function (qt) {
+				return OrderCloud.Orders.Submit(vm.Quote.ID);
+			})
+			.then(function (info) {
+				CurrentOrder.Set(null);
+			})
+			.then(function () {
+				var modalInstance = $uibModal.open({
+					animation: true,
+					ariaLabelledBy: 'modal-title',
+					ariaDescribedBy: 'modal-body',
+					templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
+					size: 'lg',
+					controller: 'SubmitConfirmOrderCtrl',
+					controllerAs: 'submitconfirm',
+					resolve: {
+						Quote: function () {
+							return vm.Quote;
+						}
+					}
+				})
+			.closed.then(function () {
+				$rootScope.$broadcast('OC:RemoveOrder');
+				$state.go("home");
+			});
+		});
 	}
 
 	vm.labels = WeirService.LocaleResources(labels);
@@ -951,6 +991,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.Reject = _reject;
 	vm.Next = _next;
 	vm.proceedToSubmit = _proceedToSubmit;
+	vm.submitForReview = _submitForReview;
 }
 
 function MissingCarriageDetailController(WeirService, $uibModalInstance) {
@@ -1511,25 +1552,15 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
            });
     }
 
-    function _submitForReview(dirty) {
-	    var data = {};
-	    if(dirty) {
-		    data = {
-			    xp: {
-				    Status: WeirService.OrderStatus.Submitted.id,
-				    StatusDate: new Date(),
-				    Revised: false
-			    }
-		    };
-	    } else {
-	    	data = {
-			    xp: {
-				    Status: WeirService.OrderStatus.Submitted.id,
-				    StatusDate: new Date(),
-				    Revised: false
-			    }
-		    };
-	    }
+    /*function _submitForReview(dirty) {
+	    var data = {
+			xp: {
+				Status: WeirService.OrderStatus.Submitted.id,
+				StatusDate: new Date(),
+				Revised: false
+			}
+	    };
+
 	    WeirService.UpdateQuote(vm.Quote, data)
 		    .then(function (qt) {
 			    return OrderCloud.Orders.Submit(vm.Quote.ID);
@@ -1557,8 +1588,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    $state.go("home");
 			    });
 		    });
-
-    }
+    }*/
 
 	vm.NewComment = null;
 	vm.AddComment = function() {
@@ -1573,7 +1603,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 
     vm.deleteLineItem = _deleteLineItem;
     vm.updateLineItem = _updateLineItem;
-    vm.submitForReview = _submitForReview;
+    //vm.submitForReview = _submitForReview; //Move to myQuote.
     vm.submitOrder = _submitOrder;
     vm.backToDelivery = _gotoDelivery;
     vm.toSubmit = _gotoSubmit;
@@ -1686,7 +1716,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 	};
 
 	vm.Close = function() {
-		$uibModalInstance.dismiss();
+		$uibModalInstance.close();
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }

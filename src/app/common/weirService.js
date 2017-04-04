@@ -1222,7 +1222,9 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 "WasEnquiry": true,
                 "SN":enq.SerialNumber,
                 "Brand":enq.Manufacturer.Name,
-                "ValveType":enq.ValveType.Name
+                "ValveType":enq.ValveType.Name,
+                "Name":enq.Quote.xp.Name,
+	            "RefNum":enq.Quote.xp.RefNum
             }
         };
         if (enq.Comment.val) {

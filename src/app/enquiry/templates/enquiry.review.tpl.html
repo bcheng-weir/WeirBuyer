@@ -1,5 +1,27 @@
 <div class="container-fluid">
     <div class="row">
+        <div class="col-xs-12">
+            <div class="row">
+                <div class="col-xs-4">
+                    <span ng-bind-html="review.labels.QuoteName" style="font-weight: bold"></span>
+                </div>
+                <div class="col-xs-8">
+                    <input type="text" class="form-control" ng-model="review.enq.Quote.xp.Name" style="width:60%;" />
+                </div>
+            </div>
+            <div class="row"><div class="col-xs-12"><!-- Simply here for a small space between rows. --></div></div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <span ng-bind-html="review.labels.RefNumHeader" style="font-weight: bold"></span>
+                </div>
+                <div class="col-xs-8">
+                    <input type="text" class="form-control" ng-model="review.enq.Quote.xp.RefNum" style="width:60%;" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
         <div class="col-xs-12" style="background-color: #f2f2f2;">
             <div class="row">
                 <div class="col-xs-9 pull-left">

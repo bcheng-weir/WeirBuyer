@@ -312,7 +312,8 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
             Success: "Success",
             ShippingAddressTitle: "Shipping Address Set",
             BackCommand: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Back"),
-            ReviewCommand: "Review and Submit <i class='fa fa-angle-right' aria-hidden='true'></i>"
+            ReviewCommand: "Review and Submit <i class='fa fa-angle-right' aria-hidden='true'></i>",
+	        Disclaimer: "Carriage prices; Your standard carriage price will be added to your enquiry when we respond with our quote."
         },
         fr: {
             DefaultAddress: $sce.trustAsHtml("Votre adresse par défaut"),
@@ -322,7 +323,8 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
             Success: $sce.trustAsHtml("Succès"),
             ShippingAddressTitle: "Adresse de livraison",
             BackCommand: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour"),
-            ReviewCommand: $sce.trustAsHtml("Récap et soumission <i class='fa fa-angle-right' aria-hidden='true'></i>")
+            ReviewCommand: $sce.trustAsHtml("Récap et soumission <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+			Disclaimer: $sce.trustAsHtml("Prix de transport: Votre prix de transport standard sera ajouté à votre cotation lors de notre révision.")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -368,12 +370,16 @@ function EnquiryReviewController($state, $sce, $uibModal, WeirService, EnquirySe
         en: {
             DeliveryAddress: "Delivery Address",
             BackCommand: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back",
-            SubmitCommand: "Submit enquiry <i class='fa fa-angle-right' aria-hidden='true'></i>"
+            SubmitCommand: "Submit enquiry <i class='fa fa-angle-right' aria-hidden='true'></i>",
+	        QuoteName: "Add your Quote Name ",
+	        RefNumHeader: "Add your Reference Number ",
         },
         fr: {
             DeliveryAddress: "Adresse de livraison",
             BackCommand: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour"),
-            SubmitCommand: $sce.trustAsHtml("Soumettre demande <i class='fa fa-angle-right' aria-hidden='true'></i>")
+            SubmitCommand: $sce.trustAsHtml("Soumettre demande <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+	        QuoteName: $sce.trustAsHtml("Ajouter un libellé à votre cotation "),
+	        RefNumHeader: $sce.trustAsHtml("Ajouter votre num&eacute;ro de r&eacute;f&eacute;rence ")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

@@ -278,7 +278,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
         en: {
             WhereToFind: "where to find your serial number",
             EnterSerial: "Enter serial number or valve description",
-	        EnterSerialPlaceHolder: "Enter serial number",
+	        EnterSerialPlaceHolder: "Enter serial number or valve description",
             AddMore: "Add More Serial Numbers   +",
             ClearSearch: "Clear Search",
             toastEnterSearchBox: "Please enter an item in the search box.",
@@ -307,7 +307,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
         fr: {
             WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
             EnterSerial: $sce.trustAsHtml("Entrer le numéro de série ou  description de la soupape"),
-	        EnterSerialPlaceHolder: $sce.trustAsHtml("Entrer le Numéro de Série"),
+	        EnterSerialPlaceHolder: $sce.trustAsHtml("Entrer le numéro de série ou  description de la soupape"),
             AddMore: $sce.trustAsHtml("Ajouter plus de Num&eacute;ro de S&eacute;rie   +"),
             ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
             toastEnterSearchBox: $sce.trustAsHtml("Veuillez saisir un élément dans la barre de recherche."),

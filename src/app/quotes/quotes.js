@@ -314,7 +314,7 @@ function EnquiryQuotesController (WeirService,$scope,$sce) {
 			View: "View"
 		},
 		fr: {
-			Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation soumise à révision"),
+			Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length == 1 ? " Demande" : " Demandes")),
 			QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
 			Status: $sce.trustAsHtml("Statut"),
 			View: $sce.trustAsHtml("Voir")

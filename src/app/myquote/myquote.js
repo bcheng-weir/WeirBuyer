@@ -29,6 +29,7 @@ function QuoteShareService() {
 	    Quote: null,
 	    Me: null,
 	    UiTotal: null,
+	    ShippingAddress: null,
 	    IsPOA: _isPOA
     };
 
@@ -536,13 +537,15 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
                            IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer, UITotal, $rootScope) {
     var vm = this;
-	vm.currentState = $state.$current.name;
+	QuoteShareService.Quote = Quote;
+    vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
     vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
-	vm.Quote = Quote;
+	vm.Quote = QuoteShareService.Quote;
+	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.Customer = Customer;
 	vm.buyer = Me.Org; //For the print directive.
 	vm.ShippingAddress = ShippingAddress;
@@ -551,7 +554,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		WeirService.OrderStatus.Draft.id,
 		WeirService.OrderStatus.Saved.id
 	];
-	QuoteShareService.Quote = Quote;
+	QuoteShareService.ShippingAddress = ShippingAddress;
 	QuoteShareService.Me = Me;
 	QuoteShareService.LineItems.push.apply(QuoteShareService.LineItems, LineItems.Items);
 	vm.lineItems = QuoteShareService.LineItems;
@@ -577,10 +580,10 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.imageRoot = imageRoot;
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
-		var printQuote = angular.copy(vm.Quote);
+		var printQuote = angular.copy(QuoteShareService.Quote);
 		printQuote.ShippingCost = printQuote.xp.CarriageRateType == 'standard' ? vm.CarriageRateForBuyer : 0.00;
 		printQuote.Total = vm.UiTotal;
-	    return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
+		return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	vm.ToCsvJson = toCsv;
 	vm.CsvFilename = vm.Quote.ID + ".csv";
@@ -598,16 +601,15 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    return "";
 	}
 	function save() {
-		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) {
-		    // TODO: FAIL if no line items
-		}
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) { /*TODO: FAIL if no line items*/ }
 		var mods = {
 		    Comments: vm.Quote.Comments,
 		    xp: {
 		        StatusDate: new Date(),
 				RefNum: vm.Quote.xp.RefNum,
 				Name: vm.Quote.xp.Name,
-			    CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null
+			    CarriageRateType: vm.Quote.xp.CarriageRateType,
+			    ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])
 		    }
 		};
 		var assignQuoteNumber = false;
@@ -742,8 +744,17 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			//here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
 			    //ex works does not have a set amount yet
 				//admin side setting exworks shipping description so first time they edit they have a default value
-            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null}}, OrderCloud.BuyerID.Get())
-                .then(function () {
+            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}}, OrderCloud.BuyerID.Get())
+                .then(function (Quote) {
+	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+	                if(Quote.xp.CarriageRateType == 'standard') {
+		                vm.UiTotal = (rateToUse + Quote.Subtotal).toFixed(2);
+	                }
+	                else{
+		                vm.UiTotal = Quote.Subtotal.toFixed(2);
+	                }
+	                QuoteShareService.Quote = Quote;
+	                QuoteShareService.UiTotal = vm.UiTotal;
                     $state.go(goto[$state.current.name]);
                 })
                 .catch(function (ex) {
@@ -754,6 +765,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			$state.go($state.current, {}, {reload: false});
 		}
 	}
+
 	vm.SetShippingPrice = 	function() {
         var isValidForReview = function () {
             var validForReview = true;
@@ -765,7 +777,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
         if(isValidForReview()) {
             //here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
             //ex works does not have a set amount yet
-            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: vm.Quote.xp.CarriageRateType == 'exworks' ? 'Carriage exworks' : null}}, OrderCloud.BuyerID.Get())
+            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}}, OrderCloud.BuyerID.Get())
                 .then(function (Quote) {
 	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	                if(Quote.xp.CarriageRateType == 'standard'){
@@ -774,6 +786,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	                else{
 		                vm.UiTotal = Quote.Subtotal.toFixed(2);
 	                }
+	                QuoteShareService.Quote = Quote;
 	                QuoteShareService.UiTotal = vm.UiTotal;
                     $state.go(goto[$state.current.name]);
                 })
@@ -891,8 +904,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
 			AddNew: $sce.trustAsHtml("Ajouter un item"),
 			DescriptionOfShipping: {
-				exworks:'Livraison Départ-Usine (EXW)',
-				standard:'Frais de livraison'
+				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+				standard:$sce.trustAsHtml('Frais de livraison')
 			}
 		}
 	};
@@ -994,7 +1007,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.submitForReview = _submitForReview;
 }
 
-function MissingCarriageDetailController(WeirService, $uibModalInstance) {
+function MissingCarriageDetailController(WeirService, $uibModalInstance, $sce) {
     //translations
     var vm = this;
     var labels = {
@@ -1003,7 +1016,7 @@ function MissingCarriageDetailController(WeirService, $uibModalInstance) {
             Close: "Close"
 		},
         fr: {
-            ModalMessage: "Veuillez sélectionner votre option de livraison avant d’examiner le récap de votre cotation",
+            ModalMessage: $sce.trustAsHtml("Veuillez sélectionner votre option de livraison avant d’examiner le récap de votre cotation"),
             Close: "Fermer"
 		}
     };
@@ -1135,7 +1148,6 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog, $scope) {
     var vm = this;
-    var CarriageRate = Catalog.xp.StandardCarriage;
     var activeAddress = function (address) {
         return address.xp.active == true;
     };
@@ -1176,9 +1188,8 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
             CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of £"+ $scope.$parent.myquote.CarriageRateForBuyer +  " per order to one UK address.",
-            CarriageInfoP2: "Shipping address successfully selected Deliveries will be prepared for shipping based on your standard delivery instructions.",
+            CarriageInfoP2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
-
         },
         fr: {
             DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
@@ -1220,7 +1231,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
     vm.setShippingAddress = _setShippingAddress;
     function _setShippingAddress(QuoteID, Address) {
         OrderCloud.Orders.SetShippingAddress(QuoteID, Address, OrderCloud.BuyerID.Get())
-            .then(function (order) {
+	        .then(function(order) {
+	        	return OrderCloud.Addresses.Get(order.ShippingAddressID, OrderCloud.BuyerID.Get())
+	        })
+            .then(function (address) {
+            	QuoteShareService.ShippingAddress = address;
                 $state.go($state.current, {}, {reload: true});
                 toastr.success(vm.labels.ShippingAddress, vm.labels.Success);
             })
@@ -1394,8 +1409,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	        AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),
             POA: $sce.trustAsHtml("POA"),
 	        DescriptionOfShipping: {
-		        exworks:'Livraison Départ-Usine (EXW)',
-		        standard:'Frais de livraison'
+		        exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+		        standard:$sce.trustAsHtml('Frais de livraison')
 	        },
             POAShipping: "POA"
         }
@@ -1551,44 +1566,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                });
            });
     }
-
-    /*function _submitForReview(dirty) {
-	    var data = {
-			xp: {
-				Status: WeirService.OrderStatus.Submitted.id,
-				StatusDate: new Date(),
-				Revised: false
-			}
-	    };
-
-	    WeirService.UpdateQuote(vm.Quote, data)
-		    .then(function (qt) {
-			    return OrderCloud.Orders.Submit(vm.Quote.ID);
-		    })
-		    .then(function (info) {
-			    CurrentOrder.Set(null);
-		    })
-		    .then(function () {
-			    var modalInstance = $uibModal.open({
-				    animation: true,
-				    ariaLabelledBy: 'modal-title',
-				    ariaDescribedBy: 'modal-body',
-				    templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
-				    size: 'lg',
-				    controller: 'SubmitConfirmOrderCtrl',
-				    controllerAs: 'submitconfirm',
-				    resolve: {
-					    Quote: function () {
-						    return vm.Quote;
-					    }
-				    }
-			    })
-			    .closed.then(function () {
-				    $rootScope.$broadcast('OC:RemoveOrder');
-				    $state.go("home");
-			    });
-		    });
-    }*/
 
 	vm.NewComment = null;
 	vm.AddComment = function() {
@@ -1984,6 +1961,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Comments: "Comments",
 			Status: "Status",
 			OrderDate: "Order Date;",
+			Currency: "Currency",
 			RejectedMessage: "The Revised Quote has been Rejected.",
 			RejectedTitle: "Quote Updated",
 			ApprovedMessage: "The Revised Quote has been Accepted",
@@ -2035,6 +2013,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande"),
+			Currency: $sce.trustAsHtml("Devise"),
             RejectedMessage: $sce.trustAsHtml("La cotation révisée a ét&eacute; rejetée."),
 			RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
 			ApprovedMessage: $sce.trustAsHtml("La cotation révisée a été acceptée"),
@@ -2050,8 +2029,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 			DescriptionOfShipping: {
-				exworks:'Livraison Départ-Usine (EXW)',
-				standard:'Frais de livraison'
+				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+				standard:$sce.trustAsHtml('Frais de livraison')
 			},
             POAShipping: "POA"
 		}
@@ -2072,7 +2051,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {
-			$state.go("quotes.revised");
+			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
 		} else {
 			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
 		}
@@ -2292,6 +2271,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Comments: "Comments",
 	        Status: "Status",
 	        OrderDate: "Order Date;",
+	        Currency: "Currency",
 	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order",
 	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
@@ -2338,6 +2318,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Comments: $sce.trustAsHtml("Commentaires"),
 	        Status: $sce.trustAsHtml("Statut"),
 	        OrderDate: $sce.trustAsHtml("Date de commande;"),
+	        Currency: $sce.trustAsHtml("Devise"),
 	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos cotations"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 	        PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
@@ -2351,8 +2332,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Brand: $sce.trustAsHtml("Marque:"),
 	        ValveType: $sce.trustAsHtml("Type:"),
 	        DescriptionOfShipping: {
-		        exworks:'Livraison Départ-Usine (EXW)',
-		        standard:'Frais de livraison'
+		        exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+		        standard:$sce.trustAsHtml('Frais de livraison')
 	        },
             POAShipping: "POA"
         }
@@ -2394,12 +2375,13 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	}
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
-		return QuoteToCsvService.ToCsvJson(vm.Quote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
+		var printQuote = angular.copy(vm.Quote);
+		return QuoteToCsvService.ToCsvJson(printQuote, vm.LineItems, vm.ShippingAddress, vm.Payments, printLabels);
 	}
 
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {
-			$state.go("quotes.revised");
+			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
 		} else {
 			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
 		}
@@ -2479,6 +2461,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Comments: "Comments",
 			Status: "Status",
 			OrderDate: "Order Date;",
+			Currency: "Currency",
 			BackToQuotes: "Back to your Quotes",
 			SubmitWithPO: "Submit Order",
 			SubmitOrderAndEmail: "Submit Order & Email PO",
@@ -2498,7 +2481,12 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			PONumber: "PO Number;",
 			POA: "POA",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
-            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+			DescriptionOfShipping: {
+				exworks:'Carriage - Ex Works',
+				standard:'Carriage Charge'
+			},
+			POAShipping: "POA"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -2528,6 +2516,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande;"),
+			Currency: $sce.trustAsHtml("Devise"),
 			BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
 			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 			SubmitOrderAndEmail: $sce.trustAsHtml("Soumettre une commande<br>& E-Mail de pi&egrave;ce de rechange"),
@@ -2547,7 +2536,12 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
             EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
-            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
+            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+			DescriptionOfShipping: {
+				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+				standard:$sce.trustAsHtml('Frais de livraison')
+			},
+			POAShipping: "POA"
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -2610,13 +2604,14 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	}
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
-		return QuoteToCsvService.ToCsvJson(vm.Quote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
+		var printQuote = angular.copy(vm.Quote);
+		return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {
-			$state.go("quotes.revised");
+			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
 		} else {
-			$state.go("orders.revised");
+			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
 		}
 	}
 	// ToDo Accept a parameter withPO. It will be true or false.

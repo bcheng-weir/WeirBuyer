@@ -86,8 +86,8 @@
                             <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
                             <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
                         </td>
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="readonly.labels.POA" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
-                        <td ng-if="line.UnitPrice>0" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="readonly.labels.POA"></td>
+                        <td ng-if="line.UnitPrice>0">
                             <span ng-bind-html="line.UnitPrice | currency:readonly.currency"></span>
                         </td>
                         <td class="text-right" ng-bind-html="line.Quantity"></td>

@@ -3,7 +3,7 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteShareService) {
+function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteShareService,OCGeography,Underscore) {
 	//ToDo use the QuoteShareService
 	var vm = this;
 	vm.catalog = printData.catalog;
@@ -12,7 +12,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 	vm.items = printData.items;
 	vm.address = printData.address;
 	vm.pocontent = printData.pocontent;
-	vm.currency = (vm.order.FromCompanyID.substr(0,5) == "WVCUK") ? ("&#163;") : ((vm.order.FromCompanyID.substr(0,5) == "WPIFR") ? ("&#128;") : (""));
+	vm.currency = (vm.order.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.order.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	if(printData.uitotal == -1) {
 		vm.uitotal = QuoteShareService.UiTotal;
 		vm.CarriageRateForBuyer = vm.buyer.xp.UseCustomCarriageRate == true ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;
@@ -22,6 +22,11 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 		vm.CarriageRateForBuyer = vm.order.ShippingCost;
 		vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	}
+
+	vm.country = function (c) {
+		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
+		return result ? result.label : '';
+	};
 
 	var labels = {
 		en: {
@@ -60,8 +65,8 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 			DeliveryAddress: $sce.trustAsHtml("Adresse de livraison"),
 			POAShipping: "POA",
 			DescriptionOfShipping: {
-				exworks:'Carriage - Ex Works',
-				standard:'Carriage Charge'
+				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
+				standard:$sce.trustAsHtml('Frais de livraison')
 			}
 		}
 	};

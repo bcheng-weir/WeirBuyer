@@ -40,42 +40,42 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="item in printctrl.items track by $index">
-                <td><span ng-bind-html="item.xp.SN"></span></td>
-                <td><span ng-bind-html="item.xp.TagNumber"></span></td>
-                <td><span ng-bind-html="item.Product.Name"></span></td>
-                <td><span ng-bind-html="item.Product.Description"></span></td>
-                <td><span ng-bind-html="item.Product.xp.ReplacementSchedule"></span></td>
-                <td><span ng-bind-html="item.Product.xp.LeadTime"></span></td>
-                <td ng-if="!item.UnitPrice||item.UnitPrice=='0'">POA</td>
-                <td ng-if="item.UnitPrice">
-                    <span ng-bind-html="item.UnitPrice | currency:printctrl.currency"></span>
-                </td>
-                <td><span ng-bind-html="item.Quantity"></span></td>
-            </tr>
-            <tr ng-if="printctrl.order.xp.CarriageRateType != null">
-                <td></td>
-                <td></td>
-                <td></td>
-                <td ng-bind-html="printctrl.labels.DescriptionOfShipping[printctrl.order.xp.CarriageRateType]"></td>
-                <td></td>
-                <td></td>
-                <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'">
-                    <span ng-bind-html="printctrl.CarriageRateForBuyer | currency:printctrl.currency"></span>
-                </td>
-                <td ng-if="printctrl.order.xp.CarriageRateType != 'standard'">
-                    <span ng-bind-html="printctrl.labels.POAShipping"></span>
-                </td>
-                <td></td>
-            </tr>
-            <tr class="totals">
-                <td colspan="5"></td>
-                <td ng-bind-html="printctrl.labels.Total"></td>
-                <td class='text-right' style="font-weight:bold;">
-                    <span ng-bind-html="printctrl.uitotal | currency:printctrl.currency"></span>
-                </td>
-                <td></td>
-            </tr>
+                <tr ng-repeat="item in printctrl.items track by $index">
+                    <td><span ng-bind-html="item.xp.SN"></span></td>
+                    <td><span ng-bind-html="item.xp.TagNumber"></span></td>
+                    <td><span ng-bind-html="item.Product.Name"></span></td>
+                    <td><span ng-bind-html="item.Product.Description"></span></td>
+                    <td><span ng-bind-html="item.Product.xp.ReplacementSchedule"></span></td>
+                    <td><span ng-bind-html="item.Product.xp.LeadTime"></span></td>
+                    <td ng-if="!item.UnitPrice||item.UnitPrice=='0'">POA</td>
+                    <td ng-if="item.UnitPrice">
+                        <span ng-bind-html="item.UnitPrice | currency:printctrl.currency"></span>
+                    </td>
+                    <td><span ng-bind-html="item.Quantity"></span></td>
+                </tr>
+                <tr ng-if="printctrl.order.xp.CarriageRateType != null">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td ng-bind-html="printctrl.labels.DescriptionOfShipping[printctrl.order.xp.CarriageRateType]"></td>
+                    <td></td>
+                    <td></td>
+                    <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'">
+                        <span ng-bind-html="printctrl.CarriageRateForBuyer | currency:printctrl.currency"></span>
+                    </td>
+                    <td ng-if="printctrl.order.xp.CarriageRateType != 'standard'">
+                        <span ng-bind-html="printctrl.labels.POAShipping"></span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="totals">
+                    <td colspan="5"></td>
+                    <td ng-bind-html="printctrl.labels.Total"></td>
+                    <td class='text-right' style="font-weight:bold;">
+                        <span ng-bind-html="printctrl.uitotal | currency:printctrl.currency"></span>
+                    </td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
         <br>
@@ -84,11 +84,12 @@
         </div>
         <div>
             <span class="bold" ng-bind-html="printctrl.labels.DeliveryAddress"></span><br>
+            <span ng-bind-html="printctrl.address.FirstName"></span> <span ng-bind-html="printctrl.address.LastName"></span><br>
             <span ng-bind-html='printctrl.address.CompanyName'></span><br>
             <span ng-bind-html='printctrl.address.Street1'></span><br>
             <span ng-bind-html='printctrl.address.Street2' ng-if="printctrl.address.Street2"></span><br ng-if="printctrl.address.Street2">
             <span><span ng-bind-html='printctrl.address.Zip'></span> <span ng-bind-html='printctrl.address.City'></span></span><br>
-            <span ng-bind-html='printctrl.address.Country'></span><br>
+            <span ng-bind-html='printctrl.country(printctrl.address.Country)'></span><br>
         </div>
         <div>
             <br>

@@ -192,6 +192,7 @@
 
             <p><b><span ng-bind-html="revised.labels.DeliveryAddress"></span></b></p>
             <div ng-if="revised.ShippingAddress.Country=='FR'">
+                <span ng-bind-html="revised.ShippingAddress.FirstName"></span> <span ng-bind-html="revised.ShippingAddress.LastName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>
@@ -199,6 +200,7 @@
                     <span ng-bind-html="revised.country(revised.ShippingAddress.Country)"></span>
             </div>
             <div ng-if="revised.ShippingAddress.Country=='GB'">
+                <span ng-bind-html="revised.ShippingAddress.FirstName"></span> <span ng-bind-html="revised.ShippingAddress.LastName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>
@@ -207,6 +209,7 @@
                 <span ng-bind-html="revised.country(revised.ShippingAddress.Country)"></span>
             </div>
             <div ng-if="revised.ShippingAddress.Country!='GB' && revised.ShippingAddress.Country!='FR'">
+                <span ng-bind-html="revised.ShippingAddress.FirstName"></span> <span ng-bind-html="revised.ShippingAddress.LastName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>

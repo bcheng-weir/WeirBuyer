@@ -8,14 +8,14 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 	var vm = this;
 	vm.catalog = printData.catalog;
 	vm.buyer = printData.buyer;
-	vm.order = printData.order;
+	vm.order = printData.uitotal == -1 ? QuoteShareService.Quote : printData.order; //refactor
 	vm.items = printData.items;
 	vm.address = printData.address;
 	vm.pocontent = printData.pocontent;
 	vm.currency = (vm.order.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.order.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
-	if(printData.uitotal == -1) {
+	if(printData.uitotal == -1) { // We are in myquote and using the exworks or standard (whether buyer or catalog)
 		vm.uitotal = QuoteShareService.UiTotal;
-		vm.CarriageRateForBuyer = vm.buyer.xp.UseCustomCarriageRate == true ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;
+		vm.CarriageRateForBuyer = QuoteShareService.Quote.xp.ShippingDescription == "Carriage - Ex Works" ? 0 : (vm.buyer.xp.UseCustomCarriageRate == true ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage);
 		vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	} else {
 		vm.uitotal = printData.order.Total;

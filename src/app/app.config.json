@@ -2,9 +2,9 @@
 	"appname": "store.flowcontrol.weir",
 	"tmpscope": "FullAccess",
 	"scope": "ProductReader BuyerReader CatalogReader CategoryReader AddressAdmin AddressReader OrderAdmin OrderReader UnsubmittedOrderReader PriceScheduleReader BuyerUserAdmin BuyerUserReader UserGroupAdmin UserGroupReader ApprovalRuleReader MeAdmin MeXpAdmin MeAddressAdmin",
-	"clientid": "267E3A43-7997-4DAA-BF76-C6520CDA383C",
+	"clientid": "85DC0813-F2F8-41D6-B741-80FA9EAC0D34",
 	"buyerid": "",
-	"environment": "dev",
+	"environment": "prod",
 	"anonymous": false,
 	"searchglobal": false,
 	"base": {
@@ -14,11 +14,11 @@
 		"bottom": false
 	},
 	"fileStore": {
-		"akid":"AKIAIDJEBSBD44ECHPAQ",
-		"sak":"vals+hHD4gvcnZpOgzS8j1C1ixRrLOjl+yINYbzN",
-		"awsRegion":"us-east-2",
-		"bucket": "ordercloudtest",
-		"location": "https://s3.us-east-2.amazonaws.com/ordercloudtest/"
+		"akid":"AKIAIUP4AZCX6QWGFPQQ",
+		"sak":"ghOoHTZyKejoBpN+Qw/OblzOKQBgq8eXQPlMjyZn",
+		"awsRegion":"eu-west-2",
+		"bucket": "ordercloudfiles",
+		"location": "https://s3.eu-west-2.amazonaws.com/ordercloudfiles/"
 	},
-	"imageRoot": "https://store.flowcontrol.weir/hooks/Content/Images/"
+	"imageRoot": "https://weirwebhooks.azurewebsites.net/Content/Images/"
 }

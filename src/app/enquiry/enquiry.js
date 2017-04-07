@@ -365,6 +365,9 @@ function NewEnquiryAddressModalController($uibModalInstance, $sce, WeirService) 
 function EnquiryReviewController($state, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography) {
     var vm = this;
     vm.enq = EnquiryService;
+    vm.finalParts = _.filter(vm.enq.PartList, function(part) {
+    	return part.quantity > 0;
+    });
     if (vm.enq.Step < 4) vm.enq.Step = 4;
     var labels = {
         en: {

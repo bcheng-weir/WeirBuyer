@@ -240,6 +240,7 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
                         return  OrderCloud.Me.ListCategories(lookForThisProduct, 1, 20, "Description", null, null , "all" , Me.Org.xp.WeirGroup.label)
                             .then(function(responseDescription){
                                 var returnResults = response.Items.concat(responseDescription.Items);
+	                            returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
                                 returnResults = _.uniq(returnResults, false, function(cat){return cat.xp.SN});
                                 return returnResults;
                             });

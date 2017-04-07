@@ -23,7 +23,6 @@
             <h4><span ng-bind-html='submit.labels.QuoteNumber'></span><span class="text-blue" style="margin-left: 1em;">{{submit.Quote.ID}}</span></h4>
             <h4><span ng-bind-html='submit.labels.QuoteName'></span><span class='text-blue' style="margin-left:1em;" maxlength="20">{{submit.Quote.xp.Name}}</span></h4>
             <h4><span ng-bind-html='submit.labels.YourReference'></span><span class='text-blue' style="margin-left:1em;" maxlength="50">{{submit.Quote.xp.RefNum}}</span></h4>
-            <!--<h4><span ng-bind-html='submit.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50">{{submit.Quote.xp.PONumber}}</span></h4>-->
         </div>
 
         <div class="col-xs-5">
@@ -31,7 +30,6 @@
             <div class="row">
                 <div class="col-xs-6 col-email-message">
                     <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
-                        <!--<div class="col-xs-12"><button class="btn btn-warning pull-right" ng-click="review.submitOrder(false)" ng-bind-html='review.labels.SubmitOrderAndEmail'></button></div>-->
                         <button class="btn btn-warning pull-right" ng-click="submit.submitOrder(false)" ng-bind-html='submit.labels.SubmitOrderAndEmail'></button>
                     </div>
                     <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
@@ -41,7 +39,6 @@
                 <div class="col-xs-6">
                     <div class="row">
                         <div class="col-xs-12">
-                            <!--<button ng-if="review.SubmittingWithPO" class="btn btn-success pull-right" ng-disabled="review.PONumber == 'undefined' || review.PONumber == null || review.PONumber == ''" ng-click="review.submitOrder(true)" ng-bind-html='review.labels.SubmitOrderWithPO'></button>-->
                             <button class="btn btn-success pull-right" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button>
                         </div>
                     </div>
@@ -86,26 +83,6 @@
                     </td>
                     <td class="text-right">{{line.Quantity}}</td>
                 </tr>
-                <tr ng-if="submit.Quote.xp.CarriageRateType != null">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td ng-bind-html="submit.labels.DescriptionOfShipping[submit.Quote.xp.CarriageRateType]"></td>
-                    <td></td>
-                    <td></td>
-                    <td ng-if="submit.Quote.ShippingCost != 0">
-                        <span ng-bind-html="submit.Quote.ShippingCost | currency:submit.currency"></span>
-                    </td>
-                    <td ng-if="submit.Quote.ShippingCost == 0" ng-bind="submit.labels.POAShipping"></td>
-                    <td></td>
-                </tr>
-                <tr ng-if="submit.LineItems.length > 0">
-                    <td class="button-th" colspan="5"></td>
-                    <td style="font-weight:bold;" ng-bind-html='submit.labels.Total'></td>
-                    <td class='text-right' style="font-weight:bold;">
-                        <span>{{submit.Quote.Total | currency:submit.currency}}</span>
-                    </td>
-                </tr>
                 <tr ng-if="submit.Quote.xp.ShippingDescription != null">
                     <!-- Filler to keep formatting -->
                     <td></td>
@@ -120,6 +97,13 @@
                     </td>
                     <td ng-if="submit.Quote.ShippingCost == 0" ng-bind="submit.labels.POAShipping"></td>
                     <td></td>
+                </tr>
+                <tr ng-if="submit.LineItems.length > 0">
+                    <td class="button-th" colspan="5"></td>
+                    <td style="font-weight:bold;" ng-bind-html='submit.labels.Total'></td>
+                    <td class='text-right' style="font-weight:bold;">
+                        <span>{{submit.Quote.Total | currency:submit.currency}}</span>
+                    </td>
                 </tr>
                 </tbody>
             </table>

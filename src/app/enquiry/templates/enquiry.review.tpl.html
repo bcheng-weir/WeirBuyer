@@ -2,19 +2,19 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="row">
-                <div class="col-xs-3" style="padding:8px 12px">
+                <div class="col-xs-4" style="padding:8px 12px">
                     <span ng-bind-html="review.labels.QuoteName" style="font-weight: bold"></span>
                 </div>
-                <div class="col-xs-9">
+                <div class="col-xs-8">
                     <input type="text" class="form-control" ng-model="review.enq.Quote.xp.Name" style="width:60%;" />
                 </div>
             </div>
             <div class="row"><div class="col-xs-12"><!-- Simply here for a small space between rows. --></div></div>
             <div class="row">
-                <div class="col-xs-3" style="padding:8px 12px">
+                <div class="col-xs-4" style="padding:8px 12px">
                     <span ng-bind-html="review.labels.RefNumHeader" style="font-weight: bold"></span>
                 </div>
-                <div class="col-xs-9">
+                <div class="col-xs-8">
                     <input type="text" class="form-control" ng-model="review.enq.Quote.xp.RefNum" style="width:60%;" />
                 </div>
             </div>
@@ -85,14 +85,14 @@
                 </div>
             </div>
             <div class="row" style="margin-left: 0.5em;">
-                <div class="col-md-12 address-cell" ng-if="review.enq.Shipping.Country=='FR'">
+                <div class="col-md-12" ng-if="review.enq.Shipping.Country=='FR'">
                     <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">
                     <span><span ng-bind-html="review.enq.Shipping.Zip"></span>, <span ng-bind-html="review.enq.Shipping.City"></span></span><br />
                     <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br><br>
                 </div>
-                <div class="col-md-12 address-cell" ng-if="review.enq.Shipping.Country=='GB'">
+                <div class="col-md-12" ng-if="review.enq.Shipping.Country=='GB'">
                     <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">
@@ -100,7 +100,7 @@
                     <span ng-bind-html="review.enq.Shipping.Zip"></span><br>
                     <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br>
                 </div>
-                <div class="col-md-12 address-cell" ng-if="review.enq.Shipping.Country!='GB' && review.enq.Shipping.Country!='FR'">
+                <div class="col-md-12" ng-if="review.enq.Shipping.Country!='GB' && review.enq.Shipping.Country!='FR'">
                     <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">

@@ -61,6 +61,20 @@
                 <div class="col-md-2"></div>
             </div>
 
+
+
+        </div>
+        <div class="col-md-5">
+            <div class="row" style="margin-left: 0px;">
+                <div class="col-md-12">
+                    <div class="pull-right nav-buttons">
+                        <button class="btn btn-lg btn-primary" ui-sref="myquote.detail" ng-bind-html="delivery.labels.BackToQuote"></button>
+                        <button class="btn btn-lg btn-success" style="margin-left: 1em;" ng-click="myquote.Next()" ng-bind-html="delivery.labels.ReviewQuote"></button>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="row" style="margin-left: 0px; margin-top:8px; background-color: #eff0f1;">
                 <div class="col-md-12">
                     <div>
@@ -88,16 +102,6 @@
                 </div>
             </div>
 
-        </div>
-        <div class="col-md-5">
-            <div class="row" style="margin-left: 0px;">
-                <div class="col-md-12">
-                    <div class="pull-right nav-buttons">
-                        <button class="btn btn-lg btn-primary" ui-sref="myquote.detail" ng-bind-html="delivery.labels.BackToQuote"></button>
-                        <button class="btn btn-lg btn-success" style="margin-left: 1em;" ng-click="myquote.Next()" ng-bind-html="delivery.labels.ReviewQuote"></button>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

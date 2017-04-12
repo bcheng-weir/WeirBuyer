@@ -57,13 +57,12 @@
                     <td ng-bind-html="printctrl.order.xp.ShippingDescription"></td>
                     <td></td>
                     <td></td>
-                    <!--<td ng-if="printctrl.order.xp.CarriageRateType == 'standard'">-->
-                    <td>
+                    <td ng-if="printctrl.order.xp.CarriageRateType == 'standard'">
                         <span ng-bind-html="printctrl.CarriageRateForBuyer | currency:printctrl.currency"></span>
                     </td>
-                    <!--<td ng-if="printctrl.order.xp.CarriageRateType != 'standard'">
+                    <td ng-if="printctrl.order.xp.CarriageRateType != 'standard'">
                         <span ng-bind-html="printctrl.labels.POAShipping"></span>
-                    </td>-->
+                    </td>
                     <td></td>
                 </tr>
                 <tr class="totals" >

@@ -11,7 +11,7 @@
                     </div>
 
                     <div class="panelButton">
-                        <print-order-button buyer="myquote.buyer" order="myquote.Quote" items="myquote.lineItems" address="myquote.ShippingAddress" pocontent="myquote.Catalog.xp.POContent"></print-order-button>
+                        <print-order-button buyer="myquote.buyer" order="myquote.Quote" items="myquote.lineItems" address="myquote.ShippingAddress" pocontent="myquote.Catalog.xp.POContent" catalog="myquote.Catalog" uitotal="-1"></print-order-button>
                     </div>
                     <div class="panelButton" ng-csv="myquote.ToCsvJson" add-bom="true" filename="{{myquote.CsvFilename}}"> <!-- ng-click="myquote.Download()"> -->
                         <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Download'></span></a>

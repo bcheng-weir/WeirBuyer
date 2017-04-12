@@ -623,10 +623,9 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			.then(function(quote) {
 				QuoteShareService.Quote = quote;
 				var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
-				if(Quote.xp.CarriageRateType == 'standard'){
+				if(quote.xp.CarriageRateType == 'standard'){
 					QuoteShareService.UiTotal = (rateToUse + Quote.Subtotal).toFixed(2);
-				}
-				else{
+				} else {
 					QuoteShareService.UiTotal = Quote.Subtotal.toFixed(2);
 				}
 				return CurrentOrder.Set(quote.ID);

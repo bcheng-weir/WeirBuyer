@@ -57,11 +57,9 @@
                     <td ng-bind-html="printctrl.order.xp.ShippingDescription"></td>
                     <td></td>
                     <td></td>
-                    <td ng-if="printctrl.CarriageRateForBuyer != '0.00'">
-                        <span ng-bind-html="printctrl.CarriageRateForBuyer | currency:printctrl.currency"></span>
-                    </td>
-                    <td ng-if="printctrl.CarriageRateForBuyer == '0.00'">
-                        <span ng-bind-html="printctrl.labels.POAShipping"></span>
+                    <td>
+                        <span ng-if="printctrl.CarriageRateForBuyer!='POA'" ng-bind-html="printctrl.CarriageRateForBuyer | currency:printctrl.currency"></span>
+                        <span ng-if="printctrl.CarriageRateForBuyer=='POA'" ng-bind-html="printctrl.labels.POAShipping"></span>
                     </td>
                     <td></td>
                 </tr>
@@ -135,5 +133,4 @@
             <pre ng-bind-html="printctrl.pocontent.RegisteredAddress"></pre>
         </div>
     </div>
-    <!--<div class="modal-footer">Footer</div>-->
 </div>

@@ -15,7 +15,7 @@
                             spellcheck="false"
                             type="text"
                             typeahead-min-length="3"
-                            uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in serial.updateSerialList($viewValue)">
+                            uib-typeahead="cat.xp.SN+' - '+cat.Description as (cat.xp.SN + ' - ' + cat.Description) for cat in serial.updateSerialList($viewValue)">
                         <span class="input-group-addon" ng-if="serial.serialNumbers.length > 1" ng-click="serial.removeSerialNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>
@@ -43,4 +43,165 @@
             </div>
         </div>
     </div>
+    <section ng-if="serial.WeirGroup == 'WVCUK'">
+        <section class="platform" style="margin-bottom: 5%;">
+            <div class="container">
+                <div class="row" style="border-style: solid none solid none; margin-left: 7.5%; margin-right: 7.5%; border-width: 1px; border-color: #cccccc;">
+                        <div class="row">
+                            <div class="col-xs-6" style="margin-top: 1%;">
+                                <p ng-bind-html="serial.labels.SearchBySerialNumberTitle" style="font-weight: bold;"></p>
+                                <p ng-bind-html="serial.labels.SearchBySerialNumberSecondLine"></p>
+                                <p ng-bind-html="serial.labels.SearchBySerialNumberThirdLine"></p>
+                            </div>
+                            <div class="col-xs-6" style="margin-top: 1%;">
+                                <p ng-bind-html="serial.labels.TipsForSearching" style="font-weight: bold"></p>
+                                <p ng-bind-html="serial.labels.TipsForSearchingSecondLine"></p>
+                                <p ng-bind-html="serial.labels.TipsForSearchingThirdLine"></p>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
+                        <h3 style="text-align: center; font-size: 16px; font-weight: bold;" ng-bind-html="serial.labels.WhereToFindYourSerialNumberTitle"></h3>
+                        <p style="font-size: 14px;" ng-bind-html="serial.labels.WhereToFindYourSerialNumberContent"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="details" style="margin-top: 2%;">
+                <div class="container" >
+                    <div class="row" style="margin-top: 10%;">
+                        <div class="steps">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="step">
+                                    <div class="number">
+                                        1
+                                    </div>
+                                    <!--<h4 ng-bind-html="serial.labels.BatleyTitle" style="color: blue; font-size: 14px;"></h4>-->
+                                    <p ng-bind-html="serial.labels.BatleyDescription" style="font-weight: bold; font-size: 13px;"></p>
+                                    <p ng-bind-html="serial.labels.BatleyDescriptionLine2" style="font-size: 13px"></p>
+                                    <p ng-bind-html="serial.labels.BatleyDescriptionLine3" style="font-size: 13px"></p>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-4">
+                                <div class="step">
+                                    <div class="number">
+                                        2
+                                    </div>
+                                    <!--<h4 ng-bind-html="serial.labels.BlakeboroughTitle" style="color: blue; font-size: 14px;"></h4>-->
+                                    <p ng-bind-html="serial.labels.BlakeboroughDescription" style="font-weight: bold; font-size: 13px;"></p>
+                                    <p ng-bind-html="serial.labels.BlakeboroughDescriptionLine2" style="font-size: 13px"></p>
+                                    <p ng-bind-html="serial.labels.BlakeboroughDescriptionLine3" style="font-size: 13px"></p>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-4">
+                                <div class="step">
+                                    <div class="number">
+                                        3
+                                    </div>
+                                    <!--<h4 ng-bind-html="serial.labels.HopkinsonsTitle" style="color: blue; font-size: 14px;"></h4>-->
+                                    <p ng-bind-html="serial.labels.HopkinsonsDescription" style="font-weight: bold; font-size: 13px;"></p>
+                                    <p ng-bind-html="serial.labels.HopkinsonsDescriptionLine2" style="font-size: 13px"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+    </section>
+
+    <section ng-if="serial.WeirGroup == 'WPIFR'">
+        <section class="platform" style="margin-bottom: 2%;">
+            <div class="container">
+                <div class="row" style="border-style: solid none solid none; margin-left: 7.5%; margin-right: 7.5%; border-width: 1px; border-color: #cccccc;">
+                    <div class="row">
+                        <div class="col-xs-6" style="margin-top: 1%;">
+                            <p ng-bind-html="serial.labels.SearchBySerialNumberTitle" style="font-weight: bold;font-size: 14px"></p>
+                            <p ng-bind-html="serial.labels.SearchBySerialNumberSecondLine" style="font-size: 13px"></p>
+                            <p ng-bind-html="serial.labels.SearchBySerialNumberThirdLine" style="font-size: 13px"></p>
+                            <p ng-bind-html="serial.labels.SearchBySerialNumberFourthLine" style="font-size: 13px"></p>
+                        </div>
+                        <div class="col-xs-6" style="margin-top: 1%;">
+                            <p ng-bind-html="serial.labels.TipsForSearching" style="font-weight: bold;font-size: 14px"></p>
+                            <p ng-bind-html="serial.labels.TipsForSearchingSecondLine" style="font-size: 13px"></p>
+                            <p ng-bind-html="serial.labels.TipsForSearchingThirdLine" style="font-size: 13px"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
+                        <h3 style="text-align: center; font-size: 16px; font-weight: bold;" ng-bind-html="serial.labels.WhereToFindYourSerialNumberTitle"></h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="details">
+            <div class="container">
+                <div class="row" style="margin-top: 10%;">
+                    <div class="steps">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="step">
+                                <div class="number">
+                                    1
+                                </div>
+                                <p ng-bind-html="serial.labels.CheckNamePlate" style="font-weight: bold; font-size: 14px;"></p>
+                                <p ng-bind-html="serial.labels.CheckNamePlateDescription" style="font-size: 13px;"></p>
+                                <div id="imgDiv1">
+                                    <figure id="imgPic1">
+
+                                        <img ng-src="{{search.GetSearchImageUrl('Sarasin 1 No background.jpg')}}" style="max-width: 100%;max-height: 100%; margin-top: auto; display:block; margin-left:auto; margin-right:auto;"
+                                             onerror="window.document.getElementById('imgDiv1').style.display='none';"/>
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="step">
+                                <div class="number">
+                                    2
+                                </div>
+                                <h4 ng-bind-html="serial.labels.IdentifySNTitle" style="font-weight: bold; font-size: 14px;"></h4>
+                                <p ng-bind-html="serial.labels.IdentifySNDescriptionLine1" style="font-size: 13px;"></p>
+                                <p ng-bind-html="serial.labels.IdentifySNDescriptionLine2" style="font-size: 13px;"></p>
+                                <div id="imgDiv2">
+                                    <figure id="imgPic2">
+                                        <img ng-src="{{search.GetSearchImageUrl('Square Nameplate - French.jpg')}}" style="max-width: 100%;max-height: 100%; margin-top: auto; display:block; margin-left:auto; margin-right:auto;"
+                                             onerror="window.document.getElementById('imgDiv2').style.display='none';"/>
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="step">
+                                <div class="number">
+                                    3
+                                </div>
+                                <h4 ng-bind-html="serial.labels.TypeSNTitle" style="font-weight: bold; font-size: 14px;"></h4>
+                                <p ng-bind-html="serial.labels.TypeSNTitleDescriptionLine1" style="font-size: 13px"></p>
+                                <p ng-bind-html="serial.labels.TypeSNTitleDescriptionLine2" style="font-size: 13px"></p>
+
+                                <div id="imgDiv3">
+                                    <figure id="imgPic3">
+                                        <img ng-src="{{search.GetSearchImageUrl('FrenchTypeAhead.png')}}" style="max-width: 100%;max-height: 100%; margin-top: auto; display:block; margin-left:auto; margin-right:auto;"
+                                             onerror="window.document.getElementById('imgDiv3').style.display='none';"/>
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
 </ui-view>

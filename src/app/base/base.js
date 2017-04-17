@@ -129,6 +129,9 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
     vm.right = base.right;
     Me.Profile = CurrentUser;
     Me.Org = MyOrg;
+    vm.EnquiryAllowed = function() {
+        return Me.Org.xp.WeirGroup.label == "WPIFR";
+    };
     vm.OrganizationUsed = MyOrg;
     vm.currentUser = CurrentUser;
     vm.catalogItems = ComponentList.nonSpecific;
@@ -147,8 +150,6 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             Feedback: "Beta feedback",
             Register: "Register/Login",
             Logout: "Logout"
-
-
         },
         fr: {
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
@@ -286,6 +287,11 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
                 "xp.Type": "Quote",
                 "xp.Status": WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,
                 "xp.Active":true
+            },
+            "quotes.enquiry" : {
+	            "xp.Type": "Quote",
+                "xp.Status": WeirService.OrderStatus.Enquiry.id+"|"+WeirService.OrderStatus.EnquiryReview.id,
+	            "xp.Active":true
             },
 	        "quotes.inreview": {
 		        "xp.Type": "Quote",

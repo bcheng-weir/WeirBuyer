@@ -128,61 +128,68 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 		GetPart: _getPart
 	};
 	var partResults = {};
-	//First three are the home page search methods.
+    //First three are the home page search methods.
 	function _getAllSerialNumbers(lookForThisPartialSerialNumber) {
 		var dfd = $q.defer();
 		var filter = {
-			"xp.SN":lookForThisPartialSerialNumber+"*"
+			"xp.SN": lookForThisPartialSerialNumber + "*"
 		};
-		if(Me.Org.xp.WeirGroup.id=="1") { // No global search for UK.
+		if (Me.Org.xp.WeirGroup.id == "1") { // No global search for UK.
 			filter.ParentID = Me.Org.ID;
 		}
 
-		OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
+		OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id == "1" ? null : "all", Me.Org.xp.WeirGroup.label)
 			.then(function(response) {
-				dfd.resolve(response.Items);
+				OrderCloud.Me.ListCategories(lookForThisPartialSerialNumber, 1, 20, "Description", null, null, "all", Me.Org.xp.WeirGroup.label)
+					.then(function (responseDescription) {
+						var returnResults = response.Items.concat(responseDescription.Items);
+						returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
+						returnResults = _.uniq(returnResults, false, function (cat) { return cat.xp.SN; });
+						dfd.resolve(returnResults);
+					});
 			});
 		return dfd.promise;
 	}
 
-	function _getAllTagNumbers(lookForThisPartialTagNumber) {
-		var dfd = $q.defer();
-		var filter = {
-			"xp.TagNumber":lookForThisPartialTagNumber+"*"
-		};
-		if(Me.Org.xp.WeirGroup.id=="1") { //No global search for UK
-			filter.ParentID = Me.Org.ID;
-		}
+    function _getAllTagNumbers(lookForThisPartialTagNumber) {
+    	var dfd = $q.defer();
+	    var filter = {
+		    "xp.TagNumber":lookForThisPartialTagNumber+"*"
+	    };
+	    if(Me.Org.xp.WeirGroup.id=="1") { //No global search for UK
+		    filter.ParentID = Me.Org.ID;
+	    }
 
-		OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
-			.then(function(response) {
-				dfd.resolve(response.Items);
-			});
-		return dfd.promise;
-	}
+        OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
+            .then(function(response) {
+            	dfd.resolve(response.Items);
+            });
+	    return dfd.promise;
+    }
 
-	function _getAllPartNumbers(lookForThisPartialPartNumber) {
-		var dfd = $q.defer();
-		OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"Name": lookForThisPartialPartNumber+"*"})
-			.then(function(response) {
-				if(Me.Org.xp.WeirGroup.label == "WVCUK") {
-					partResults = response.Items;
-					return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"})
-						.then(function(altResponse) {
-							partResults.push.apply(altResponse.Items);
-							//return partResults;
-							dfd.resolve(partResults);
-						});
-				} else {
-					//response.Items;
-					dfd.resolve(response.Items);
-				}
-			});
-		return dfd.promise;
-	}
+    function _getAllPartNumbers(lookForThisPartialPartNumber) {
+    	var dfd = $q.defer();
+        OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"Name": lookForThisPartialPartNumber+"*"})
+            .then(function(response) {
+	            if(Me.Org.xp.WeirGroup.label == "WVCUK") {
+		            partResults = response.Items;
+		            return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"})
+			            .then(function(altResponse) {
+				            partResults.push.apply(altResponse.Items);
+				            //return partResults;
+				            dfd.resolve(partResults);
+			            });
+	            } else {
+	            	//response.Items;
+		            dfd.resolve(response.Items);
+	            }
+            });
+	    return dfd.promise;
+    }
 
-	//This method is used in the main search that is NOT the home page.
+    //This method is used in the main search that is NOT the home page.
 	function _getPart(lookForThisProduct, forThisCustomer) {
+
 		var filter = {
 			"s":{
 				"xp.SN":lookForThisProduct+"*"
@@ -227,10 +234,24 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 					}
 				});
 		} else {
-			return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id=="1" ? null : "all" : null, Me.Org.xp.WeirGroup.label)
-				.then(function (response) {
-					return response.Items;
-				});
+            if(SearchTypeService.GetLastSearchType() == "s") {
+                return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, Me.Org.xp.WeirGroup.label)
+                    .then(function (response) {
+                        return  OrderCloud.Me.ListCategories(lookForThisProduct, 1, 20, "Description", null, null , "all" , Me.Org.xp.WeirGroup.label)
+                            .then(function(responseDescription){
+                                var returnResults = response.Items.concat(responseDescription.Items);
+	                            returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
+                                returnResults = _.uniq(returnResults, false, function(cat){return cat.xp.SN});
+                                return returnResults;
+                            });
+                    });
+            }
+		    else {
+                return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, Me.Org.xp.WeirGroup.label)
+                    .then(function (response) {
+                        return response.Items;
+                    });
+            }
 		}
 	}
 

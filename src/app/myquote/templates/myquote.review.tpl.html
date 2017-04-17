@@ -10,13 +10,13 @@
             </div>
             <div class="col-xs-2">
                 <h2 class="pull-left">
-                    <a role="button" class="btn btn-default" href="#Comments"><span ng-bind-html="review.labels.Comments"></span></a>
+                    <!--<a role="button" class="btn btn-default" href="#Comments"><span ng-bind-html="review.labels.Comments"></span></a>-->
                 </h2>
             </div>
             <div class="col-xs-5" ng-show="review.currentState=='myquote.review'">
                 <!-- MyQuote Navigation -->
-                <button class="btn btn-primary" ng-click="review.backToDelivery()" ng-bind-html="review.labels.BackToDelivery"></button>
-                <button class="btn btn-success" ng-click="myquote.proceedToSubmit()" ng-bind-html="review.labels.Submit">
+                <button class="btn btn-lg btn-primary" ng-click="review.backToDelivery()" ng-bind-html="review.labels.BackToDelivery"></button>
+                <button class="btn btn-lg btn-success" ng-click="myquote.proceedToSubmit()" ng-bind-html="review.labels.Submit">
                 </button>
             </div>
             <div class="col-xs-5" ng-show="review.currentState=='false'">
@@ -29,20 +29,21 @@
                 <div class="row">
                     <div class="col-xs-6 col-email-message" >
                         <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn btn-warning pull-right"
+                            <div class="col-xs-8 col-xs-offset-4">
+                                <button class="btn btn-lg btn-success"
                                         ng-click="review.submitOrder(false)"
                                         ng-bind-html="review.labels.SubmitOrderAndEmail">
-                            </button></div>
+                                </button>
+                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12"><h6 class="email-message pull-right" ng-bind-html="review.labels.EmailPoMessage"></h6></div>
+                            <div class="col-xs-8 col-xs-offset-4"><h6 class="email-message" ng-bind-html="review.labels.EmailPoMessage"></h6></div>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn btn-success pull-right"
+                            <div class="col-xs-8 col-xs-offset-4">
+                                <button class="btn btn-lg btn-success"
                                         ng-disabled="review.PONumber == 'undefined' || review.PONumber == null || review.PONumber == ''"
                                         ng-click="review.submitOrder(true)"
                                         ng-bind-html="review.labels.SubmitOrderWithPO">
@@ -50,8 +51,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12">
-                                <div class="pull-right"><h6 class="pon-link"><a href="#pon" ng-bind-html="review.labels.POEntry"></a></h6></div>
+                            <div class="col-xs-8 col-xs-offset-4">
+                                <div><h6 class="pon-link"><a href="#pon" ng-bind-html="review.labels.POEntry"></a></h6></div>
                             </div>
                         </div>
                     </div>
@@ -231,8 +232,8 @@
                 <div class="col-xs-12">
                     <textarea cols="50" rows="6" ng-model="review.NewComment"></textarea>
                     <br>
-                    <button class="btn btn-lg btn-primary" ng-bind-html="review.labels.Add" ng-click="review.AddComment()"></button>
-                    <button class="btn btn-lg btn-default" ng-bind-html="review.labels.Cancel" ng-click="review.NewComment=null"></button>
+                    <button class="btn btn-primary" ng-bind-html="review.labels.Add" ng-click="review.AddComment()"></button>
+                    <button class="btn btn-default" ng-bind-html="review.labels.Cancel" ng-click="review.NewComment=null"></button>
                 </div>
             </div>
         </div>

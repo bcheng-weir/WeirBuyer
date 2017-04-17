@@ -1,6 +1,6 @@
 <article id="COMPONENT_Enquiry" class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <h3 ng-bind-html="enquiry.labels.CantFindHeader"></h3>
             <br />
 	        <p style="font-style: italic;"  ng-bind-html="enquiry.labels.CantFindText1"></p>
@@ -13,16 +13,15 @@
             <nav>
                 <ol class="cd-breadcrumb triangle">
                     <li role="presentation" ui-sref-active="active" ui-sref="enquiry.filter"><a href="#" ng-bind-html='enquiry.labels.FilterStep'></a></li>
-                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.select"><a href="#" ng-bind-html='enquiry.labels.SelectStep'></a></li>
-                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.delivery"><a href="#" ng-bind-html='enquiry.labels.DeliveryStep'></a></li>
-                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.review"><a href="#" ng-bind-html='enquiry.labels.ReviewStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.select" ng-disabled="enquiry.info.Step &lt; 2"><a href="#" ng-bind-html='enquiry.labels.SelectStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.delivery" ng-disabled="enquiry.info.Step &lt; 3"><a href="#" ng-bind-html='enquiry.labels.DeliveryStep'></a></li>
+                    <li role="presentation" ui-sref-active="active" ui-sref="enquiry.review" ng-disabled="enquiry.info.Step &lt; 4"><a href="#" ng-if="enquiry.info.Step &gt; 3" ng-bind-html='enquiry.labels.ReviewStep'></a><span ng-if="enquiry.info.Step &lt; 4" ng-bind-html='enquiry.labels.ReviewStep'></span></li>
                 </ol>
             </nav>
-
             <ui-view />
         </div>
 
-        <div class="col-md-4" style="padding: 0px 5px 0px 60px;">
+        <div class="col-md-3" style="padding: 0px 5px 0px 20px;">
             <div class="pull-right">
                 <h3 ng-bind-html="enquiry.labels.YourContact"></h3>
                 <p ng-if="enquiry.locale=='en'">

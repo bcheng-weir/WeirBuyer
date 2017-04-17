@@ -535,7 +535,7 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer, UITotal) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer, UITotal, $rootScope) {
     var vm = this;
 	QuoteShareService.Quote = Quote;
     vm.currentState = $state.$current.name;
@@ -623,10 +623,9 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			.then(function(quote) {
 				QuoteShareService.Quote = quote;
 				var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
-				if(Quote.xp.CarriageRateType == 'standard'){
+				if(quote.xp.CarriageRateType == 'standard'){
 					QuoteShareService.UiTotal = (rateToUse + Quote.Subtotal).toFixed(2);
-				}
-				else{
+				} else {
 					QuoteShareService.UiTotal = Quote.Subtotal.toFixed(2);
 				}
 				return CurrentOrder.Set(quote.ID);
@@ -684,7 +683,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
                 templateUrl: 'myquote/templates/myquote.missingdetail.tpl.html',
                 controller: 'MoreQuoteInfoCtrl',
                 controllerAs: 'moreInfo',
-				size: 'sm',
                 resolve: {
                     quote: function() {
                         return vm.Quote;
@@ -848,6 +846,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			Search: "Search",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
             EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+		    AddNew: "Add New Items",
 		    DescriptionOfShipping: {
 			    exworks:'Carriage - Ex Works',
 			    standard:'Carriage Charge'
@@ -901,6 +900,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             Search: $sce.trustAsHtml("Rechercher"),
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
 			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+			AddNew: $sce.trustAsHtml("Ajouter un item"),
 			DescriptionOfShipping: {
 				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 				standard:$sce.trustAsHtml('Frais de livraison')
@@ -934,19 +934,59 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			ariaDescribedBy: 'modal-body',
 			templateUrl: 'myquote/templates/myquote.submitorconfirm.tpl.html',
 			controller: 'ChooseSubmitCtrl',
-			controllerAs: 'choosesubmit',
+			controllerAs: 'choosesubmit'
 		});
 		modalInstance.result.then(
 			function (val) {
 				if (val == "Review") {
-					vm.SubmittingToReview = true;
-					$state.go('myquote.submitquote');
+					_submitForReview(true); //POC-410 udpate this to not need a param.
+					//vm.SubmittingToReview = true;
+					//$state.go('myquote.submitquote');
 				} else if (val == "Submit") {
 					vm.SubmittingWithPO = true;
 					$state.go('myquote.submitorder');
 				}
 			}
 		);
+	}
+
+	// Moved from Review Controller.
+	function _submitForReview(dirty) {
+		var data = {
+			xp: {
+				Status: WeirService.OrderStatus.Submitted.id,
+				StatusDate: new Date(),
+				Revised: false
+			}
+		};
+
+		WeirService.UpdateQuote(vm.Quote, data)
+			.then(function (qt) {
+				return OrderCloud.Orders.Submit(vm.Quote.ID);
+			})
+			.then(function (info) {
+				CurrentOrder.Set(null);
+			})
+			.then(function () {
+				var modalInstance = $uibModal.open({
+					animation: true,
+					ariaLabelledBy: 'modal-title',
+					ariaDescribedBy: 'modal-body',
+					templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
+					size: 'lg',
+					controller: 'SubmitConfirmOrderCtrl',
+					controllerAs: 'submitconfirm',
+					resolve: {
+						Quote: function () {
+							return vm.Quote;
+						}
+					}
+				})
+			.closed.then(function () {
+				$rootScope.$broadcast('OC:RemoveOrder');
+				$state.go("home");
+			});
+		});
 	}
 
 	vm.labels = WeirService.LocaleResources(labels);
@@ -962,6 +1002,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.Reject = _reject;
 	vm.Next = _next;
 	vm.proceedToSubmit = _proceedToSubmit;
+	vm.submitForReview = _submitForReview;
 }
 
 function MissingCarriageDetailController(WeirService, $uibModalInstance, $sce) {
@@ -1014,7 +1055,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             UploadHeader: "Upload your Service or Operating Condition Document",
             RefNumHeader: "Add your Reference Number ",
             CommentsHeader: "Your Comments or Instructions",
-		    DeliveryOptions: $sce.trustAsHtml("Delivery Options <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+		    DeliveryOptions: $sce.trustAsHtml("Continue to Delivery Options <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			Update: "Update",
 			DragAndDrop: "Save your Draft before Uploading Documents.",
 			Add: "Add",
@@ -1044,7 +1085,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
             RefNumHeader: $sce.trustAsHtml("Ajouter votre num&eacute;ro de r&eacute;f&eacute;rence "),
             CommentsHeader: $sce.trustAsHtml("Vos commentaires ou instructions"),
             CommentsInstr: $sce.trustAsHtml("Veuillez ajouter tout commentaire ou instructions sp&eacute;cifiques pour cette cotation"),
-            DeliveryOptions: $sce.trustAsHtml("Options de livraison <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+            DeliveryOptions: $sce.trustAsHtml("Continuer vers les options de livraison <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			Update: $sce.trustAsHtml("Mettre &agrave; jour"),
 			DragAndDrop: $sce.trustAsHtml("Enregistrez votre ébauche avant de télécharger des documents."),
 			Add: $sce.trustAsHtml("Ajouter"),
@@ -1052,7 +1093,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Comments: $sce.trustAsHtml("Commentaires"),
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
 			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
-			SaveToContinue: $sce.trustAsHtml("Veuillez enregistrer afin de continuer"),
+			SaveToContinue: $sce.trustAsHtml("*Veuillez enregistrer afin de continuer"),
             POA: $sce.trustAsHtml("POA")
 		}
 	};
@@ -1129,7 +1170,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Add a New Address"),
             DeliveryInfo: "Delivery Information",
             DeliverHere: "Deliver to this Address",
-            ReviewQuote: "Review Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
+            ReviewQuote: "Continue to Review Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
             BackToQuote: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quote",
             InfoText1: "Delivery costs will be confirmed on Order.",
             InfoText2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
@@ -1147,14 +1188,13 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of £"+ $scope.$parent.myquote.CarriageRateForBuyer +  " per order to one UK address.",
             CarriageInfoP2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
-
         },
         fr: {
             DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
             AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Ajouter une nouvelle adresse"),
             DeliveryInfo: $sce.trustAsHtml("Informations de livraison"),
             DeliverHere: $sce.trustAsHtml("Livrer &agrave; cette adresse"),
-            ReviewQuote: $sce.trustAsHtml("Revue de cotation <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+            ReviewQuote: $sce.trustAsHtml("Continuer vers le récapitulatif <i class='fa fa-angle-right' aria-hidden='true'></i>"),
             BackToQuote: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; votre cotation"),
             InfoText1: $sce.trustAsHtml("Les frais de livraison seront confirm&eacute;s &agrave; la commande."),
             InfoText2: $sce.trustAsHtml("Les livraisons seront pr&eacute;par&eacute;es pour l'exp&eacute;dition sur la base de vos instructions de livraison standard."),
@@ -1283,9 +1323,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             QuoteNumber: "Quote Number; ",
             QuoteName: "Quote Name; ",
 	        NextStep: "Submit Quote or Order",
-            Submit: $sce.trustAsHtml("Submit Quote or Order <i class='fa fa-angle-right aria-hidden='true'></i>"),
+            Submit: $sce.trustAsHtml("Continue to Submit Quote or Order <i class='fa fa-angle-right aria-hidden='true'></i>"),
             BackToReview: "Review Quote",
-            BackToDelivery: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to Delivery",
+            BackToDelivery: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to Delivery Options",
             TagNum: "Tag Number (if available)",
             PartNum: "Part Number",
             PartDesc: "Description of Part",
@@ -1311,7 +1351,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             POUpload: "Upload PO Document",
             POEntry: "Enter PO Number",
             SubmitOrderAndEmail: "Submit Order & Email PO <i class='fa fa-angle-right' aria-hidden='true'></i>",
-	        SubmitOrderWithPO: "Submit Order <i class='fa fa-angle-right' aria-hidden='true'></i>",
+	        SubmitOrderWithPO: "Submit Order with PO <i class='fa fa-angle-right' aria-hidden='true'></i>",
 	        SerialNum: "Serial Number",
 	        EmailPoMessage: "*Your order will be confirmed<br class='message-break'>following receipt of your PO.",
 	        Add: "Add",
@@ -1330,9 +1370,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
             QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
             QuoteName: $sce.trustAsHtml("Libellé de la cotation "),
             NextStep: $sce.trustAsHtml("Suivant"),
-            Submit: $sce.trustAsHtml("Soumettre <i class='fa fa-angle-right aria-hidden='true'></i>"),
+            Submit: $sce.trustAsHtml("Continuer vers la soumission de cotation <i class='fa fa-angle-right aria-hidden='true'></i>"),
             BackToReview: $sce.trustAsHtml("Réviser la cotation"),
-            BackToDelivery: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; la livraison"),
+            BackToDelivery: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour vers les options de livraison"),
             TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
             PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
             PartDesc: $sce.trustAsHtml("Description de la pi&egrave;ce"),
@@ -1525,55 +1565,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
            });
     }
 
-    function _submitForReview(dirty) {
-	    var data = {};
-	    if(dirty) {
-		    data = {
-			    xp: {
-				    Status: WeirService.OrderStatus.Submitted.id,
-				    StatusDate: new Date(),
-				    Revised: false
-			    }
-		    };
-	    } else {
-	    	data = {
-			    xp: {
-				    Status: WeirService.OrderStatus.Submitted.id,
-				    StatusDate: new Date(),
-				    Revised: false
-			    }
-		    };
-	    }
-	    WeirService.UpdateQuote(vm.Quote, data)
-		    .then(function (qt) {
-			    return OrderCloud.Orders.Submit(vm.Quote.ID);
-		    })
-		    .then(function (info) {
-			    CurrentOrder.Set(null);
-		    })
-		    .then(function () {
-			    var modalInstance = $uibModal.open({
-				    animation: true,
-				    ariaLabelledBy: 'modal-title',
-				    ariaDescribedBy: 'modal-body',
-				    templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
-				    size: 'lg',
-				    controller: 'SubmitConfirmOrderCtrl',
-				    controllerAs: 'submitconfirm',
-				    resolve: {
-					    Quote: function () {
-						    return vm.Quote;
-					    }
-				    }
-			    })
-			    .closed.then(function () {
-				    $rootScope.$broadcast('OC:RemoveOrder');
-				    $state.go("home");
-			    });
-		    });
-
-    }
-
 	vm.NewComment = null;
 	vm.AddComment = function() {
 		$scope.$parent.myquote.AddNewComment(vm.NewComment)
@@ -1587,7 +1578,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 
     vm.deleteLineItem = _deleteLineItem;
     vm.updateLineItem = _updateLineItem;
-    vm.submitForReview = _submitForReview;
+    //vm.submitForReview = _submitForReview; //Move to myQuote.
     vm.submitOrder = _submitOrder;
     vm.backToDelivery = _gotoDelivery;
     vm.toSubmit = _gotoSubmit;
@@ -1621,14 +1612,14 @@ function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService) {
 		    Documents: "Add Service Documentation",
 		    RefNum: "Add your References",
 		    Comments: "Add Comments to your Quote",
-		    Continue: "Continue to Delivery Options"
+		    Continue: "Continue to Delivery Options <i class='fa fa-angle-right' aria-hidden='true'></i>"
 		},
 		fr: {
 			Title: $sce.trustAsHtml("Vous avez la possibilité d'ajouter plus d'informations à cette cotation;"),
 		    Documents: $sce.trustAsHtml("Ajouter des documents sur les conditions de services"),
 		    RefNum: $sce.trustAsHtml("Ajouter votre référence"),
 		    Comments: $sce.trustAsHtml("Ajouter des commentaires à votre cotation"),
-		    Continue: $sce.trustAsHtml("Continuer vers les options de livraison")
+		    Continue: $sce.trustAsHtml("Continuer vers les options de livraison <i class='fa fa-angle-right' aria-hidden='true'></i>")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -1700,7 +1691,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 	};
 
 	vm.Close = function() {
-		$uibModalInstance.dismiss();
+		$uibModalInstance.close();
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 }
@@ -2023,7 +2014,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Currency: $sce.trustAsHtml("Devise"),
             RejectedMessage: $sce.trustAsHtml("La cotation révisée a ét&eacute; rejetée."),
 			RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
-			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
+			ApprovedMessage: $sce.trustAsHtml("La cotation révisée a été acceptée"),
 			ApprovedTitle: $sce.trustAsHtml("Cotation mise à jour"),
 			Comment: $sce.trustAsHtml("Commentaire"),
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
@@ -2073,7 +2064,34 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.ShowUpdated = function (item) {
 		// return true if qty <> xp.originalQty and qty > 0
 		if(item.xp) {
-			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) || (item.xp.OriginalUnitPrice && (item.xp.OriginalUnitPrice===0 || (item.UnitPrice != item.xp.OriginalUnitPrice))) || (item.xp.OriginalLeadTime && ((item.Product.xp.LeadTime != item.xp.OriginalLeadTime) || (item.xp.LeadTime && item.xp.LeadTime != item.Product.xp.LeadTime )));
+			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) ||
+				(item.xp.OriginalUnitPrice && (item.xp.OriginalUnitPrice===0 || (item.UnitPrice != item.xp.OriginalUnitPrice))) ||
+				(typeof item.xp.OriginalLeadTime !== "undefined" &&
+					(
+						(typeof item.Product.xp.LeadTime !== "undefined" && (item.xp.OriginalLeadTime !== item.Product.xp.LeadTime)) ||
+						(typeof item.xp.LeadTime !== "undefined" && (item.xp.OriginalLeadTime !== item.xp.LeadTime))
+					)
+				) ||
+				(typeof item.xp.OriginalReplacementSchedule !== "undefined" &&
+					(
+						(typeof item.Product.xp.ReplacementSchedule !== "undefined" && (item.xp.OriginalReplacementSchedule !== item.Product.xp.ReplacementSchedule)) ||
+						(typeof item.xp.ReplacementSchedule !== "undefined" && (item.xp.OriginalReplacementSchedule !== item.xp.ReplacementSchedule))
+					)
+				) ||
+				(typeof item.xp.OriginalDescription !== "undefined" &&
+					(
+						(typeof item.Product.xp.Description !== "undefined" && (item.xp.OriginalDescription !== item.Product.xp.Description)) ||
+						(typeof item.xp.Description !== "undefined" && (item.xp.OriginalDescription !== item.xp.Description))
+					)
+				) ||
+				(typeof item.xp.OriginalProductName !== "undefined" &&
+					(
+						(typeof item.Product.xp.Name !== "undefined" && (item.xp.OriginalProductName !== item.Product.xp.Name)) ||
+						(typeof item.xp.ProductName !== "undefined" && (item.xp.OriginalProductName !== item.xp.ProductName))
+					)
+				) ||
+				(typeof item.xp.OriginalTagNumber !== "undefined" && (item.xp.TagNumber !== item.xp.OriginalTagNumber)) ||
+				(typeof item.xp.OriginalSN !== "undefined" && (item.xp.SN !== item.xp.OriginalSN))
 		} else {
 			return false;
 		}
@@ -2261,6 +2279,9 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 	        PONumber: "PO Number;",
             POA: "POA",
+	        PartTypes: "Part types for;",
+	        Brand: "Brand",
+	        ValveType: "Valve Type",
 	        DescriptionOfShipping: {
                 exworks:'Carriage - Ex Works',
 		        standard:'Carriage Charge'
@@ -2305,6 +2326,9 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
+	        PartTypes: $sce.trustAsHtml("Pièces pour:"),
+	        Brand: $sce.trustAsHtml("Marque:"),
+	        ValveType: $sce.trustAsHtml("Type:"),
 	        DescriptionOfShipping: {
 		        exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 		        standard:$sce.trustAsHtml('Frais de livraison')

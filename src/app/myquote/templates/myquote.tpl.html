@@ -1,35 +1,44 @@
 <article id="COMPONENT_MyQuote" class="container-fluid">
     <div class="panel-default" ng-if="myquote.isActive('myquote.termsandconditions') == false">
 		<div class="row">
-			<div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
-				<div style="display:inline-block; float:left; text-align:left;">
-					<span ng-bind-html="myquote.labels.Status"/><br/>
-					<span style="font-weight:bold;">{{myquote.GetStatusLabel() + " " + (myquote.Quote.xp.StatusDate | weirdate)}}</span>
-				</div>
-					<div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
-						<span ng-bind-html="myquote.labels.OrderDate" /><br />
-						<span style="font-weight:bold;">{{(myquote.Quote.DateSubmitted | weirdate)}}</span>
-					</div>
-					<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
-						<print-order-button catalog="myquote.Catalog" buyer="myquote.buyer" order="myquote.Quote" items="myquote.lineItems" address="myquote.ShippingAddress" pocontent="myquote.Catalog.xp.POContent" uitotal="-1"></print-order-button>
-					</div>
-					<div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="myquote.ToCsvJson" add-bom="true" filename="{{myquote.CsvFilename}}"> <!-- ng-click="myquote.Download()"> -->
-						<a href=""><img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Download'></span></a>
-					</div>
-					<div style="margin-left:1em; float:right; padding-top: 0.5em; padding-left: 1%;" ng-click="myquote.NoItemsMessage()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && !myquote.HasLineItems()">
-						<a href="#">
-							<img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('save.png')}}" /> <span class="imageText" ng-bind-html='myquote.labels.Save'></span>
-						</a>
-					</div>
-					<div style="display:inline-block; float:right; margin-left: 0.5em; padding-top: 0.5em; padding-left: 1%;" ng-click="myquote.Save()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && myquote.HasLineItems()">
-						<a href="#"><img aria-hidden="true" class="imageSize"ng-src="{{myquote.GetImageUrl('save.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Save'></span></a>
-					</div>
-					<div ng-if="application.$state.current.name=='revised'" style="float:right;">
-						<button class="btn btn-success" ng-click="myquote.Approve()" ng-bind-html="myquote.labels.Approve"></button>
-						<button class="btn btn-danger" style="margin-left:0.5em;" ng-click="myquote.Reject()" ng-bind-html="myquote.labels.Reject"></button>
-						<button class="btn btn-default" style="margin-left:0.5em;" ng-click="myquote.Comments()" ng-bind-html="myquote.labels.Comments"></button>
-					</div>
-			</div>
+            <div class="col-md-12">
+                <div class="panel-heading">
+                    <div style="display:inline-block; float:left; text-align:left; margin-top:10px;">
+                        <span ng-bind-html="myquote.labels.Status"/>:&nbsp;<span style="font-weight:bold;">{{myquote.GetStatusLabel() + " " + (myquote.Quote.xp.StatusDate | weirdate)}}</span>
+                    </div>
+                    <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em; margin-top:10px;">
+                        <span ng-bind-html="myquote.labels.OrderDate" />&nbsp;<span style="font-weight:bold;">{{(myquote.Quote.DateSubmitted | weirdate)}}</span>
+                    </div>
+
+                    <div class="panelButton">
+                        <print-order-button buyer="myquote.buyer" order="myquote.Quote" items="myquote.lineItems" address="myquote.ShippingAddress" pocontent="myquote.Catalog.xp.POContent" catalog="myquote.Catalog" uitotal="-1"></print-order-button>
+                    </div>
+                    <div class="panelButton" ng-csv="myquote.ToCsvJson" add-bom="true" filename="{{myquote.CsvFilename}}"> <!-- ng-click="myquote.Download()"> -->
+                        <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Download'></span></a>
+                    </div>
+                    <div class="panelButton" ng-click="myquote.NoItemsMessage()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && !myquote.HasLineItems()">
+                        <a role="button" class="btn btn-default" href="#">
+                            <img aria-hidden="true" class="imageSize" ng-src="{{myquote.GetImageUrl('save.png')}}" /> <span class="imageText" ng-bind-html='myquote.labels.Save'></span>
+                        </a>
+                    </div>
+                    <div class="panelButton" ng-click="myquote.Save()" ng-if="myquote.SaveableStatuses.indexOf(myquote.Quote.xp.Status) > -1 && myquote.HasLineItems()">
+                        <a role="button" class="btn btn-default" href="#">
+                            <img aria-hidden="true" class="imageSize"ng-src="{{myquote.GetImageUrl('save.png')}}" /><span class="imageText" ng-bind-html='myquote.labels.Save'></span>
+                        </a>
+                    </div>
+                    <div class="panelButton">
+                        <button class="btn btn-default" ui-sref="search" ng-bind-html='myquote.labels.AddNew'></button>
+                    </div>
+                    <div class="panelButton">
+                        <a role="button" class="btn btn-default" href="#Comments"><span ng-bind-html="myquote.labels.Comments"></span></a>
+                    </div>
+                    <div ng-if="application.$state.current.name=='revised'" style="float:right;">
+                        <button class="btn btn-success" ng-click="myquote.Approve()" ng-bind-html="myquote.labels.Approve"></button>
+                        <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="myquote.Reject()" ng-bind-html="myquote.labels.Reject"></button>
+                        <button class="btn btn-default" style="margin-left:0.5em;" ng-click="myquote.Comments()" ng-bind-html="myquote.labels.Comments"></button>
+                    </div>
+                </div>
+            </div>
 		</div>
     </div>
 	<nav>
@@ -62,6 +71,7 @@
                 <a href="#" ng-click="myquote.SetShippingPrice()"  ng-bind-html='myquote.labels.SubmitQuote'></a></li>
 		</ol>
 	</nav>
+    <hr style="margin-top:16px;">
 	<div ui-view>
 		<div id="modalMyquote" class="modal-quote-confirmation">
 			<script type="text/ng-template" id="modalConfirmation.html">

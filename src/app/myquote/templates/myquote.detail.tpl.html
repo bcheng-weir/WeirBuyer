@@ -1,136 +1,134 @@
 <form name="myForm">
-    <div class="row">
-        <div class="container-fluid">
-            <div class="col-xs-5 pull-left">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6 pull-left">
                 <h4><span ng-bind-html='detail.labels.Customer'></span><span class="text-blue" ng-bind-html="myquote.Customer.name"></span></h4>
                 <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-blue" ng-if="myquote.Quote.xp.Status != 'DR'" ng-bind-html="myquote.Quote.ID"></span></h4>
                 <h4><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' maxlength="20" ng-model='myquote.Quote.xp.Name' /></h4>
                 <h4><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h4>
             </div>
-
-            <div class="col-xs-2">
-                <h2 class="pull-left">
-                    <a role="button" class="btn btn-default" href="#Comments"><span ng-bind-html="detail.labels.Comments"></span></a>
-                </h2>
-            </div>
-
-            <div class="col-xs-5 pull-right">
+            <div class="col-xs-6 pull-right">
                 <div class="row">
-                    <div class="col-xs-6">
-                        <h2 class="pull-right">
-                            <button class="btn btn-default" ui-sref="search" ng-bind-html='detail.labels.AddNew'></button>
-                        </h2>
+                    <div class="col-xs-4">
+                        <h2 class="pull-right"></h2>
                     </div>
                     <div class="col-xs-6">
-                        <button class="btn btn-success" ng-disabled="myquote.Quote.xp.Status=='DR'" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html="detail.labels.DeliveryOptions"></button>
+                        <button class="btn btn-lg btn-success" ng-disabled="myquote.Quote.xp.Status=='DR'" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html="detail.labels.DeliveryOptions"></button>
                         <br>
-                        <h6 class="pull-left" ng-bind-html="detail.labels.SaveToContinue" ng-if="myquote.Quote.xp.Status=='DR'"></h6>
+                        <h6 class="pull-left save-to-continue" ng-bind-html="detail.labels.SaveToContinue" ng-if="myquote.Quote.xp.Status=='DR'" ng-click="myquote.Save()"></h6>
                     </div>
+                    <div class="col-xs-2"></div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-xs-12">
-            <table class="table table-bordered oc-table-responsive weir-results-table">
-                <thead class="header-cell">
-                    <tr>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.SerialNum'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.TagNum'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PartNum'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PartDesc'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.RecRepl'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.LeadTime'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PricePer'></h4></th>
-                        <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.Quantity'></h4></th>
-                        <th class="button-th"></th>
-                    </tr>
-                </thead>
-                <tbody class="form-group">
-                    <tr ng-repeat="line in detail.LineItems">
-                        <td ng-bind-html="line.xp.SN"></td>
-                        <td ng-bind-html="line.xp.TagNumber"></td>
-                        <td ng-bind-html="line.Product.Name"></td>
-                        <td ng-bind-html="line.Product.Description"></td>
-                        <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
-                        <td ng-bind-html="line.Product.xp.LeadTime"></td>
-                        <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="detail.labels.POA"></td>
-                        <td ng-if="line.UnitPrice">
-                            <span ng-bind-html="line.UnitPrice | currency:myquote.currency"></span>
-                        </td>
-                        <td class="form-inline">
-                            <input type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-enter="detail.updateLineItem(myquote.Quote.ID,line)"
-                                   ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" />
-                            <button class="btn btn-default" ng-bind-html='detail.labels.Update' ng-click="detail.updateLineItem(myquote.Quote.ID,line)"></button>
-                        </td>
-                        <td ng-click="detail.deleteLineItem(myquote.Quote.ID,line.ID)"><i class="fa fa-times" aria-hidden="true"></i></td>
-                    </tr>
-                    <tr ng-if="detail.LineItems.length > 0">
-                        <!-- using subtotal rather total -->
-                        <td class="button-th" colspan="5"></td>
-                        <td style="font-weight:bold;" ng-bind-html='detail.labels.Total'></td>
-                        <td class='text-right' style="font-weight:bold;">
-                            <span ng-bind-html="myquote.Quote.Subtotal | currency:myquote.currency"></span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row">
-        <!-- Get the current master upload data in here. -->
-        <div class="col-xs-6">
-            <h4>
-                <span ng-if="myquote.Quote.xp.Status!='DR'" ng-bind-html='detail.labels.UploadHeader'></span>
-                <span ng-if="myquote.Quote.xp.Status=='DR'" ng-bind-html='detail.labels.DragAndDrop'></span>
-            </h4>
-            <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
-            <div class="panel panel-default" ng-if="myquote.Quote.xp.Status!='DR'">
-                <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
-                <p><ordercloud-file-upload model="myquote.Quote" keyname="Files" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p> <!-- myquote.Quote or detail.quote? -->
+        <br>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-bordered oc-table-responsive weir-results-table">
+                    <thead class="header-cell">
+                        <tr>
+                            <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.SerialNum'></h4></th>
+                            <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.TagNum'></h4></th>
+                            <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PartNum'></h4></th>
+                            <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PartDesc'></h4></th>
+                            <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.RecRepl'></h4></th>
+                            <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.LeadTime'></h4></th>
+                            <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.PricePer'></h4></th>
+                            <th><h4 class="list-group-item-heading" ng-bind-html='detail.labels.Quantity'></h4></th>
+                            <th class="button-th"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="form-group">
+                        <tr ng-repeat="line in detail.LineItems">
+                            <td ng-bind-html="line.xp.SN"></td>
+                            <td ng-bind-html="line.xp.TagNumber"></td>
+                            <td ng-bind-html="line.Product.Name"></td>
+                            <td ng-bind-html="line.Product.Description"></td>
+                            <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
+                            <td ng-bind-html="line.Product.xp.LeadTime"></td>
+                            <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="detail.labels.POA"></td>
+                            <td ng-if="line.UnitPrice">
+                                <span ng-bind-html="line.UnitPrice | currency:myquote.currency"></span>
+                            </td>
+                            <td class="form-inline">
+                                <input type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-enter="detail.updateLineItem(myquote.Quote.ID,line)"
+                                       ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" />
+                                <button class="btn btn-default" ng-bind-html='detail.labels.Update' ng-click="detail.updateLineItem(myquote.Quote.ID,line)"></button>
+                            </td>
+                            <td ng-click="detail.deleteLineItem(myquote.Quote.ID,line.ID)"><i class="fa fa-times" aria-hidden="true"></i></td>
+                        </tr>
+                        <tr ng-if="detail.LineItems.length > 0">
+                            <!-- using subtotal rather total -->
+                            <td class="button-th" colspan="5"></td>
+                            <td style="font-weight:bold;" ng-bind-html='detail.labels.Total'></td>
+                            <td class='text-right' style="font-weight:bold;">
+                                <span ng-bind-html="myquote.Quote.Subtotal | currency:myquote.currency"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <p><span ng-bind-html='myquote.labels.ReplacementGuidance'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='myquote.labels.POAGuidance'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='myquote.labels.LeadTimeNotice'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>
+        </div>
+        <div class="row">
+            <!-- Get the current master upload data in here. -->
+            <div class="col-xs-6">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h4>
+                            <span ng-if="myquote.Quote.xp.Status!='DR'" ng-bind-html='detail.labels.UploadHeader'></span>
+                            <span ng-if="myquote.Quote.xp.Status=='DR'" ng-bind-html='detail.labels.DragAndDrop'></span>
+                        </h4>
+                        <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
+                        <div class="panel panel-default" ng-if="myquote.Quote.xp.Status!='DR'">
+                            <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                            <p><ordercloud-file-upload model="myquote.Quote" keyname="Files" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p> <!-- myquote.Quote or detail.quote? -->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p><span ng-bind-html='myquote.labels.ReplacementGuidance'></span></p>
+                        <p><span style="font-style:italic;" ng-bind-html='myquote.labels.POAGuidance'></span></p>
+                        <p><span style="font-style:italic;" ng-bind-html='myquote.labels.LeadTimeNotice'></span></p>
+                        <p><span style="font-style:italic;" ng-bind-html='myquote.labels.PriceDisclaimer'></span></p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xs-6"> <!-- Comments to Weir -->
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <p style="padding: 10px 0px 10px 0px"><strong><span ng-bind-html='myquote.labels.CommentNotice' ng-if="myquote.Quote.xp.Status == 'SV' || myquote.Quote.xp.Status == 'DR'"> </span></strong></p>
-                            <ul class="nav nav-tabs">
-                                <li class="active comments"><a href="#" id="Comments" ng-bind-html="detail.labels.Comments"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row" ng-repeat="comment in detail.Comments | reverseComments"> <!-- ng-repeat comment in comments to weir -->
-                        <div class="col-xs-12">
-                            <div>
-                                <span ng-bind-html="comment.by"></span>
-                                <span ng-bind-html="detail.labels.AddedComment"></span>
-                                <span ng-bind-html="comment.date | weirdate"></span>
+            <div class="col-xs-6"> <!-- Comments to Weir -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p style="padding: 10px 0px 10px 0px"><strong><span ng-bind-html='myquote.labels.CommentNotice' ng-if="myquote.Quote.xp.Status == 'SV' || myquote.Quote.xp.Status == 'DR'"> </span></strong></p>
+                                <ul class="nav nav-tabs">
+                                    <li class="active comments"><a href="#" id="Comments" ng-bind-html="detail.labels.Comments"></a></li>
+                                </ul>
                             </div>
-                            <br>
-                            <div>
-                                <span ng-bind-html="comment.val"></span>
-                            </div>
-                            <hr>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <textarea cols="50" rows="6" ng-model="detail.NewComment"></textarea>
-                            <br>
-                            <button class="btn btn-lg btn-primary" ng-bind-html="detail.labels.Add" ng-click="detail.AddComment()"></button>
-                            <button class="btn btn-lg btn-default" ng-bind-html="detail.labels.Cancel" ng-click="detail.NewComment=null"></button>
+                        <br>
+                        <div class="row" ng-repeat="comment in detail.Comments | reverseComments"> <!-- ng-repeat comment in comments to weir -->
+                            <div class="col-xs-12">
+                                <div>
+                                    <span ng-bind-html="comment.by"></span>
+                                    <span ng-bind-html="detail.labels.AddedComment"></span>
+                                    <span ng-bind-html="comment.date | weirdate"></span>
+                                </div>
+                                <br>
+                                <div>
+                                    <span ng-bind-html="comment.val"></span>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <textarea cols="50" rows="6" ng-model="detail.NewComment"></textarea>
+                                <br>
+                                <button class="btn btn-primary" ng-bind-html="detail.labels.Add" ng-click="detail.AddComment()"></button>
+                                <button class="btn btn-default" ng-bind-html="detail.labels.Cancel" ng-click="detail.NewComment=null"></button>
+                            </div>
                         </div>
                     </div>
                 </div>

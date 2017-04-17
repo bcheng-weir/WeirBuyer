@@ -29,7 +29,7 @@
                                 spellcheck="false"
                                 type="text"
                                 typeahead-min-length="3"
-                                uib-typeahead="cat.xp.SN as (cat.xp.SN + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
+                                uib-typeahead="cat.xp.SN+' - '+cat.Description as (cat.xp.SN + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
                             <input ng-if="home.selectedItem.opt==1"
                                ng-model="home.SearchParams"
                                autocomplete="off"

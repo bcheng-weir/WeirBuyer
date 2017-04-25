@@ -218,8 +218,8 @@ function EnquirySelectController($state, $sce, WeirService, PartList, EnquirySer
         },
         fr: {
             ChangeAction: "Changer",
-            AddedLabel: "Ajouter",
-            AddLabel: $sce.trustAsHtml("Ajouté")
+            AddedLabel: $sce.trustAsHtml("Ajouté"),
+            AddLabel: "Ajouter"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

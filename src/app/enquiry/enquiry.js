@@ -81,7 +81,7 @@ function EnquiryConfig($stateProvider) {
 	    });
 }
 
-function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud, toastr, Me) {
+function EnquiryController($state, $sce, WeirService, EnquiryService) {
     var vm = this;
     vm.info = EnquiryService;
     vm.locale = WeirService.Locale();
@@ -143,7 +143,7 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud
     }
 }
 
-function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryService, EnquiryData, toastr, Me) {
+function EnquiryFilterController($state, $sce, WeirService, EnquiryService, EnquiryData) {
     var vm = this;
     vm.info = EnquiryService;
     vm.info.EnquiryData = EnquiryData;
@@ -192,6 +192,7 @@ function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryS
     };
     vm.updateValveTypes(true);
 }
+
 function EnquirySelectController($state, $sce, WeirService, PartList, EnquiryService, Me) {
     var vm = this;
     vm.enq = EnquiryService;

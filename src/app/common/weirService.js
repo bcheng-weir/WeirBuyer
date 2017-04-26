@@ -1189,7 +1189,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
         .then(function (b) {
             if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
                 enqCat = b.xp.WeirGroup.label + "_ENQ";
-                return OrderCloud.Me.ListCategories(null, 1, 100, null, "Name", null, "2", enqCat);
+                return OrderCloud.Me.ListCategories(null, 1, 100, null, null, null, "2", enqCat);
             } else {
                 deferred.resolve([]);
             }

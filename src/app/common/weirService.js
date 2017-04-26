@@ -575,11 +575,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                     queue.push((function () {
                         var d = $q.defer();
 
-                        OrderCloud.Me.ListProducts(weirGroup, 1, 50, "ID", "Name", { "Name": number })
+                        OrderCloud.Me.ListProducts(weirGroup, 1, 50, "ID", null, { "Name": number })
                             .then(function (products) {
                                 if (products.Items.length == 0) {
                                     if (weirGroup = "WVCUK") {
-                                        OrderCloud.Me.ListProducts(weirGroup, 1, 50, "ID", "Name", { "xp.AlternatePartNumber": number })
+                                        OrderCloud.Me.ListProducts(weirGroup, 1, 50, "ID", null, { "xp.AlternatePartNumber": number })
                                             .then(function (products) {
                                                 if (products.Items.length == 0) {
                                                     results.Parts.push({ Number: number, Detail: null });
@@ -1167,7 +1167,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 
 	function sortEnquiryCategories(valveType) {
 		var items = {
-			"Soupape de sûreté conventionnelle - Type Série P Starflow": 1,
+			"Soupape de sûreté conventionnelle - Type Série P Starflow":1,
 			"Soupape d'expansion thermique - Type Série 9":2,
 			"Soupape pilotées - Type Série 76, Série 78 et Stareco":3,
 			"Soupape vapeur basse/moyenne pression - ASME I - Type Starflow V":4,
@@ -1205,8 +1205,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                     matches.manufacturers.push(tmp);
                 }
             }
-            //matches.valvetypes.WPIFR-Sarasin-SAR.[0].Name
-	        matches.valvetypes["WPIFR-Sarasin-SAR"] = sortEnquiryCategories(matches.valvetypes["WPIFR-Sarasin-SAR"]);
+	        //matches.valvetypes["WPIFR-Sarasin-SAR"] = sortEnquiryCategories(matches.valvetypes["WPIFR-Sarasin-SAR"]); now sorted in console.
 
             deferred.resolve(matches);
         })

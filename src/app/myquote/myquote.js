@@ -1150,7 +1150,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me{
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me) {
     var vm = this;
     var activeAddress = function (address) {
         return address.xp.active == true;

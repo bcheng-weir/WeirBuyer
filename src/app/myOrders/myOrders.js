@@ -18,8 +18,8 @@ function MyOrdersConfig($stateProvider) {
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                OrderList: function(OrderCloud, Parameters) {
-                    return OrderCloud.Me.ListOutgoingOrders(Parameters.search, Parameters.page, Parameters.pageSize || 12, Parameters.searchOn, Parameters.sortBy, Parameters.filters,Parameters.from, Parameters.to);
+                OrderList: function(OrderCloudSDK, Parameters) {
+                    return OrderCloudSDK.Orders.List("Outgoing", {'search':Parameters.search, 'page':Parameters.page, 'pageSize':Parameters.pageSize || 12, 'searchOn':Parameters.searchOn, 'sortBy':Parameters.sortBy, 'filters':Parameters.filters, 'from':Parameters.from, 'to':Parameters.to});
                 }
             }
         })
@@ -29,20 +29,20 @@ function MyOrdersConfig($stateProvider) {
             controller: 'MyOrderEditCtrl',
             controllerAs: 'myOrderEdit',
             resolve: {
-                SelectedOrder: function($stateParams, OrderCloud) {
-                    return OrderCloud.Me.GetOrder($stateParams.orderid);
+                SelectedOrder: function($stateParams, OrderCloudSDK) {
+                    return OrderCloudSDK.Orders.Get("Outgoing", $stateParams.orderid);
                 },
-                SelectedPayments: function($stateParams, $q, OrderCloud) {
+                SelectedPayments: function($stateParams, $q, OrderCloudSDK, Me) {
                     var dfd = $q.defer();
                     var paymentList = {};
 
-                    OrderCloud.Payments.List($stateParams.orderid, null, 1, 100)
+                    OrderCloudSDK.Payments.List("Outgoing", $stateParams.orderid, {'page':1, 'pageSize':100})
                         .then(function(data) {
                             paymentList = data.Items;
                             dfd.resolve(paymentList);
                             angular.forEach(paymentList, function(payment) {
                                 if (payment.Type === 'CreditCard') {
-                                    OrderCloud.CreditCards.Get(payment.CreditCardID)
+                                    OrderCloudSDK.CreditCards.Get(Me.GetBuyerID(), payment.CreditCardID)
                                         .then(function(cc) {
                                             payment.creditCards = cc;
                                         })
@@ -52,15 +52,15 @@ function MyOrdersConfig($stateProvider) {
                         });
                     return dfd.promise;
                 },
-                LineItemList: function($stateParams, OrderCloud) {
-                    return OrderCloud.LineItems.List($stateParams.orderid);
+                LineItemList: function($stateParams, OrderCloudSDK) {
+                    return OrderCloudSDK.LineItems.List("Outgoing", $stateParams.orderid);
                 }
             }
         })
     ;
 }
 
-function MyOrdersController($state, $ocMedia, OrderCloud, OrderCloudParameters, OrderList, Parameters) {
+function MyOrdersController($state, $ocMedia, OrderCloudSDK, OrderCloudParameters, OrderList, Parameters) {
     var vm = this;
     vm.list = OrderList;
     vm.parameters = Parameters;
@@ -127,7 +127,7 @@ function MyOrdersController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Me.ListIncomingOrders(Parameters.from, Parameters.to, Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloudSDK.Orders.List("Incoming", { 'from':Parameters.from, 'to':Parameters.to, 'search':Parameters.search, 'page':vm.list.Meta.Page + 1, 'pageSize':Parameters.pageSize || vm.list.Meta.PageSize, 'searchOn':Parameters.searchOn, 'sortBy':Parameters.sortBy, 'filters':Parameters.filters })
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
@@ -135,7 +135,7 @@ function MyOrdersController($state, $ocMedia, OrderCloud, OrderCloudParameters, 
     };
 }
 
-function MyOrderEditController($scope, $q, $exceptionHandler, $state, toastr, OrderCloud, OCGeography, MyOrdersTypeAheadSearchFactory, SelectedOrder, SelectedPayments, LineItemList) {
+function MyOrderEditController($scope, $q, $exceptionHandler, $state, toastr, OrderCloudSDK, OCGeography, MyOrdersTypeAheadSearchFactory, SelectedOrder, SelectedPayments, LineItemList) {
     var vm = this,
         orderid = SelectedOrder.ID;
     vm.order = SelectedOrder;
@@ -152,7 +152,7 @@ function MyOrderEditController($scope, $q, $exceptionHandler, $state, toastr, Or
     $scope.isCollapsedShipping = true;
 
     vm.deletePayment = function(payment) {
-        OrderCloud.Payments.Delete(orderid, payment.ID)
+        OrderCloud.Payments.Delete("Outgoing",orderid, payment.ID)
             .then(function() {
                 $state.go($state.current, {}, {reload: true});
             })

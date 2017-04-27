@@ -24,7 +24,7 @@ function AccountConfig($stateProvider) {
 	;
 }
 
-function AccountService($q, $uibModal, OrderCloud) {
+function AccountService($q, $uibModal, OrderCloudSDK) {
 	var service = {
 		Update: _update,
 		ChangePassword: _changePassword
@@ -34,7 +34,7 @@ function AccountService($q, $uibModal, OrderCloud) {
 		var deferred = $q.defer();
 
 		function updateUser() {
-			OrderCloud.Me.Update(newProfile)
+			OrderCloudSDK.Me.Update(newProfile)
 				.then(function(data) {
 					deferred.resolve(data);
 				})
@@ -54,7 +54,7 @@ function AccountService($q, $uibModal, OrderCloud) {
 				Username: currentProfile.Username,
 				Password: password
 			};
-			OrderCloud.Auth.GetToken(checkPasswordCredentials)
+			OrderCloudSDK.GetToken(checkPasswordCredentials)
 				.then(function() {
 					updateUser();
 				})
@@ -78,13 +78,13 @@ function AccountService($q, $uibModal, OrderCloud) {
 
 		function changePassword() {
 			currentUser.Password = currentUser.NewPassword;
-			OrderCloud.Me.Update(currentUser)
+			OrderCloudSDK.Me.Update(currentUser)
 				.then(function() {
 					deferred.resolve();
 				});
 		}
 
-		OrderCloud.Auth.GetToken(checkPasswordCredentials)
+		OrderCloudSDK.GetToken(checkPasswordCredentials)
 			.then(function() {
 				changePassword();
 			})
@@ -98,7 +98,7 @@ function AccountService($q, $uibModal, OrderCloud) {
 	return service;
 }
 
-function AccountController($exceptionHandler, $state, toastr, AccountService, CurrentUser, WeirService, $sce, OrderCloud) {
+function AccountController($exceptionHandler, $state, toastr, AccountService, CurrentUser, WeirService, $sce, OrderCloudSDK, Me) {
 	var vm = this;
 	vm.profile = angular.copy(CurrentUser);
 	var currentProfile = CurrentUser;
@@ -154,7 +154,7 @@ function AccountController($exceptionHandler, $state, toastr, AccountService, Cu
 		form.$setPristine(true);
 	};
 	vm.editAddresses = function () {
-	    $state.go('customers.edit', { buyerid: OrderCloud.BuyerID.Get() });
+	    $state.go('customers.edit', { buyerid: Me.GetBuyerID() });
 	};
 
 }

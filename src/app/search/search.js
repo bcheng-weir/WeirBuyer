@@ -932,7 +932,7 @@ function NoResultsController($state, $sce, WeirService, OrderCloudSDK, toastr, M
 	        }
 	    };
 	    //OrderCloud.Me.Patch(data)
-		OrderCloudSDK.Users.Patch(Me.Profile.ID, data, Me.Org.ID)
+		OrderCloudSDK.Users.Patch(Me.GetBuyerID(),Me.Profile.ID, data)
 	        .then(function (usr) {
 	            toastr.success(vm.labels.SubmittedMessage);
 	            vm.searchTerm = "";

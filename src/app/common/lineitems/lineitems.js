@@ -42,7 +42,7 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
 	    OrderCloudSDK.LineItems.Delete("Outgoing", Order.ID, LineItem.ID)
             .then(function () {
                 // If all line items are removed delete the order.
-	            OrderCloudSDK.LineItems.List(Order.ID)
+	            OrderCloudSDK.LineItems.List("Outgoing", Order.ID)
                     .then(function (data) {
                         if (!data.Items.length) {
                             CurrentOrder.Remove();

@@ -15,7 +15,7 @@ function LoginConfig($stateProvider) {
     ;
 }
 
-function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, clientid, buyerid, anonymous, appname, $localForage) {
+function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymous, appname, $localForage, Me) {
     return {
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
@@ -49,7 +49,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
         });
     }
     function SetFSInfo() {
-        OrderCloud.Me.Get()
+	    OrderCloudSDK.Me.Get()
         .then(function (usr) {
             FS.identify(usr.ID, {
                 displayName: usr.FirstName + ' ' + usr.LastName,
@@ -63,13 +63,13 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
     function _sendVerificationCode(email) {
         var deferred = $q.defer();
 
-        var passwordResetRequest = {
+        /*var passwordResetRequest = {
             Email: email,
             ClientID: clientid,
             URL: encodeURIComponent($window.location.href) + '{0}'
-        };
+        };*/
 
-        OrderCloud.PasswordResets.SendVerificationCode(passwordResetRequest)
+	    OrderCloudSDK.PasswordResets.SendVerificationCode(email) // was passwordResetRequest
             .then(function() {
                 deferred.resolve();
             })
@@ -89,7 +89,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
             Password: resetPasswordCredentials.NewPassword
         };
 
-        OrderCloud.PasswordResets.ResetPassword(verificationCode, passwordReset).
+	    OrderCloudSDK.PasswordResets.ResetPassword(verificationCode, passwordReset).
             then(function() {
                 deferred.resolve();
             })
@@ -101,9 +101,9 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
     }
 
     function _logout(){
-        OrderCloud.Auth.RemoveToken();
-        OrderCloud.Auth.RemoveImpersonationToken();
-        OrderCloud.BuyerID.Set(null);
+	    OrderCloudSDK.RemoveToken();
+	    OrderCloudSDK.RemoveImpersonationToken();
+	    Me.SetBuyerID(null);
         TokenRefresh.RemoveToken();
         $state.go(anonymous ? 'home' : 'login', {}, {reload: true});
     }
@@ -116,13 +116,13 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
                 if (refreshToken) {
                     TokenRefresh.Refresh(refreshToken)
                         .then(function(token) {
-                            OrderCloud.Auth.SetToken(token.access_token);
-                            OrderCloud.Buyers.List()
+         OrderCloudSDK.Auth.SetToken(token.access_token);
+         OrderCloudSDK.Buyers.List()
 	                            .then(function (buyers) {
 	                                if (buyers && buyers.Items.length > 0) {
 	                                    var buyer = buyers.Items[0];
 	                                    buyerid = buyer.ID;
-	                                    OrderCloud.BuyerID.Set(buyer.ID);
+         OrderCloudSDK.BuyerID.Set(buyer.ID);
 	                                    CurrentOrder.Remove()
 	                                        .then(function () {
 	                                            return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
@@ -154,7 +154,7 @@ function LoginService($q, $window, $state, toastr, OrderCloud, TokenRefresh, cli
     }
 }
 
-function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $cookieStore, OrderCloud, LoginService, WeirService, TokenRefresh, CurrentOrder, buyerid) {
+function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me) {
     var vm = this;
 	var username = null;
 	LoginService.GetUsername()
@@ -167,10 +167,7 @@ function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $coo
 			};
 			vm.rememberStatus = username ? true : false;
 		});
-	/*vm.credentials = {
-		Username: username,
-		Password: null
-	};*/
+
     vm.token = $stateParams.token;
     vm.form = vm.token ? 'reset' : 'login';
     vm.setForm = function(form) {
@@ -224,22 +221,18 @@ function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $coo
     vm.languageOfUser = WeirService.Locale();
 
     vm.submit = function() {
-        OrderCloud.Auth.GetToken(vm.credentials)
+	    OrderCloudSDK.Auth.Login(vm.credentials.Username,vm.credentials.Password,clientid,scope)
             .then(function(data) {
-                //vm.rememberStatus ? TokenRefresh.SetToken(data['refresh_token']) : angular.noop();
-	            //vm.rememberStatus ? LoginService.RememberMe(vm.credentials.Username) : angular.noop();
 	            if(vm.rememberStatus) {
 	            	LoginService.SetUsername(vm.credentials.Username);
 	            } else {
 		            LoginService.SetUsername(null);
 	            }
-	            console.log(TokenRefresh.Get());
-                OrderCloud.Auth.SetToken(data['access_token']);
-                OrderCloud.Buyers.List().then(function (buyers) {
+	            OrderCloudSDK.SetToken(data['access_token']);
+	            OrderCloudSDK.Buyers.List().then(function (buyers) {
                     if (buyers && buyers.Items.length > 0) {
                         var buyer = buyers.Items[0];
-                        buyerid = buyer.ID;
-                        OrderCloud.BuyerID.Set(buyer.ID);
+                        Me.SetBuyerID(buyer.ID); //set the cookie in Me
                         CurrentOrder.Remove()
                             .then(function () {
                                 return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
@@ -254,7 +247,6 @@ function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $coo
                                 $cookieStore.put('language', 'fr', {
                                     expires: exp
                                 });
-                                OrderCloud.CatalogID.Set(buyer.xp.WeirGroup.label);
                             }
                             if (buyer.xp.WeirGroup.id == 1) {
                                 //make it en
@@ -262,7 +254,6 @@ function LoginController($state, $stateParams, $q, $exceptionHandler, $sce, $coo
                                 $cookieStore.put('language', 'en', {
                                     expires: exp
                                 });
-                                OrderCloud.CatalogID.Set(buyer.xp.WeirGroup.label);
                             }
                         LoginService.RouteAfterLogin();
                     }

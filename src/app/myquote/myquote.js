@@ -50,7 +50,7 @@ function QuoteHelperService($q, OrderCloud) {
         var filter = {
                 "xp.OriginalOrderID": quoteID
         };
-        return OrderCloud.Orders.ListOutgoing(null, null, null, 1, 100, null, "DateCreated", filter);
+        return OrderCloud.Orders.List("Outgoing",{ 'page':1, 'pageSize':100, 'sortBy':"DateCreated", 'filters':filter });
     }
 
     var service = {
@@ -114,11 +114,11 @@ function MyQuoteConfig($stateProvider) {
 		        Quote: function (CurrentOrder) {
 		            return CurrentOrder.Get();
 		        },
-		        ShippingAddress: function (Quote, OrderCloud) {
-		            if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
+		        ShippingAddress: function (Quote, OrderCloudSDK, Me) {
+		            if (Quote.ShippingAddressID) return OrderCloudSDK.Addresses.Get(Me.GetBuyerID(), Quote.ShippingAddressID);
 		            return null;
 		        },
-		        LineItems: function ($q, $state, toastr, Underscore, WeirService, CurrentOrder, OrderCloud, LineItemHelpers, QuoteShareService, Customer) {
+		        LineItems: function ($q, $state, toastr, Underscore, WeirService, CurrentOrder, OrderCloudSDK, LineItemHelpers, QuoteShareService, Customer, Me) {
 		            QuoteShareService.LineItems.length = 0;
                     var errorMsg = "";
                     var errorTitle= "";
@@ -133,7 +133,7 @@ function MyQuoteConfig($stateProvider) {
 		            var dfd = $q.defer();
 		            CurrentOrder.GetID()
                         .then(function (id) {
-                            OrderCloud.LineItems.List(id)
+	                        OrderCloudSDK.LineItems.List("Outgoing",id, { 'page':1, 'pageSize':100 })
                                 .then(function (data) {
                                     if (!data.Items.length) {
                                         toastr.error(errorMsg , errorTitle);
@@ -144,14 +144,18 @@ function MyQuoteConfig($stateProvider) {
                                             .then(function () { dfd.resolve(data); });
                                     }
                                 })
+		                        .catch(function(ex) {
+		                        	toastr.error('List Line Items failed.','Error');
+			                        dfd.resolve({ Items: [] });
+		                        });
                         })
-                        .catch(function () {
+                        .catch(function (ex) {
                             toastr.error(errorMsg , errorTitle);
                             dfd.resolve({ Items: [] });
                         });
 		            return dfd.promise;
 		        },
-			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Customer, WeirService) {
+			    PreviousLineItems: function($q, toastr, OrderCloudSDK, Quote, LineItemHelpers, Customer, WeirService, Me) {
 				    // We can't have a quantity of 0 on a line item. With show previous line items
 				    // Split the current order ID. If a rec exists, get, else do nothing.
 				    var pieces = Quote.ID.split('-Rev');
@@ -168,7 +172,7 @@ function MyQuoteConfig($stateProvider) {
 				    if(pieces.length > 1) {
 					    var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 					    var dfd = $q.defer();
-					    OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,OrderCloud.BuyerID.Get())
+					    OrderCloudSDK.LineItems.List("Outgoing", prevId,{ 'page':1, 'pageSize':100 })
 						    .then(function(data) {
 							    if (!data.Items.length) {
 								    dfd.resolve({ Items: [] });
@@ -187,8 +191,8 @@ function MyQuoteConfig($stateProvider) {
 					    return null;
 				    }
 			    },
-		        Payments: function (Quote, OrderCloud) {
-		            return OrderCloud.Payments.List(Quote.ID,null,null,null,null,null,null,OrderCloud.BuyerID.Get());
+		        Payments: function (Quote, OrderCloudSDK, Me) {
+		            return OrderCloudSDK.Payments.List("Outgoing",Quote.ID,{ 'page':1, 'pageSize':100 });
 		        },
 		        IsBuyer: function (UserGroupsService) {
                     return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Buyers])
@@ -196,14 +200,17 @@ function MyQuoteConfig($stateProvider) {
 		        IsShopper: function (UserGroupsService) {
 		            return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Shoppers])
 		        },
-				Catalog:  function (OrderCloud) {
-                    return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
+				Catalog:  function (OrderCloudSDK, Me) {
+                    return OrderCloudSDK.Catalogs.Get(Me.Org.DefaultCatalogID);
                 },
-                Buyer : function(OrderCloud){
-			       return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
+                Buyer : function(OrderCloudSDK, Me){
+					return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
                 },
-                UITotal: function(Catalog, Buyer, OrderCloud, Quote){
-                    var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+                UITotal: function(Catalog, Buyer, Quote) {
+	                var rateToUse = 0;
+                	if (Catalog.xp) {
+		                rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
+	                }
                     if(Quote.xp.CarriageRateType == 'standard'){
                         return (rateToUse + Quote.Subtotal).toFixed(2);
                     }
@@ -535,7 +542,7 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloud, Buyer, UITotal, $rootScope) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope) {
     var vm = this;
 	QuoteShareService.Quote = Quote;
     vm.currentState = $state.$current.name;
@@ -574,7 +581,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    return (QuoteShareService.LineItems && QuoteShareService.LineItems.length);
 	};
 	vm.Readonly = function () {
-	    $state.go("readonly", { quoteID: vm.Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
+	    $state.go("readonly", { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
 	};
 	vm.imageRoot = imageRoot;
 	function toCsv() {
@@ -649,7 +656,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	        WeirService.UpdateQuote(vm.Quote, mods)
             .then(function (qte) {
                 toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
-	            $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
+	            $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
             });
 	    }
 	}
@@ -664,7 +671,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	        WeirService.UpdateQuote(vm.Quote, mods)
             .then(function (qte) {
                 toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
-	            $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
+	            $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
             });
         }
 	}
@@ -742,7 +749,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			//here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
 			    //ex works does not have a set amount yet
 				//admin side setting exworks shipping description so first time they edit they have a default value
-            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}}, OrderCloud.BuyerID.Get())
+            OrderCloudSDK.Orders.Patch(Me.GetBuyerID(), vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}})
                 .then(function (Quote) {
 	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	                if(Quote.xp.CarriageRateType == 'standard') {
@@ -775,7 +782,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
         if(isValidForReview()) {
             //here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
             //ex works does not have a set amount yet
-            OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}}, OrderCloud.BuyerID.Get())
+            OrderCloudSDK.Orders.Patch(Me.GetBuyerID(), vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}})
                 .then(function (Quote) {
 	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	                if(Quote.xp.CarriageRateType == 'standard'){
@@ -962,7 +969,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 
 		WeirService.UpdateQuote(vm.Quote, data)
 			.then(function (qt) {
-				return OrderCloud.Orders.Submit(vm.Quote.ID);
+				return OrderCloudSDK.Orders.Submit(Me.GetBuyerID(),vm.Quote.ID);
 			})
 			.then(function (info) {
 				CurrentOrder.Set(null);

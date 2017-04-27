@@ -15,7 +15,7 @@ function checkoutShippingConfig($stateProvider) {
     ;
 }
 
-function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippingAddress) {
+function CheckoutShippingController($state, $rootScope, OrderCloudSDK, OrderShippingAddress) {
 	var vm = this;
     vm.saveAddress = null;
     vm.isAlsoBilling = null;
@@ -28,9 +28,9 @@ function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippin
     function saveShipAddress(order) {
         if (order && order.ShippingAddressID) {
             OrderShippingAddress.Set(order.ShippingAddressID);
-            OrderCloud.Addresses.Get(order.ShippingAddressID)
+            OrderCloudSDK.Addresses.Get(order.ShippingAddressID)
                 .then(function(address) {
-                    OrderCloud.Orders.Patch(order.ID, {ShippingAddressID: address.ID})
+	                OrderCloudSDK.Orders.Patch(order.ID, {ShippingAddressID: address.ID})
                         .then(function() {
                             $rootScope.$broadcast('OrderShippingAddressChanged', order, address);
                         });
@@ -40,20 +40,20 @@ function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippin
 
     function saveCustomAddress(order) {
         if (vm.saveAddress) {
-            OrderCloud.Addresses.Create(vm.address)
+	        OrderCloudSDK.Addresses.Create(vm.address)
                 .then(function(address) {
-                    OrderCloud.Me.Get()
+	                OrderCloudSDK.Me.Get()
                         .then(function(me) {
-                            OrderCloud.Addresses.SaveAssignment({
+	                        OrderCloudSDK.Addresses.SaveAssignment({
                                     AddressID: address.ID,
                                     UserID: me.ID,
                                     IsBilling: vm.isAlsoBilling,
                                     IsShipping: true
                                 })
                                 .then(function() {
-                                    OrderCloud.Addresses.Get(address.ID)
+	                                OrderCloudSDK.Addresses.Get(address.ID)
                                         .then(function(address) {
-                                            OrderCloud.Orders.Patch(order.ID, {ShippingAddressID: address.ID})
+	                                        OrderCloudSDK.Orders.Patch(order.ID, {ShippingAddressID: address.ID})
                                                 .then(function() {
                                                     $state.reload();
                                                 });
@@ -63,7 +63,7 @@ function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippin
                 });
         }
         else {
-            OrderCloud.Orders.Patch(order.ID, {ShippingAddressID: vm.address.ID})
+	        OrderCloudSDK.Orders.Patch(order.ID, {ShippingAddressID: vm.address.ID})
                 .then(function() {
                     $state.reload();
                 });
@@ -71,7 +71,7 @@ function CheckoutShippingController($state, $rootScope, OrderCloud, OrderShippin
     }
 }
 
-function OrderShippingAddressFactory($q, $localForage, OrderCloud, appname) {
+function OrderShippingAddressFactory($q, $localForage, OrderCloudSDK, appname) {
     var StorageName = appname + '.ShippingAddressID';
     return {
         Get: _get,
@@ -84,7 +84,7 @@ function OrderShippingAddressFactory($q, $localForage, OrderCloud, appname) {
         $localForage.getItem(StorageName)
             .then(function(shipID) {
                 if (shipID) {
-                    OrderCloud.Addresses.Get(shipID)
+	                OrderCloudSDK.Addresses.Get(shipID)
                         .then(function(address) {
                             if (!address.Items) {
                                 dfd.resolve(address);

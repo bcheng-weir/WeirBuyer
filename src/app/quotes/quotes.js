@@ -32,14 +32,23 @@ function QuotesConfig($stateProvider) {
 				Parameters: function($stateParams, OrderCloudParameters) {
 					return OrderCloudParameters.Get($stateParams);
 				},
-				Quotes: function(OrderCloud, WeirService, Parameters, Me) {
+				Quotes: function(OrderCloudSDK, WeirService, Parameters, Me) {
 					//return WeirService.FindOrders(Parameters, false);
 					if(Parameters && Parameters.search && Parameters.search != 'undefined') {
 						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
 					}
-					// Filter on Me.Profile.ID == FromUserID
 					Parameters.filters.FromUserID = Me.Profile.ID;
-					return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 10, Parameters.searchOn, Parameters.sortBy, Parameters.filters, Me.Org.ID);
+					var opts = {
+						'from':Parameters.from,
+						'to':Parameters.to,
+						'search':Parameters.search,
+						'searchOn':Parameters.searchOn,
+						'sortBy':Parameters.sortBy,
+						'page':Parameters.page,
+						'pageSize':Parameters.pageSize || 10,
+						'filters':Parameters.filters
+					};
+					return OrderCloudSDK.Orders.List("Outgoing",opts);
 				}
 			}
 		})
@@ -77,12 +86,12 @@ function QuotesConfig($stateProvider) {
 			url:'/:quoteID',
 			controller: 'RouteToQuoteCtrl',
 			resolve: {
-			    Quote: function ($q, appname, $localForage, $stateParams, OrderCloud) {
+			    Quote: function ($q, appname, $localForage, $stateParams, OrderCloudSDK) {
 			        var storageName = appname + '.routeto';
 			        var d = $q.defer();
 			        $localForage.setItem(storageName, { state: 'quotes', id: $stateParams.quoteID })
                         .then(function () {
-                            OrderCloud.Orders.Get($stateParams.quoteID)
+	                        OrderCloudSDK.Orders.List("Outgoing",$stateParams.quoteID)
                                 .then(function (quote) {
                                     $localForage.removeItem(storageName);
                                     d.resolve(quote);
@@ -94,7 +103,7 @@ function QuotesConfig($stateProvider) {
 		});
 }
 
-function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudParameters) {
+function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudSDK) {
 	var vm = this;
 	vm.list = Quotes;
 	vm.parameters = Parameters;

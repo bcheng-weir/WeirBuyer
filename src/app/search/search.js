@@ -916,7 +916,7 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 	};
 }
 
-function NoResultsController($state, $sce, WeirService, OrderCloud, toastr, Me) {
+function NoResultsController($state, $sce, WeirService, OrderCloudSDK, toastr, Me) {
     var vm = this;
     vm.searchTerm = "";
     vm.info = "";
@@ -932,7 +932,7 @@ function NoResultsController($state, $sce, WeirService, OrderCloud, toastr, Me) 
 	        }
 	    };
 	    //OrderCloud.Me.Patch(data)
-		OrderCloud.Users.Patch(Me.Profile.ID, data, Me.Org.ID)
+		OrderCloudSDK.Users.Patch(Me.Profile.ID, data, Me.Org.ID)
 	        .then(function (usr) {
 	            toastr.success(vm.labels.SubmittedMessage);
 	            vm.searchTerm = "";

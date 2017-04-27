@@ -3,7 +3,7 @@ angular.module('ordercloud-lineitems', [])
     .controller('LineItemModalCtrl', LineItemModalController)
 ;
 
-function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderCloud, CurrentOrder) {
+function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderCloudSDK, CurrentOrder, Me) {
     return {
         SpecConvert: _specConvert,
         RemoveItem: _removeItem,
@@ -39,14 +39,14 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
     }
 
     function _removeItem(Order, LineItem) {
-        OrderCloud.LineItems.Delete(Order.ID, LineItem.ID)
+	    OrderCloudSDK.LineItems.Delete("Outgoing", Order.ID, LineItem.ID)
             .then(function () {
                 // If all line items are removed delete the order.
-                OrderCloud.LineItems.List(Order.ID)
+	            OrderCloudSDK.LineItems.List(Order.ID)
                     .then(function (data) {
                         if (!data.Items.length) {
                             CurrentOrder.Remove();
-                            OrderCloud.Orders.Delete(Order.ID).then(function () {
+	                        OrderCloudSDK.Orders.Delete("Outgoing", Order.ID).then(function () {
                                 $state.reload();
                                 $rootScope.$broadcast('OC:RemoveOrder');
                             });
@@ -60,7 +60,7 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
 
     function _updateQuantity(Order, LineItem) {
         if (LineItem.Quantity > 0) {
-            OrderCloud.LineItems.Patch(Order.ID, LineItem.ID, {Quantity: LineItem.Quantity})
+	        OrderCloudSDK.LineItems.Patch("Outgoing", Order.ID, LineItem.ID, {Quantity: LineItem.Quantity})
                 .then(function () {
                     $rootScope.$broadcast('OC:UpdateOrder', Order.ID);
                     $rootScope.$broadcast('OC:UpdateLineItem',Order);
@@ -76,7 +76,7 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         angular.forEach(productIDs, function (productid) {
             if(productid != "PLACEHOLDER") {
                 //queue.push(OrderCloud.Products.Get(productid)); // This has to be as Me() or we won't get the price schedule
-                queue.push(OrderCloud.Me.GetProduct(productid));
+                queue.push(OrderCloudSDK.Me.GetProduct(Me.Org.DefaultCatalogID, productid));
             }
         });
         $q.all(queue)
@@ -129,7 +129,7 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         modalInstance.result
             .then(function (address) {
                 address.ID = Math.floor(Math.random() * 1000000).toString();
-                OrderCloud.LineItems.SetShippingAddress(Order.ID, LineItem.ID, address)
+	            OrderCloudSDK.LineItems.SetShippingAddress("Outgoing", Order.ID, LineItem.ID, address)
                     .then(function () {
                         $rootScope.$broadcast('LineItemAddressUpdated', LineItem.ID, address);
                     });
@@ -137,9 +137,9 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
     }
 
     function _updateShipping(Order, LineItem, AddressID) {
-        OrderCloud.Addresses.Get(AddressID)
+	    OrderCloudSDK.Addresses.Get(AddressID)
             .then(function (address) {
-                OrderCloud.LineItems.SetShippingAddress(Order.ID, LineItem.ID, address);
+	            OrderCloudSDK.LineItems.SetShippingAddress("Outgoing", Order.ID, LineItem.ID, address);
                 $rootScope.$broadcast('LineItemAddressUpdated', LineItem.ID, address);
             });
     }
@@ -148,14 +148,14 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         var li;
         var dfd = $q.defer();
         var queue = [];
-        OrderCloud.LineItems.List(orderID, null, 1, 100)
+	    OrderCloudSDK.LineItems.List("Outgoing", orderID, { 'page':1, 'pageSize': 100 })
             .then(function (data) {
                 li = data;
                 if (data.Meta.TotalPages > data.Meta.Page) {
                     var page = data.Meta.Page;
                     while (page < data.Meta.TotalPages) {
                         page += 1;
-                        queue.push(OrderCloud.LineItems.List(orderID, null, page, 100));
+                        queue.push(OrderCloudSDK.LineItems.List("Outgoing", orderID, { 'page':page, 'pageSize':100 }));
                     }
                 }
                 $q.all(queue)

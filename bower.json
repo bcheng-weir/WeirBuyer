@@ -6,7 +6,7 @@
     "RSM-UK",
     "WEIR PLC"
   ],
-  "description": "Cusotmization of the Order Cloud platform for WEIR Flow Control cusotmers",
+  "description": "Customization of the Order Cloud platform for WEIR Flow Control customers",
   "main": "index",
   "moduleType": [],
   "keywords": [
@@ -45,7 +45,8 @@
     "aws-sdk": "aws-sdk-js#^2.6.11",
     "ng-csv": "^0.3.6",
     "angular-file-saver": "^1.1.2",
-    "ordercloud-angular-sdk": "staging"
+    "angular-resource": "^1.6.4",
+    "ordercloud-angular-sdk": "v1.0.47-staging-prerelease"
   },
   "devDependencies": {
     "angular-mocks": "1.5.9"

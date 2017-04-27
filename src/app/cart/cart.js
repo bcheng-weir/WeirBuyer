@@ -32,7 +32,7 @@ function CartConfig($stateProvider) {
                         $state.go('home');
                     }
                 },
-                LineItemsList: function($q, $state, toastr, Underscore, OrderCloud, WeirService, LineItemHelpers, Order) {
+                LineItemsList: function($q, $state, toastr, Underscore, OrderCloudSDK, WeirService, LineItemHelpers, Order) {
                     var dfd = $q.defer();
                     //testing the locale to give appropiate toastr
                     var errorMsg = "";
@@ -45,7 +45,7 @@ function CartConfig($stateProvider) {
                         errorMsg = "Your order does not contain any line items";
                         errorTitle = "Error";
                     }
-                    OrderCloud.LineItems.List(Order.ID)
+	                OrderCloudSDK.LineItems.List("Outgoing",Order.ID)
                         .then(function(data) {
                             if (!data.Items.length) {
                                 toastr.error(errorMsg , errorTitle);
@@ -67,14 +67,14 @@ function CartConfig($stateProvider) {
                         });
                     return dfd.promise;
                 },
-                PromotionsList: function(OrderCloud, Order) {
-                    return OrderCloud.Orders.ListPromotions(Order.ID);
+                PromotionsList: function(OrderCloudSDK, Order) {
+                    return OrderCloudSDK.Orders.ListPromotions("Outgoing", Order.ID);
                 }
             }
         });
 }
 
-function CartController($q, $rootScope, $timeout, OrderCloud, LineItemHelpers, Order, LineItemsList, PromotionsList) {
+function CartController($q, $rootScope, $timeout, OrderCloudSDK, LineItemHelpers, Order, LineItemsList, PromotionsList) {
     var vm = this;
     vm.order = Order;
     vm.lineItems = LineItemsList;
@@ -92,7 +92,7 @@ function CartController($q, $rootScope, $timeout, OrderCloud, LineItemHelpers, O
     function PagingFunction() {
         var dfd = $q.defer();
         if (vm.lineItems.Meta.Page < vm.lineItems.Meta.TotalPages) {
-            OrderCloud.LineItems.List(vm.order.ID, vm.lineItems.Meta.Page + 1, vm.lineItems.Meta.PageSize)
+	        OrderCloudSDK.LineItems.List("Outgoing", vm.order.ID, { 'page':vm.lineItems.Meta.Page + 1, 'pageSize':vm.lineItems.Meta.PageSize })
                 .then(function(data) {
                     vm.lineItems.Meta = data.Meta;
                     vm.lineItems.Items = [].concat(vm.lineItems.Items, data.Items);
@@ -107,14 +107,14 @@ function CartController($q, $rootScope, $timeout, OrderCloud, LineItemHelpers, O
     }
 
     $rootScope.$on('OC:UpdateOrder', function(event, OrderID) {
-        OrderCloud.Orders.Get(OrderID)
+	    OrderCloudSDK.Orders.Get("Outgoing", OrderID)
             .then(function(data) {
                 vm.order = data;
             });
     });
 
     $rootScope.$on('OC:UpdateLineItem', function(event,Order) {
-            OrderCloud.LineItems.List(Order.ID)
+	    OrderCloudSDK.LineItems.List("Outgoing", Order.ID)
                 .then(function(data) {
                     LineItemHelpers.GetProductInfo(data.Items)
                         .then(function() {
@@ -124,7 +124,7 @@ function CartController($q, $rootScope, $timeout, OrderCloud, LineItemHelpers, O
     });
 }
 
-function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, OrderCloud, LineItemHelpers, CurrentOrder, Underscore, WeirService) {
+function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, OrderCloudSDK, LineItemHelpers, CurrentOrder, Underscore, WeirService) {
     var vm = this;
     vm.LineItems = {};
     vm.Order = null;
@@ -194,11 +194,11 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
         var dfd = $q.defer();
         var queue = [];
         vm.TotalItems = 0;
-        OrderCloud.LineItems.List(order.ID)
+	    OrderCloudSDK.LineItems.List("Outgoing", order.ID, { 'page':1, 'pageSize':100 })
             .then(function(li) {
                 vm.LineItems = li;
                 if (li.Meta.TotalPages > li.Meta.Page) {
-                        queue.push(OrderCloud.LineItems.List(order.ID, null ,li.Meta.Page + 1));
+                        queue.push(OrderCloudSDK.LineItems.List("Outgoing", order.ID, { 'page':li.Meta.Page + 1, 'pageSize':100 }));
                 }
                 $q.all(queue)
                     .then(function(results) {

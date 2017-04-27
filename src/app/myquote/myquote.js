@@ -45,12 +45,12 @@ function QuoteShareService() {
     return svc;
 }
 
-function QuoteHelperService($q, OrderCloud) {
+function QuoteHelperService($q, OrderCloudSDK) {
     function findRevisions(quoteID) {
         var filter = {
                 "xp.OriginalOrderID": quoteID
         };
-        return OrderCloud.Orders.List("Outgoing",{ 'page':1, 'pageSize':100, 'sortBy':"DateCreated", 'filters':filter });
+        return OrderCloudSDK.Orders.List("Outgoing",{ 'page':1, 'pageSize':100, 'sortBy':"DateCreated", 'filters':filter });
     }
 
     var service = {
@@ -59,7 +59,7 @@ function QuoteHelperService($q, OrderCloud) {
     return service;
 }
 
-function QuoteCommentsService(OrderCloud, QuoteShareService, Me, $q) {
+function QuoteCommentsService(OrderCloudSDK, QuoteShareService, Me, $q) {
 	var service = {
 		AddComment: _addComment
 	};
@@ -78,7 +78,7 @@ function QuoteCommentsService(OrderCloud, QuoteShareService, Me, $q) {
 			QuoteShareService.Quote.xp.CommentsToWeir = [];
 		}
 		QuoteShareService.Quote.xp.CommentsToWeir.push(comment);
-		OrderCloud.Orders.Patch(QuoteShareService.Quote.ID, {xp: {CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
+		OrderCloudSDK.Orders.Patch("Outgoing", QuoteShareService.Quote.ID, {xp: {CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
 			.then(function (quote) {
 				QuoteShareService.Quote = quote;
 				QuoteShareService.Comments = quote.xp.CommentsToWeir;
@@ -749,7 +749,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			//here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
 			    //ex works does not have a set amount yet
 				//admin side setting exworks shipping description so first time they edit they have a default value
-            OrderCloudSDK.Orders.Patch(Me.GetBuyerID(), vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}})
+            OrderCloudSDK.Orders.Patch("Outgoing", vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}})
                 .then(function (Quote) {
 	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	                if(Quote.xp.CarriageRateType == 'standard') {
@@ -782,7 +782,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
         if(isValidForReview()) {
             //here is the patch- runs everytime it is chosen in case the user goes back to change it. //todo should this lock down when status changes?
             //ex works does not have a set amount yet
-            OrderCloudSDK.Orders.Patch(Me.GetBuyerID(), vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}})
+            OrderCloudSDK.Orders.Patch("Outgoing", vm.Quote.ID, {xp: {CarriageRateType: vm.Quote.xp.CarriageRateType, ShippingDescription: $sce.getTrustedHtml(vm.labels.DescriptionOfShipping[vm.Quote.xp.CarriageRateType])}})
                 .then(function (Quote) {
 	                var rateToUse = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	                if(Quote.xp.CarriageRateType == 'standard'){
@@ -969,7 +969,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 
 		WeirService.UpdateQuote(vm.Quote, data)
 			.then(function (qt) {
-				return OrderCloudSDK.Orders.Submit(Me.GetBuyerID(),vm.Quote.ID);
+				return OrderCloudSDK.Orders.Submit("Outgoing",vm.Quote.ID);
 			})
 			.then(function (info) {
 				CurrentOrder.Set(null);
@@ -1028,16 +1028,15 @@ function MissingCarriageDetailController(WeirService, $uibModalInstance, $sce) {
     vm.labels = WeirService.LocaleResources(labels);
 
     //modal logic
-    var vm = this;
     vm.Close = function () {
         $uibModalInstance.close();
     };
 }
 
-function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $scope, $rootScope, OrderCloud, QuoteShareService) {
+function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $scope, $rootScope, OrderCloudSDK, QuoteShareService, Me) {
     if ((QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) ||
         (QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id)) {
-        $state.go("revised", {quoteID: QuoteShareService.Quote.ID, buyerID: OrderCloud.BuyerID.Get()});
+        $state.go("revised", {quoteID: QuoteShareService.Quote.ID, buyerID: Me.GetBuyerID()});
     }
 	var vm = this;
 	vm.Quote = QuoteShareService.Quote;
@@ -1108,7 +1107,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 	vm.deleteLineItem = _deleteLineItem;
 	function _deleteLineItem(quoteNumber, itemid) {
-		OrderCloud.LineItems.Delete(quoteNumber, itemid, OrderCloud.BuyerID.Get())
+		OrderCloudSDK.LineItems.Delete("Outgoing",quoteNumber, itemid)
 			.then(function() {
 				// Testing. Should make another event for clarity. At this time I believe it just updates the cart items.
 				$rootScope.$broadcast('SwitchCart', quoteNumber, itemid); //This kicks off an event in cart.js
@@ -1127,7 +1126,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 		var patch = {
 			Quantity: item.Quantity
 		};
-		OrderCloud.LineItems.Patch(quoteNumber, item.ID, patch, OrderCloud.BuyerID.Get())
+		OrderCloudSDK.LineItems.Patch("Outgoing", quoteNumber, item.ID, patch)
 			.then(function(resp) {
 				$rootScope.$broadcast('SwitchCart', quoteNumber, resp.ID);
 			})
@@ -1151,7 +1150,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloud, QuoteShareService, OCGeography, Catalog, $scope) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me{
     var vm = this;
     var activeAddress = function (address) {
         return address.xp.active == true;
@@ -1235,9 +1234,9 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 
     vm.setShippingAddress = _setShippingAddress;
     function _setShippingAddress(QuoteID, Address) {
-        OrderCloud.Orders.SetShippingAddress(QuoteID, Address, OrderCloud.BuyerID.Get())
+        OrderCloudSDK.Orders.SetShippingAddress("Outgoing", QuoteID, Address)
 	        .then(function(order) {
-	        	return OrderCloud.Addresses.Get(order.ShippingAddressID, OrderCloud.BuyerID.Get())
+	        	return OrderCloudSDK.Addresses.Get(Me.GetBuyerID(), order.ShippingAddressID)
 	        })
             .then(function (address) {
             	QuoteShareService.ShippingAddress = address;
@@ -1267,12 +1266,12 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
         var newAddressResults = {};
         modalInstance.result
             .then(function (address) {
-                return OrderCloud.Addresses.Create(address, OrderCloud.BuyerID.Get());
+                return OrderCloudSDK.Addresses.Create(Me.GetBuyerID(),address);
             })
             .then(function (newAddress) {
                 newAddressResults.ID = newAddress.ID;
                 newAddressResults.Name = newAddress.AddressName;
-                return OrderCloud.Orders.SetShippingAddress(QuoteID, newAddress, OrderCloud.BuyerID.Get());
+                return OrderCloudSDK.Orders.SetShippingAddress("Outgoing", QuoteID, newAddress);
             })
             .then(function () {
                 return WeirService.AssignAddressToGroups(newAddressResults.ID);
@@ -1290,7 +1289,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal,
-    OrderCloud, QuoteShareService, Underscore, OCGeography, CurrentOrder, Customer, fileStore, FilesService,
+    OrderCloudSDK, QuoteShareService, Underscore, OCGeography, CurrentOrder, Customer, fileStore, FilesService,
 	$scope, FileSaver, UITotal) {
 	//CheckStateChangeService.checkFormOnStateChange($scope);
 	var vm = this;
@@ -1436,7 +1435,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 	};
 
     function _deleteLineItem(quoteNumber, itemid) {
-        OrderCloud.LineItems.Delete(quoteNumber, itemid, OrderCloud.BuyerID.Get())
+        OrderCloudSDK.LineItems.Delete("Outgoing", quoteNumber, itemid)
 			.then(function () {
 			    // Testing. Should make another event for clarity. At this time I believe it just updates the cart items.
 			    $rootScope.$broadcast('SwitchCart', quoteNumber, itemid); //This kicks off an event in cart.js
@@ -1454,7 +1453,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     	var patch = {
 		    Quantity: item.Quantity
 	    };
-        OrderCloud.LineItems.Patch(quoteNumber, item.ID, patch, OrderCloud.BuyerID.Get())
+        OrderCloudSDK.LineItems.Patch("Outgoing", quoteNumber, item.ID, patch)
 			.then(function (resp) {
 			    $rootScope.$broadcast('LineItemAddedToCart', quoteNumber, resp.ID);
 			})
@@ -1487,7 +1486,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                         PONumber: vm.PONumber
                     }
                 };
-                OrderCloud.Payments.Create(vm.Quote.ID, data, OrderCloud.BuyerID.Get())
+                OrderCloudSDK.Payments.Create("Outgoing", vm.Quote.ID, data)
                     .then(function (pmt) {
                         QuoteShareService.Payments.push(pmt);
                         payment = pmt;
@@ -1503,7 +1502,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                     PONumber: vm.PONumber
                 }
             };
-            OrderCloud.Payments.Patch(vm.Quote.ID, payment.ID, data, OrderCloud.BuyerID.Get())
+            OrderCloudSDK.Payments.Patch("Outgoing", vm.Quote.ID, payment.ID, data)
                 .then(function (pmt) {
                     QuoteShareService.Payments[0] = pmt;
                     payment = pmt;
@@ -1542,7 +1541,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 
 	    WeirService.UpdateQuote(vm.Quote, data)
             .then(function (qt) {
-                return OrderCloud.Orders.Submit(vm.Quote.ID);
+                return OrderCloudSDK.Orders.Submit("Outgoing", vm.Quote.ID);
             })
             .then(function (info) {
                 CurrentOrder.Set(null);
@@ -1612,7 +1611,6 @@ function MoreQuoteInfoController($uibModalInstance, $state, $sce, WeirService) {
     vm.Cancel = cancel;
     vm.Continue = gotoDelivery;
 
-	var vm = this;
 	var labels = {
 		en: {
 		    Title: "You Can Add More Information to this Quote;",
@@ -1869,14 +1867,14 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
     vm.View = view;
 }
 
-function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloud,  Underscore, OCGeography,
+function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloudSDK,  Underscore, OCGeography,
                                 Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me,
                                 fileStore, FilesService, FileSaver, QuoteToCsvService, Catalog, Buyer) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
 	vm.LineItems = LineItems.Items;
-	vm.BuyerID = OrderCloud.BuyerID.Get();
+	vm.BuyerID = Me.GEtBuyerID();
 	vm.Catalog = Catalog;
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
@@ -2136,7 +2134,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		}
 		vm.Quote.xp.CommentsToWeir.push(comment);
 
-		OrderCloud.Orders.Patch(vm.Quote.ID, {xp:{CommentsToWeir: vm.Quote.xp.CommentsToWeir}}, OrderCloud.BuyerID.Get())
+		OrderCloudSDK.Orders.Patch("Outgoing", vm.Quote.ID, {xp:{CommentsToWeir: vm.Quote.xp.CommentsToWeir}})
 			.then(function(order) {
 				vm.CommentToWeir = "";
 				$state.go($state.current,{}, {reload:true});
@@ -2173,7 +2171,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			WeirService.UpdateQuote(vm.Quote, mods)
 				.then(function (qte) {
 					toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
-					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
+					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
 				});
 		}
 	}
@@ -2188,7 +2186,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			WeirService.UpdateQuote(vm.Quote, mods)
 				.then(function (qte) {
 					toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
-					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
+					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
 				});
 		}
 	}
@@ -2219,7 +2217,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloud, FilesService, FileSaver, Catalog, Me) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloudSDK, FilesService, FileSaver, Catalog, Me) {
     var vm = this;
 	vm.Catalog = Catalog;
 	vm.buyer = Me.Org;
@@ -2230,7 +2228,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
     vm.ShippingAddress = ShippingAddress;
     vm.LineItems = LineItems ? LineItems.Items : [];
-	vm.BuyerID = OrderCloud.BuyerID.Get();
+	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
@@ -2406,7 +2404,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 }
 
 function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
-                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloud, Me, FilesService, FileSaver, Catalog) {
+                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me, FilesService, FileSaver, Catalog) {
 	var vm = this;
 	vm.Catalog = Catalog;
 	vm.buyer = Me.Org;
@@ -2418,7 +2416,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
 	vm.LineItems = LineItems ? LineItems.Items : [];
-	vm.BuyerID = OrderCloud.BuyerID.Get();
+	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if (Underscore.findWhere(LineItems.Items, {ProductID: item.ProductID})) {
@@ -2565,7 +2563,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 				vm.Quote.xp.CommentsToWeir = [];
 			}
 			vm.Quote.xp.CommentsToWeir.push(comment);
-			OrderCloud.Orders.Patch(vm.Quote.ID, {xp: {CommentsToWeir: vm.Quote.xp.CommentsToWeir}})
+			OrderCloudSDK.Orders.Patch("Outgoing", vm.Quote.ID, {xp: {CommentsToWeir: vm.Quote.xp.CommentsToWeir}})
 				.then(function (quote) {
 					vm.Quote = quote;
 				});
@@ -2629,7 +2627,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 						PONumber: vm.PONumber
 					}
 				};
-				OrderCloud.Payments.Create(vm.Quote.ID, data, OrderCloud.BuyerID.Get())
+				OrderCloudSDK.Payments.Create("Outgoing", vm.Quote.ID, data)
 					.then(function (pmt) {
 						vm.Payments.push(pmt);
 						payment = pmt;
@@ -2645,7 +2643,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 					PONumber: vm.PONumber
 				}
 			};
-			OrderCloud.Payments.Patch(vm.Quote.ID, payment.ID, data, OrderCloud.BuyerID.Get())
+			OrderCloudSDK.Payments.Patch("Outgoing", vm.Quote.ID, payment.ID, data)
 				.then(function (pmt) {
 					vm.Payments[0] = pmt;
 					payment = pmt;
@@ -2699,7 +2697,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 						}
 					}
 				}).closed.then(function () {
-					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
+					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
 				});
 			});
 	}

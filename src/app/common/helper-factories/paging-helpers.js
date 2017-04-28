@@ -30,7 +30,7 @@ function PagingHelpers($q, OrderCloudSDK, Assignments) {
                 queue.push(Service.List("Outgoing", {'page':ListObject.Meta.Page + 1, 'pageSize':ListObject.Meta.PageSize}));
             }
             if (ServiceName === 'Categories') {
-                queue.push(Service.List(Me.Org.DefaultCatalogID, { 'depth':'all', 'page':ListObject.Meta.Page + 1, 'pageSize':ListObject.Meta.PageSize }));
+                queue.push(Service.List(Me.Org.xp.WeirGroup.label, { 'depth':'all', 'page':ListObject.Meta.Page + 1, 'pageSize':ListObject.Meta.PageSize }));
             }
             if (AssignmentFunc !== undefined && (AssignmentObjects.Meta.Page < AssignmentObjects.Meta.TotalPages)) {
                 queue.push(AssignmentFunc());

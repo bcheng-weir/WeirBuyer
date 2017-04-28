@@ -138,9 +138,9 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 			filter.ParentID = Me.Org.ID;
 		}
 
-		OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20,'filters':filter, 'depth':Me.Org.xp.WeirGroup.id == "1" ? null : "all", 'catalogID':Me.Org.DefaultCatalogID })
+		OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20,'filters':filter, 'depth':Me.Org.xp.WeirGroup.id == "1" ? null : "all", 'catalogID':Me.Org.xp.WeirGroup.label })
 			.then(function(response) {
-				OrderCloudSDK.Me.ListCategories({ 'search':lookForThisPartialSerialNumber, 'page':1, 'pageSize':20, 'searchOn':"Description", 'depth':"all", 'catalogID':Me.Org.DefaultCatalogID })
+				OrderCloudSDK.Me.ListCategories({ 'search':lookForThisPartialSerialNumber, 'page':1, 'pageSize':20, 'searchOn':"Description", 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label })
 					.then(function (responseDescription) {
 						var returnResults = response.Items.concat(responseDescription.Items);
 						returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
@@ -160,7 +160,7 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 		    filter.ParentID = Me.Org.ID;
 	    }
 
-	    OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter, 'depth':Me.Org.xp.WeirGroup.id=="1" ? null : "all", 'catalogID':Me.Org.DefaultCatalogID })
+	    OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter, 'depth':Me.Org.xp.WeirGroup.id=="1" ? null : "all", 'catalogID':Me.Org.xp.WeirGroup.label })
             .then(function(response) {
             	dfd.resolve(response.Items);
             });
@@ -235,9 +235,9 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 				});
 		} else {
             if(SearchTypeService.GetLastSearchType() == "s") {
-                return OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.DefaultCatalogID })
+                return OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.xp.WeirGroup.label })
                     .then(function (response) {
-                        return  OrderCloudSDK.Me.ListCategories({ 'search':lookForThisProduct, 'page':1, 'pageSize':20, 'searchOn':"Description", 'depth':"all", 'catalogID':Me.Org.DefaultCatalogID })
+                        return  OrderCloudSDK.Me.ListCategories({ 'search':lookForThisProduct, 'page':1, 'pageSize':20, 'searchOn':"Description", 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label })
                             .then(function(responseDescription){
                                 var returnResults = response.Items.concat(responseDescription.Items);
 	                            returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
@@ -247,7 +247,7 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
                     });
             }
 		    else {
-                return OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.DefaultCatalogID })
+                return OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.xp.WeirGroup.label })
                     .then(function (response) {
                         return response.Items;
                     });

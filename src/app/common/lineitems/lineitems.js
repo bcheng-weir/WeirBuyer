@@ -76,7 +76,7 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         angular.forEach(productIDs, function (productid) {
             if(productid != "PLACEHOLDER") {
                 //queue.push(OrderCloud.Products.Get(productid)); // This has to be as Me() or we won't get the price schedule
-                queue.push(OrderCloudSDK.Me.GetProduct(Me.Org.DefaultCatalogID, productid));
+                queue.push(OrderCloudSDK.Me.GetProduct(Me.Org.xp.WeirGroup.label, productid));
             }
         });
         $q.all(queue)

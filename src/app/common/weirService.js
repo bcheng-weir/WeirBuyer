@@ -250,7 +250,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 		        if (SearchTypeService.IsGlobalSearch()) {
 			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
 		                "xp.SN": serialNumber
-		            }, 'depth':"all", 'catalogID':Me.Org.DefaultCatalogID})
+		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];
@@ -260,12 +260,15 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             } else {
                                 return deferred.resolve("No matches found for serial number " + serialNumber);
                             }
+                        })
+                        .catch(function(ex) {
+                            console.log(ex);
                         });
 		        } else {
 			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'searchOn':"ParentID", 'filters': {
 		                "xp.SN": serialNumber,
 		                "ParentID": cust.id
-		            }, 'depth':"all", 'catalogID':Me.Org.DefaultCatalogID()})
+		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];
@@ -275,7 +278,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             } else {
                                 return deferred.resolve("No matches found for serial number " + serialNumber);
                             }
-                        });
+                        })
+				        .catch(function(ex) {
+				        	console.log(OrderCloudSDK.GetToken());
+					        console.log(ex.response.body.Errors["0"].Message);
+				        });
 		        }
 		    } else {
 		        throw { message: "Customer for quote / search not set" };
@@ -297,7 +304,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 			        if (SearchTypeService.IsGlobalSearch()) {
 				        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
 			                "TagNumber": tagNumber
-			            }, 'depth':"all", 'catalogID':Me.Org.DefaultCatalogID})
+			            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                             .then(function (matches) {
                                 if (matches.Items.length == 1) {
                                     result = matches.Items[0];
@@ -312,7 +319,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 				        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"ParentID",'filters':{
 			                "xp.TagNumber": tagNumber,
 			                "ParentID": cust.id
-			            }, 'catalogID':Me.Org.DefaultCatalogID})
+			            }, 'catalogID':Me.Org.xp.WeirGroup.label})
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];
@@ -340,7 +347,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         CurrentOrder.GetCurrentCustomer()
 			.then(function (cust) {
 			    if (cust) {
-				    OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters':{ "ID": id }, 'depth':"all", 'catalogID':Me.Org.DefaultCatalogID})
+				    OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters':{ "ID": id }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
             .then(function (matches) {
                 if (matches.Items.length == 1) {
                     result = matches.Items[0];
@@ -428,17 +435,13 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             if (number) {
                                 queue.push((function () {
                                     var d = $q.defer();
-	                                OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
-                                        "xp.SN": number
-                                    }, 'depth':"all", 'catalogID':Me.Org.DefaultCatalogID})
+	                                OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{ "xp.SN": number }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
-                                            }/* else {
-                                                results.push({Number: number, Detail: null});
-                                            }*/
-	                                        OrderCloudSDK.Me.ListCategories({'search':number, 'page':1, 'pageSize':50, 'SearchOn':"Description",
-                                                'depth':"all", 'catalogID':Me.Org.DefaultCatalogID})
+                                            }
+	                                        OrderCloudSDK.Me.ListCategories({'search':number, 'page':1, 'pageSize':50, 'searchOn':"Description",
+                                                'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
                                                         results.push({
@@ -497,7 +500,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             if (SearchTypeService.IsGlobalSearch()) {
 	                            OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
                                     "xp.TagNumber": number
-                                }, 'depth':"all", 'catalogID':Me.Org.DefaultCatalogID})
+                                }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                                     .then(function (matches) {
                                         if (matches.Items.length > 0) {
                                             for (var i = 0; i < matches.Items.length; i++) {
@@ -516,7 +519,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 	                            OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters':{
                                     "xp.TagNumber": number,
                                     "ParentID": cust.id
-                                }, 'catalogID':Me.Org.DefaultCatalogID})
+                                }, 'catalogID':Me.Org.xp.WeirGroup.label})
                                     .then(function (matches) {
                                         if (matches.Items.length > 0) {
                                             angular.forEach(matches.Items, function (match, key) {
@@ -854,7 +857,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         if (customers[orgId]) {
             deferred.resolve(customers[orgId]);
         } else {
-	        OrderCloudSDK.Categories.Get(Me.Org.DefaultCatalogID, orgId)
+	        OrderCloudSDK.Categories.Get(Me.Org.xp.WeirGroup.label, orgId)
 			.then(function (org) {
 			    customers[orgId] = org;
 			    deferred.resolve(org);

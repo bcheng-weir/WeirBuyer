@@ -201,7 +201,7 @@ function MyQuoteConfig($stateProvider) {
 		            return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Shoppers])
 		        },
 				Catalog:  function (OrderCloudSDK, Me) {
-                    return OrderCloudSDK.Catalogs.Get(Me.Org.DefaultCatalogID);
+                    return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
                 },
                 Buyer : function(OrderCloudSDK, Me){
 					return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
@@ -232,8 +232,8 @@ function MyQuoteConfig($stateProvider) {
 			controller: 'QuoteDeliveryOptionCtrl',
 			controllerAs: 'delivery',
 			resolve: {
-				Addresses: function(OrderCloud) {
-					return OrderCloud.Addresses.List(null,null,null,null,null,null,OrderCloud.BuyerID.Get());
+				Addresses: function(OrderCloudSDK, Me) {
+					return OrderCloudSDK.Addresses.List(Me.GetBuyerID());
 				}
 			}
 		})
@@ -277,14 +277,14 @@ function MyQuoteConfig($stateProvider) {
 			controller: 'RevisedQuoteCtrl',
 			controllerAs: 'revised',
 			resolve: {
-				Quote: function ($stateParams, OrderCloud) {
-					return OrderCloud.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+				Quote: function ($stateParams, OrderCloudSDK) {
+					return OrderCloudSDK.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
 				},
-				ShippingAddress: function (Quote, OrderCloud) {
-					if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
+				ShippingAddress: function (Quote, OrderCloudSDK, Me) {
+					if (Quote.ShippingAddressID) return OrderCloudSDK.Addresses.Get(Me.GetBuyerID(), Quote.ShippingAddressID);
 					return null;
 				},
-				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me, WeirService) {
+				LineItems: function ($q, toastr, OrderCloudSDK, LineItemHelpers, Quote, Me, WeirService) {
 					//QuoteShareService.LineItems.length = 0;
                     var errorMsg = "";
                     var errorTitle= "";
@@ -297,7 +297,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 					var dfd = $q.defer();
-					OrderCloud.LineItems.List(Quote.ID)
+					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
 								toastr.error(errorMsg, errorTitle);
@@ -314,7 +314,7 @@ function MyQuoteConfig($stateProvider) {
 						});
 					return dfd.promise;
 				},
-				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me, WeirService) {
+				PreviousLineItems: function($q, toastr, OrderCloudSDK, Quote, LineItemHelpers, Me, WeirService) {
 					// We can't have a quantity of 0 on a line item. With show previous line items
 					// Split the current order ID. If a rec exists, get, else do nothing.
                     var errorMsg = "";
@@ -331,7 +331,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
-						OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,OrderCloud.BuyerID.Get())
+						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
 									toastr.error(errorMsg, errorTitle);
@@ -350,14 +350,14 @@ function MyQuoteConfig($stateProvider) {
 						return null;
 					}
 				},
-				Payments: function ($stateParams, OrderCloud) {
-					return OrderCloud.Payments.List($stateParams.quoteID);
+				Payments: function ($stateParams, OrderCloudSDK) {
+					return OrderCloudSDK.Payments.List("Outgoing", $stateParams.quoteID);
 				},
-				Catalog:  function (OrderCloud) {
-					return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
+				Catalog:  function (OrderCloudSDK, Me) {
+					return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
 				},
-                Buyer : function(OrderCloud, $exceptionHandler){
-                    return OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get());
+                Buyer : function(OrderCloudSDK, Me){
+                    return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
                 }
 			}
 		})
@@ -367,116 +367,28 @@ function MyQuoteConfig($stateProvider) {
 		    templateUrl: 'myquote/templates/myquote.readonly.tpl.html',
 		    controller: 'ReadonlyQuoteCtrl',
 		    controllerAs: 'readonly',
-		    resolve: {
-			    Quote: function ($stateParams, OrderCloud) {
-				    return OrderCloud.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
-			    },
-			    ShippingAddress: function (Quote, OrderCloud) {
-				    if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
-				    return null;
-			    },
-			    LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me, WeirService) {
-				    //QuoteShareService.LineItems.length = 0;
-                    var errorMsg = "";
-                    var errorTitle= "";
-                    if(WeirService.Locale() == "fr"){
-                        errorMsg = "Votre cotation ne contient aucune ligne";
-                        errorTitle = "Erreur";
-                    }
-                    else{
-                        errorMsg = "Your quote does not contain any line items";
-                        errorTitle = "Error";
-                    }
-				    var dfd = $q.defer();
-				    OrderCloud.LineItems.List(Quote.ID)
-					    .then(function (data) {
-						    if (!data.Items.length) {
-							    toastr.error(errorMsg, errorTitle);
-							    dfd.resolve({ Items: [] });
-						    } else {
-							    LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
-							    LineItemHelpers.GetProductInfo(data.Items)
-								    .then(function () { dfd.resolve(data); });
-						    }
-					    })
-					    .catch(function () {
-                            toastr.error(errorMsg, errorTitle);
-						    dfd.resolve({ Items: [] });
-					    });
-				    return dfd.promise;
-			    },
-			    PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me, WeirService) {
-				    // We can't have a quantity of 0 on a line item. With show previous line items
-				    // Split the current order ID. If a rec exists, get, else do nothing.
-                    var errorMsg = "";
-                    var errorTitle= "";
-                    if(WeirService.Locale() == "fr"){
-                        errorMsg = "La cotation précédente ne contient aucune ligne";
-                        errorTitle = "Erreur";
-                    }
-                    else{
-                        errorMsg = "Previous quote does not contain any line items";
-                        errorTitle = "Error";
-                    }
-				    var pieces = Quote.ID.split('-Rev');
-				    if(pieces.length > 1) {
-					    var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
-					    var dfd = $q.defer();
-					    OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,OrderCloud.BuyerID.Get())
-						    .then(function(data) {
-							    if (!data.Items.length) {
-								    toastr.error(errorMsg, errorTitle);
-								    dfd.resolve({ Items: [] });
-							    } else {
-								    LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
-								    LineItemHelpers.GetProductInfo(data.Items)
-									    .then(function () { dfd.resolve(data); });
-							    }
-						    })
-						    .catch(function () {
-							    dfd.resolve({ Items: [] });
-						    });
-					    return dfd.promise;
-				    } else {
-					    return null;
-				    }
-			    },
-			    Payments: function ($stateParams, OrderCloud) {
-				    return OrderCloud.Payments.List($stateParams.quoteID);
-			    },
-			    Catalog:  function (OrderCloud) {
-				    return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
-			    }
-		    }
-		})
-		.state('submit', {
-			parent: 'base',
-			url: '/submit?quoteID&buyerID',
-			templateUrl: 'myquote/templates/myquote.submit.tpl.html',
-			controller: 'SubmitCtrl',
-			controllerAs: 'submit',
 			resolve: {
-				Quote: function ($stateParams, OrderCloud) {
-					return OrderCloud.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+				Quote: function ($stateParams, OrderCloudSDK) {
+					return OrderCloudSDK.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
 				},
-				ShippingAddress: function (Quote, OrderCloud) {
-					if (Quote.ShippingAddressID) return OrderCloud.Addresses.Get(Quote.ShippingAddressID, OrderCloud.BuyerID.Get());
+				ShippingAddress: function (Quote, OrderCloudSDK, Me) {
+					if (Quote.ShippingAddressID) return OrderCloudSDK.Addresses.Get(Me.GetBuyerID(), Quote.ShippingAddressID);
 					return null;
 				},
-				LineItems: function ($q, toastr, OrderCloud, LineItemHelpers, Quote, Me, WeirService) {
+				LineItems: function ($q, toastr, OrderCloudSDK, LineItemHelpers, Quote, Me, WeirService) {
 					//QuoteShareService.LineItems.length = 0;
+					var errorMsg = "";
+					var errorTitle= "";
+					if(WeirService.Locale() == "fr"){
+						errorMsg = "Votre cotation ne contient aucune ligne";
+						errorTitle = "Erreur";
+					}
+					else{
+						errorMsg = "Your quote does not contain any line items";
+						errorTitle = "Error";
+					}
 					var dfd = $q.defer();
-                    var errorMsg = "";
-                    var errorTitle= "";
-                    if(WeirService.Locale() == "fr"){
-                        errorMsg = "Votre cotation ne contient aucune ligne";
-                        errorTitle = "Erreur";
-                    }
-                    else{
-                        errorMsg = "Your quote does not contain any line items";
-                        errorTitle = "Error";
-                    }
-					OrderCloud.LineItems.List(Quote.ID)
+					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
 								toastr.error(errorMsg, errorTitle);
@@ -488,29 +400,29 @@ function MyQuoteConfig($stateProvider) {
 							}
 						})
 						.catch(function () {
-                            toastr.error(errorMsg, errorTitle);
+							toastr.error(errorMsg, errorTitle);
 							dfd.resolve({ Items: [] });
 						});
 					return dfd.promise;
 				},
-				PreviousLineItems: function($q, toastr, OrderCloud, Quote, LineItemHelpers, Me, WeirService) {
+				PreviousLineItems: function($q, toastr, OrderCloudSDK, Quote, LineItemHelpers, Me, WeirService) {
 					// We can't have a quantity of 0 on a line item. With show previous line items
 					// Split the current order ID. If a rec exists, get, else do nothing.
-                    var errorMsg = "";
-                    var errorTitle= "";
-                    if(WeirService.Locale() == "fr"){
-                        errorMsg = "La cotation précédente ne contient aucune ligne";
-                        errorTitle = "Erreur";
-                    }
-                    else{
-                        errorMsg = "Previous quote does not contain any line items";
-                        errorTitle = "Error";
-                    }
+					var errorMsg = "";
+					var errorTitle= "";
+					if(WeirService.Locale() == "fr"){
+						errorMsg = "La cotation précédente ne contient aucune ligne";
+						errorTitle = "Erreur";
+					}
+					else{
+						errorMsg = "Previous quote does not contain any line items";
+						errorTitle = "Error";
+					}
 					var pieces = Quote.ID.split('-Rev');
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
-						OrderCloud.LineItems.List(prevId,null,null,null,null,null,null,OrderCloud.BuyerID.Get())
+						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
 									toastr.error(errorMsg, errorTitle);
@@ -529,11 +441,105 @@ function MyQuoteConfig($stateProvider) {
 						return null;
 					}
 				},
-				Payments: function ($stateParams, OrderCloud) {
-					return OrderCloud.Payments.List($stateParams.quoteID);
+				Payments: function ($stateParams, OrderCloudSDK) {
+					return OrderCloudSDK.Payments.List("Outgoing", $stateParams.quoteID);
 				},
-				Catalog:  function (OrderCloud) {
-					return OrderCloud.Catalogs.Get(OrderCloud.CatalogID.Get());
+				Catalog:  function (OrderCloudSDK, Me) {
+					return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
+				},
+				Buyer : function(OrderCloudSDK, Me){
+					return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
+				}
+			}
+		})
+		.state('submit', {
+			parent: 'base',
+			url: '/submit?quoteID&buyerID',
+			templateUrl: 'myquote/templates/myquote.submit.tpl.html',
+			controller: 'SubmitCtrl',
+			controllerAs: 'submit',
+			resolve: {
+				Quote: function ($stateParams, OrderCloudSDK) {
+					return OrderCloudSDK.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+				},
+				ShippingAddress: function (Quote, OrderCloudSDK, Me) {
+					if (Quote.ShippingAddressID) return OrderCloudSDK.Addresses.Get(Me.GetBuyerID(), Quote.ShippingAddressID);
+					return null;
+				},
+				LineItems: function ($q, toastr, OrderCloudSDK, LineItemHelpers, Quote, Me, WeirService) {
+					//QuoteShareService.LineItems.length = 0;
+					var errorMsg = "";
+					var errorTitle= "";
+					if(WeirService.Locale() == "fr"){
+						errorMsg = "Votre cotation ne contient aucune ligne";
+						errorTitle = "Erreur";
+					}
+					else{
+						errorMsg = "Your quote does not contain any line items";
+						errorTitle = "Error";
+					}
+					var dfd = $q.defer();
+					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
+						.then(function (data) {
+							if (!data.Items.length) {
+								toastr.error(errorMsg, errorTitle);
+								dfd.resolve({ Items: [] });
+							} else {
+								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
+								LineItemHelpers.GetProductInfo(data.Items)
+									.then(function () { dfd.resolve(data); });
+							}
+						})
+						.catch(function () {
+							toastr.error(errorMsg, errorTitle);
+							dfd.resolve({ Items: [] });
+						});
+					return dfd.promise;
+				},
+				PreviousLineItems: function($q, toastr, OrderCloudSDK, Quote, LineItemHelpers, Me, WeirService) {
+					// We can't have a quantity of 0 on a line item. With show previous line items
+					// Split the current order ID. If a rec exists, get, else do nothing.
+					var errorMsg = "";
+					var errorTitle= "";
+					if(WeirService.Locale() == "fr"){
+						errorMsg = "La cotation précédente ne contient aucune ligne";
+						errorTitle = "Erreur";
+					}
+					else{
+						errorMsg = "Previous quote does not contain any line items";
+						errorTitle = "Error";
+					}
+					var pieces = Quote.ID.split('-Rev');
+					if(pieces.length > 1) {
+						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
+						var dfd = $q.defer();
+						OrderCloudSDK.LineItems.List("Outgoing", prevId)
+							.then(function(data) {
+								if (!data.Items.length) {
+									toastr.error(errorMsg, errorTitle);
+									dfd.resolve({ Items: [] });
+								} else {
+									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
+									LineItemHelpers.GetProductInfo(data.Items)
+										.then(function () { dfd.resolve(data); });
+								}
+							})
+							.catch(function () {
+								dfd.resolve({ Items: [] });
+							});
+						return dfd.promise;
+					} else {
+						return null;
+					}
+				},
+				Payments: function ($stateParams, OrderCloudSDK) {
+					return OrderCloudSDK.Payments.List("Outgoing", $stateParams.quoteID);
+				},
+				Catalog:  function (OrderCloudSDK, Me) {
+					return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
+				},
+				Buyer : function(OrderCloudSDK, Me){
+					return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
 				}
 			}
 		})

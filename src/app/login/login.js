@@ -321,10 +321,9 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 		});
 
 		newPasswordInstance.result.then(function ($result) {
-			console.log($result);
 			vm.setForm($result);
 		}, function () {
-			console.log('Instance dismissed')
+			// do nothing
 		});
 	}
 }

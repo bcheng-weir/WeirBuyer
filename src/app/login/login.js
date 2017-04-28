@@ -16,7 +16,7 @@ function LoginConfig($stateProvider) {
     ;
 }
 
-function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymous, appname, $localForage, Me) {
+function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymous, appname, $localForage, Me, $window) {
     return {
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
@@ -64,13 +64,13 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
     function _sendVerificationCode(email) {
         var deferred = $q.defer();
 
-        /*var passwordResetRequest = {
+        var passwordResetRequest = {
             Email: email,
             ClientID: clientid,
             URL: encodeURIComponent($window.location.href) + '{0}'
-        };*/
+        };
 
-	    OrderCloudSDK.PasswordResets.SendVerificationCode(email) // was passwordResetRequest
+	    OrderCloudSDK.PasswordResets.SendVerificationCode(passwordResetRequest)
             .then(function() {
                 deferred.resolve();
             })
@@ -156,10 +156,10 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
 }
 
 function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $uibModal) {
-    var vm = this;
+	var vm = this;
 	var username = null;
 	LoginService.GetUsername()
-		.then(function(myUsername) {
+		.then(function (myUsername) {
 			console.log('My User Name: ' + myUsername);
 			username = myUsername;
 			vm.credentials = {
@@ -169,163 +169,164 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 			vm.rememberStatus = username ? true : false;
 		});
 
-    vm.token = $stateParams.token;
-    vm.form = vm.token ? 'reset' : 'login';
-    vm.setForm = function(form) {
-        vm.form = form;
-    };
-    var labels = {
-        en: {
-            LoginLabel: "Please enter your login details",
-            UsernameLabel: "Username",
-            PasswordLabel: "Password",
-            BackToLoginLabel: "Back to Login",
-            ForgotPasswordLabel: "Forgot Password",
-            NewPasswordLabel: "New Password",
-            RememberMe: "Remember Me",
-            WorldWide: "Go to global website",
-            ConfirmPasswordLabel: "Confirm Password",
-            ResetPasswordMessage: "Your password has been reset.",
-            ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
-            ResetPasswordLabel: "Reset Password",
-            SubmitLabel: $sce.trustAsHtml("Submit  <i class='icon-right-arrow'></i>"),
-            BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter."
-        },
-        fr: {
-            LoginLabel: $sce.trustAsHtml("Veuillez saisir vos identifiants"),
-            UsernameLabel: $sce.trustAsHtml("Nom d'utilisateur"),
-            PasswordLabel: $sce.trustAsHtml("Mot de passe"),
-            BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
-            ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
-            RememberMe: $sce.trustAsHtml("Se souvenir de mes identifiants"),
-            WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
-            NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
-            ConfirmPasswordLabel: $sce.trustAsHtml("Confirmer votre mot de passe"),
-            ResetPasswordMessage: $sce.trustAsHtml("Votre mot de passe a &eacute;t&eacute; chang&eacute;"),
-            ForgotMessageLabel: $sce.trustAsHtml("Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe."),
-            ResetPasswordLabel: $sce.trustAsHtml("Changer de mot de passe"),
-            SubmitLabel: $sce.trustAsHtml("Soumettre  <i class='icon-right-arrow'></i>"),
-            BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de vérifier vos identifiant, puis veuillez réessayer.")
-        }
-    };
-    var navlabels = WeirService.navBarLabels();
-    switch (WeirService.Locale()) {
-        case 'fr':
-            vm.labels = labels.fr;
-            vm.navlabels = navlabels.fr;
-            break;
-        default:
-            vm.labels = labels.en;
-            vm.navlabels = navlabels.en;
-            break;
-    }
-    vm.languageOfUser = WeirService.Locale();
+	vm.token = $stateParams.token;
+	vm.form = vm.token ? 'reset' : 'login';
+	vm.setForm = function (form) {
+		vm.form = form;
+	};
+	var labels = {
+		en: {
+			LoginLabel: "Please enter your login details",
+			ForgotLabel: "Enter your email, and we’ll send you instructions on how to reset your password",
+			UsernameLabel: "Username",
+			PasswordLabel: "Password",
+			BackToLoginLabel: "Back to Login",
+			ForgotPasswordLabel: "Forgot Password",
+			NewPasswordLabel: "New Password",
+			RememberMe: "Remember Me",
+			WorldWide: "Go to global website",
+			ConfirmPasswordLabel: "Confirm Password",
+			ResetPasswordMessage: "Your password has been reset.",
+			ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
+			ResetPasswordLabel: "Reset Password",
+			SubmitLabel: $sce.trustAsHtml("Submit  <i class='icon-right-arrow'></i>"),
+			BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter."
+		},
+		fr: {
+			LoginLabel: $sce.trustAsHtml("Veuillez saisir vos identifiants"),
+			ForgotLabel: $sce.trustAsHtml("FR: Enter your email, and we’ll send you instructions on how to reset your password"),
+			UsernameLabel: $sce.trustAsHtml("Nom d'utilisateur"),
+			PasswordLabel: $sce.trustAsHtml("Mot de passe"),
+			BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
+			ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
+			RememberMe: $sce.trustAsHtml("Se souvenir de mes identifiants"),
+			WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
+			NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
+			ConfirmPasswordLabel: $sce.trustAsHtml("Confirmer votre mot de passe"),
+			ResetPasswordMessage: $sce.trustAsHtml("Votre mot de passe a &eacute;t&eacute; chang&eacute;"),
+			ForgotMessageLabel: $sce.trustAsHtml("Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe."),
+			ResetPasswordLabel: $sce.trustAsHtml("Changer de mot de passe"),
+			SubmitLabel: $sce.trustAsHtml("Soumettre  <i class='icon-right-arrow'></i>"),
+			BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de vérifier vos identifiant, puis veuillez réessayer.")
+		}
+	};
+	var navlabels = WeirService.navBarLabels();
+	switch (WeirService.Locale()) {
+		case 'fr':
+			vm.labels = labels.fr;
+			vm.navlabels = navlabels.fr;
+			break;
+		default:
+			vm.labels = labels.en;
+			vm.navlabels = navlabels.en;
+			break;
+	}
+	vm.languageOfUser = WeirService.Locale();
 
-    vm.submit = function() {
-	    OrderCloudSDK.Auth.Login(vm.credentials.Username,vm.credentials.Password,clientid,scope)
-            .then(function(data) {
-	            if(vm.rememberStatus) {
-	            	LoginService.SetUsername(vm.credentials.Username);
-	            } else {
-		            LoginService.SetUsername(null);
-	            }
-	            OrderCloudSDK.SetToken(data['access_token']);
-	            OrderCloudSDK.Buyers.List().then(function (buyers) {
-                    if (buyers && buyers.Items.length > 0) {
-                        var buyer = buyers.Items[0];
-                        Me.SetBuyerID(buyer.ID); //set the cookie in Me
-                        CurrentOrder.Remove()
-                            .then(function () {
-                                return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
-                            });
-                            var lang = WeirService.Locale();
-                            //set the expiration date of the cookie.
-                            var now = new Date();
-                            var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
-                            if (buyer.xp.WeirGroup.id == 2) {
-                                //make it fr
-                                lang = "fr";
-                                $cookieStore.put('language', 'fr', {
-                                    expires: exp
-                                });
-                            }
-                            if (buyer.xp.WeirGroup.id == 1) {
-                                //make it en
-                                lang = "en";
-                                $cookieStore.put('language', 'en', {
-                                    expires: exp
-                                });
-                            }
-                        LoginService.RouteAfterLogin();
-                    }
-                });
-            })
-            .catch(function(ex) {
-                if(ex.status == 400) {
-                    ex.data.error = vm.labels.BadUsernamePassword;
-                }
-                $exceptionHandler(ex);
-            });
-    };
+	vm.submit = function () {
+		OrderCloudSDK.Auth.Login(vm.credentials.Username, vm.credentials.Password, clientid, scope)
+			.then(function (data) {
+				if (vm.rememberStatus) {
+					LoginService.SetUsername(vm.credentials.Username);
+				} else {
+					LoginService.SetUsername(null);
+				}
+				OrderCloudSDK.SetToken(data['access_token']);
+				OrderCloudSDK.Buyers.List().then(function (buyers) {
+					if (buyers && buyers.Items.length > 0) {
+						var buyer = buyers.Items[0];
+						Me.SetBuyerID(buyer.ID); //set the cookie in Me
+						CurrentOrder.Remove()
+							.then(function () {
+								return CurrentOrder.SetCurrentCustomer({id: buyer.ID, name: buyer.Name});
+							});
+						var lang = WeirService.Locale();
+						//set the expiration date of the cookie.
+						var now = new Date();
+						var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+						if (buyer.xp.WeirGroup.id == 2) {
+							//make it fr
+							lang = "fr";
+							$cookieStore.put('language', 'fr', {
+								expires: exp
+							});
+						}
+						if (buyer.xp.WeirGroup.id == 1) {
+							//make it en
+							lang = "en";
+							$cookieStore.put('language', 'en', {
+								expires: exp
+							});
+						}
+						LoginService.RouteAfterLogin();
+					}
+				});
+			})
+			.catch(function (ex) {
+				if (ex.status == 400) {
+					ex.data.error = vm.labels.BadUsernamePassword;
+				}
+				$exceptionHandler(ex);
+			});
+	};
 
-    vm.setCookie = function (lang) {
-        var now = new Date();
-        var exp = new Date(now.getFullYear(), now.getMonth()+6, now.getDate());
-        $cookieStore.put('language', lang, {
-            expires: exp
-        });
-        window.location.reload();
-    };
+	vm.setCookie = function (lang) {
+		var now = new Date();
+		var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+		$cookieStore.put('language', lang, {
+			expires: exp
+		});
+		window.location.reload();
+	};
 
-    vm.forgotPassword = function() {
-        LoginService.SendVerificationCode(vm.credentials.Email)
-            .then(function() {
-                vm.setForm('verificationCodeSuccess');
-                vm.credentials.Email = null;
-            })
-            .catch(function(ex) {
-                $exceptionHandler(ex);
-            });
-    };
+	vm.forgotPassword = function () {
+		LoginService.SendVerificationCode(vm.credentials.Email)
+			.then(function () {
+				vm.setForm('verificationCodeSuccess');
+				vm.credentials.Email = null;
+			})
+			.catch(function (ex) {
+				$exceptionHandler(ex);
+			});
+	};
 
-    vm.resetPassword = function() {
-        LoginService.ResetPassword(vm.credentials, vm.token)
-            .then(function() {
-                vm.setForm('resetSuccess');
-                vm.token = null;
-                vm.credentials.ResetUsername = null;
-                vm.credentials.NewPassword = null;
-                vm.credentials.ConfirmPassword = null;
-            })
-            .catch(function(ex) {
-                $exceptionHandler(ex);
-                vm.credentials.ResetUsername = null;
-                vm.credentials.NewPassword = null;
-                vm.credentials.ConfirmPassword = null;
-            });
-    };
+	vm.resetPassword = function () {
+		LoginService.ResetPassword(vm.credentials, vm.token)
+			.then(function () {
+				vm.setForm('resetSuccess');
+				vm.token = null;
+				vm.credentials.ResetUsername = null;
+				vm.credentials.NewPassword = null;
+				vm.credentials.ConfirmPassword = null;
+			})
+			.catch(function (ex) {
+				$exceptionHandler(ex);
+				vm.credentials.ResetUsername = null;
+				vm.credentials.NewPassword = null;
+				vm.credentials.ConfirmPassword = null;
+			});
+	};
 
-    var newPasswordInstance = $uibModal.open({
-        animation:true,
-        ariaLabelledBy:'modal-title',
-        ariaDescribedBy:'modal-body',
-        templateUrl:'login/templates/login.newpassword.tpl.html',
-        size:'md',
-        controller:'NewPassCtrl',
-        controllerAs:'login',
-        resolve: {
-            Login: function() {
-                console.log('Custom item to inject into NewPasswordController()');
-            }
-        }
-    });
+	var today = new Date();
+	var stop = new Date('2017-05-25');
+	if (stop.getTime() >= today.getTime()) {
+		var newPasswordInstance = $uibModal.open({
+			animation: true,
+			ariaLabelledBy: 'modal-title',
+			ariaDescribedBy: 'modal-body',
+			templateUrl: 'login/templates/login.newpassword.tpl.html',
+			size: 'md',
+			controller: 'NewPassCtrl',
+			controllerAs: 'login'
+		});
 
-    newPasswordInstance.result.then(function($result) {
-		console.log($result);
-		vm.setForm($result);
-    }, function() {
-		console.log('Instance dismissed')
-    });
+		newPasswordInstance.result.then(function ($result) {
+			console.log($result);
+			vm.setForm($result);
+		}, function () {
+			console.log('Instance dismissed')
+		});
+	}
 }
 
 function NewPasswordController($uibModalInstance, $sce, WeirService) {
@@ -352,11 +353,11 @@ function NewPasswordController($uibModalInstance, $sce, WeirService) {
 			Message: $sce.trustAsHtml("We have made updates to the password encryption on this platform. All registered users will now require a new password to log-in<br><br>We have sent you a new temporary password via email.<br><br>Select Go to log-in page if you have your new password available, or<br><br>Select Get new password and we’ll email you a new temporary password.")
 		},
 		fr: {
-			Login: $sce.trustAsHtml('Go to log-in page'),
-			New: $sce.trustAsHtml('Get new password'),
-			Close: $sce.trustAsHtml('Close'),
-			Title: $sce.trustAsHtml('Security updates - New password required.'),
-			Message: $sce.trustAsHtml("We have made updates to the password encryption on this platform. All registered users will now require a new password to log-in<br><br>We have sent you a new temporary password via email.<br><br>Select Go to log-in page if you have your new password available, or<br><br>Select Get new password and we’ll email you a new temporary password.")
+			Login: $sce.trustAsHtml('FR: Go to log-in page'),
+			New: $sce.trustAsHtml('FR: Get new password'),
+			Close: $sce.trustAsHtml('FR: Close'),
+			Title: $sce.trustAsHtml('FR: Security updates - New password required.'),
+			Message: $sce.trustAsHtml("FR: We have made updates to the password encryption on this platform. All registered users will now require a new password to log-in<br><br>We have sent you a new temporary password via email.<br><br>Select Go to log-in page if you have your new password available, or<br><br>Select Get new password and we’ll email you a new temporary password.")
 		}
 	};
 

@@ -2,6 +2,7 @@ angular.module('orderCloud')
     .config(LoginConfig)
     .factory('LoginService', LoginService)
     .controller('LoginCtrl', LoginController)
+    .controller('NewPassCtrl', NewPasswordController)
 ;
 
 function LoginConfig($stateProvider) {
@@ -154,7 +155,7 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
     }
 }
 
-function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me) {
+function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $uibModal) {
     var vm = this;
 	var username = null;
 	LoginService.GetUsername()
@@ -266,6 +267,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
                 $exceptionHandler(ex);
             });
     };
+
     vm.setCookie = function (lang) {
         var now = new Date();
         var exp = new Date(now.getFullYear(), now.getMonth()+6, now.getDate());
@@ -274,6 +276,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
         });
         window.location.reload();
     };
+
     vm.forgotPassword = function() {
         LoginService.SendVerificationCode(vm.credentials.Email)
             .then(function() {
@@ -301,4 +304,61 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
                 vm.credentials.ConfirmPassword = null;
             });
     };
+
+    var newPasswordInstance = $uibModal.open({
+        animation:true,
+        ariaLabelledBy:'modal-title',
+        ariaDescribedBy:'modal-body',
+        templateUrl:'login/templates/login.newpassword.tpl.html',
+        size:'md',
+        controller:'NewPassCtrl',
+        controllerAs:'login',
+        resolve: {
+            Login: function() {
+                console.log('Custom item to inject into NewPasswordController()');
+            }
+        }
+    });
+
+    newPasswordInstance.result.then(function($result) {
+		console.log($result);
+		vm.setForm($result);
+    }, function() {
+		console.log('Instance dismissed')
+    });
+}
+
+function NewPasswordController($uibModalInstance, $sce, WeirService) {
+	var vm = this;
+
+	vm.Login = function() {
+		$uibModalInstance.close('login');
+	};
+
+	vm.New = function() {
+		$uibModalInstance.close('forgot');
+	};
+
+	vm.Dismiss = function() {
+		$uibModalInstance.dismiss();
+	};
+
+	var labels = {
+		en: {
+			Login: 'Go to log-in page',
+			New: 'Get new password',
+			Close: 'Close',
+			Title: 'Security updates - New password required.',
+			Message: $sce.trustAsHtml("We have made updates to the password encryption on this platform. All registered users will now require a new password to log-in<br><br>We have sent you a new temporary password via email.<br><br>Select Go to log-in page if you have your new password available, or<br><br>Select Get new password and we’ll email you a new temporary password.")
+		},
+		fr: {
+			Login: $sce.trustAsHtml('Go to log-in page'),
+			New: $sce.trustAsHtml('Get new password'),
+			Close: $sce.trustAsHtml('Close'),
+			Title: $sce.trustAsHtml('Security updates - New password required.'),
+			Message: $sce.trustAsHtml("We have made updates to the password encryption on this platform. All registered users will now require a new password to log-in<br><br>We have sent you a new temporary password via email.<br><br>Select Go to log-in page if you have your new password available, or<br><br>Select Get new password and we’ll email you a new temporary password.")
+		}
+	};
+
+	vm.labels = labels[WeirService.Locale()];
 }

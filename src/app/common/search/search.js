@@ -138,15 +138,23 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 			filter.ParentID = Me.Org.ID;
 		}
 
-		OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20,'filters':filter, 'depth':Me.Org.xp.WeirGroup.id == "1" ? null : "all", 'catalogID':Me.Org.xp.WeirGroup.label })
+		OrderCloudSDK.Me.ListCategories({'page':1,'pageSize':20,'filters':filter,'depth':Me.Org.xp.WeirGroup.id == "1" ? null:"all",'catalogID':Me.Org.xp.WeirGroup.label})
 			.then(function(response) {
-				OrderCloudSDK.Me.ListCategories({ 'search':lookForThisPartialSerialNumber, 'page':1, 'pageSize':20, 'searchOn':"Description", 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label })
+				OrderCloudSDK.Me.ListCategories({'search':lookForThisPartialSerialNumber,'page':1,'pageSize':20,'searchOn':"Description",'depth':"all",'catalogID':Me.Org.xp.WeirGroup.label})
 					.then(function (responseDescription) {
 						var returnResults = response.Items.concat(responseDescription.Items);
 						returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
 						returnResults = _.uniq(returnResults, false, function (cat) { return cat.xp.SN; });
 						dfd.resolve(returnResults);
+					})
+					.catch(function(ex) {
+						console.log(ex);
+						dfd.reject(ex);
 					});
+			})
+			.catch(function(ex) {
+				console.log(ex);
+				dfd.reject(ex);
 			});
 		return dfd.promise;
 	}

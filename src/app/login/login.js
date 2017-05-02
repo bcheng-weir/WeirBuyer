@@ -67,7 +67,7 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
         var passwordResetRequest = {
             Email: email,
             ClientID: clientid,
-            URL: encodeURIComponent($window.location.href) + '{0}'
+	        URL: encodeURIComponent($window.location.href) + '{0}'
         };
 
 	    OrderCloudSDK.PasswordResets.SendVerificationCode(passwordResetRequest)

@@ -265,7 +265,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             console.log(ex);
                         });
 		        } else {
-			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'searchOn':"ParentID", 'filters': {
+			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters': {
 		                "xp.SN": serialNumber,
 		                "ParentID": cust.id
 		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})

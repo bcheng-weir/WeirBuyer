@@ -155,7 +155,7 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
     }
 }
 
-function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $uibModal) {
+function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $uibModal, ocRoles) {
 	var vm = this;
 	var username = null;
 	LoginService.GetUsername()
@@ -224,14 +224,24 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 	vm.languageOfUser = WeirService.Locale();
 
 	vm.submit = function () {
-		OrderCloudSDK.Auth.Login(vm.credentials.Username, vm.credentials.Password, clientid, scope)
+		vm.loading = OrderCloudSDK.Auth.Login(vm.credentials.Username, vm.credentials.Password, clientid, scope)
 			.then(function (data) {
 				if (vm.rememberStatus) {
 					LoginService.SetUsername(vm.credentials.Username);
 				} else {
 					LoginService.SetUsername(null);
 				}
-				OrderCloudSDK.SetToken(data['access_token']);
+				OrderCloudSDK.SetToken(data.access_token);
+
+				var roles = ocRoles.Set(data.access_token);
+				if (roles.length === 1 && roles[0] === 'PasswordReset') {
+					vm.token = data.access_token;
+					vm.form = 'resetByToken';
+				} else {
+					//$state.go('home');
+					//LoginService.RouteAfterLogin();
+				}
+
 				OrderCloudSDK.Buyers.List().then(function (buyers) {
 					if (buyers && buyers.Items.length > 0) {
 						var buyer = buyers.Items[0];
@@ -268,6 +278,22 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 				}
 				$exceptionHandler(ex);
 			});
+	};
+
+	vm.resetPasswordByToken = function () {
+		vm.loading = OrderCloudSDK.Me.ResetPasswordByToken({
+			NewPassword: vm.credentials.NewPassword
+		})
+		.then(function () {
+			vm.setForm('resetSuccess');
+			vm.credentials = {
+				Username: null,
+				Password: null
+			};
+		})
+		.catch(function (ex) {
+			$exceptionHandler(ex);
+		});
 	};
 
 	vm.setCookie = function (lang) {
@@ -307,7 +333,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 			});
 	};
 
-	var today = new Date();
+	/*var today = new Date();
 	var stop = new Date('2017-05-25');
 	if (stop.getTime() >= today.getTime()) {
 		var newPasswordInstance = $uibModal.open({
@@ -325,7 +351,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 		}, function () {
 			// do nothing
 		});
-	}
+	}*/
 }
 
 function NewPasswordController($uibModalInstance, $sce, WeirService) {

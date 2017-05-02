@@ -366,13 +366,13 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     }
 
     function getParts(catId, deferred, result) {
-	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'PageSize':100, 'categoryID':catId, 'catalogID':result.ParentID.substring(0, 5) })
+	    UpdateQuote
             .then(function (products) {
                 result.Parts = [];
                 var hasPrices = [];
                 var noPrices = [];
                 angular.forEach(products.Items, function (product) {
-                    if (product.StandardPriceSchedule && product.StandardPriceSchedule.PriceBreaks && product.StandardPriceSchedule.PriceBreaks.length > 0 && product.StandardPriceSchedule.PriceBreaks[0].Price) {
+                    if (product.PriceSchedule && product.PriceSchedule.PriceBreaks && product.PriceSchedule.PriceBreaks.length > 0 && product.PriceSchedule.PriceBreaks[0].Price) {
                         hasPrices.push({ Number: product.ID, Detail: product });
                     } else {
                         noPrices.push({ Number: product.ID, Detail: product });

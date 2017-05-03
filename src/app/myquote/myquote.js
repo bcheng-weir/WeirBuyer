@@ -548,7 +548,7 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope, $exceptionHandler) {
     var vm = this;
 	QuoteShareService.Quote = Quote;
     vm.currentState = $state.$current.name;
@@ -649,6 +649,9 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 					vm.Quote = QuoteShareService.Quote;
 					$window.location.reload();
 				}
+			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
 			});
 	}
 	function _approve() {

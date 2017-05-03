@@ -263,6 +263,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                         })
                         .catch(function(ex) {
                             console.log(ex);
+	                        return deferred.reject(ex);
                         });
 		        } else {
 			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters': {
@@ -282,6 +283,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 				        .catch(function(ex) {
 				        	console.log(OrderCloudSDK.GetToken());
 					        console.log(ex.response.body.Errors["0"].Message);
+					        return deferred.reject(ex);
 				        });
 		        }
 		    } else {
@@ -366,7 +368,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     }
 
     function getParts(catId, deferred, result) {
-	    UpdateQuote
+	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'PageSize':100, 'categoryID':catId, 'catalogID':result.ParentID.substring(0, 5) }) //why was UpdatePart here?
             .then(function (products) {
                 result.Parts = [];
                 var hasPrices = [];

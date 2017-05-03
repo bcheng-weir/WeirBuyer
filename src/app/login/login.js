@@ -190,7 +190,9 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 			ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
 			ResetPasswordLabel: "Reset Password",
 			SubmitLabel: $sce.trustAsHtml("Submit  <i class='icon-right-arrow'></i>"),
-			BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter."
+			BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter.",
+			ResetToastr: "Please reset your password",
+			ResetMessage: "Due to a change in how we store password information, we must ask all registered users to reset their passwords. You can use the same password as before: "
 		},
 		fr: {
 			LoginLabel: $sce.trustAsHtml("Veuillez saisir vos identifiants"),
@@ -203,11 +205,13 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 			WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
 			NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
 			ConfirmPasswordLabel: $sce.trustAsHtml("Confirmer votre mot de passe"),
-			ResetPasswordMessage: $sce.trustAsHtml("Votre mot de passe a &eacute;t&eacute; chang&eacute;"),
+			ResetPasswordMessage: $sce.trustAsHtml("Votre mot de passe a été réinitialisé"),
 			ForgotMessageLabel: $sce.trustAsHtml("Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe."),
 			ResetPasswordLabel: $sce.trustAsHtml("Changer de mot de passe"),
 			SubmitLabel: $sce.trustAsHtml("Soumettre  <i class='icon-right-arrow'></i>"),
-			BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de vérifier vos identifiant, puis veuillez réessayer.")
+			BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de vérifier vos identifiant, puis veuillez réessayer."),
+			ResetToastr: $sce.trustAsHtml("Veuillez réinitialiser votre mot de passe"),
+			ResetMessage: $sce.trustAsHtml("En raison d'une modification de la façon dont nous stockons les informations sur les mots de passe, nous demandons à tous les utilisateurs enregistrés de réinitialiser leurs mots de passe. Vous pouvez bien sûr réutiliser le même mot de passe que précédemment.")
 		}
 	};
 	var navlabels = WeirService.navBarLabels();
@@ -273,7 +277,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 				});
 			})
 			.catch(function (ex) {
-				if (ex.status == 400) {
+				if (ex.status == 400 && ex.data) {
 					ex.data.error = vm.labels.BadUsernamePassword;
 				}
 				$exceptionHandler(ex);

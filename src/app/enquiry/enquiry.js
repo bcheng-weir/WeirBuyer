@@ -68,8 +68,8 @@ function EnquiryConfig($stateProvider) {
 	        controller: 'EnquiryDeliveryCtrl',
 	        controllerAs: 'delivery',
 	        resolve: {
-	            Addresses: function (OrderCloud) {
-	                return OrderCloud.Addresses.List(null, null, null, null, null, null, OrderCloud.BuyerID.Get());
+	            Addresses: function (OrderCloudSDK, Me) {
+	                return OrderCloudSDK.Addresses.List(Me.GetBuyerID());
 	            }
 	        }
 	    })
@@ -81,7 +81,7 @@ function EnquiryConfig($stateProvider) {
 	    });
 }
 
-function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud, toastr, Me) {
+function EnquiryController($state, $sce, WeirService, EnquiryService, toastr, Me) {
     var vm = this;
     vm.info = EnquiryService;
     vm.locale = WeirService.Locale();
@@ -143,7 +143,7 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, OrderCloud
     }
 }
 
-function EnquiryFilterController($state, $sce, WeirService, OrderCloud, EnquiryService, EnquiryData, toastr, Me) {
+function EnquiryFilterController($state, $sce, WeirService, EnquiryService, EnquiryData, toastr, Me) {
     var vm = this;
     vm.info = EnquiryService;
     vm.info.EnquiryData = EnquiryData;
@@ -240,7 +240,7 @@ function EnquirySelectController($state, $sce, WeirService, PartList, EnquirySer
         return false;
     };
 }
-function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloud, EnquiryService, Underscore, toastr, Addresses, OCGeography, Me) {
+function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore, toastr, Addresses, OCGeography, Me) {
     var vm = this;
     vm.enq = EnquiryService;
     if (vm.enq.Step < 3) vm.enq.Step = 3;
@@ -284,7 +284,7 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
         var newAddressResults = {};
         modalInstance.result
             .then(function (address) {
-                return OrderCloud.Addresses.Create(address, OrderCloud.BuyerID.Get());
+                return OrderCloudSDK.Addresses.Create(Me.GetBuyerID(), address);
             })
             .then(function (newAddress) {
                 newAddressResults.ID = newAddress.ID;

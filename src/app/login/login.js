@@ -378,11 +378,11 @@ function NewPasswordController($uibModalInstance, $sce, WeirService) {
 			Message: $sce.trustAsHtml("We have made updates to the password encryption on this platform. All registered users will now require a new password to log-in<br><br>We have sent you a new temporary password via email.<br><br>Select Go to log-in page if you have your new password available, or<br><br>Select Get new password and we’ll email you a new temporary password.")
 		},
 		fr: {
-			Login: $sce.trustAsHtml('FR: Go to log-in page'),
-			New: $sce.trustAsHtml('FR: Get new password'),
-			Close: $sce.trustAsHtml('FR: Close'),
-			Title: $sce.trustAsHtml('FR: Security updates - New password required.'),
-			Message: $sce.trustAsHtml("FR: We have made updates to the password encryption on this platform. All registered users will now require a new password to log-in<br><br>We have sent you a new temporary password via email.<br><br>Select Go to log-in page if you have your new password available, or<br><br>Select Get new password and we’ll email you a new temporary password.")
+			Login: $sce.trustAsHtml('Aller à la page de connexion'),
+			New: $sce.trustAsHtml('Obtenir un nouveau Mot de Passe'),
+			Close: $sce.trustAsHtml('Fermer'),
+			Title: $sce.trustAsHtml('Mises à jour de sécurité - Un nouveau mot de passe est requis.'),
+			Message: $sce.trustAsHtml("Nous avons mis à jour le cryptage du mot de passe sur notre plate-forme. Tous les utilisateurs enregistrés nécessitent désormais un nouveau mot de passe pour se connecter.<br><br>Nous vous avons envoyé un nouveau mot de passe temporaire par e-mail.<br><br>Sélectionnez Aller à la page de connexion si votre nouveau mot de passe est disponible, ou<br><br>Sélectionnez Obtenir un nouveau mot de passe pour recevoir un mot de passe temporaire.")
 		}
 	};
 

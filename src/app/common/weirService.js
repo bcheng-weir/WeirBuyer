@@ -1173,7 +1173,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         .then(function (b) {
             if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
                 enqCat = b.xp.WeirGroup.label + "_ENQ";
-                return OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':100, 'sortBy':"Name", 'depth':"2", 'catalogID':enqCat});
+                return OrderCloudSDK.Me.ListCategories({ 'page': 1, 'pageSize': 100, 'sortBy': "Name", 'depth': "2", 'catalogID': enqCat, filters: {"ID": "<>Parts"}});
             } else {
                 deferred.resolve([]);
             }

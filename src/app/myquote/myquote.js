@@ -1882,9 +1882,79 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
-	vm.LineItems = LineItems.Items;
+
+	//Part of the label comparison
+	function compare(current,previous) {
+		if(current.Quantity === previous.Quantity &&
+			current.UnitPrice === previous.UnitPrice &&
+			current.xp.TagNumber === previous.xp.TagNumber &&
+			current.xp.SN === previous.xp.SN &&
+			(
+				(typeof current.Product.xp.LeadTime !== "undefined" && typeof previous.Product.xp.LeadTime !== "undefined" &&
+					current.Product.xp.LeadTime === previous.Product.xp.LeadTime) ||
+				(typeof current.xp.LeadTime !== "undefined" && typeof previous.xp.LeadTime !== "undefined" &&
+					current.xp.LeadTime === previous.xp.LeadTime)
+			) &&
+			(
+				(typeof current.Product.xp.ReplacementSchedule !== "undefined" && typeof previous.Product.xp.ReplacementSchedule !== "undefined" &&
+					current.Product.xp.ReplacementSchedule === previous.Product.xp.ReplacementSchedule) ||
+				(typeof current.xp.ReplacementSchedule !== "undefined" && typeof previous.xp.ReplacementSchedule !== "undefined" &&
+					current.xp.ReplacementSchedule === previous.xp.ReplacementSchedule)
+			) &&
+			(
+				(typeof current.Product.Description !== "undefined" && typeof previous.Product.Description !== "undefined" &&
+					current.Product.Description === previous.Product.Description) ||
+				(typeof current.xp.Description !== "undefined" && typeof previous.xp.Description !== "undefined" &&
+					current.xp.Description === previous.xp.Description)
+			)
+			&&
+			(
+				(typeof current.Product.Name !== "undefined" && typeof previous.Product.Name !== "undefined" &&
+					current.Product.Name === previous.Product.Name) ||
+				(typeof current.xp.ProductName !== "undefined" && typeof previous.xp.ProductName !== "undefined" &&
+					current.xp.ProductName === previous.xp.ProductName)
+			)
+		) {
+			return null;
+		} else {
+			return "UPDATED"
+		}
+	}
+	if(LineItems) { //hopefully an easier way to set labels.
+		// For each line item, does it exist in previous line items?  If NO then NEW, else are the fields different between the two? If YES then updated.
+		vm.LineItems = Underscore.filter(LineItems.Items, function(item) {
+			console.log(item);
+			var found = false;
+			if(item.ProductID == "PLACEHOLDER") { //Match a blank line item
+				angular.forEach(PreviousLineItems.Items, function(value, key) {
+					if(value.xp.SN == item.xp.SN) {
+						found = true;
+						item.displayStatus = compare(item,value);
+					}
+				});
+			} else { // Match regular line items
+				angular.forEach(PreviousLineItems.Items, function(value, key) {
+					if(value.ProductID === item.ProductID) {
+						found = true;
+						item.displayStatus = compare(item,value);
+					}
+				});
+			}
+
+			if(!found) {
+				//new!
+				item.displayStatus = "NEW";
+			}
+
+			return item;
+		});
+	} else {
+		vm.LineItems = null;
+	}
+
 	vm.BuyerID = Me.GetBuyerID();
 	vm.Catalog = Catalog;
+
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
 			if(item.ProductID == "PLACEHOLDER") {
@@ -1898,13 +1968,15 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 				if(found) {
 					return;
 				} else {
-					return item;
+					item.displayStatus="DELETED";
+					return item; //Deleted blank line item.
 				}
 			} else {
 				if (Underscore.findWhere(LineItems.Items, {ProductID:item.ProductID})) {
 					return;
 				} else {
-					return item;
+					item.displayStatus="DELETED";
+					return item; //Deleted normal line item.
 				}
 			}
 		});
@@ -2072,61 +2144,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	function _gotoRevisions() {
 		if(vm.Quote.xp.OriginalOrderID) {
 			$state.go("revisions", { quoteID: vm.Quote.xp.OriginalOrderID });
-		}
-	}
-
-	vm.ShowUpdated = function (item) {
-		// return true if qty <> xp.originalQty and qty > 0
-		if(item.xp) {
-			return (item.xp.OriginalQty && (item.Quantity != item.xp.OriginalQty)) ||
-				(item.xp.OriginalUnitPrice && (item.xp.OriginalUnitPrice===0 || (item.UnitPrice != item.xp.OriginalUnitPrice))) ||
-				(typeof item.xp.OriginalLeadTime !== "undefined" &&
-					(
-						(typeof item.Product.xp.LeadTime !== "undefined" && (item.xp.OriginalLeadTime !== item.Product.xp.LeadTime)) ||
-						(typeof item.xp.LeadTime !== "undefined" && (item.xp.OriginalLeadTime !== item.xp.LeadTime))
-					)
-				) ||
-				(typeof item.xp.OriginalReplacementSchedule !== "undefined" &&
-					(
-						(typeof item.Product.xp.ReplacementSchedule !== "undefined" && (item.xp.OriginalReplacementSchedule !== item.Product.xp.ReplacementSchedule)) ||
-						(typeof item.xp.ReplacementSchedule !== "undefined" && (item.xp.OriginalReplacementSchedule !== item.xp.ReplacementSchedule))
-					)
-				) ||
-				(typeof item.xp.OriginalDescription !== "undefined" &&
-					(
-						(typeof item.Product.xp.Description !== "undefined" && (item.xp.OriginalDescription !== item.Product.xp.Description)) ||
-						(typeof item.xp.Description !== "undefined" && (item.xp.OriginalDescription !== item.xp.Description))
-					)
-				) ||
-				(typeof item.xp.OriginalProductName !== "undefined" &&
-					(
-						(typeof item.Product.xp.Name !== "undefined" && (item.xp.OriginalProductName !== item.Product.xp.Name)) ||
-						(typeof item.xp.ProductName !== "undefined" && (item.xp.OriginalProductName !== item.xp.ProductName))
-					)
-				) ||
-				(typeof item.xp.OriginalTagNumber !== "undefined" && (item.xp.TagNumber !== item.xp.OriginalTagNumber)) ||
-				(typeof item.xp.OriginalSN !== "undefined" && (item.xp.SN !== item.xp.OriginalSN))
-		} else {
-			return false;
-		}
-	};
-
-	vm.ShowRemoved = _showRemoved;
-	function _showRemoved(line) {
-		if(line.xp) {
-			return line.Quantity == 0 && line.xp.OriginalQty != 0;
-		} else {
-			return false;
-		}
-	}
-
-	vm.ShowNew = _showNew;
-	function _showNew(line) {
-		if(line.xp) {
-			//return line.xp.OriginalQty==0;
-			return line.xp.OriginalQty==0 || (vm.Quote.ID.indexOf("Rev") !== -1 && line.xp.OriginalQty==null); //Second part matches items added in admin search.
-		} else {
-			return false;
 		}
 	}
 

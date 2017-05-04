@@ -647,7 +647,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 				toastr.success(vm.labels.SaveSuccessMessage, vm.labels.SaveSuccessTitle);
 				if(assignQuoteNumber) {
 					vm.Quote = QuoteShareService.Quote;
-					$window.location.reload();
+					//$window.location.reload();
 				}
 			})
 			.catch(function(ex) {
@@ -740,13 +740,14 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		$timeout($window.print,1);
 	}
 
+	var goto = {
+		"myquote.detail":"myquote.delivery",
+		"myquote.delivery":"myquote.review",
+		"myquote.review":"myquote.submitquote"
+	};
 	function _next() {
 		// ToDo combine gotoDelivery() and next(), iot handle the "workflow" in one spot.
-		var goto = {
-			"myquote.detail":"myquote.delivery",
-			"myquote.delivery":"myquote.review",
-			"myquote.review":"myquote.submitquote"
-		};
+
 		var isValidForReview = function () {
 		    var validForReview = true;
             validForReview = isCarriageReadyForBeyondDelivery() && validForReview;

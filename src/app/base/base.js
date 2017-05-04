@@ -121,7 +121,7 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
+function BaseController(OrderCloudSDK, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
@@ -394,7 +394,7 @@ function occomponents() {
     }
 }
 
-function FeedbackController($sce, $uibModalInstance, $state, OrderCloudSDK, WeirService, User) {
+function FeedbackController($sce, $uibModalInstance, $state, OrderCloudSDK, Me, WeirService, User) {
     var vm = this;
     vm.user = User;
     vm.Cancel = cancel;
@@ -447,7 +447,7 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloudSDK, Weir
         };
         var usr = vm.user;
         if (usr) {
-	        OrderCloudSDK.Users.Patch(usr.ID, data);
+	        OrderCloudSDK.Users.Patch( Me.GetBuyerID(), usr.ID, data );
         }
         $uibModalInstance.close();
     }

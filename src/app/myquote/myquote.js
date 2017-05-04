@@ -1883,7 +1883,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
 	vm.LineItems = LineItems.Items;
-	vm.BuyerID = Me.GEtBuyerID();
+	vm.BuyerID = Me.GetBuyerID();
 	vm.Catalog = Catalog;
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {

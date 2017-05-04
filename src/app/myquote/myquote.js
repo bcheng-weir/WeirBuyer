@@ -278,7 +278,7 @@ function MyQuoteConfig($stateProvider) {
 			controllerAs: 'revised',
 			resolve: {
 				Quote: function ($stateParams, OrderCloudSDK) {
-					return OrderCloudSDK.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+					return OrderCloudSDK.Orders.Get("Outgoing", $stateParams.quoteID);
 				},
 				ShippingAddress: function (Quote, OrderCloudSDK, Me) {
 					if (Quote.ShippingAddressID) return OrderCloudSDK.Addresses.Get(Me.GetBuyerID(), Quote.ShippingAddressID);
@@ -369,7 +369,7 @@ function MyQuoteConfig($stateProvider) {
 		    controllerAs: 'readonly',
 			resolve: {
 				Quote: function ($stateParams, OrderCloudSDK) {
-					return OrderCloudSDK.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+					return OrderCloudSDK.Orders.Get("Outgoing", $stateParams.quoteID);
 				},
 				ShippingAddress: function (Quote, OrderCloudSDK, Me) {
 					if (Quote.ShippingAddressID) return OrderCloudSDK.Addresses.Get(Me.GetBuyerID(), Quote.ShippingAddressID);
@@ -460,7 +460,7 @@ function MyQuoteConfig($stateProvider) {
 			controllerAs: 'submit',
 			resolve: {
 				Quote: function ($stateParams, OrderCloudSDK) {
-					return OrderCloudSDK.Orders.Get($stateParams.quoteID, $stateParams.buyerID);
+					return OrderCloudSDK.Orders.Get("Outgoing", $stateParams.quoteID);
 				},
 				ShippingAddress: function (Quote, OrderCloudSDK, Me) {
 					if (Quote.ShippingAddressID) return OrderCloudSDK.Addresses.Get(Me.GetBuyerID(), Quote.ShippingAddressID);
@@ -740,14 +740,13 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		$timeout($window.print,1);
 	}
 
-	var goto = {
-		"myquote.detail":"myquote.delivery",
-		"myquote.delivery":"myquote.review",
-		"myquote.review":"myquote.submitquote"
-	};
 	function _next() {
 		// ToDo combine gotoDelivery() and next(), iot handle the "workflow" in one spot.
-
+		var goto = {
+			"myquote.detail":"myquote.delivery",
+			"myquote.delivery":"myquote.review",
+			"myquote.review":"myquote.submitquote"
+		};
 		var isValidForReview = function () {
 		    var validForReview = true;
             validForReview = isCarriageReadyForBeyondDelivery() && validForReview;
@@ -779,9 +778,9 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		else{
 			$state.go($state.current, {}, {reload: false});
 		}
-	}
+	};
 
-	vm.SetShippingPrice = 	function() {
+	vm.SetShippingPrice = function() {
         var isValidForReview = function () {
             var validForReview = true;
             validForReview = isCarriageReadyForBeyondDelivery() && validForReview;
@@ -803,7 +802,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	                }
 	                QuoteShareService.Quote = Quote;
 	                QuoteShareService.UiTotal = vm.UiTotal;
-                    $state.go(goto[$state.current.name]);
+                    //$state.go(goto[$state.current.name]);
                 })
                 .catch(function (ex) {
                     $exceptionHandler(ex);

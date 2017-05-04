@@ -35,7 +35,7 @@ function QuotesConfig($stateProvider) {
 				Quotes: function(OrderCloudSDK, WeirService, Parameters, Me) {
 					//return WeirService.FindOrders(Parameters, false);
 					if(Parameters && Parameters.search && Parameters.search != 'undefined') {
-						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
+						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //,FromUserID,Total,xp
 					}
 					Parameters.filters.FromUserID = Me.Profile.ID;
 					var opts = {
@@ -103,7 +103,7 @@ function QuotesConfig($stateProvider) {
 		});
 }
 
-function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudSDK) {
+function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudSDK, OrderCloudParameters) {
 	var vm = this;
 	vm.list = Quotes;
 	vm.parameters = Parameters;

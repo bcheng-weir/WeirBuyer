@@ -23,8 +23,10 @@ function OrdersConfig($stateProvider) {
                     return OrderCloudParameters.Get($stateParams);
                 },
 	            Orders: function(OrderCloudSDK, WeirService, Parameters, Me) {
-                	//return WeirService.FindOrders(Parameters, false);
-		            Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
+		            //return WeirService.FindOrders(Parameters, false);
+		            if (Parameters.search) {
+		                Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //FromUserID and Total were throwing errors
+	                }
 		            // Filter on Me.Profile.ID == FromUserID
 		            Parameters.filters.FromUserID = Me.Profile.ID;
                     return OrderCloudSDK.Orders.List("Outgoing", {'from':Parameters.from, 'to':Parameters.to, 'search':Parameters.search, 'page':Parameters.page, 'pageSize':Parameters.pageSize || 10, 'searchOn':Parameters.searchOn, 'sortBy':Parameters.sortBy, 'filters':Parameters.filters, 'buyerID':Me.GetBuyerID()});

@@ -14,11 +14,11 @@ function CatalogSearchConfig($stateProvider) {
             controller: 'CatalogSearchResultsCtrl',
             controllerAs: 'catalogSearchResults',
             resolve:{
-                CategoryList: function($stateParams, OrderCloud) {
-                    return OrderCloud.Me.ListCategories($stateParams.searchterm, null, null, null, null, null, 'all');
+                CategoryList: function($stateParams, OrderCloudSDK) {
+                    return OrderCloudSDK.Me.ListCategories({'search':$stateParams.searchterm, 'depth':'all'});
                 },
-                ProductList: function($stateParams, OrderCloud) {
-                    return OrderCloud.Me.ListProducts($stateParams.searchterm);
+                ProductList: function($stateParams, OrderCloudSDK) {
+                    return OrderCloudSDK.Me.ListProducts({'search':$stateParams.searchterm});
                 }
             }
         })
@@ -31,7 +31,7 @@ function CatalogSearchResultsController(CategoryList, ProductList) {
     vm.categories = CategoryList;
 }
 
-function CatalogSearchController($scope, $state, $q, OrderCloud) {
+function CatalogSearchController($scope, $state, $q, OrderCloudSDK) {
     var vm = this;
     vm.productData;
     vm.categoryData;
@@ -40,8 +40,8 @@ function CatalogSearchController($scope, $state, $q, OrderCloud) {
         var maxCategories = $scope.maxcats || 5;
         var dfd = $q.defer();
         var queue = [];
-        queue.push(OrderCloud.Me.ListProducts(term, 1, maxProducts));
-        queue.push(OrderCloud.Me.ListCategories(term, 1, maxCategories, null, null, null, 'all'));
+        queue.push(OrderCloudSDK.Me.ListProducts({ 'search':term, 'page':1, 'pageSize':maxProducts }));
+        queue.push(OrderCloudSDK.Me.ListCategories({ 'search':term, 'page':1, 'pageSize':maxCategories, 'depth':'all' }));
         $q.all(queue)
             .then(function(responses) {
                 vm.productData = responses[0].Items;

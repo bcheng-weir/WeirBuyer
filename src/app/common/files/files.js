@@ -114,7 +114,7 @@ function FilesService($q,fileStore) {
     return service;
 }
 
-function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService, OrderCloud, fileStore, WeirService, FileSaver) {
+function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService, OrderCloudSDK, fileStore, WeirService, FileSaver) {
     var directive = {
         scope: {
             model: '=',
@@ -179,7 +179,7 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
                         var xp = {"xp": {
                             "Files": scope.model.xp[scope.keyname]
                         }};
-                        return OrderCloud.Orders.Patch(scope.model.ID,xp,OrderCloud.BuyerID.Get());
+                        return OrderCloudSDK.Orders.Patch("Outgoing", scope.model.ID, xp);
                     }
                 })
         };
@@ -195,7 +195,7 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
                     var xp = {"xp": {
                         "Files": scope.model.xp[scope.keyname]
                     }};
-                    return OrderCloud.Orders.Patch(scope.model.ID,xp,OrderCloud.BuyerID.Get());
+                    return OrderCloudSDK.Orders.Patch("Outgoing", scope.model.ID, xp);
                 });
         }
 
@@ -269,7 +269,7 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
     return directive;
 }
 
-function ordercloudPoUpload($parse, $exceptionHandler, $sce, Underscore, FileReader, FilesService, OrderCloud, fileStore, WeirService, FileSaver) {
+function ordercloudPoUpload($parse, $exceptionHandler, $sce, Underscore, FileReader, FilesService, OrderCloudSDK, fileStore, WeirService, FileSaver) {
     var directive = {
         scope: {
             model: '=',
@@ -334,7 +334,7 @@ function ordercloudPoUpload($parse, $exceptionHandler, $sce, Underscore, FileRea
                             "PODocument": null
                         }};
                     }
-                    return OrderCloud.Orders.Patch(orderid,xp,OrderCloud.BuyerID.Get());
+                    return OrderCloudSDK.Orders.Patch("Outgoing", orderid, xp);
                 })
         };
 
@@ -354,7 +354,7 @@ function ordercloudPoUpload($parse, $exceptionHandler, $sce, Underscore, FileRea
                     var xp = {"xp": {
                         "PODocument": fileName
                     }};
-                    return OrderCloud.Orders.Patch(scope.model.ID,xp,OrderCloud.BuyerID.Get());
+                    return OrderCloudSDK.Orders.Patch("Outgoing", scope.model.ID, xp);
                 })
                 .catch(function(ex){
                     $exceptionHandler(ex);

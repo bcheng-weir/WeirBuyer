@@ -15,30 +15,32 @@ function SelectBuyerDirective() {
     }
 }
 
-function SelectBuyerController($scope, $state, OrderCloud) {
+function SelectBuyerController($scope, $state, OrderCloudSDK) {
     var vm = this;
 
     vm.align = $scope.align;
 
-    OrderCloud.Buyers.List().then(function(data) {
-        vm.BuyerList = data;
-    });
+    OrderCloudSDK.Buyers.List()
+	    .then(function(data) {
+            vm.BuyerList = data;
+        });
 
-    OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get()).then(function(data) {
-        vm.selectedBuyer = data;
-    });
+    OrderCloudSDK.Buyers.Get(Me.GetBuyerID())
+        .then(function(data) {
+            vm.selectedBuyer = data;
+        });
 
     vm.ChangeBuyer = function(buyer) {
-        OrderCloud.Buyers.Get(buyer.ID).then(function(data) {
+        OrderCloudSDK.Buyers.Get(buyer.ID).then(function(data) {
             vm.selectedBuyer = data;
-            OrderCloud.BuyerID.Set(data.ID);
+            Me.SetBuyerID(data.ID);
             $state.reload($state.current);
         });
     };
 
     vm.pagingfunction = function() {
         if (vm.BuyerList.Meta.Page <= vm.BuyerList.Meta.TotalPages) {
-            OrderCloud.Buyers.List(null, vm.BuyerList.Meta.Page + 1, vm.BuyerList.Meta.PageSize)
+            OrderCloudSDK.Buyers.List({ 'page':vm.BuyerList.Meta.Page + 1, 'pageSize':vm.BuyerList.Meta.PageSize })
                 .then(function(data) {
                     vm.BuyerList.Meta = data.Meta;
                     vm.BuyerList.Items = [].concat(vm.BuyerList.Items, data.Items);

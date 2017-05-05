@@ -15,13 +15,13 @@ function SearchTypeService() {
     return svc;
 }
 
-function UserGroupsService($q, OrderCloud) {
+function UserGroupsService($q, OrderCloudSDK) {
     var groups = null;
     function _isUserInGroup(groupList) {
         var d = $q.defer();
         var isInGroup = false;
         if (!groups) {
-            OrderCloud.Me.ListUserGroups()
+	        OrderCloudSDK.Me.ListUserGroups()
             .then(function (results) {
                 groups = [];
                 for (var i = 0; i < results.Items.length; i++) {
@@ -49,7 +49,7 @@ function UserGroupsService($q, OrderCloud) {
     }
 }
 
-function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, SearchTypeService, Me, Underscore) {
+function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, SearchTypeService, Me) {
     var orderStatuses = {
         Enquiry: { id: "EN", label: { en: "Enquiry Submitted", fr: "FR: Enquiry Submitted" }, desc: "An enquiry for parts not found" },
 	    EnquiryReview: {id: "ER", label:{ en: "Enquiry Submitted", fr: "FR: Enquiry Submitted" },desc: "An enquiry under administrator review."},
@@ -147,12 +147,12 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
             IsShipping: true,
             IsBilling: true
         };
-        return OrderCloud.Addresses.SaveAssignment(buyerAssignment)
+        return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(),buyerAssignment)
            .then(function () {
-               return OrderCloud.Addresses.SaveAssignment(shopperAssignment);
+               return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(),shopperAssignment);
            })
            .then(function () {
-               return OrderCloud.Addresses.SaveAssignment(adminAssignment);
+               return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(),adminAssignment);
            })
            .catch(function (ex) {
                return ex;
@@ -248,9 +248,9 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		.then(function (cust) {
 		    if (cust) {
 		        if (SearchTypeService.IsGlobalSearch()) {
-		            OrderCloud.Me.ListCategories(null, 1, 50, null, "Name", {
+			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
 		                "xp.SN": serialNumber
-		            }, "all", cust.id.substring(0, 5))
+		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];
@@ -260,12 +260,16 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                             } else {
                                 return deferred.resolve("No matches found for serial number " + serialNumber);
                             }
+                        })
+                        .catch(function(ex) {
+                            console.log(ex);
+	                        return deferred.reject(ex);
                         });
 		        } else {
-		            OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
+			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters': {
 		                "xp.SN": serialNumber,
 		                "ParentID": cust.id
-		            }, "all", cust.id.substring(0, 5))
+		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];
@@ -275,7 +279,12 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                             } else {
                                 return deferred.resolve("No matches found for serial number " + serialNumber);
                             }
-                        });
+                        })
+				        .catch(function(ex) {
+				        	console.log(OrderCloudSDK.GetToken());
+					        console.log(ex.response.body.Errors["0"].Message);
+					        return deferred.reject(ex);
+				        });
 		        }
 		    } else {
 		        throw { message: "Customer for quote / search not set" };
@@ -295,9 +304,9 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 			.then(function (cust) {
 			    if (cust) {
 			        if (SearchTypeService.IsGlobalSearch()) {
-			            OrderCloud.Me.ListCategories(null, 1, 50, null, "Name", {
+				        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
 			                "TagNumber": tagNumber
-			            }, "all", cust.id.substring(0, 5))
+			            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                             .then(function (matches) {
                                 if (matches.Items.length == 1) {
                                     result = matches.Items[0];
@@ -309,10 +318,10 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                                 }
                             });
 			        } else {
-			            OrderCloud.Me.ListCategories(null, 1, 50, "ParentID", null, {
+				        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"ParentID",'filters':{
 			                "xp.TagNumber": tagNumber,
 			                "ParentID": cust.id
-			            }, null, cust.id.substring(0, 5))
+			            }, 'catalogID':Me.Org.xp.WeirGroup.label})
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];
@@ -340,8 +349,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
         CurrentOrder.GetCurrentCustomer()
 			.then(function (cust) {
 			    if (cust) {
-			        OrderCloud.Me.ListCategories(null, 1, 50, null, null,
-            { "ID": id }, "all", cust.id.substring(0, 5))
+				    OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters':{ "ID": id }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
             .then(function (matches) {
                 if (matches.Items.length == 1) {
                     result = matches.Items[0];
@@ -360,13 +368,13 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
     }
 
     function getParts(catId, deferred, result) {
-        OrderCloud.Me.ListProducts(null, 1, 100, null, null, null, catId, result.ParentID.substring(0, 5))
+	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'PageSize':100, 'categoryID':catId, 'catalogID':result.ParentID.substring(0, 5) }) //why was UpdatePart here?
             .then(function (products) {
                 result.Parts = [];
                 var hasPrices = [];
                 var noPrices = [];
                 angular.forEach(products.Items, function (product) {
-                    if (product.StandardPriceSchedule && product.StandardPriceSchedule.PriceBreaks && product.StandardPriceSchedule.PriceBreaks.length > 0 && product.StandardPriceSchedule.PriceBreaks[0].Price) {
+                    if (product.PriceSchedule && product.PriceSchedule.PriceBreaks && product.PriceSchedule.PriceBreaks.length > 0 && product.PriceSchedule.PriceBreaks[0].Price) {
                         hasPrices.push({ Number: product.ID, Detail: product });
                     } else {
                         noPrices.push({ Number: product.ID, Detail: product });
@@ -393,16 +401,14 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                             if (number) {
                                 queue.push((function () {
                                     var d = $q.defer();
-                                    OrderCloud.Me.ListCategories(null, 1, 50, null, "Name", {
+	                                OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
                                         "xp.SN": number
-                                    }, "all", cust.id.substring(0, 5))
+                                    }, 'depth':"all", 'catalogID':cust.id.substring(0, 5)})
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
-                                            } /*else {
-                                                results.push({Number: number, Detail: null});
-                                            }*/
-                                            OrderCloud.Me.ListCategories(number, 1, 50, "Description", null, null, "all", cust.id.substring(0, 5))
+                                            }
+	                                        OrderCloudSDK.Me.ListCategories({'search':number, 'page':1, 'pageSize':50, 'searchOn':"Description", 'depth':"all", 'catalogID':cust.id.substring(0, 5)})
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
                                                         results.push({Number:  matchesDescription.Items[0].xp.SN, Detail: matchesSN.Items[0]});
@@ -431,16 +437,13 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                             if (number) {
                                 queue.push((function () {
                                     var d = $q.defer();
-                                    OrderCloud.Me.ListCategories(null, 1, 50, null, "Name", {
-                                        "xp.SN": number
-                                    }, "all", cust.id.substring(0, 5))
+	                                OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{ "xp.SN": number }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
-                                            }/* else {
-                                                results.push({Number: number, Detail: null});
-                                            }*/
-                                            OrderCloud.Me.ListCategories(number, 1, 50, "Description", null, null, "all", cust.id.substring(0, 5))
+                                            }
+	                                        OrderCloudSDK.Me.ListCategories({'search':number, 'page':1, 'pageSize':50, 'searchOn':"Description",
+                                                'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
                                                         results.push({
@@ -495,12 +498,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 angular.forEach(tagNumbers, function (number) {
                     if (number) {
                         queue.push((function () {
-
                             var d = $q.defer();
                             if (SearchTypeService.IsGlobalSearch()) {
-                                OrderCloud.Me.ListCategories(null, 1, 50, null, "Name", {
+	                            OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
                                     "xp.TagNumber": number
-                                }, "all", cust.id.substring(0, 5))
+                                }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
                                     .then(function (matches) {
                                         if (matches.Items.length > 0) {
                                             for (var i = 0; i < matches.Items.length; i++) {
@@ -516,10 +518,10 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                                         d.resolve();
                                     });
                             } else {
-                                OrderCloud.Me.ListCategories(null, 1, 50, null, null, {
+	                            OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters':{
                                     "xp.TagNumber": number,
                                     "ParentID": cust.id
-                                }, null, cust.id.substring(0, 5))
+                                }, 'catalogID':Me.Org.xp.WeirGroup.label})
                                     .then(function (matches) {
                                         if (matches.Items.length > 0) {
                                             angular.forEach(matches.Items, function (match, key) {
@@ -575,11 +577,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                     queue.push((function () {
                         var d = $q.defer();
 
-                        OrderCloud.Me.ListProducts(weirGroup, 1, 50, "ID", null, { "Name": number })
+	                    OrderCloudSDK.Me.ListProducts({'search':weirGroup, 'page':1, 'pageSize':50, 'searchOn':"ID", 'sortBy':"Name", 'filters':{ "Name": number }})
                             .then(function (products) {
                                 if (products.Items.length == 0) {
                                     if (weirGroup = "WVCUK") {
-                                        OrderCloud.Me.ListProducts(weirGroup, 1, 50, "ID", null, { "xp.AlternatePartNumber": number })
+	                                    OrderCloudSDK.Me.ListProducts({'search':weirGroup, 'page':1, 'pageSize':50, 'searchOn':"ID", 'sortBy':"Name", 'filters':{ "xp.AlternatePartNumber": number }})
                                             .then(function (products) {
                                                 if (products.Items.length == 0) {
                                                     results.Parts.push({ Number: number, Detail: null });
@@ -659,7 +661,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		    .then(function (order) {
 		        // order is the localforge order.
 		        currentOrder = order;
-		        return OrderCloud.LineItems.List(currentOrder.ID, null, null, null, null, null, null, buyerid);
+		        return OrderCloudSDK.LineItems.List("Outgoing", currentOrder.ID);
 		    })
 		    .then(function (lineItems) {
 		        // If the line items contains the current part, then update.
@@ -676,7 +678,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		            "ID": randomQuoteID(),
 		            "Type": "Standard",
 		            xp: {
-		                "BuyerID": OrderCloud.BuyerID.Get(),
+		                "BuyerID": Me.GetBuyerID(),
 		                "Type": "Quote",
 		                "CustomerID": customer.id,
 		                "CustomerName": customer.name,
@@ -684,7 +686,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 		                "Active": true
 		            }
 		        };
-		        OrderCloud.Orders.Create(cart)
+			    OrderCloudSDK.Orders.Create("Outgoing",cart)
 				    .then(function (order) {
 				        CurrentOrder.Set(order.ID);
 				        addLineItem(order);
@@ -698,7 +700,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 ProductID: lineItem.ProductID,
                 Quantity: qty
             };
-            OrderCloud.LineItems.Patch(order.ID, lineItem.ID, li, OrderCloud.BuyerID.Get())
+	        OrderCloudSDK.LineItems.Patch("Outgoing", order.ID, lineItem.ID, li)
                 .then(function (lineItem) {
                     deferred.resolve({ Order: order, LineItem: lineItem });
                 });
@@ -714,7 +716,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 }
             };
 
-            OrderCloud.LineItems.Create(order.ID, li, OrderCloud.BuyerID.Get())
+	        OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
                 .then(function (lineItem) {
                     deferred.resolve({ Order: order, LineItem: lineItem });
                 })
@@ -734,7 +736,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                 addLineItems(order);
             })
             .catch(function () {
-                OrderCloud.Orders.Create({ ID: randomQuoteID(), xp: { Type: "Quote", Status: "DR", BuyerID: OrderCloud.BuyerID.Get() } })
+	            OrderCloudSDK.Orders.Create( "Outgoing", { ID: randomQuoteID(), xp: { Type: "Quote", Status: "DR", BuyerID: Me.GetBuyerID() } })
                     .then(function (order) {
                         CurrentOrder.Set(order.ID);
                         addLineItems(order);
@@ -754,7 +756,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                             Quantity: part.Quantity
                         };
 
-                        OrderCloud.LineItems.Create(order.ID, li)
+	                    OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
                             .then(function (lineItem) {
                                 d.resolve(lineItem);
                             });
@@ -783,7 +785,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
             .catch(function () {
                 CurrentOrder.GetCurrentCustomer()
 		            .then(function (customer) {
-		                return OrderCloud.Orders.Create({ ID: randomQuoteID(), xp: { CustomerID: customer.id, CustomerName: customer.name, BuyerID: OrderCloud.BuyerID.Get() } })
+		                return OrderCloudSDK.Orders.Create("Outgoing", { ID: randomQuoteID(), xp: { CustomerID: customer.id, CustomerName: customer.name, BuyerID: Me.GetBuyerID() } })
 		            })
                     .then(function (order) {
                         CurrentOrder.Set(order.ID);
@@ -804,7 +806,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                             Quantity: part.Quantity
                         };
 
-                        OrderCloud.LineItems.Create(order.ID, li)
+	                    OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
                             .then(function (lineItem) {
                                 d.resolve(lineItem);
                             });
@@ -839,7 +841,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
         if (users[userId]) {
             deferred.resolve(users[userId]);
         } else {
-            OrderCloud.Users.Get(userId)
+	        OrderCloudSDK.Users.Get(Me.GetBuyerID(), userId)
 			.then(function (usr) {
 			    users[userId] = usr;
 			    deferred.resolve(usr);
@@ -858,7 +860,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
         if (customers[orgId]) {
             deferred.resolve(customers[orgId]);
         } else {
-            OrderCloud.Categories.Get(orgId)
+	        OrderCloudSDK.Categories.Get(Me.Org.xp.WeirGroup.label, orgId)
 			.then(function (org) {
 			    customers[orgId] = org;
 			    deferred.resolve(org);
@@ -876,7 +878,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 
     function findCart(customer) {
         var deferred = $q.defer();
-        OrderCloud.Me.Get()
+	    OrderCloudSDK.Me.Get()
 	        .then(function (user) {
 	            var filter = {
 	                "FromUserId": user.ID,
@@ -885,7 +887,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 	                "xp.CustomerName": customer.name,
 	                "xp.Status": "DR"
 	            };
-	            OrderCloud.Orders.ListOutgoing(null, null, null, 1, 100, null, null, filter, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
+		        OrderCloudSDK.Orders.List("Outgoing", {'page':1, 'pageSize':100, 'filters':filter}) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
 					.then(function (results) {
 					    if (results.Items.length > 0) {
 					        var ct = results.Items[0];
@@ -895,7 +897,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 					        var cart = {
 					            "Type": "Standard",
 					            xp: {
-					                "BuyerID": OrderCloud.BuyerID.Get(),
+					                "BuyerID": Me.GetBuyerID(),
 					                "Type": "Quote",
 					                "CustomerID": customer.id,
 					                "CustomerName": customer.name,
@@ -903,7 +905,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 					                "Active": true
 					            }
 					        };
-					        OrderCloud.Orders.Create(cart)
+						    OrderCloudSDK.Orders.Create("Outgoing",cart)
 								.then(function (ct) {
 								    CurrentOrder.Set(ct.ID);
 								    deferred.resolve(ct);
@@ -935,7 +937,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
 			filter["xp.Status"] = statusFilter;*/
 
             var d = $q.defer();
-            OrderCloud.Orders.ListOutgoing(urlParams.from, urlParams.to, urlParams.search, urlParams.page, urlParams.pageSize || 100, urlParams.searchOn, urlParams.sortBy, urlParams.filters, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
+	        OrderCloudSDK.Orders.List("Outgoing", {'from':urlParams.from, 'to':urlParams.to, 'search':urlParams.search, 'page':urlParams.page, 'pageSize':urlParams.pageSize || 100, 'searchOn':urlParams.searchOn, 'sortBy':urlParams.sortBy, 'filers':urlParams.filters, 'buyerID':Me.GetBuyerID()})
 				.then(function (results) {
 				    angular.forEach(results.Items, function (quote) {
 				        quotes.push(quote);
@@ -976,7 +978,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
             filter["xp.Status"] = statusFilter;
 
             var d = $q.defer();
-            OrderCloud.Orders.ListOutgoing(params.from, params.to, params.search, params.page || 1, params.pageSize || 100, params.searchOn, params.sortBy, params.filters, OrderCloud.BuyerID.Get()) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
+	        OrderCloudSDK.Orders.List("Outgoing", {'from':params.from, 'to':params.to, 'search':params.search, 'page':params.page || 1, 'pageSize':params.pageSize || 100, 'searchOn':params.searchOn, 'sortBy':params.sortBy, 'filters':params.filters, 'buyerID':Me.GetBuyerID()})
                 .then(function (results) {
                     angular.forEach(results.Items, function (quote) {
                         quotes.push(quote);
@@ -1071,7 +1073,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
         if (assignQuoteNumber) {
             tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, 1);
         } else {
-            OrderCloud.Orders.Patch(quote.ID, data)
+	        OrderCloudSDK.Orders.Patch("OutGoing", quote.ID, data)
 				.then(function (quote) { deferred.resolve(quote) })
 				.catch(function (ex) { deferred.reject(ex); });
         }
@@ -1081,7 +1083,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
     function tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount) {
         var newQuoteId = createQuoteNumber(prefix);
         data.ID = newQuoteId;
-        OrderCloud.Orders.Patch(quote.ID, data)
+	    OrderCloudSDK.Orders.Patch("Outgoing", quote.ID, data)
 			.then(function (quote) { CurrentOrder.Set(newQuoteId); return quote; })
 			.then(function (quote) { deferred.resolve(quote) })
 			.catch(function (ex) {
@@ -1146,7 +1148,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
     //}
     //function getEnquiryValveTypes(brandId) {
     //    var deferred = $q.defer();
-    //    OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get())
+    //    OrderCloud.Buyers.Get(OrderCloud.())
     //    .then(function (b) {
     //        //search, page, pageSize, searchOn, sortBy, filters, depth, catalogID
     //        if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
@@ -1185,11 +1187,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
     function getEnquiryCategories() {
         var enqCat = "";
         var deferred = $q.defer();
-        OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get())
+	    OrderCloudSDK.Buyers.Get(Me.GetBuyerID())
         .then(function (b) {
             if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
                 enqCat = b.xp.WeirGroup.label + "_ENQ";
-                return OrderCloud.Me.ListCategories(null, 1, 100, null, null, null, "2", enqCat);
+                return OrderCloudSDK.Me.ListCategories({ 'page': 1, 'pageSize': 100, 'sortBy': "Name", 'depth': "2", 'catalogID': enqCat, filters: {"ID": "<>Parts"}});
             } else {
                 deferred.resolve([]);
             }
@@ -1216,12 +1218,12 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
     }
 
     function getEnquiryParts(catalogID, valveType) {
-        return OrderCloud.Me.ListProducts(null, 1, 50, null, "Name", null, valveType.ID, catalogID);
+        return OrderCloudSDK.Me.ListProducts({'page':1, 'pageSize':50, 'sortBy':"Name", 'categoryID':valveType.ID, 'catalogID':catalogID});
     }
 
     function submitEnquiry(enq) {
         var deferred = $q.defer();
-	    var buyerId = OrderCloud.BuyerID.Get();
+	    var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
         var newQuoteId = createQuoteNumber(buyerId);
         var data = {
@@ -1262,7 +1264,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
                     SN: sernum
                 }
             };
-            OrderCloud.LineItems.Create(data.ID, li, buyerId)
+	        OrderCloudSDK.LineItems.Create("Outgoing",data.ID, li)
             .then(function (lineItem) {
                 defer.resolve({ Order: data, LineItem: lineItem });
             })
@@ -1273,7 +1275,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloud, CurrentOrder, buyerid, 
             return defer.promise;
         }
         var queue = [];
-        OrderCloud.Orders.Create(data, buyerId)
+	    OrderCloudSDK.Orders.Create("Outgoing",data)
         .then(function (quote) {
             for (var p in enq.Parts) {
                 if (enq.Parts[p]) {

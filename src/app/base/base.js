@@ -53,41 +53,39 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
         abstract: true,
         views: baseViews,
         resolve: {
-            CurrentUser: function($q, $state, OrderCloud, buyerid, anonymous) {
+            CurrentUser: function($q, $state, OrderCloudSDK, anonymous, Me, LoginService) {
+                if(!Me.GetBuyerID()) {
+                	LoginService.Logout();
+                }
                 var dfd = $q.defer();
-                OrderCloud.Me.Get()
+	            OrderCloudSDK.Me.Get()
                     .then(function(data) {
                         dfd.resolve(data);
                     })
                     .catch(function(){
                         if (anonymous) {
-                            if (!OrderCloud.Auth.ReadToken()) {
-                                OrderCloud.Auth.GetToken('')
+                            /*if (!OrderCloudSDK.Auth.ReadToken()) {
+	                            OrderCloudSDK.Auth.GetToken('')
                                     .then(function(data) {
-                                        OrderCloud.Auth.SetToken(data['access_token']);
+	                                    OrderCloudSDK.Auth.SetToken(data['access_token']);
                                     })
                                     .finally(function() {
-                                        OrderCloud.BuyerID.Set(buyerid);
+	                                    OrderCloudSDK.BuyerID.Set(buyerid);
                                         dfd.resolve({});
                                     });
-                            }
+                            }*/
                         } else {
-                            OrderCloud.Auth.RemoveToken();
-                            OrderCloud.Auth.RemoveImpersonationToken();
-                            OrderCloud.BuyerID.Set(null);
+	                        OrderCloudSDK.RemoveToken();
+	                        OrderCloudSDK.RemoveImpersonationToken();
+	                        //OrderCloudSDK.BuyerID.Set(null);
                             $state.go('login');
                             dfd.resolve();
                         }
                     });
                 return dfd.promise;
             },
-            MyOrg: function($q, OrderCloud) {
-                var buyerId = OrderCloud.BuyerID.Get();
-                return (buyerId) ? OrderCloud.Buyers.Get(buyerId) : null;
-            },
-            AnonymousUser: function ($q, OrderCloud, CurrentUser) {
-                var tmp = OrderCloud.Auth.ReadToken();
-                CurrentUser.Anonymous = (tmp) ? angular.isDefined(JSON.parse(atob(OrderCloud.Auth.ReadToken().split('.')[1])).orderid) : false;
+            CurrentOrg: function(OrderCloudSDK, Me) {
+            	return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
             },
             ComponentList: function($state, $q, Underscore) {
                 var deferred = $q.defer();
@@ -123,16 +121,16 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, ComponentList, WeirService, base, MyOrg, Me) {
+function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
     Me.Profile = CurrentUser;
-    Me.Org = MyOrg;
+    Me.Org = CurrentOrg;
     vm.EnquiryAllowed = function() {
         return Me.Org.xp.WeirGroup.label == "WPIFR";
     };
-    vm.OrganizationUsed = MyOrg;
+    vm.OrganizationUsed = Me.Org;
     vm.currentUser = CurrentUser;
     vm.catalogItems = ComponentList.nonSpecific;
     vm.organizationItems = ComponentList.buyerSpecific;
@@ -396,7 +394,7 @@ function occomponents() {
     }
 }
 
-function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirService, User) {
+function FeedbackController($sce, $uibModalInstance, $state, OrderCloudSDK, Me, WeirService, User) {
     var vm = this;
     vm.user = User;
     vm.Cancel = cancel;
@@ -449,7 +447,7 @@ function FeedbackController($sce, $uibModalInstance, $state, OrderCloud, WeirSer
         };
         var usr = vm.user;
         if (usr) {
-            OrderCloud.Users.Patch(usr.ID, data);
+	        OrderCloudSDK.Users.Patch( Me.GetBuyerID(), usr.ID, data );
         }
         $uibModalInstance.close();
     }

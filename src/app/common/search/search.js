@@ -22,12 +22,12 @@ function OrdercloudSearch () {
 	}
 }
 
-function OrdercloudSearchController($timeout, $scope, OrderCloud, TrackSearch) {
+function OrdercloudSearchController($timeout, $scope, OrderCloudSDK, TrackSearch) {
 	$scope.searchTerm = null;
 	if ($scope.servicename) {
 		var var_name = $scope.servicename.replace(/([a-z])([A-Z])/g, '$1 $2');
 		$scope.placeholder = "Search " + var_name + '...';
-		var Service = OrderCloud[$scope.servicename];
+		var Service = OrderCloudSDK[$scope.servicename];
 	}
 	var searching;
 	$scope.$watch('searchTerm', function(n,o) {
@@ -119,7 +119,7 @@ function TrackSearchService() {
 	return service;
 }
 
-function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
+function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 	//This service handles type ahead. for app/search and app/home.
 	var service = {
 		GetAllSerialNumbers: _getAllSerialNumbers,
@@ -138,15 +138,34 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 			filter.ParentID = Me.Org.ID;
 		}
 
-		OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id == "1" ? null : "all", Me.Org.xp.WeirGroup.label)
+		OrderCloudSDK.Me.ListCategories({
+				page:1,
+				pageSize:20,
+				filters:filter,
+				depth:Me.Org.xp.WeirGroup.id == "1" ? null:"all",
+				catalogID:Me.Org.xp.WeirGroup.label})
 			.then(function(response) {
-				OrderCloud.Me.ListCategories(lookForThisPartialSerialNumber, 1, 20, "Description", null, null, "all", Me.Org.xp.WeirGroup.label)
+				OrderCloudSDK.Me.ListCategories({
+						search:lookForThisPartialSerialNumber,
+						page:1,
+						pageSize:20,
+						searchOn:"Description",
+						depth:"all",
+						catalogID:Me.Org.xp.WeirGroup.label})
 					.then(function (responseDescription) {
 						var returnResults = response.Items.concat(responseDescription.Items);
 						returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
 						returnResults = _.uniq(returnResults, false, function (cat) { return cat.xp.SN; });
 						dfd.resolve(returnResults);
+					})
+					.catch(function(ex) {
+						console.log(ex);
+						dfd.reject(ex);
 					});
+			})
+			.catch(function(ex) {
+				console.log(ex);
+				dfd.reject(ex);
 			});
 		return dfd.promise;
 	}
@@ -160,7 +179,7 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 		    filter.ParentID = Me.Org.ID;
 	    }
 
-        OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter, Me.Org.xp.WeirGroup.id=="1" ? null : "all", Me.Org.xp.WeirGroup.label)
+	    OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter, 'depth':Me.Org.xp.WeirGroup.id=="1" ? null : "all", 'catalogID':Me.Org.xp.WeirGroup.label })
             .then(function(response) {
             	dfd.resolve(response.Items);
             });
@@ -169,11 +188,11 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 
     function _getAllPartNumbers(lookForThisPartialPartNumber) {
     	var dfd = $q.defer();
-        OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"Name": lookForThisPartialPartNumber+"*"})
+	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':{"Name": lookForThisPartialPartNumber+"*"} })
             .then(function(response) {
 	            if(Me.Org.xp.WeirGroup.label == "WVCUK") {
 		            partResults = response.Items;
-		            return OrderCloud.Me.ListProducts(null, 1, 20, null, null, {"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"})
+		            return OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':{"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"} })
 			            .then(function(altResponse) {
 				            partResults.push.apply(altResponse.Items);
 				            //return partResults;
@@ -220,11 +239,11 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 		}
 
 		if(SearchTypeService.GetLastSearchType() == "p") {
-			return OrderCloud.Me.ListProducts(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary)
+			return OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary} )
 				.then(function(response) {
 					if(Me.Org.xp.WeirGroup.label == "WVCUK") {
 						partResults = response.Items;
-						return OrderCloud.Me.ListProducts(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].secondary)
+						return OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].secondary })
 							.then(function(altResponse) {
 								partResults.push.apply(altResponse.Items);
 								return partResults;
@@ -235,9 +254,9 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
 				});
 		} else {
             if(SearchTypeService.GetLastSearchType() == "s") {
-                return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, Me.Org.xp.WeirGroup.label)
+                return OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.xp.WeirGroup.label })
                     .then(function (response) {
-                        return  OrderCloud.Me.ListCategories(lookForThisProduct, 1, 20, "Description", null, null , "all" , Me.Org.xp.WeirGroup.label)
+                        return  OrderCloudSDK.Me.ListCategories({ 'search':lookForThisProduct, 'page':1, 'pageSize':20, 'searchOn':"Description", 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label })
                             .then(function(responseDescription){
                                 var returnResults = response.Items.concat(responseDescription.Items);
 	                            returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
@@ -247,7 +266,7 @@ function SearchProductsService($q, OrderCloud, Me, SearchTypeService) {
                     });
             }
 		    else {
-                return OrderCloud.Me.ListCategories(null, 1, 20, null, null, filter[SearchTypeService.GetLastSearchType()], SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, Me.Org.xp.WeirGroup.label)
+                return OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.xp.WeirGroup.label })
                     .then(function (response) {
                         return response.Items;
                     });

@@ -86,8 +86,8 @@
                         </td>
                         <td style="border:0;width:100px;">
                             <h4>
-                                <span class="label label-warning" ng-show="revised.ShowUpdated(line)" ng-bind-html="revised.labels.Updated"></span>
-                                <span class="label label-success" ng-show="revised.ShowNew(line)" ng-bind-html="revised.labels.New"></span>
+                                <span class="label label-warning" ng-show="line.displayStatus=='UPDATED'" ng-bind-html="revised.labels.Updated"></span>
+                                <span class="label label-success" ng-show="line.displayStatus=='NEW'" ng-bind-html="revised.labels.New"></span>
                             </h4>
                         </td>
                     </tr>

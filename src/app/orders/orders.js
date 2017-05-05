@@ -22,12 +22,14 @@ function OrdersConfig($stateProvider) {
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-	            Orders: function(OrderCloud, WeirService, Parameters, Me) {
-                	//return WeirService.FindOrders(Parameters, false);
-		            Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
+	            Orders: function(OrderCloudSDK, WeirService, Parameters, Me) {
+		            //return WeirService.FindOrders(Parameters, false);
+		            if (Parameters.search) {
+		                Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //FromUserID and Total were throwing errors
+	                }
 		            // Filter on Me.Profile.ID == FromUserID
 		            Parameters.filters.FromUserID = Me.Profile.ID;
-                    return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 10, Parameters.searchOn, Parameters.sortBy, Parameters.filters, Me.Org.ID);
+                    return OrderCloudSDK.Orders.List("Outgoing", {'from':Parameters.from, 'to':Parameters.to, 'search':Parameters.search, 'page':Parameters.page, 'pageSize':Parameters.pageSize || 10, 'searchOn':Parameters.searchOn, 'sortBy':Parameters.sortBy, 'filters':Parameters.filters, 'buyerID':Me.GetBuyerID()});
 				}
             }
         })
@@ -60,12 +62,12 @@ function OrdersConfig($stateProvider) {
 		    url: '/:orderID',
 		    controller: 'RouteToOrderCtrl',
 		    resolve: {
-		        Order: function ($q, appname, $localForage, $stateParams, OrderCloud) {
+		        Order: function ($q, appname, $localForage, $stateParams, OrderCloudSDK) {
 		            var d = $q.defer();
 		            var storageName = appname + '.routeto';
 		            $localForage.setItem(storageName, { state: 'orders', id: $stateParams.orderID })
                         .then(function() {
-                            OrderCloud.Orders.Get($stateParams.orderID)
+                            OrderCloudSDK.Orders.Get("Outgoing",$stateParams.orderID)
                             .then(function (order) {
                                 $localForage.removeItem(storageName);
                                 d.resolve(order);
@@ -78,7 +80,7 @@ function OrdersConfig($stateProvider) {
     ;
 }
 
-function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderCloudParameters, Orders, Parameters, Me, WeirService, CurrentCustomer) {
+function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, OrderCloudParameters, Orders, Parameters, Me, WeirService, CurrentCustomer) {
     var vm = this;
     vm.list = Orders;
     vm.parameters = Parameters;
@@ -153,7 +155,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 
     //Load the next page of results with all of the same parameters
     vm.loadMore = function() {
-        return OrderCloud.Orders[UserType == 'admin' ? 'ListIncoming' : 'ListOutgoing'](Parameters.from, Parameters.to, Parameters.search, vm.list.Meta.Page + 1, Parameters.pageSize || vm.list.Meta.PageSize, Parameters.searchOn, Parameters.sortBy, Parameters.filters)
+        return OrderCloudSDK.Orders.List("Outgoing", {'from':Parameters.from, 'to':Parameters.to, 'search':Parameters.search, 'page':vm.list.Meta.Page + 1, 'pageSize':Parameters.pageSize || vm.list.Meta.PageSize, 'searchOn':Parameters.searchOn, 'sortBy':Parameters.sortBy, 'filters':Parameters.filters})
             .then(function(data) {
                 vm.list.Items = vm.list.Items.concat(data.Items);
                 vm.list.Meta = data.Meta;
@@ -266,11 +268,11 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloud, OrderC
 		}
 	}
 }
-function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, OrderCloud) {
+function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, Me) {
     if (Order) {
         var type = Order.xp.Type;
         if (type == "Order") {
-            reviewOrder(Order.ID, Order.xp.Status, OrderCloud.BuyerID.Get());
+            reviewOrder(Order.ID, Order.xp.Status, Me.GetBuyerID());
         } else {
             $state.go('quotes.goto', { quoteID: Order.ID });
         }

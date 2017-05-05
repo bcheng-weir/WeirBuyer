@@ -8,7 +8,6 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 	}
 
 	function ToCsvJson(Quote, LineItems, DeliveryAddress, Payments, Labels) {
-
 		var payment = null;
 		if (Payments && Payments.length) {
 			payment = Payments[0];
@@ -20,7 +19,6 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 				Labels[key] = result;
 			}
 		});
-
 		var data = [
 			[Labels.Status, Quote.xp.Status],
 			[Labels.QuoteNumber, Quote.ID],
@@ -45,7 +43,9 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 			line.push(item.Quantity);
 			data.push(line);
 		});
-		data.push(["","","",Quote.xp.ShippingDescription,"","",currency,Quote.ShippingCost,""]);
+		if(Quote.xp.ShippingDescription) {
+			data.push(["", "", "", Quote.xp.ShippingDescription, "", "", currency, Quote.ShippingCost, ""]);
+		}
 		data.push(["", "", "", "", "", Labels.Total, currency, Quote.Total]);
 		data.push(["", ""]);
 		data.push([Labels.DeliveryAddress]);

@@ -2,7 +2,7 @@ angular.module('ordercloud-current-order', [])
     .factory('CurrentOrder', CurrentOrderService)
 ;
 
-function CurrentOrderService($q, $localForage, OrderCloud, appname) {
+function CurrentOrderService($q, $localForage, OrderCloudSDK, appname) {
     var StorageName = appname + '.CurrentOrderID';
     var CustomerStorageName = appname + '.CurrentCustomer';
     return {
@@ -19,7 +19,7 @@ function CurrentOrderService($q, $localForage, OrderCloud, appname) {
         var dfd = $q.defer();
         _getID()
             .then(function(OrderID) {
-                OrderCloud.Orders.Get(OrderID)
+	            OrderCloudSDK.Orders.Get("Outgoing",OrderID)
                     .then(function(order) {
                         dfd.resolve(order);
                     })
@@ -74,11 +74,11 @@ function CurrentOrderService($q, $localForage, OrderCloud, appname) {
 
         _getID()
             .then(function(OrderID) {
-                OrderCloud.LineItems.List(OrderID, 1, 100)
+	            OrderCloudSDK.LineItems.List("Outgoing",OrderID, {'page':1, 'pageSize':100})
                     .then(function(data) {
                         lineItems = lineItems.concat(data.Items);
                         for (var i = 2; i <= data.Meta.TotalPages; i++) {
-                            queue.push(OrderCloud.LineItems.List(OrderID, i, 100));
+                            queue.push(OrderCloudSDK.LineItems.List("Outgoing",OrderID, {'page':i, 'pageSize':100}));
                         }
                         $q.all(queue).then(function(results) {
                             angular.forEach(results, function(result) {

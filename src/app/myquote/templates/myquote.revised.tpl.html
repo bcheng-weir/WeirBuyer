@@ -1,26 +1,28 @@
 <article id="COMPONENT_Revised" class="container-fluid">
     <div class="panel-default">
         <div class="row">
-            <div class="panel-heading" style="color:#333;background-color:#f5f5f5;border-color:#ddd;min-height:4em;">
-                <div style="display:inline-block; float:left; text-align:left;">
-                    <span ng-bind-html="revised.labels.Status"/><br/>
-                    <span style="font-weight:bold;" ng-bind-html="revised.GetStatusLabel() + ' ' + (revised.Quote.xp.StatusDate | weirdate)"></span>
-                </div>
-                <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;">
-                    <span ng-bind-html="revised.labels.OrderDate" /><br />
-                    <span style="font-weight:bold;" ng-bind-html="(revised.Quote.DateSubmitted | weirdate)"></span>
-                </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;">
-                    <print-order-button catalog="revised.Catalog" buyer="revised.buyer" order="revised.Quote" items="revised.LineItems" address="revised.ShippingAddress" pocontent="revised.Catalog.xp.POContent" uitotal="1"></print-order-button>
-                </div>
-                <div style="display:inline-block; float:right; margin-left: 1em; padding-top: 0.5em; padding-left: 1%;" ng-csv="revised.ToCsvJson" add-bom="true" filename="{{revised.CsvFilename}}">
-                    <a href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
-                </div>
-                <!--<div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">-->
-                <div ng-if="revised.Quote.xp.Status=='RV'||revised.Quote.xp.Status=='RO'" style="float:right;padding-top: 0.5em;">
-                    <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
-                    <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
-                    <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
+            <div class="col-md-12">
+                <div class="panel-heading">
+                    <div style="display:inline-block; float:left; text-align:left;margin-top: 10px;">
+                        <span ng-bind-html="revised.labels.Status"/>:&nbsp;<span style="font-weight:bold;" ng-bind-html="revised.GetStatusLabel() + ' ' + (revised.Quote.xp.StatusDate | weirdate)"></span>
+                    </div>
+                    <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;margin-top: 10px;">
+                        <span ng-bind-html="revised.labels.OrderDate" />&nbsp;<span style="font-weight:bold;" ng-bind-html="(revised.Quote.DateSubmitted | weirdate)"></span>
+                    </div>
+
+                    <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;">
+                        <print-order-button buyer="revised.buyer" order="revised.Quote" items="revised.LineItems" address="revised.ShippingAddress" pocontent="revised.Catalog.xp.POContent"></print-order-button>
+                    </div>
+                    <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;" ng-csv="revised.ToCsvJson" add-bom="true" filename="{{revised.CsvFilename}}">
+                        <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
+                    </div>
+
+                    <!--<div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">-->
+                    <div ng-if="revised.Quote.xp.Status=='RV'||revised.Quote.xp.Status=='RO'" style="float:right;">
+                        <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
+                        <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
+                        <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -59,9 +61,18 @@
                     <tr ng-repeat="line in revised.LineItems">
                         <td ng-bind-html="line.xp.SN"></td>
                         <td ng-bind-html="line.xp.TagNumber"></td>
-                        <td ng-bind-html="line.Product.Name"></td>
-                        <td ng-bind-html="line.Product.Description"></td>
-                        <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
+                        <td>
+                            <span ng-if="!line.xp.ProductName" ng-bind-html="line.Product.Name"></span>
+                            <span ng-if="line.xp.ProductName" ng-bind-html="line.xp.ProductName"></span>
+                        </td>
+                        <td>
+                            <span ng-if="!line.xp.Description" ng-bind-html="line.Product.Description"></span>
+                            <span ng-if="line.xp.Description" ng-bind-html="line.xp.Description"></span>
+                        </td>
+                        <td>
+                            <span ng-if="!line.xp.ReplacementSchedule" ng-bind-html="line.Product.xp.ReplacementSchedule"></span>
+                            <span ng-if="line.xp.ReplacementSchedule" ng-bind-html="line.xp.ReplacementSchedule"></span>
+                        </td>
                         <td>
                             <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
                             <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
@@ -75,8 +86,8 @@
                         </td>
                         <td style="border:0;width:100px;">
                             <h4>
-                                <span class="label label-warning" ng-show="revised.ShowUpdated(line)" ng-bind-html="revised.labels.Updated"></span>
-                                <span class="label label-success" ng-show="revised.ShowNew(line)" ng-bind-html="revised.labels.New"></span>
+                                <span class="label label-warning" ng-show="line.displayStatus=='UPDATED'" ng-bind-html="revised.labels.Updated"></span>
+                                <span class="label label-success" ng-show="line.displayStatus=='NEW'" ng-bind-html="revised.labels.New"></span>
                             </h4>
                         </td>
                     </tr>
@@ -84,24 +95,29 @@
                     <tr ng-repeat="line in revised.PreviousLineItems">
                         <td ng-bind-html="line.xp.SN"></td>
                         <td ng-bind-html="line.xp.TagNumber"></td>
-                        <td ng-bind-html="line.Product.Name"></td>
-                        <td ng-bind-html="line.Product.Description"></td>
-                        <td ng-bind-html="line.Product.xp.ReplacementSchedule"></td>
-
+                        <td>
+                            <span ng-if="!line.xp.ProductName" ng-bind-html="line.Product.Name"></span>
+                            <span ng-if="line.xp.ProductName" ng-bind-html="line.xp.ProductName"></span>
+                        </td>
+                        <td>
+                            <span ng-if="!line.xp.Description" ng-bind-html="line.Product.Description"></span>
+                            <span ng-if="line.xp.Description" ng-bind-html="line.xp.Description"></span>
+                        </td>
+                        <td>
+                            <span ng-if="!line.xp.ReplacementSchedule" ng-bind-html="line.Product.xp.ReplacementSchedule"></span>
+                            <span ng-if="line.xp.ReplacementSchedule" ng-bind-html="line.xp.ReplacementSchedule"></span>
+                        </td>
                         <td ng-if="revised.Quote.xp.Status!='RE'" ng-bind-html="line.Product.xp.LeadTime"></td>
-
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="revised.labels.POA"></td>
                         <td ng-if="line.UnitPrice">
                             <span ng-bind-html="line.UnitPrice | currency:revised.currency"></span>
                         </td>
-                        <td ng-if="revised.Quote.xp.Status!='RE'" ng-bind-html="revised.Zero">
-                        </td>
-
+                        <td ng-if="revised.Quote.xp.Status!='RE'" ng-bind-html="revised.Zero"></td>
                         <td ng-if="revised.Quote.xp.Status=='RE'">
                             <input type="text" class="form-control" ng-model="line.Product.xp.LeadTime" />
                         </td>
                         <td ng-if="revised.Quote.xp.Status=='RE'">
-                            <input type="" class="form-control" ng-model="line.UnitPrice" />
+                            <input type="number" class="form-control" ng-model="line.UnitPrice" />
                         </td>
                         <td ng-if="revised.Quote.xp.Status=='RE'">
                             <input type="number" class="form-control" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:50%" ng-model="revised.Zero" />
@@ -112,11 +128,13 @@
                             </h4>
                         </td>
                     </tr>
-                    <tr ng-if="revised.Quote.xp.CarriageRateType != null">
+                    <tr ng-if="revised.Quote.xp.ShippingDescription != null">
+                        <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td ng-bind-html="revised.labels.DescriptionOfShipping[revised.Quote.xp.CarriageRateType]"></td>
+                        <td ng-bind-html="revised.Quote.xp.ShippingDescription"></td>
+                        <!-- Filler to keep formatting -->
                         <td></td>
                         <td></td>
                         <td ng-if="revised.Quote.ShippingCost != 0">

@@ -115,13 +115,14 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 
     vm.Search = function(searchType, searchParam){
         //assumption is that this is a singular search bar. Only querying for a single item at a time.
-        var searchState;
         switch (searchType){
             case(vm.labels.SerialNumber):
                 //the chaining of the state.go rather than go to child is done due to the parent (search) resolves a promise and blocks the child.
+	            var serNum = angular.copy(searchParam);
+                serNum = serNum.split(" - ")[0];
                 $state.go('search')
 	                .then(function(){
-                        $state.go('search.serial.detail', {number: searchParam}, {});
+                        $state.go('search.serial.detail', {number: serNum}, {});
                     });
                 break;
             case(vm.labels.TagNumber):

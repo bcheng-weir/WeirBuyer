@@ -1,48 +1,53 @@
 <form name="myForm" id="printable">
     <div class="row">
         <div class="container-fluid">
-            <div class="col-xs-5">
+            <div class="col-xs-4">
                 <h4><span ng-bind-html='review.labels.Customer'></span><span class="text-blue" ng-bind-html="myquote.Customer.name"></span></h4>
                 <h4><span ng-bind-html='review.labels.QuoteNumber'></span>
                     <span class="text-blue"  ng-if="myquote.Quote.xp.Status != 'DR'" ng-bind-html="myquote.Quote.ID"></span></h4>
                 <h4><span ng-bind-html='review.labels.QuoteName'></span><span class="text-blue" ng-bind-html="myquote.Quote.xp.Name"></span></h4>
                 <h4><span ng-bind-html='review.labels.YourReference'></span><span class="text-blue" ng-bind-html="myquote.Quote.xp.RefNum"></span></h4>
             </div>
-            <div class="col-xs-2">
+            <!--<div class="col-xs-1">
                 <h2 class="pull-left">
-                    <a role="button" class="btn btn-default" href="#Comments"><span ng-bind-html="review.labels.Comments"></span></a>
                 </h2>
-            </div>
-            <div class="col-xs-5" ng-show="review.currentState=='myquote.review'">
+            </div>-->
+            <div class="col-xs-8" ng-show="review.currentState=='myquote.review'">
                 <!-- MyQuote Navigation -->
-                <button class="btn btn-primary" ng-click="review.backToDelivery()" ng-bind-html="review.labels.BackToDelivery"></button>
-                <button class="btn btn-success" ng-click="myquote.proceedToSubmit()" ng-bind-html="review.labels.Submit">
-                </button>
+                <div class="row" style="margin-left:0px">
+                    <div class="col-md-12 pull-right">
+                        <div class="pull-right nav-buttons">
+                            <button class="btn btn-lg btn-primary" ng-click="review.backToDelivery()" ng-bind-html="review.labels.BackToDelivery"></button>
+                            <button class="btn btn-lg btn-success" ng-click="myquote.proceedToSubmit()" ng-bind-html="review.labels.Submit"></button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-5" ng-show="review.currentState=='false'">
+            <div class="col-xs-8" ng-show="review.currentState=='false'">
                 <!-- Previous and Next buttons on review step. -->
                 <button ng-if="review.Step=='Submit' && !myquote.SubmittingToReview && !myquote.SubmittingWithPO" class="btn btn-primary" ng-bind-html='review.labels.BackToReview' ng-click="review.toReview()"></button>
                 <button ng-if="review.Step=='Submit' && !myquote.SubmittingToReview && !myquote.SubmittingWithPO && review.ShowNextButton" class="btn btn-warning" ng-bind-html='review.labels.Submit' ng-click="review.proceedToSubmit()"></button>
             </div>
-            <div class="col-xs-5" ng-show="review.currentState=='myquote.submitorder'">
+            <div class="col-xs-8" ng-show="review.currentState=='myquote.submitorder'">
                 <!-- Submit an order with PO, or submit and email one later. -->
                 <div class="row">
                     <div class="col-xs-6 col-email-message" >
                         <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn btn-warning pull-right"
+                            <div class="col-xs-8 col-xs-offset-4">
+                                <button class="btn btn-lg btn-success"
                                         ng-click="review.submitOrder(false)"
                                         ng-bind-html="review.labels.SubmitOrderAndEmail">
-                            </button></div>
+                                </button>
+                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12"><h6 class="email-message pull-right" ng-bind-html="review.labels.EmailPoMessage"></h6></div>
+                            <div class="col-xs-8 col-xs-offset-4"><h6 class="email-message" ng-bind-html="review.labels.EmailPoMessage"></h6></div>
                         </div>
                     </div>
                     <div class="col-xs-6">
                         <div class="row">
-                            <div class="col-xs-12">
-                                <button class="btn btn-success pull-right"
+                            <div class="col-xs-8 col-xs-offset-4">
+                                <button class="btn btn-lg btn-success"
                                         ng-disabled="review.PONumber == 'undefined' || review.PONumber == null || review.PONumber == ''"
                                         ng-click="review.submitOrder(true)"
                                         ng-bind-html="review.labels.SubmitOrderWithPO">
@@ -50,14 +55,14 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-12">
-                                <div class="pull-right"><h6 class="pon-link"><a href="#pon" ng-bind-html="review.labels.POEntry"></a></h6></div>
+                            <div class="col-xs-8 col-xs-offset-4">
+                                <div><h6 class="pon-link"><a href="#pon" ng-bind-html="review.labels.POEntry"></a></h6></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xs-5" ng-show="review.currentState=='myquote.submitquote'">
+            <div class="col-xs-8" ng-show="review.currentState=='myquote.submitquote'">
                 <h2 class="pull-right">
                     <!-- Submit a quote for review -->
                     <button class="btn btn-warning" ng-click="review.submitForReview(myForm.$dirty)" ng-bind-html="review.labels.SubmitForReview"></button>
@@ -231,8 +236,8 @@
                 <div class="col-xs-12">
                     <textarea cols="50" rows="6" ng-model="review.NewComment"></textarea>
                     <br>
-                    <button class="btn btn-lg btn-primary" ng-bind-html="review.labels.Add" ng-click="review.AddComment()"></button>
-                    <button class="btn btn-lg btn-default" ng-bind-html="review.labels.Cancel" ng-click="review.NewComment=null"></button>
+                    <button class="btn btn-primary" ng-bind-html="review.labels.Add" ng-click="review.AddComment()"></button>
+                    <button class="btn btn-default" ng-bind-html="review.labels.Cancel" ng-click="review.NewComment=null"></button>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ angular.module('orderCloud')
 	.config(QuotesConfig)
 	.controller('QuotesCtrl', QuotesController)
 	.controller('SavedQuotesCtrl', SavedQuotesController)
+	.controller('EnquiryQuotesCtrl',EnquiryQuotesController)
 	.controller('InReviewQuotesCtrl', InReviewQuotesController)
 	.controller('RouteToQuoteCtrl', RouteToQuoteController)
 ;
@@ -31,14 +32,23 @@ function QuotesConfig($stateProvider) {
 				Parameters: function($stateParams, OrderCloudParameters) {
 					return OrderCloudParameters.Get($stateParams);
 				},
-				Quotes: function(OrderCloud, WeirService, Parameters, Me) {
+				Quotes: function(OrderCloudSDK, WeirService, Parameters, Me) {
 					//return WeirService.FindOrders(Parameters, false);
 					if(Parameters && Parameters.search && Parameters.search != 'undefined') {
-						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID,FromUserID,Total,xp";
+						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //,FromUserID,Total,xp
 					}
-					// Filter on Me.Profile.ID == FromUserID
 					Parameters.filters.FromUserID = Me.Profile.ID;
-					return OrderCloud.Orders.ListOutgoing(Parameters.from, Parameters.to, Parameters.search, Parameters.page, Parameters.pageSize || 10, Parameters.searchOn, Parameters.sortBy, Parameters.filters, Me.Org.ID);
+					var opts = {
+						'from':Parameters.from,
+						'to':Parameters.to,
+						'search':Parameters.search,
+						'searchOn':Parameters.searchOn,
+						'sortBy':Parameters.sortBy,
+						'page':Parameters.page,
+						'pageSize':Parameters.pageSize || 10,
+						'filters':Parameters.filters
+					};
+					return OrderCloudSDK.Orders.List("Outgoing",opts);
 				}
 			}
 		})
@@ -47,6 +57,12 @@ function QuotesConfig($stateProvider) {
 			templateUrl: 'quotes/templates/quotes.saved.tpl.html',
 			controller: 'SavedQuotesCtrl',
 			controllerAs: 'saved'
+		})
+		.state('quotes.enquiry', {
+			url:'/enquiry',
+			templateUrl:'quotes/templates/quotes.enquiry.tpl.html',
+			controller:'EnquiryQuotesCtrl',
+			controllerAs:'enquiry'
 		})
 		.state( 'quotes.inreview', {
 			url: '/inreview',
@@ -70,12 +86,12 @@ function QuotesConfig($stateProvider) {
 			url:'/:quoteID',
 			controller: 'RouteToQuoteCtrl',
 			resolve: {
-			    Quote: function ($q, appname, $localForage, $stateParams, OrderCloud) {
+			    Quote: function ($q, appname, $localForage, $stateParams, OrderCloudSDK) {
 			        var storageName = appname + '.routeto';
 			        var d = $q.defer();
 			        $localForage.setItem(storageName, { state: 'quotes', id: $stateParams.quoteID })
                         .then(function () {
-                            OrderCloud.Orders.Get($stateParams.quoteID)
+	                        OrderCloudSDK.Orders.List("Outgoing",$stateParams.quoteID)
                                 .then(function (quote) {
                                     $localForage.removeItem(storageName);
                                     d.resolve(quote);
@@ -87,12 +103,15 @@ function QuotesConfig($stateProvider) {
 		});
 }
 
-function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudParameters) {
+function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudSDK, OrderCloudParameters) {
 	var vm = this;
 	vm.list = Quotes;
 	vm.parameters = Parameters;
 	vm.Customer = CurrentCustomer;
 	vm.MyOrg = Me.Org;
+	vm.EnquiryAllowed = function() {
+		return Me.Org.xp.WeirGroup.label == "WPIFR";
+	};
 	vm.CurrentOrderId = CurrentOrderId;
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);
@@ -174,6 +193,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 	var labels = {
 		en: {
 			Saved: "Saved",
+			Enquiry: "Enquiry",
 			InReview: "Quotes Submitted for Review",
 			Revised: "Revised Quotes",
 			Confirmed: "Confirmed Quotes",
@@ -182,6 +202,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 		},
 		fr: {
 		    Saved: $sce.trustAsHtml("Enregistrée(s)"),
+			Enquiry: $sce.trustAsHtml("Demande"),
 		    InReview: $sce.trustAsHtml("Cotation(s) soumise(s) à révision"),
 		    Revised: $sce.trustAsHtml("Cotation(s) révisée(s)"),
 		    Confirmed: $sce.trustAsHtml("Cotation(s) confirmée(s)"),
@@ -197,6 +218,11 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			"quotes.saved": {
 				"xp.Type": "Quote",
 				"xp.Status": WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,
+				"xp.Active":true
+			},
+			"quotes.enquiry": {
+				"xp.Type": "Quote",
+				"xp.Status": WeirService.OrderStatus.Enquiry.id+"|"+WeirService.OrderStatus.EnquiryReview.id,
 				"xp.Active":true
 			},
 			"quotes.inreview": {
@@ -287,7 +313,26 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 	vm.ReviewQuote = _reviewQuote;
 }
 
-function InReviewQuotesController(WeirService, $state, $sce, $scope) {
+function EnquiryQuotesController (WeirService,$scope,$sce) {
+	var vm = this;
+	var labels = {
+		en: {
+			Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length == 1 ? " Enquiry" : " Enquiries"),
+			QuoteNum: "Weir Quote Number",
+			Status: "Status",
+			View: "View"
+		},
+		fr: {
+			Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length == 1 ? " Demande" : " Demandes")),
+			QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
+			Status: $sce.trustAsHtml("Statut"),
+			View: $sce.trustAsHtml("Voir")
+		}
+	};
+	vm.labels = labels[WeirService.Locale()];
+}
+
+function InReviewQuotesController(WeirService, $sce, $scope) {
 	var vm = this;
 	
 	var labels = {
@@ -333,7 +378,7 @@ function RouteToQuoteController($rootScope, $state, OrderCloud, WeirService, toa
             } else {
                 $state.go('readonly', { quoteID: Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
             }
-        } else if ([WeirService.OrderStatus.Submitted.id, WeirService.OrderStatus.Review.id, WeirService.OrderStatus.RejectedQuote.id].indexOf(status) > -1) {
+        } else if ([WeirService.OrderStatus.Submitted.id, WeirService.OrderStatus.Review.id, WeirService.OrderStatus.RejectedQuote.id, WeirService.OrderStatus.Enquiry.id, WeirService.OrderStatus.EnquiryReview.id].indexOf(status) > -1) {
             $state.go('readonly', { quoteID: Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
         } else { // DR, SV, CQ?
             WeirService.SetQuoteAsCurrentOrder(Quote.ID)

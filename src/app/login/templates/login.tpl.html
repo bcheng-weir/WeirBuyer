@@ -23,10 +23,11 @@
                     <div class="row">
                         <div class="col-sm-6 col-lg-5 col-lg-offset-1 login-index">
                             <div class="login-block">
-                                <div class="login-header">
-                                    <p class="text-center login-title" ng-bind-html="login.labels.LoginLabel"></p>
-                                </div>
+
                                 <div class="account-wall" ng-switch-when="login">
+                                    <div class="login-header">
+                                        <p class="text-center login-title" ng-bind-html="login.labels.LoginLabel"></p>
+                                    </div>
                                     <form class="form-signin" ng-submit="login.submit()">
                                         <div class="form-group">
                                             <label for="inputUsernameEmail" ng-bind-html="login.labels.UsernameLabel"></label>
@@ -46,17 +47,48 @@
                                         <a href="#" class="forgot-password" ng-click="login.setForm('forgot')" ng-bind-html="login.labels.ForgotPasswordLabel"></a>
                                     </form>
                                 </div>
+
                                 <div class="account-wall" ng-switch-when="forgot">
-                                    <form class="panel-body" name="ForgotPasswordForm" ng-submit="login.forgotPassword()">
-                                        <h1 class="text-center" ng-bind-html="login.labels.SubmitLabel"></h1>
+                                    <div class="login-header">
+                                        <p class="text-center login-title" ng-bind-html="login.labels.ForgotLabel"></p>
+                                    </div>
+                                    <form class="panel-body" name="ForgotPasswordForm" id="ForgotPasswordForm">
                                         <div class="form-group">
                                             <label for="Email" ng-bind-html="login.label.UsernameLabel"></label>
                                             <input type="text" class="form-control" id="Email" ng-model="login.credentials.Email" ng-required="true" />
                                         </div>
-                                        <button type="submit" id="email_submit" class="btn btn-primary" ng-disabled="ForgotPasswordForm.$invalid" ng-bind-html="login.labels.SubmitLabel"></button>
+                                        <h1 class="text-center" ng-bind-html="login.labels.SubmitLabel" ng-click="login.forgotPassword()"></h1>
+                                        <!--<button type="submit" id="email_submit" class="btn btn-primary" ng-disabled="ForgotPasswordForm.$invalid" ng-bind-html="login.labels.SubmitLabel"></button>-->
                                         <a id="back_to_login" class="btn btn-link" ng-click="login.setForm('login')" ng-bind-html="login.labels.BackToLoginLabel"></a>
                                     </form>
                                 </div>
+
+                                <!--RESET PASSWORD BY TOKEN-->
+                                <div class="account-wall" ng-switch-when="resetByToken">
+                                    <div class="panel panel-default">
+                                        <form class="panel-body" name="ResetPasswordForm" ng-submit="login.resetPasswordByToken()" >
+                                            <h3 class="text-center" ng-bind-html="login.labels.ResetPasswordLabel"></h3>
+                                            <div class="alert alert-info" ng-bind-html="login.labels.ResetMessage"></div>
+                                            <div class="form-group">
+                                                <label for="NewPassword" class="sr-only" ng-bind-html="login.labels.NewPasswordLabel"></label>
+                                                <input type="password" class="form-control" id="NewPassword" name="NewPassword" placeholder="New Password" ng-model="login.credentials.NewPassword" ng-required="true" autofocus/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ConfirmPassword" class="sr-only" ng-bind-html="login.labels.ConfirmPasswordLabel"></label>
+                                                <input type="password" class="form-control" id="ConfirmPassword" placeholder="Confirm New Password" ng-model="login.credentials.ConfirmPassword" ng-required="true" />
+                                            </div>
+                                            <button type="submit" id="reset_submit" class="btn btn-primary btn-block" ng-disabled="ResetPasswordForm.$invalid || login.credentials.NewPassword != login.credentials.ConfirmPassword">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="account-wall" ng-switch-when="resetSuccess">
+                                    <div class="alert alert-success text-center" ng-bind-html="login.labels.ResetPasswordMessage"></div>
+                                    <div class="text-center">
+                                        <a id="back_to_login2" ng-click="login.setForm('login')" ng-bind-html="login.labels.BackToLoginLabel"></a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <div class="col-sm-6 col-lg-5 welcome-index">

@@ -2,7 +2,7 @@ angular.module('ordercloud-paging-helpers', ['ordercloud-assignment-helpers'])
     .factory('Paging', PagingHelpers)
 ;
 
-function PagingHelpers($q, OrderCloud, Assignments) {
+function PagingHelpers($q, OrderCloudSDK, Assignments) {
     return {
         SetSelected:_setSelected,
         Paging: _paging
@@ -18,19 +18,19 @@ function PagingHelpers($q, OrderCloud, Assignments) {
         });
     }
 
-    function _paging(ListObject, ServiceName, AssignmentObjects, AssignmentFunc) {
-        var Service = OrderCloud[ServiceName];
+    function _paging(ListObject, ServiceName, AssignmentObjects, AssignmentFunc, Me) {
+        var Service = OrderCloudSDK[ServiceName];
         if (Service && ListObject.Meta.Page < ListObject.Meta.TotalPages) {
             var queue = [];
             var dfd = $q.defer();
             if (ServiceName !== 'Orders' && ServiceName !== 'Categories') {
-                queue.push(Service.List(null, ListObject.Meta.Page + 1, ListObject.Meta.PageSize));
+                queue.push(Service.List({ 'page':ListObject.Meta.Page + 1, 'pageSize':ListObject.Meta.PageSize }));
             }
             if (ServiceName === 'Orders') {
-                queue.push(Service.ListIncoming(null, null, null, ListObject.Meta.Page + 1, ListObject.Meta.PageSize));
+                queue.push(Service.List("Outgoing", {'page':ListObject.Meta.Page + 1, 'pageSize':ListObject.Meta.PageSize}));
             }
             if (ServiceName === 'Categories') {
-                queue.push(Service.List(null, 'all', ListObject.Meta.Page + 1, ListObject.Meta.PageSize));
+                queue.push(Service.List(Me.Org.xp.WeirGroup.label, { 'depth':'all', 'page':ListObject.Meta.Page + 1, 'pageSize':ListObject.Meta.PageSize }));
             }
             if (AssignmentFunc !== undefined && (AssignmentObjects.Meta.Page < AssignmentObjects.Meta.TotalPages)) {
                 queue.push(AssignmentFunc());

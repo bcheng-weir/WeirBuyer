@@ -30,7 +30,12 @@ function SearchConfig($stateProvider) {
 			url: '/serial',
 			templateUrl: 'search/templates/search.serial.tpl.html',
 			controller: 'SerialCtrl',
-			controllerAs: 'serial'
+			controllerAs: 'serial',
+			resolve: {
+				Group: function(Me){
+					return Me.Org.xp.WeirGroup.label;
+				}
+			}
 		})
 		.state( 'search.serial.results', {
 			url: '/search?numbers',
@@ -122,6 +127,9 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
     vm.GetValveImageUrl = function (img) {
         return vm.ImageBaseUrl + "Valves/" + img;
     };
+    vm.GetSearchImageUrl = function (img) {
+        return vm.ImageBaseUrl + "SerialSearch/" + img;
+    };
 
 	if (!vm.IsServiceOrg) {
 	    if (!vm.Customer || vm.Customer.id != Me.Org.ID) {
@@ -190,15 +198,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 				    return CurrentOrder.SetCurrentCustomer(vm.Customer);
 			    })
 			    .then(function() {
-				    //vm.serialNumberList.length = 0;
 				    return WeirService.FindCart(vm.Customer);
-				    /*WeirService.FindCart(vm.Customer) //This will look for the current DR record. If it can't be found, a DR record is created.
-					    .then(function() {
-						    OrderCloud.Me.ListCategories(null, 1, 100, null, null, { "catalogID": Me.Org.xp.WeirGroup.label})
-							    .then(function(results) {
-								    //vm.serialNumberList.push.apply(vm.serialNumberList, results.Items);
-							    });
-					    });*/
 			    });
 	    }
 	    vm.SelectingCustomer = vm.IsServiceOrg && !vm.Customer;
@@ -270,30 +270,66 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	};
 }
 
-function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts) {
+function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts, Group) {
     var vm = this;
     vm.SerialNumberMatches = [];
-
+	vm.WeirGroup = Group;
     var labels = {
         en: {
             WhereToFind: "where to find your serial number",
-            EnterSerial: "Enter serial number",
-	        EnterSerialPlaceHolder: "Enter serial number",
+            EnterSerial: "Enter serial number or valve description",
+	        EnterSerialPlaceHolder: "Enter serial number or valve description",
             AddMore: "Add More Serial Numbers   +",
             ClearSearch: "Clear Search",
             toastEnterSearchBox: "Please enter an item in the search box.",
             Search: "Search",
-			EmptySearch: "Empty Search"
+			EmptySearch: "Empty Search",
+			SearchBySerialNumberTitle: "Search by serial number or valve description",
+			SearchBySerialNumberSecondLine: "Serial number example; 4210078",
+        	SearchBySerialNumberThirdLine: "Valve description example; A21915W",
+			TipsForSearching: "Tips for searching;",
+            TipsForSearchingSecondLine : "Type in the first 3-4 characters of your serial number or valve description and wait for the results to load",
+            TipsForSearchingThirdLine: "Enter serial number without forward slash /",
+            WhereToFindYourSerialNumberTitle: "Where to find your serial numbers",
+			WhereToFindYourSerialNumberContent: "Serial numbers are available on the valve tags or may be referred to on your GA drawings or data sheets.",
+			BatleyTitle: "Batley™ Valves",
+			BatleyDescription: "Batley™ data sheets",
+            BatleyDescriptionLine2: "Order number / line number is our serial number on this platform. ",
+            BatleyDescriptionLine3: "This can be found on the top right of the data sheets.",
+            BlakeboroughTitle: "Blakeborough® Valves",
+            BlakeboroughDescription: $sce.trustAsHtml("Blakeborough® data sheets"),
+            BlakeboroughDescriptionLine2:"Order number / line number is our serial number on this platform.",
+            BlakeboroughDescriptionLine3: "This can be found on the top right of the data sheets",
+            HopkinsonsTitle: "Hopkinsons® Valves",
+            HopkinsonsDescription: $sce.trustAsHtml("Hopkinsons® GA drawings;"),
+            HopkinsonsDescriptionLine2: "Hopskinsons contract number on the GA drawing is our serial number on this platform"
         },
         fr: {
             WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
-            EnterSerial: $sce.trustAsHtml("Entrer le Num&eacute;ro de S&eacute;rie"),
-	        EnterSerialPlaceHolder: $sce.trustAsHtml("Entrer le Numéro de Série"),
+            EnterSerial: $sce.trustAsHtml("Entrer le numéro de série ou  description de la soupape"),
+	        EnterSerialPlaceHolder: $sce.trustAsHtml("Entrer le numéro de série ou  description de la soupape"),
             AddMore: $sce.trustAsHtml("Ajouter plus de Num&eacute;ro de S&eacute;rie   +"),
             ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
             toastEnterSearchBox: $sce.trustAsHtml("Veuillez saisir un élément dans la barre de recherche."),
             Search: $sce.trustAsHtml("Rechercher"),
-			EmptySearch: $sce.trustAsHtml("Recherche vide")
+			EmptySearch: $sce.trustAsHtml("Recherche vide"),
+            SearchBySerialNumberTitle: $sce.trustAsHtml("Rechercher par numéro de série ou  description de la soupape."),
+            SearchBySerialNumberSecondLine: $sce.trustAsHtml("Exemple de numéro de série: <b>004443020002</b> <ul><li>12 Caractères</li><li>numéro de 2006 à aujourd'hui</li>"),
+            SearchBySerialNumberThirdLine: $sce.trustAsHtml("Exemple de numéro de série: <b>001/054845</b> <ul><li>3 Caractères, 1 barre de slash, 6 caractères</li><li>Numéro de 1996 à 2006</li><ul>"),
+            SearchBySerialNumberFourthLine: $sce.trustAsHtml("Exemple de description de soupape:<ul><li>9DX2HGPFL</li><li>P12D1330A-D-MM</li></ul>"),
+            TipsForSearching: $sce.trustAsHtml("Aides à la recherche"),
+            TipsForSearchingSecondLine : $sce.trustAsHtml("Entrez les 3-4 premiers caractères de votre numéro de série et attendez que les résultats s'affiche."),
+            TipsForSearchingThirdLine: $sce.trustAsHtml("Saisissez le numéro de série sans la barre de slash / pour les numéros de 2006 à aujourd'hui"),
+            WhereToFindYourSerialNumberTitle: "Où trouver vos numéros de séries",
+            CheckNamePlate: "Vérifier la plaque d'estampille de la soupape",
+            CheckNamePlateDescription: "La plaque d'estampille est située sur le côté des soupapes",
+            IdentifySNTitle: " Identifier votre Numéro de Série",
+            IdentifySNDescriptionLine1: $sce.trustAsHtml("Les nouveaux numéros de séries sont composés de 12 caractères, pas plus, pas moins."),
+            IdentifySNDescriptionLine2:"Les anciens numéros de séries sont composés comme suit: 001/054845",
+            TypeSNTitle: "Entrer votre numéro de série sur la plateforme",
+            TypeSNTitleDescriptionLine1: "/!\\ Ne saisissez pas les 4 derniers carractères et la barre de slash des nouveaux numéros de série",
+            TypeSNTitleDescriptionLine2: $sce.trustAsHtml("Pour les anciens numéros de série, saisissez les premiers 3 premiers caractères, la barre de slash et les 6 caractères suivants."),
+	        TypeSNTitleDescriptionLine3: $sce.trustAsHtml("Ne saisissez pas la deuxième barre de slash et les deux derniers caractères.")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -312,10 +348,14 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
     vm.searchSerialNumbers = function () {
         if (!vm.serialNumbers[0] || vm.serialNumbers.length == 0) {
             toastr.info(vm.labels.toastEnterSearchBox, vm.labels.EmptySearch);
-        } else if (vm.serialNumbers.length == 1) {
-            $state.go('search.serial.detail', { number: vm.serialNumbers[0], searchNumbers: vm.serialNumbers[0] });
+        //} else if (vm.serialNumbers.length == 1) {
+        //    $state.go('search.serial.detail', { number: vm.serialNumbers[0], searchNumbers: vm.serialNumbers[0] });
         } else {
-            $state.go('search.serial.results', { numbers: vm.serialNumbers.join(',') });
+        	var serNums = angular.copy(vm.serialNumbers);
+        	angular.forEach(serNums, function(value, key) {
+        		serNums[key] = value.split(" - ")[0];
+	        });
+            $state.go('search.serial.results', { numbers: serNums.join(',') });
         }
     };
 
@@ -336,36 +376,10 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
 
     vm.updateSerialList = function (input) {
     	return SearchProducts.GetPart(input, $scope.search.Customer);
-        /*if (input.length >= 3) {
-            var cust = $scope.search.Customer.id;
-            if (SearchTypeService.IsGlobalSearch()) {
-                return OrderCloud.Me.ListCategories(null, 1, 20, null, "Name",
-                    { "xp.SN": input + "*" }, "all", cust.substring(0, 5))
-                    .then(function (newList) {
-                        vm.SerialNumberMatches.length = 0;
-                        vm.SerialNumberMatches.push.apply(vm.SerialNumberMatches, newList.Items);
-                    })
-                    .catch(function (ex) {
-                        console.log("Error: " + JSON.stringify(ex));
-                    });
-            } else if (cust) {
-                return OrderCloud.Me.ListCategories(null, 1, 20, null, null, {
-                    "ParentID": cust,
-                    "xp.SN": input + "*"
-                }, null, cust.substring(0, 5))
-                    .then(function (newList) {
-                        vm.SerialNumberMatches.length = 0;
-                        vm.SerialNumberMatches.push.apply(vm.SerialNumberMatches, newList.Items);
-                    })
-                    .catch(function (ex) {
-                        console.log("Error: " + JSON.stringify(ex));
-                    });
-            }
-        }*/
     };
 }
 
-function SerialResultsController(WeirService, $stateParams, $state, SerialNumberResults, $sce ) {
+function SerialResultsController(WeirService, $stateParams, $state, SerialNumberResults, $sce, Me ) {
 	var vm = this;
 	vm.serialNumberResults = SerialNumberResults;
 	vm.searchNumbers = $stateParams.numbers;
@@ -373,10 +387,12 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 	var multiCust = false;
 	var cust = "";
 	var numFound = 0;
+	var numQueried = 0;
 	for(var i=0; i< SerialNumberResults.length; i++) {
 		var tmp = SerialNumberResults[i].Detail;
 		if (tmp) {
 		    numFound++;
+		    numQueried++;
 		    if (cust == "" || (tmp.xp.Customer && tmp.xp.Customer != cust)) {
 		        if (cust != "") {
 			        multiCust = true;
@@ -384,6 +400,9 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 			        cust = tmp.xp.Customer;
 		        }
 		    }
+		}
+		else{
+			numQueried++;
 		}
 	}
 	vm.MultipleCustomers = multiCust;
@@ -411,19 +430,31 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 			ViewDetails: $sce.trustAsHtml("Voir les d&eacute;tails")
 		}
 	};
-	//if(numFound == 0) $state.go('search.noresults');
+	if (numFound == 0) {
+	    if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+	        $state.go('enquiry.filter');
+	    } else {
+	        $state.go('search.noresults');
+	    }
+	} else if (numFound == 1) {
+	    $state.go('search.serial.detail', { id: SerialNumberResults[0].Detail.ID, number: SerialNumberResults[0].Detail.Name, searchNumbers: vm.searchNumbers });
+	}
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SerialDetailController( $stateParams, $rootScope, $state, $sce, WeirService, SerialNumberDetail ) {
+function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, WeirService, SerialNumberDetail ) {
 	var vm = this;
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
 	vm.PartQuantity = function(partId) {
 		return SerialNumberDetail.xp.Parts[partId];
 	};
-	if(typeof vm.serialNumber != 'object') {
-		$state.go('search.noresults', {}, {reload:true});
+	if (typeof vm.serialNumber != 'object') {
+	    if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+	        $state.go('enquiry.filter');
+	    } else {
+	        $state.go('search.noresults', {}, { reload: true });
+	    }
 	}
 	var labels = {
 		en: {
@@ -573,34 +604,19 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.updatePartList = function (input) {
 		return SearchProducts.GetPart(input, null);
-	    /*if (input.length >= 3) {
-	        var results = [];
-	        OrderCloud.Me.ListProducts(vm.WeirGroup, 1, 20, "ID", "Name", { "Name": input + "*" }, null, null)
-                .then(function (newList) {
-                    results = newList.Items;
-                })
-                .then(function () {
-                    if (vm.WeirGroup == 'WVCUK') {
-                        OrderCloud.Me.ListProducts(vm.WeirGroup, 1, 20, "ID", "Name", { "xp.AlternatePartNumber": input + "*" }, null, null)
-                            .then(function (newList) {
-                                results.push.apply(results, newList.Items);
-                                vm.PartMatches.length = 0;
-                                vm.PartMatches.push.apply(vm.PartMatches, results);
-                            });
-                    } else {
-                        vm.PartMatches.length = 0;
-                        vm.PartMatches.push.apply(vm.PartMatches, results);
-                    }
-                })
-                .catch(function (ex) {});
-	    }*/
 	};
 }
 
-function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults ) {
+function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumberResults, Me ) {
 	var vm = this;
 	vm.partNumberResults = PartNumberResults;
-	if (!vm.partNumberResults || !vm.partNumberResults.Parts || vm.partNumberResults.Parts.length == 0) $state.go('search.noresults');
+	if (!vm.partNumberResults || !vm.partNumberResults.Parts || vm.partNumberResults.Parts.length == 0) {
+	    if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+	        $state.go('enquiry.filter');
+	    } else {
+	        $state.go('search.noresults');
+	    }
+    }
 	var numFound = 0;
 	angular.forEach(PartNumberResults.Parts, function(entry) {
 	    if (entry.Detail) {
@@ -641,7 +657,13 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
-	if(numFound == 0) $state.go('search.noresults');
+	if (numFound == 0) {
+	    if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+	        $state.go('enquiry.filter');
+	    } else {
+	        $state.go('search.noresults');
+	    }
+    }
 
 	vm.addButtons = [];
 	vm.addPartToQuote = function(part, index) {
@@ -676,7 +698,7 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 		},
 		fr: {
 			// WhereToFind: $sce.trustAsHtml("O&ugrave; trouver votre num&eacute;ro de s&eacute;rie"),
-			EnterTag: $sce.trustAsHtml("Entr&eacute;e un num&eacute;ro de tag"),
+		    EnterTag: $sce.trustAsHtml("Entr&eacute;e un num&eacute;ro de tag"),
 			EnterTagPlaceHolder: $sce.trustAsHtml("Entrée un numéro de tag"),
 		    AddMore: $sce.trustAsHtml("Ajouter plus de num&eacute;ro de tag   +"),
 		    ClearSearch: $sce.trustAsHtml("Nouvelle recherche"),
@@ -723,7 +745,7 @@ function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts
 	};
 }
 
-function TagResultsController(WeirService, $stateParams, $state, TagNumberResults, $sce) {
+function TagResultsController(WeirService, $stateParams, $state, TagNumberResults, $sce, Me) {
     var vm = this;
     vm.tagNumberResults = TagNumberResults;
     vm.searchNumbers = $stateParams.numbers;
@@ -779,7 +801,11 @@ function TagResultsController(WeirService, $stateParams, $state, TagNumberResult
     };
 
     if (numFound == 0) {
-        $state.go('search.noresults');
+        if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+            $state.go('enquiry.filter');
+        } else {
+            $state.go('search.noresults');
+        }
     } else if (numFound == 1 && numQueried == 1) {
         $state.go('search.tag.detail', { id: TagNumberResults[0].Detail.ID });
     }
@@ -787,13 +813,17 @@ function TagResultsController(WeirService, $stateParams, $state, TagNumberResult
     vm.labels = WeirService.LocaleResources(labels);
 }
 
-function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirService, TagNumberDetail ) {
+function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirService, TagNumberDetail, Me ) {
 	var vm = this;
 	vm.tagNumber = TagNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
 	if(typeof vm.tagNumber != 'object') {
-		$state.go('search.noresults', {}, {reload:true});
-	}
+		if (Me.Org.xp.WeirGroup.label == 'WPIFR') {
+		    $state.go('enquiry.filter');
+		} else {
+		    $state.go('search.noresults', {}, { reload: true });
+		}
+    }
 	vm.PartQuantity = function(partId) {
 		return TagNumberDetail.xp.Parts[partId];
 	};
@@ -887,7 +917,7 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 	};
 }
 
-function NoResultsController($state, $sce, WeirService, OrderCloud, toastr, Me) {
+function NoResultsController($state, $sce, WeirService, OrderCloudSDK, toastr, Me) {
     var vm = this;
     vm.searchTerm = "";
     vm.info = "";
@@ -903,7 +933,7 @@ function NoResultsController($state, $sce, WeirService, OrderCloud, toastr, Me) 
 	        }
 	    };
 	    //OrderCloud.Me.Patch(data)
-		OrderCloud.Users.Patch(Me.Profile.ID, data, Me.Org.ID)
+		OrderCloudSDK.Users.Patch(Me.GetBuyerID(),Me.Profile.ID, data)
 	        .then(function (usr) {
 	            toastr.success(vm.labels.SubmittedMessage);
 	            vm.searchTerm = "";

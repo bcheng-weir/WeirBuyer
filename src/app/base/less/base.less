@@ -4,9 +4,7 @@
   height:100%;
   display:flex;
   flex-flow:column nowrap;
-}
-
-#BASE {
+  padding-bottom: 50px;
   &.desktop-left,
   &.desktop-right {
     transition:right 200ms ease-in-out, left 200ms ease-in-out;
@@ -73,7 +71,6 @@
     //border-right:1px solid #cdcdcd;
   }
 }
-
 
 #BASE_BOTTOM {
   position: absolute;
@@ -241,17 +238,16 @@
   border-left: 1px solid #cdcdcd;
 }
 
-/*#BASE_TOP .nav-tabs li:last-child{
+#BASE_TOP .nav-tabs li:last-child{
   float:right;
-  border-bottom: 5px solid #ffc72c;
+  /*border-bottom: 5px solid #ffc72c;*/
   border-right: 0px;
   border-left: 1px solid #cdcdcd;
-}*/
+}
 
 #BASE_BOTTOM .container-fluid{
   background-color: #fff !important;
   border-top: 1px solid #cdcdcd;
-
 }
 
 #BASE_BOTTOM .navbar-brand {

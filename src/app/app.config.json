@@ -4,7 +4,7 @@
 	"scope":["Shopper","ProductReader","BuyerReader","CatalogReader","CategoryReader","AddressAdmin","AddressReader","OrderAdmin","OrderReader","UnsubmittedOrderReader","PriceScheduleReader","BuyerUserAdmin","BuyerUserReader","UserGroupAdmin","UserGroupReader","ApprovalRuleReader","MeAdmin","MeXpAdmin","MeAddressAdmin"],
 	"clientid": "290DD50B-0085-4AB4-94F4-57F315AB9BE0",
 	"buyerid": "",
-	"environment": "staging",
+	"environment": "dev",
 	"anonymous": false,
 	"searchglobal": false,
 	"base": {

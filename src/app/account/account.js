@@ -24,7 +24,7 @@ function AccountConfig($stateProvider) {
 	;
 }
 
-function AccountService($q, $uibModal, OrderCloudSDK) {
+function AccountService($q, $uibModal, OrderCloudSDK, clientid, scope) {
 	var service = {
 		Update: _update,
 		ChangePassword: _changePassword
@@ -76,19 +76,16 @@ function AccountService($q, $uibModal, OrderCloudSDK) {
 			Password: currentUser.CurrentPassword
 		};
 
-		function changePassword() {
-			currentUser.Password = currentUser.NewPassword;
-			OrderCloudSDK.Me.Update(currentUser)
+		return OrderCloudSDK.Auth.Login(checkPasswordCredentials.Username, checkPasswordCredentials.Password, clientid, scope)
+			.then(function () {
+				return OrderCloudSDK.Me.ResetPasswordByToken({
+					NewPassword: currentUser.NewPassword
+				})
 				.then(function() {
 					deferred.resolve();
 				});
-		}
-
-		OrderCloudSDK.GetToken(checkPasswordCredentials)
-			.then(function() {
-				changePassword();
 			})
-			.catch(function(ex) {
+			.catch(function (ex) {
 				deferred.reject(ex);
 			});
 
@@ -98,7 +95,7 @@ function AccountService($q, $uibModal, OrderCloudSDK) {
 	return service;
 }
 
-function AccountController($exceptionHandler, $state, toastr, AccountService, CurrentUser, WeirService, $sce, OrderCloudSDK, Me) {
+function AccountController($exceptionHandler, $state, toastr, AccountService, CurrentUser, WeirService, $sce, Me) {
 	var vm = this;
 	vm.profile = angular.copy(CurrentUser);
 	var currentProfile = CurrentUser;
@@ -222,7 +219,7 @@ function ChangePasswordController($state, $exceptionHandler, toastr, AccountServ
 				$state.go('account');
 			})
 			.catch(function(ex) {
-				$exceptionHandler(ex)
+				$exceptionHandler(ex);
 			});
 	};
 

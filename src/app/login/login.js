@@ -312,7 +312,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 	vm.forgotPassword = function () {
 		LoginService.SendVerificationCode(vm.credentials.Email)
 			.then(function () {
-				vm.setForm('verificationCodeSuccess');
+				vm.setForm('login');//verificationCodeSuccess
 				vm.credentials.Email = null;
 			})
 			.catch(function (ex) {

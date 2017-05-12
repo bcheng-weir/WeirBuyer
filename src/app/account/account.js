@@ -24,10 +24,9 @@ function AccountConfig($stateProvider) {
 	;
 }
 
-function AccountService($q, $uibModal, OrderCloudSDK, clientid, scope) {
+function AccountService($q, $uibModal, OrderCloudSDK) {
 	var service = {
-		Update: _update,
-		ChangePassword: _changePassword
+		Update: _update
 	};
 
 	function _update(currentProfile, newProfile) {
@@ -64,30 +63,6 @@ function AccountService($q, $uibModal, OrderCloudSDK, clientid, scope) {
 		}, function() {
 			angular.noop();
 		});
-
-		return deferred.promise;
-	}
-
-	function _changePassword(currentUser) {
-		var deferred = $q.defer();
-
-		var checkPasswordCredentials = {
-			Username: currentUser.Username,
-			Password: currentUser.CurrentPassword
-		};
-
-		return OrderCloudSDK.Auth.Login(checkPasswordCredentials.Username, checkPasswordCredentials.Password, clientid, scope)
-			.then(function () {
-				return OrderCloudSDK.Me.ResetPasswordByToken({
-					NewPassword: currentUser.NewPassword
-				})
-				.then(function() {
-					deferred.resolve();
-				});
-			})
-			.catch(function (ex) {
-				deferred.reject(ex);
-			});
 
 		return deferred.promise;
 	}
@@ -183,7 +158,7 @@ function ConfirmPasswordController($uibModalInstance, $sce, WeirService) {
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function ChangePasswordController($state, $exceptionHandler, toastr, AccountService, CurrentUser, $sce, WeirService) {
+function ChangePasswordController($state, $exceptionHandler, toastr, CurrentUser, $sce, WeirService, OrderCloudSDK, clientid, scope) {
 	var vm = this;
 	vm.currentUser = CurrentUser;
     var labels = {
@@ -210,7 +185,17 @@ function ChangePasswordController($state, $exceptionHandler, toastr, AccountServ
     };
     vm.labels = WeirService.LocaleResources(labels);
 	vm.changePassword = function() {
-		AccountService.ChangePassword(vm.currentUser)
+		var checkPasswordCredentials = {
+			Username: vm.currentUser.Username,
+			Password: vm.currentUser.CurrentPassword
+		};
+
+		return OrderCloudSDK.Auth.Login(checkPasswordCredentials.Username, checkPasswordCredentials.Password, clientid, scope)
+			.then(function () {
+				return OrderCloudSDK.Me.ResetPasswordByToken({
+					NewPassword: vm.currentUser.NewPassword
+				});
+			})
 			.then(function() {
 				toastr.success( vm.labels.PasswordChange, vm.labels.Succes);
 				vm.currentUser.CurrentPassword = null;
@@ -218,7 +203,7 @@ function ChangePasswordController($state, $exceptionHandler, toastr, AccountServ
 				vm.currentUser.ConfirmPassword = null;
 				$state.go('account');
 			})
-			.catch(function(ex) {
+			.catch(function (ex) {
 				$exceptionHandler(ex);
 			});
 	};

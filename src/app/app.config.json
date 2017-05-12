@@ -14,8 +14,8 @@
     "bottom": false
   },
   "fileStore": {
-    "akid":"AKIAIUP4AZCX6QWGFPQQ",
-    "sak":"ghOoHTZyKejoBpN+Qw/OblzOKQBgq8eXQPlMjyZn",
+    "akid":"",
+    "sak":"",
     "awsRegion":"eu-west-2",
     "bucket": "ordercloudfiles",
     "location": "https://s3.eu-west-2.amazonaws.com/ordercloudfiles/"

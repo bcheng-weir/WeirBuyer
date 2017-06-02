@@ -182,6 +182,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 			PasswordLabel: "Password",
 			BackToLoginLabel: "Back to Login",
 			ForgotPasswordLabel: "Forgot Password",
+            ResetCodeLabel: "Reset Password with Verification Code",
 			NewPasswordLabel: "New Password",
 			RememberMe: "Remember Me",
 			WorldWide: "Go to global website",
@@ -201,6 +202,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 			PasswordLabel: $sce.trustAsHtml("Mot de passe"),
 			BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
 			ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
+            TokenResetLabel: $sce.trustAsHtml("FR: Reset Password with Verification Code"),
 			RememberMe: $sce.trustAsHtml("Se souvenir de mes identifiants"),
 			WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
 			NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
@@ -298,6 +300,26 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 		.catch(function (ex) {
 			$exceptionHandler(ex);
 		});
+	};
+
+	vm.resetPasswordByCode = function() {
+		var passwordReset = {
+            clientid:clientid,
+			username:vm.credentials.Username,
+			password:vm.credentials.Password
+		};
+
+		vm.loading = OrderCloudSDK.PasswordResets.ResetPasswordByVerificationCode(vm.credentials.VerificationCode, passwordReset)
+			.then(function() {
+                vm.setForm('resetSuccess');
+                vm.credentials = {
+                    Username: null,
+                    Password: null
+                };
+			})
+			.catch(function(ex) {
+				$exceptionHandler(ex);
+			});
 	};
 
 	vm.setCookie = function (lang) {

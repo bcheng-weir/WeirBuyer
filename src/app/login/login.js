@@ -193,16 +193,17 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 			SubmitLabel: $sce.trustAsHtml("Submit  <i class='icon-right-arrow'></i>"),
 			BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter.",
 			ResetToastr: "Please reset your password",
-			ResetMessage: "Due to a change in how we store password information, we must ask all registered users to reset their passwords. You can use the same password as before: "
+			ResetMessage: "Due to a change in how we store password information, we must ask all registered users to reset their passwords. You can use the same password as before: ",
+			VerificationCodeLabel: "Verification code"
 		},
 		fr: {
 			LoginLabel: $sce.trustAsHtml("Veuillez saisir vos identifiants"),
-			ForgotLabel: $sce.trustAsHtml("FR: Enter your email, and we’ll send you instructions on how to reset your password"),
+			ForgotLabel: $sce.trustAsHtml("Veuillez renseigner votre email. Nous vous enverrons les instructions nécessaires afin de réinitialiser votre mot de passe."),
 			UsernameLabel: $sce.trustAsHtml("Nom d'utilisateur"),
 			PasswordLabel: $sce.trustAsHtml("Mot de passe"),
 			BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
 			ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
-            TokenResetLabel: $sce.trustAsHtml("FR: Reset Password with Verification Code"),
+            ResetCodeLabel: $sce.trustAsHtml("Réinitialiser le mot de passe avec le code de vérification."),
 			RememberMe: $sce.trustAsHtml("Se souvenir de mes identifiants"),
 			WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
 			NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
@@ -213,7 +214,8 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 			SubmitLabel: $sce.trustAsHtml("Soumettre  <i class='icon-right-arrow'></i>"),
 			BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de vérifier vos identifiant, puis veuillez réessayer."),
 			ResetToastr: $sce.trustAsHtml("Veuillez réinitialiser votre mot de passe"),
-			ResetMessage: $sce.trustAsHtml("En raison d'une modification de la façon dont nous stockons les informations sur les mots de passe, nous demandons à tous les utilisateurs enregistrés de réinitialiser leurs mots de passe. Vous pouvez bien sûr réutiliser le même mot de passe que précédemment.")
+			ResetMessage: $sce.trustAsHtml("En raison d'une modification de la façon dont nous stockons les informations sur les mots de passe, nous demandons à tous les utilisateurs enregistrés de réinitialiser leurs mots de passe. Vous pouvez bien sûr réutiliser le même mot de passe que précédemment."),
+            VerificationCodeLabel: $sce.trustAsHtml("Code de vérification")
 		}
 	};
 	var navlabels = WeirService.navBarLabels();

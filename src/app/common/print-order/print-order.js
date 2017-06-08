@@ -35,7 +35,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 	var labels = {
 		en: {
 			QuoteNumber: "Quote Number; ",
-            QuoteName: "Add your Quote Name ",
+            QuoteName: "Quote Name; ",
 			YourReference: "Your Reference No; ",
 			PONumber: "PO Number;",
 			SerialNum: "Serial Number",
@@ -56,7 +56,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 		},
 		fr: {
 			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
-            QuoteName: $sce.trustAsHtml("Ajouter un libellé à votre cotation "),
+            QuoteName: $sce.trustAsHtml("Nom de la cotation "),
 			YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
 			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),

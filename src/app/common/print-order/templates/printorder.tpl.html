@@ -8,19 +8,19 @@
     <div class="modal-body">
         <table id="quoteData">
             <tr>
-                <td>Quote Number</td>
+                <td ng-bind-html="printctrl.labels.QuoteNumber"></td>
                 <td><span ng-bind-html="printctrl.order.ID"></span></td>
             </tr>
             <tr>
-                <td>Your Quote Nane</td>
+                <td ng-bind-html="printctrl.labels.QuoteName"></td>
                 <td><span ng-bind-html="printctrl.order.xp.Name"></span></td>
             </tr>
             <tr>
-                <td>Your Reference No</td>
+                <td ng-bind-html="printctrl.labels.YourReference"></td>
                 <td><span ng-bind-html="printctrl.order.xp.RefNum"></span></td>
             </tr>
             <tr>
-                <td>PO Number</td>
+                <td ng-bind-html="printctrl.labels.PONumber"></td>
                 <td><span ng-bind-html="printctrl.order.xp.PONumber"></span></td>
             </tr>
         </table>

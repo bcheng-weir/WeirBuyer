@@ -817,7 +817,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    en: {
 	        YourQuote: "Your Quote",
 	        QuoteNumber: "Quote number; ",
-	        QuoteName: "Add your Quote Name ",
+            QuoteName: "Quote Name; ",
 	        YourReference: "Your Reference No; ",
 	        DeliveryOptions: "Delivery Options",
 	        ReviewQuote: "Review Quote",
@@ -871,7 +871,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
 		    QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation"),
-		    QuoteName: $sce.trustAsHtml("Ajouter un libellé à votre cotation "),
+            QuoteName: $sce.trustAsHtml("Nom de la cotation "),
 		    YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
 		    ReviewQuote: $sce.trustAsHtml("Récapitulatif"),

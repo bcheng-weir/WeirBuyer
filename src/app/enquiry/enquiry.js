@@ -192,6 +192,7 @@ function EnquiryFilterController($state, $sce, WeirService, EnquiryService, Enqu
     };
     vm.updateValveTypes(true);
 }
+
 function EnquirySelectController($state, $sce, WeirService, PartList, EnquiryService, Me) {
     var vm = this;
     vm.enq = EnquiryService;
@@ -218,8 +219,8 @@ function EnquirySelectController($state, $sce, WeirService, PartList, EnquirySer
         },
         fr: {
             ChangeAction: "Changer",
-            AddedLabel: "Ajouter",
-            AddLabel: $sce.trustAsHtml("Ajouté")
+            AddedLabel: $sce.trustAsHtml("Ajouté"),
+            AddLabel: "Ajouter"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

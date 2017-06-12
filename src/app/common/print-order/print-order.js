@@ -13,7 +13,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 	vm.address = printData.address;
 	vm.pocontent = printData.pocontent;
 	vm.currency = (vm.order.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.order.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
-	if(printData.uitotal == -1) {
+	if(printData.uitotal == -1) { // We are in myquote and using the exworks or standard (whether buyer or catalog)
 		vm.uitotal = QuoteShareService.UiTotal;
 		if(QuoteShareService.Quote.xp.CarriageRateType == 'standard') {
 			vm.CarriageRateForBuyer = (vm.buyer.xp.UseCustomCarriageRate && vm.buyer.xp.UseCustomCarriageRate == true) ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;

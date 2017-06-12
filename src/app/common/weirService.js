@@ -576,6 +576,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 if (number) {
                     queue.push((function () {
                         var d = $q.defer();
+
 	                    OrderCloudSDK.Me.ListProducts({'search':weirGroup, 'page':1, 'pageSize':50, 'searchOn':"ID", 'sortBy':"Name", 'filters':{ "Name": number }})
                             .then(function (products) {
                                 if (products.Items.length == 0) {
@@ -1166,6 +1167,23 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     //    return deferred.promise;
     //}
 
+	function sortEnquiryCategories(valveType) {
+		var items = {
+			"Soupape de sûreté conventionnelle - Type Série P Starflow":1,
+			"Soupape d'expansion thermique - Type Série 9":2,
+			"Soupape pilotées - Type Série 76, Série 78 et Stareco":3,
+			"Soupape vapeur basse/moyenne pression - ASME I - Type Starflow V":4,
+			"Soupape vapeur haute pression - ASME I - Type Starsteam":5,
+			"Soupape pilotées basse pression - API2000 - Type Série 74LP":6
+		};
+
+		console.log(valveType);
+		var result = Underscore.sortBy(valveType, function(valve) {
+			return items[valve.Name];
+		});
+		return result;
+	}
+
     function getEnquiryCategories() {
         var enqCat = "";
         var deferred = $q.defer();
@@ -1189,6 +1207,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                     matches.manufacturers.push(tmp);
                 }
             }
+	        //matches.valvetypes["WPIFR-Sarasin-SAR"] = sortEnquiryCategories(matches.valvetypes["WPIFR-Sarasin-SAR"]); now sorted in console.
+
             deferred.resolve(matches);
         })
         .catch(function (ex) {

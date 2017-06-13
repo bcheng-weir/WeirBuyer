@@ -47,7 +47,10 @@
                     <td><span ng-bind-html="item.Product.Name"></span></td>
                     <td><span ng-bind-html="item.Product.Description"></span></td>
                     <td><span ng-bind-html="item.Product.xp.ReplacementSchedule"></span></td>
-                    <td><span ng-bind-html="item.Product.xp.LeadTime"></span></td>
+                    <td>
+                        <span ng-show="item.xp.LeadTime==null" ng-bind-html="item.Product.xp.LeadTime"></span>
+                        <span ng-show="item.xp.LeadTime!=null" ng-bind-html="item.xp.LeadTime"></span>
+                    </td>
                     <td ng-if="!item.UnitPrice||item.UnitPrice=='0'">POA</td>
                     <td ng-if="item.UnitPrice">
                         <span ng-bind-html="item.UnitPrice | currency:printctrl.currency"></span>

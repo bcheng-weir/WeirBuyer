@@ -318,7 +318,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
             SearchBySerialNumberThirdLine: $sce.trustAsHtml("Exemple de numéro de série: <b>001/54845</b> <ul><li>3 Caractères, 1 barre de slash, 5 caractères</li><li>Numéro de 1996 à 2006</li><li><b>Note</b> : Certains numéros de série comportent 6 caractères après la barre de slash</li><ul>"),
             SearchBySerialNumberFourthLine: $sce.trustAsHtml("Exemple de description de soupape:<ul><li>9DX2HGPFL</li><li>P12D1330A-D-MM</li></ul>"),
             TipsForSearching: $sce.trustAsHtml("Aides à la recherche"),
-            TipsForSearchingSecondLine : $sce.trustAsHtml("Entrez les 3-4 premiers caractères de votre numéro de série et attendez que les résultats s'affiche."),
+            TipsForSearchingSecondLine : $sce.trustAsHtml("Entrez les 3-4 premiers caractères de votre numéro de série et attendez que les résultats s'affichent."),
             TipsForSearchingThirdLine: $sce.trustAsHtml("Saisissez le numéro de série sans la barre de slash / pour les numéros de 2006 à aujourd'hui"),
             WhereToFindYourSerialNumberTitle: "Où trouver vos numéros de séries",
             CheckNamePlate: "Vérifier la plaque d'estampille de la soupape",

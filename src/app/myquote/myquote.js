@@ -2210,9 +2210,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
                             ApprovedTitle: "Quote Updated"
                     	},
 						fr: {
-                            SubmitOrder:$sce.trustAsHtml("FR: Submit Order"),
+                            SubmitOrder:$sce.trustAsHtml("Confirmer la commande"),
                         	SubmitOrderDetails:$sce.trustAsHtml("<p>Si vous sélectionnez 'Soumettre votre commande', vous pourrez confirmer votre commande comme suit: <br><br> 1.Soumettre votre commande avec bon de commande :  ajoutez votre numéro de commande ou téléchargez votre document de commande.  <br><br>2.Soumettre votre commande & envoyer par mail votre bon de commande  (nous l'ajouterons à la commande pour vous)</p>"),
-                            ReviewTerms:$sce.trustAsHtml("FR: Review Terms and Conditions"),
+                            ReviewTerms:$sce.trustAsHtml("Termes et conditions"),
                             Continue:$sce.trustAsHtml("FR: Continue to Submit order "),
                             SaveQuote:$sce.trustAsHtml("FR: Save as confirmed quote"),
                             SaveQuoteDetails:$sce.trustAsHtml("FR: Save to your confirmed quotes list - you can submit as an order at a later date."),

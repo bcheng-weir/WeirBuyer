@@ -17,9 +17,7 @@ angular.module('orderCloud')
 	.controller('SubmitConfirmOrderCtrl', SubmitConfirmOrderController)
 	.controller('ChooseSubmitCtrl', ChooseSubmitController)
 	.controller('SubmitCtrl',SubmitController)
-    .controller('TermsAndConditionsCtrl', TermsAndConditionsController)
-	.controller('CarriageModalCtrl', MissingCarriageDetailController)
-;
+	.controller('CarriageModalCtrl', MissingCarriageDetailController);
 
 function QuoteShareService() {
     var svc = {
@@ -95,13 +93,6 @@ function QuoteCommentsService(OrderCloudSDK, QuoteShareService, Me, $q) {
 
 function MyQuoteConfig($stateProvider) {
 	$stateProvider
-		.state('termsandconditions',{
-			parent:'base',
-			url: '/termsandconditions',
-            templateUrl: 'myquote/templates/termsandconditions.tpl.html',
-            controller: 'TermsAndConditionsCtrl',
-            controllerAs: 'termsAndCondition'
-        })
 		.state('myquote', {
 		    parent: 'base',
 		    url: '/myquote',
@@ -2792,24 +2783,3 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.submitOrder = _submitOrder;
 }
 
-function TermsAndConditionsController($sce,WeirService){
-    var vm = this;
-	var labels = {
-        en: {
-            TermsAndConditions: "Terms And Conditions"
-        },
-        fr: {
-            TermsAndConditions: $sce.trustAsHtml("Termes et conditions")
-        }
-    };
-    var navlabels = WeirService.navBarLabels();
-    switch (WeirService.Locale()) {
-        case 'fr':
-            vm.navlabels = navlabels.fr;
-            break;
-        default:
-            vm.navlabels = navlabels.en;
-            break;
-    }
-    vm.labels = WeirService.LocaleResources(labels);
-}

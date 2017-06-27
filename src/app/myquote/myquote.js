@@ -2185,7 +2185,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
             $uibModal.open({
                 animation:true,
                 size:'md',
-                templateUrl:'myquote/templates/myquote.revisedModal.tpl.html',
+                templateUrl:'myquote/templates/myquote.revisedmodal.tpl.html',
                 controller: function($uibModalInstance, $state, Me, Quote, WeirService, toastr, $exceptionHandler) {
                     var vm = this;
                     vm.Quote = Quote;

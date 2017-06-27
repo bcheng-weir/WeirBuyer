@@ -12,6 +12,10 @@
                 <td><span ng-bind-html="printctrl.order.ID"></span></td>
             </tr>
             <tr>
+                <td ng-bind-html="printctrl.labels.QuoteName"></td>
+                <td><span ng-bind-html="printctrl.order.xp.Name"></span></td>
+            </tr>
+            <tr>
                 <td ng-bind-html="printctrl.labels.YourReference"></td>
                 <td><span ng-bind-html="printctrl.order.xp.RefNum"></span></td>
             </tr>
@@ -46,7 +50,10 @@
                     <td><span ng-bind-html="item.Product.Name"></span></td>
                     <td><span ng-bind-html="item.Product.Description"></span></td>
                     <td><span ng-bind-html="item.Product.xp.ReplacementSchedule"></span></td>
-                    <td><span ng-bind-html="item.Product.xp.LeadTime"></span></td>
+                    <td>
+                        <span ng-show="item.xp.LeadTime==null" ng-bind-html="item.Product.xp.LeadTime"></span>
+                        <span ng-show="item.xp.LeadTime!=null" ng-bind-html="item.xp.LeadTime"></span>
+                    </td>
                     <td ng-if="!item.UnitPrice||item.UnitPrice=='0'">POA</td>
                     <td ng-if="item.UnitPrice">
                         <span ng-bind-html="item.UnitPrice | currency:printctrl.currency"></span>

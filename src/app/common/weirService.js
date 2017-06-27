@@ -368,7 +368,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     }
 
     function getParts(catId, deferred, result) {
-	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'PageSize':100, 'categoryID':catId, 'catalogID':result.ParentID.substring(0, 5) }) //why was UpdatePart here?
+	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':100, 'categoryID':catId, 'catalogID':result.ParentID.substring(0, 5), 'sortBy': 'Name' }) //why was UpdatePart here?
             .then(function (products) {
                 result.Parts = [];
                 var hasPrices = [];

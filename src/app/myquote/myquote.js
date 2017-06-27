@@ -17,9 +17,7 @@ angular.module('orderCloud')
 	.controller('SubmitConfirmOrderCtrl', SubmitConfirmOrderController)
 	.controller('ChooseSubmitCtrl', ChooseSubmitController)
 	.controller('SubmitCtrl',SubmitController)
-    .controller('TermsAndConditionsCtrl', TermsAndConditionsController)
-	.controller('CarriageModalCtrl', MissingCarriageDetailController)
-;
+	.controller('CarriageModalCtrl', MissingCarriageDetailController);
 
 function QuoteShareService() {
     var svc = {
@@ -95,12 +93,6 @@ function QuoteCommentsService(OrderCloudSDK, QuoteShareService, Me, $q) {
 
 function MyQuoteConfig($stateProvider) {
 	$stateProvider
-		.state('myquote.termsandconditions',{
-			url: 'termsandconditions',
-            templateUrl: 'myquote/templates/termsandconditions.tpl.html',
-            controller: 'TermsAndConditionsCtrl',
-            controllerAs: 'termsAndCondition'
-        })
 		.state('myquote', {
 		    parent: 'base',
 		    url: '/myquote',
@@ -817,7 +809,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    en: {
 	        YourQuote: "Your Quote",
 	        QuoteNumber: "Quote number; ",
-	        QuoteName: "Add your Quote Name ",
+            QuoteName: "Quote Name; ",
 	        YourReference: "Your Reference No; ",
 	        DeliveryOptions: "Delivery Options",
 	        ReviewQuote: "Review Quote",
@@ -871,7 +863,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		fr: {
 		    YourQuote: $sce.trustAsHtml("Vos Cotations"),
 		    QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation"),
-		    QuoteName: $sce.trustAsHtml("Ajouter un libellé à votre cotation "),
+            QuoteName: $sce.trustAsHtml("Nom de la cotation "),
 		    YourReference: $sce.trustAsHtml("Votre num&eacute;ro de r&eacute;f&eacute;rence; "),
 		    DeliveryOptions: $sce.trustAsHtml("Options de livraison"),
 		    ReviewQuote: $sce.trustAsHtml("Récapitulatif"),
@@ -1799,7 +1791,7 @@ function ChooseSubmitController($uibModalInstance, $sce, $state, WeirService, Qu
 
     function _goToTerms() {
     	$uibModalInstance.close();
-	    $state.go('myquote.termsandconditions');
+	    $state.go('termsandconditions');
     }
 
     vm.submitForReview = _submitForReview;
@@ -1878,7 +1870,8 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
 
 function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloudSDK,  Underscore, OCGeography,
                                 Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me,
-                                fileStore, FilesService, FileSaver, QuoteToCsvService, Catalog, Buyer) {
+                                fileStore, FilesService, FileSaver, QuoteToCsvService, Catalog, Buyer, $uibModal, $document,
+								$exceptionHandler) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -2040,7 +2033,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Share: "Share",
 			Download: "Download",
 			Print: "Print",
-			Approve: "Approve",
+			Approve: "Approve Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
 			Reject: "Reject",
 			Comments: "Comments",
 			Status: "Status",
@@ -2092,7 +2085,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Share: $sce.trustAsHtml("Partager"),
 			Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
 			Print: $sce.trustAsHtml("Imprimer"),
-			Approve: $sce.trustAsHtml("Approuver"),
+			Approve: $sce.trustAsHtml("Approuver le devis <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			Reject: $sce.trustAsHtml("Rejeter"),
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
@@ -2188,17 +2181,68 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 	function _approve() {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id || vm.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id) {
-			var mods = {
-				xp: {
-					StatusDate: new Date(),
-					Status: vm.Quote.xp.Type == "Quote" ? WeirService.OrderStatus.ConfirmedQuote.id : WeirService.OrderStatus.ConfirmedOrder.id
+			var parentElem = angular.element($document[0].querySelector('body'));
+            $uibModal.open({
+                animation:true,
+                size:'md',
+                templateUrl:'myquote/templates/myquote.revisedmodal.tpl.html',
+                controller: function($uibModalInstance, $state, Me, Quote, WeirService, toastr, $exceptionHandler) {
+                    var vm = this;
+                    vm.Quote = Quote;
+                    labels = {
+                        en: {
+                        	SubmitOrder:"Submit Order",
+							SubmitOrderDetails:$sce.trustAsHtml("<p>If you select Submit Order you will be able to submit your order as follows;<br><br>1. Submit Order with PO – add your PO number or upload your PO document.<br>2. Submit Order & email PO – submit your order and email your PO (we’ll add it to the order for you).</p>"),
+							ReviewTerms:"Review Terms and Conditions",
+							Continue:"Continue to Submit order ",
+							SaveQuote:"Save as confirmed quote",
+							SaveQuoteDetails:"Save to your confirmed quotes list - you can submit as an order at a later date.",
+                            ApprovedMessage: "The Revised Quote has been Accepted",
+                            ApprovedTitle: "Quote Updated"
+                    	},
+						fr: {
+                            SubmitOrder:$sce.trustAsHtml("Confirmer la commande"),
+                        	SubmitOrderDetails:$sce.trustAsHtml("<p>Si vous sélectionnez 'Soumettre votre commande', vous pourrez confirmer votre commande comme suit: <br><br> 1.Soumettre votre commande avec bon de commande :  ajoutez votre numéro de commande ou téléchargez votre document de commande.  <br><br>2.Soumettre votre commande & envoyer par mail votre bon de commande  (nous l'ajouterons à la commande pour vous)</p>"),
+                            ReviewTerms:$sce.trustAsHtml("Termes et conditions"),
+                            Continue:$sce.trustAsHtml("Continuer vers la soumission de la commande "),
+                            SaveQuote:$sce.trustAsHtml("Enregistrer sous Cotations Confirmées"),
+                            SaveQuoteDetails:$sce.trustAsHtml("Enregistrez dans votre liste de cotations confirmées - vous pouvez soumettre une commande ultérieurement."),
+                            ApprovedMessage: $sce.trustAsHtml("La cotation révisée a été acceptée"),
+                            ApprovedTitle: $sce.trustAsHtml("Cotation mise à jour")
+						}
+					};
+                    vm.labels = WeirService.LocaleResources(labels);
+                    vm.goToTerms = function() {
+                        $uibModalInstance.close();
+                        $state.go('termsandconditions');
+                    };
+                    vm.close = function() {
+                        $uibModalInstance.dismiss();
+                    };
+                    vm.confirmQuote = function() {
+                        var mods = {
+                            xp: {
+                                StatusDate: new Date(),
+                                Status: vm.Quote.xp.Type == "Quote" ? WeirService.OrderStatus.ConfirmedQuote.id : WeirService.OrderStatus.ConfirmedOrder.id
+                            }
+                        };
+                        WeirService.UpdateQuote(vm.Quote, mods)
+                            .then(function (qte) {
+                                $uibModalInstance.close();
+                                toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
+								$state.go('submit', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
+                            })
+                            .catch(function(ex) {
+								$exceptionHandler(ex);
+							});
+					};
+                },
+                controllerAs:'revisedModal',
+                appendTo:parentElem,
+				resolve: {
+                	Quote: vm.Quote
 				}
-			};
-			WeirService.UpdateQuote(vm.Quote, mods)
-				.then(function (qte) {
-					toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
-					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
-				});
+            });
 		}
 	}
 	function _reject() {
@@ -2735,24 +2779,3 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.submitOrder = _submitOrder;
 }
 
-function TermsAndConditionsController($sce,WeirService){
-    var vm = this;
-	var labels = {
-        en: {
-            TermsAndConditions: "Terms And Conditions"
-        },
-        fr: {
-            TermsAndConditions: $sce.trustAsHtml("Termes et conditions")
-        }
-    };
-    var navlabels = WeirService.navBarLabels();
-    switch (WeirService.Locale()) {
-        case 'fr':
-            vm.navlabels = navlabels.fr;
-            break;
-        default:
-            vm.navlabels = navlabels.en;
-            break;
-    }
-    vm.labels = WeirService.LocaleResources(labels);
-}

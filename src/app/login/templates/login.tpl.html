@@ -44,7 +44,9 @@
                                             </label>
                                         </div>
                                         <button class="btn btn-lg btn-primary btn-block login-btn" type="submit" ng-disabled="LoginForm.$invalid" ng-bind-html="login.labels.SubmitLabel"></button>
+                                        <br>
                                         <a href="#" class="forgot-password" ng-click="login.setForm('forgot')" ng-bind-html="login.labels.ForgotPasswordLabel"></a>
+                                        <a href="#" class="forgot-password pull-right" ng-click="login.setForm('resetByCode')" ng-bind-html="login.labels.ResetCodeLabel"></a>
                                     </form>
                                 </div>
 
@@ -78,6 +80,29 @@
                                                 <input type="password" class="form-control" id="ConfirmPassword" placeholder="Confirm New Password" ng-model="login.credentials.ConfirmPassword" ng-required="true" />
                                             </div>
                                             <button type="submit" id="reset_submit" class="btn btn-primary btn-block" ng-disabled="ResetPasswordForm.$invalid || login.credentials.NewPassword != login.credentials.ConfirmPassword">Submit</button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!--RESET PASSWORD BY EMAIL CODE-->
+                                <div class="account-wall" ng-switch-when="resetByCode">
+                                    <div class="panel panel-default">
+                                        <form class="panel-body" name="ResetPasswordForm" ng-submit="login.resetPasswordByCode()" >
+                                            <h3 class="text-center" ng-bind-html="login.labels.ResetPasswordLabel"></h3>
+                                            <div class="form-group">
+                                                <label for="VerificationCode" class="sr-only" ng-bind-html="login.labels.VerificationCodeLabel"></label>
+                                                <input type="text" class="form-control" id="VerificationCode" placeholder="{{login.labels.VerificationCodeLabel}}" ng-model="login.credentials.VerificationCode" ng-required="true" autofocus/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="UserName" class="sr-only" ng-bind-html="login.labels.ConfirmPasswordLabel"></label>
+                                                <input type="text" class="form-control" id="UserName" placeholder="{{login.labels.ConfirmPasswordLabel}}" ng-model="login.credentials.Username" ng-required="true" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="NewPassword" class="sr-only" ng-bind-html="login.labels.NewPasswordLabel"></label>
+                                                <input type="password" class="form-control" id="Password" name="Password" placeholder="{{login.labels.NewPasswordLabel}}" ng-model="login.credentials.Password" ng-required="true" />
+                                            </div>
+                                            <button type="submit" id="reset_submit" class="btn btn-primary btn-block" ng-disabled="ResetPasswordForm.$invalid || login.credentials.NewPassword != login.credentials.ConfirmPassword">Submit</button>
+                                            <a id="back_to_login" class="btn btn-link" ng-click="login.setForm('login')" ng-bind-html="login.labels.BackToLoginLabel"></a>
                                         </form>
                                     </div>
                                 </div>

@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "bootstrap": "^3.3.6",
-    "angular": "^1.6.1",
+    "angular": "1.6.4",
     "angular-animate": "^1.5.9",
     "angular-sanitize": "^1.5.9",
     "angular-touch": "^1.5.9",
@@ -52,7 +52,7 @@
     "angular-mocks": "1.5.9"
   },
   "resolutions": {
-    "angular": "1.6.3",
+    "angular": "1.6.4",
     "angular-animate": "^1.5.9"
   }
 }

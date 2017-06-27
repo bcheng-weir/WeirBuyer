@@ -50,7 +50,8 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             HopkinsonsMsg: "Established over 160 years ago, the Hopkinsons® brand is renowned for long and dependable service life, generation after generation.",
             SerialNumber: "Serial number",
             PartNumber: "Part number",
-            TagNumber: "Tag number"
+            TagNumber: "Tag number",
+	        PlaceHolder: "Enter serial, part, or tag number."
         },
         fr: {
             Search : $sce.trustAsHtml("Centre de recherche"),
@@ -72,7 +73,8 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             PartNumber: $sce.trustAsHtml("Numéro de pièce"),
             TagNumber: $sce.trustAsHtml("Numéro du tag"),
             SarasinRSBD: $sce.trustAsHtml("Sarasin RSBD™"),
-            SarasinRSBDMsg: $sce.trustAsHtml("Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD™ sont conçues pour garantir des performances, une sécurité et une fiabilité optimales.")
+            SarasinRSBDMsg: $sce.trustAsHtml("Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD™ sont conçues pour garantir des performances, une sécurité et une fiabilité optimales."),
+	        PlaceHolder: $sce.trustAsHtml("Renseigner un numéro de série, de pièce ou de repère soupape.")
         }
     };
     vm.LanguageUsed = WeirService.Locale();

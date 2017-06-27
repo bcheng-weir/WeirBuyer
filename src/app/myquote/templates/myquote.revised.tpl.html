@@ -19,8 +19,6 @@
 
                     <!--<div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">-->
                     <div ng-if="revised.Quote.xp.Status=='RV'||revised.Quote.xp.Status=='RO'" style="float:right;">
-                        <button class="btn btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
-                        <button class="btn btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
                         <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
                     </div>
                 </div>
@@ -28,7 +26,7 @@
         </div>
     </div>
     <div class="row" style="padding-top:20px; padding-bottom:20px;">
-        <div class="col-md-8">
+        <div class="col-md-5">
             <h4><span ng-bind-html='revised.labels.QuoteNumber'></span><span class="text-blue"  ng-if="revised.Quote.xp.Status != 'DR'" ng-bind-html="revised.Quote.ID"></span></h4>
             <h4><span ng-bind-html='revised.labels.QuoteName'></span><span class="text-blue" ng-bind-html="revised.Quote.xp.Name"></span></h4>
             <h4><span ng-bind-html='revised.labels.YourReference'></span><span class="text-blue" ng-bind-html="revised.Quote.xp.RefNum"></span></h4>
@@ -36,9 +34,11 @@
             <h4><a href="#" ng-click="revised.gotoRevisions()" ng-bind-html="revised.labels.ViewRevisions"></a></h4>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-7">
             <h2 class="pull-right">
-                <button class="btn btn-primary" ng-bind-html='revised.labels.BackToQuotes' ng-click="revised.gotoQuotes()"></button>
+                <button class="btn btn-lg btn-primary" ng-bind-html='revised.labels.BackToQuotes' ng-click="revised.gotoQuotes()"></button>
+                <button class="btn btn-lg btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
+                <button class="btn btn-lg btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
             </h2>
         </div>
     </div>

@@ -1071,7 +1071,10 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     function updateQuote(quote, data, assignQuoteNumber, prefix) {
         var deferred = $q.defer();
         if (assignQuoteNumber) {
-            tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, 1);
+            OrderCloudSDK.Buyers.Get(Me.GetBuyerID())
+            .then(function (buyer) {
+                tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, 0, buyer);
+            });
         } else {
 	        OrderCloudSDK.Orders.Patch("OutGoing", quote.ID, data)
 				.then(function (quote) { deferred.resolve(quote) })
@@ -1080,26 +1083,36 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         return deferred.promise;
     }
 
-    function tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount) {
-        var newQuoteId = createQuoteNumber(prefix);
+    function tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount, buyer) {
+        var newQuoteId = createQuoteNumber(prefix, trycount, buyer);
         data.ID = newQuoteId;
 	    OrderCloudSDK.Orders.Patch("Outgoing", quote.ID, data)
 			.then(function (quote) { CurrentOrder.Set(newQuoteId); return quote; })
+            .then(function(quote) { 
+                var data = { xp: { NextOrderNumber: (buyer.xp.NextOrderNumber || 1) + trycount + 1 } };
+                OrderCloudSDK.Buyers.Patch(buyer.ID, data);
+                return quote;
+            })
 			.then(function (quote) { deferred.resolve(quote) })
 			.catch(function (ex) {
-			    if (trycount > 4) {
+			    if (trycount > 20) {
 			        deferred.reject(ex);
 			    } else {
-			        tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount + 1);
+			        tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount + 1, buyer);
 			    }
 			});
     }
 
-    function createQuoteNumber(prefix) {
+    function createQuoteNumber(prefix, trycount, buyer) {
         // var timeoffset = 1476673277652;
-        var now = new Date();
-        var testVal = (now.getTime().toString());
-        var quoteNum = prefix + "-" + testVal;
+        // var now = new Date();
+        var pfx = prefix + ((buyer.xp.WeirGroup.label == "WPIFR") ? "-E" : "-");
+        var suffix = (buyer.xp.OrderSuffix) ? buyer.xp.OrderSuffix : "";
+        var orderNum = ((buyer.xp.NextOrderNumber) ? buyer.xp.NextOrderNumber : 1) + trycount;
+        // var testVal = (now.getTime().toString());
+        var testVal = "0000" + orderNum.toString();
+        testVal = testVal.substring(testVal.length - 5);
+        var quoteNum = pfx + testVal + suffix;
         return quoteNum;
     }
 
@@ -1126,46 +1139,6 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 
         return deferred.promise;
     }
-
-    //function getEnquiryBrands() {
-    //    var deferred = $q.defer();
-    //    OrderCloud.Buyers.Get(OrderCloud.BuyerID.Get())
-    //    .then(function(b) {
-    //        if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
-    //            var enqCat = b.xp.WeirGroup.label + "_ENQ";
-    //            return OrderCloud.Me.ListCategories(null, null, 50, null, "Name", null, "1", enqCat);
-    //        } else {
-    //            deferred.resolve([]);
-    //        }
-    //    })
-    //    .then(function(brands) {
-    //        deferred.resolve(brands.Items);
-    //    })
-    //    .catch(function (ex) {
-    //        deferred.reject(ex);
-    //    });
-    //    return deferred.promise;
-    //}
-    //function getEnquiryValveTypes(brandId) {
-    //    var deferred = $q.defer();
-    //    OrderCloud.Buyers.Get(OrderCloud.())
-    //    .then(function (b) {
-    //        //search, page, pageSize, searchOn, sortBy, filters, depth, catalogID
-    //        if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
-    //            var enqCat = b.xp.WeirGroup.label + "_ENQ";
-    //            return OrderCloud.Me.ListCategories(null, null, 50, null, "Name", { parentID: brandId }, "1", enqCat);
-    //        } else {
-    //            deferred.resolve([]);
-    //        }
-    //    })
-    //    .then(function (valveTypes) {
-    //        deferred.resolve(valveTypes.Items);
-    //    })
-    //    .catch(function (ex) {
-    //        deferred.reject(ex);
-    //    });
-    //    return deferred.promise;
-    //}
 
 	function sortEnquiryCategories(valveType) {
 		var items = {

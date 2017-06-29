@@ -18,19 +18,19 @@
         </div>
 
     <div class="row" style="padding-top:20px;">
-        <div class="col-md-7">
+        <div class="col-md-5">
             <h4><span ng-bind-html='submit.labels.Customer'></span><span class="text-blue" style="margin-left: 1em;">{{submit.Quote.xp.CustomerName}}</span></h4>
             <h4><span ng-bind-html='submit.labels.QuoteNumber'></span><span class="text-blue" style="margin-left: 1em;">{{submit.Quote.ID}}</span></h4>
             <h4><span ng-bind-html='submit.labels.QuoteName'></span><span class='text-blue' style="margin-left:1em;" maxlength="20">{{submit.Quote.xp.Name}}</span></h4>
             <h4><span ng-bind-html='submit.labels.YourReference'></span><span class='text-blue' style="margin-left:1em;" maxlength="50">{{submit.Quote.xp.RefNum}}</span></h4>
         </div>
 
-        <div class="col-xs-5">
+        <div class="col-xs-7">
             <!-- Submit an order with PO, or submit and email one later. -->
             <div class="row">
                 <div class="col-xs-6 col-email-message">
                     <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
-                        <button class="btn btn-warning pull-right" ng-click="submit.submitOrder(false)" ng-bind-html='submit.labels.SubmitOrderAndEmail'></button>
+                        <button class="btn btn-lg btn-success pull-right" ng-click="submit.submitOrder(false)" ng-bind-html='submit.labels.SubmitOrderAndEmail'></button>
                     </div>
                     <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
                         <div class="col-xs-12"><h6 class="email-message pull-right" ng-bind-html="submit.labels.EmailPoMessage"></h6></div>
@@ -39,7 +39,7 @@
                 <div class="col-xs-6">
                     <div class="row">
                         <div class="col-xs-12">
-                            <button class="btn btn-success pull-right" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button>
+                            <button class="btn btn-lg btn-success pull-right" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button>
                         </div>
                     </div>
                     <div class="row">

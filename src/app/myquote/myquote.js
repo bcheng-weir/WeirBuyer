@@ -2219,10 +2219,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
                     vm.close = function() {
                         $uibModalInstance.dismiss();
                     };
-                    vm.submitOrder = function() {
-                        $uibModalInstance.close();
-                    	$state.go('submit', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
-					};
                     vm.confirmQuote = function() {
                         var mods = {
                             xp: {
@@ -2234,7 +2230,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
                             .then(function (qte) {
                                 $uibModalInstance.close();
                                 toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
-                                $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
+								$state.go('submit', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
                             })
                             .catch(function(ex) {
 								$exceptionHandler(ex);

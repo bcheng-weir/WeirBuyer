@@ -1106,7 +1106,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     function createQuoteNumber(prefix, trycount, buyer) {
         // var timeoffset = 1476673277652;
         // var now = new Date();
-        var pfx = prefix + ((buyer.xp.WeirGroup.label == "WPIFR") ? "-E" : "-");
+        var pfx = prefix + "-E";
         var suffix = (buyer.xp.OrderSuffix) ? buyer.xp.OrderSuffix : "";
         var orderNum = ((buyer.xp.NextOrderNumber) ? buyer.xp.NextOrderNumber : 1) + trycount;
         // var testVal = (now.getTime().toString());

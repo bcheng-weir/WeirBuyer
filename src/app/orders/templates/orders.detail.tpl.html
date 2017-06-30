@@ -16,7 +16,7 @@
         <div class="form-group">
             <label class="col-sm-1">Order ID:</label>
             <div class="col-sm-11">
-                {{ordersDetail.order.ID}}
+                <span ng-bind-html="order.ID | MaskedQuoteID"></span>
             </div>
         </div>
         <div class="form-group">

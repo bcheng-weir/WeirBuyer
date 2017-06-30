@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-xs-6 pull-left">
                 <h4><span ng-bind-html='detail.labels.Customer'></span><span class="text-blue" ng-bind-html="myquote.Customer.name"></span></h4>
-                <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-blue" ng-if="myquote.Quote.xp.Status != 'DR'" ng-bind-html="myquote.Quote.ID"></span></h4>
+                <h4><span ng-bind-html='detail.labels.QuoteNumber'></span><span class="text-blue" ng-if="myquote.Quote.xp.Status != 'DR'" ng-bind-html="myquote.Quote.ID | MaskedQuoteID"></span></h4>
                 <h4><span ng-bind-html='detail.labels.QuoteName'></span><input type='text' maxlength="20" ng-model='myquote.Quote.xp.Name' /></h4>
                 <h4><span ng-bind-html='detail.labels.RefNumHeader'></span><input type='text' maxlength="50" ng-model='myquote.Quote.xp.RefNum' /></h4>
             </div>

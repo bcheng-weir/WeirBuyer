@@ -9,6 +9,7 @@ angular.module( 'orderCloud' )
     .filter('weirfulldate', weirfulldate)
 	.filter('weirGroupFromBuyersID', weirGroupFromBuyersID)
 	.filter('reverseComments',reverseComments)
+    .filter('MaskedQuoteID',MaskedQuoteID)
 ;
 
 function serialnumber() {
@@ -174,4 +175,15 @@ function reverseComments(Underscore) {
 			return Underscore.sortBy(comments, 'date').reverse();
 		}
 	}
+}
+
+function MaskedQuoteID() {
+    return function(serialNumber) {
+        var fields = serialNumber.split("-");
+        if (fields.length < 3) {
+            return serialNumber;
+        } else {
+            return fields[2];
+        }
+    }
 }

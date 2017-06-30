@@ -41,7 +41,7 @@
         </thead>
         <tbody>
         <tr ng-repeat="quote in revisions.Revisions.Items">
-            <th scope="row">{{quote.ID}}</th>
+            <th scope="row">{{quote.ID | MaskedQuoteID}}</th>
             <td>{{quote.xp.RefNum}}</td>
             <td>{{quote.xp.CustomerName}}</td>
             <td>{{quote.FromUserFirstName}} {{quote.FromUserLastName}}</td>

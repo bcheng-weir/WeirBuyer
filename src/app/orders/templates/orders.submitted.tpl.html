@@ -31,7 +31,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="order in orders.list.Items   ">
-                <td>{{order.ID}}</td>
+                <td><span ng-bind-html="order.ID | MaskedQuoteID"></span></td>
                 <td>{{order.xp.Name}}</td>
                 <td>{{order.xp.RefNum}}</td>
                 <td>{{order.xp.PONumber}}</td>

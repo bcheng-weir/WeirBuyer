@@ -38,7 +38,7 @@
             <h2 class="pull-right">
                 <button class="btn btn-lg btn-primary" ng-bind-html='revised.labels.BackToQuotes' ng-click="revised.gotoQuotes()"></button>
                 <button class="btn btn-lg btn-danger" style="margin-left:0.5em;" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button>
-                <button class="btn btn-lg btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve"></button>
+                <button class="btn btn-lg btn-success" ng-click="revised.Approve()" ng-bind-html="revised.labels.Approve[revised.Quote.xp.Type]"></button>
             </h2>
         </div>
     </div>

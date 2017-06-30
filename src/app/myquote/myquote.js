@@ -1916,7 +1916,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	if(LineItems) { //hopefully an easier way to set labels.
 		// For each line item, does it exist in previous line items?  If NO then NEW, else are the fields different between the two? If YES then updated.
 		vm.LineItems = Underscore.filter(LineItems.Items, function(item) {
-			console.log(item);
 			var found = false;
 			if(item.ProductID == "PLACEHOLDER") { //Match a blank line item
 				angular.forEach(PreviousLineItems.Items, function(value, key) {
@@ -2033,7 +2032,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Share: "Share",
 			Download: "Download",
 			Print: "Print",
-			Approve: "Approve Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
+			Approve: {
+				Quote:"Approve Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
+				Order:"Approve Order <i class='fa fa-angle-right' aria-hidden='true'></i>"
+			},
 			Reject: "Reject",
 			Comments: "Comments",
 			Status: "Status",
@@ -2085,7 +2087,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Share: $sce.trustAsHtml("Partager"),
 			Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
 			Print: $sce.trustAsHtml("Imprimer"),
-			Approve: $sce.trustAsHtml("Approuver le devis <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+            Approve: {
+                Quote:$sce.trustAsHtml("Approuver le devis <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+                Order:$sce.trustAsHtml("Approuver le devis <i class='fa fa-angle-right' aria-hidden='true'></i>")
+            },
 			Reject: $sce.trustAsHtml("Rejeter"),
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
@@ -2180,7 +2185,23 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		return "";
 	}
 	function _approve() {
-		if (vm.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id || vm.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id) {
+		// Order skip the modal verification.
+		if (vm.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id) {
+            var mods = {
+                xp: {
+                    StatusDate: new Date(),
+                    Status: WeirService.OrderStatus.ConfirmedOrder.id
+                }
+            };
+            WeirService.UpdateQuote(vm.Quote, mods)
+                .then(function (qte) {
+                    toastr.success(vm.labels.ApprovedMessage, vm.labels.ApprovedTitle);
+                    $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
+                })
+                .catch(function(ex) {
+                    $exceptionHandler(ex);
+                });
+		} else if (vm.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) {
 			var parentElem = angular.element($document[0].querySelector('body'));
             $uibModal.open({
                 animation:true,
@@ -2223,7 +2244,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
                         var mods = {
                             xp: {
                                 StatusDate: new Date(),
-                                Status: vm.Quote.xp.Type == "Quote" ? WeirService.OrderStatus.ConfirmedQuote.id : WeirService.OrderStatus.ConfirmedOrder.id
+                                Status: WeirService.OrderStatus.ConfirmedQuote.id
                             }
                         };
                         WeirService.UpdateQuote(vm.Quote, mods)

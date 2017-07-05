@@ -118,8 +118,8 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, toastr, Me
             ReviewStep: "Review & Submit"
         },
         fr: {
-            CantFindHeader: $sce.trustAsHtml("Vous n'arrivez pas à trouver ce que vous cherchez?"),
-            CantFindText1: $sce.trustAsHtml("Si vous ne trouvez pas ce que vous cherchez, veuillez essayer de nouveau."),
+            CantFindHeader: $sce.trustAsHtml("Votre recherche ne correspond à aucun numéro de série"),
+            CantFindText1: $sce.trustAsHtml("Suggestions :<br><ul><li>Vérifiez la saisie du numéro de série Si cela reste introuvable, renseigner le formulaire ci-dessous</li></ul>"),
             CantFindText2: $sce.trustAsHtml("Vous pouvez également remplir le formulaire ci-dessous – Entrez simplement le numéro de série de la soupape voulue. Sélectionnez la marque et le type de soupape pour afficher une liste des types de pièces associés au type de soupape. "),
             SearchAgain: $sce.trustAsHtml("Chercher à nouveau"),
             YourContact: $sce.trustAsHtml("Votre contact"),
@@ -160,10 +160,10 @@ function EnquiryFilterController($state, $sce, WeirService, EnquiryService, Enqu
             Submit: $sce.trustAsHtml("Show spares list <i class='fa fa-angle-right' aria-hidden='true'></i>")
         },
         fr: {
-            SerNumPrompt: $sce.trustAsHtml("Entrée le numéro de série"),
+            SerNumPrompt: $sce.trustAsHtml("Renseigner le numéro de série"),
             BrandPrompt: $sce.trustAsHtml("S&eacute;lectionner une marque"),
             ValveTypePrompt: $sce.trustAsHtml("S&eacute;lectionner un type de soupape"),
-            SerNumPlaceholder: "Champ libre",
+            SerNumPlaceholder: $sce.trustAsHtml("Veuillez renseigner le numéro de série ici"),
             BrandPlaceholder: "Marque",
             ValveTypePlaceholder: "Type de soupape",
             Submit: $sce.trustAsHtml("Afficher la liste de pi&egrave;ce <i class='fa fa-angle-right' aria-hidden='true'></i>")

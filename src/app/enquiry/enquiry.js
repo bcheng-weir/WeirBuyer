@@ -119,7 +119,7 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, toastr, Me
         },
         fr: {
             CantFindHeader: $sce.trustAsHtml("Votre recherche ne correspond à aucun numéro de série"),
-            CantFindText1: $sce.trustAsHtml("Suggestions :<br><ul><li>Vérifiez la saisie du numéro de série Si cela reste introuvable, renseigner le formulaire ci-dessous</li></ul>"),
+            CantFindText1: $sce.trustAsHtml("Suggestions :<br><ul><li>Vérifiez la saisie du numéro de série</li><li>Si cela reste introuvable, renseigner le formulaire ci-dessous</li></ul>"),
             CantFindText2: $sce.trustAsHtml("Vous pouvez également remplir le formulaire ci-dessous – Entrez simplement le numéro de série de la soupape voulue. Sélectionnez la marque et le type de soupape pour afficher une liste des types de pièces associés au type de soupape. "),
             SearchAgain: $sce.trustAsHtml("Chercher à nouveau"),
             YourContact: $sce.trustAsHtml("Votre contact"),

@@ -770,7 +770,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		else{
 			$state.go($state.current, {}, {reload: false});
 		}
-	};
+	}
 
 	vm.SetShippingPrice = function() {
         var isValidForReview = function () {

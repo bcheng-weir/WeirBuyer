@@ -302,7 +302,7 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
                     $exceptionHandler(ex);
                 }
             });
-    }
+    };
 
     var labels = {
         en: {
@@ -376,7 +376,7 @@ function EnquiryReviewController($state, $sce, $uibModal, WeirService, EnquirySe
             BackCommand: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back",
             SubmitCommand: "Submit enquiry <i class='fa fa-angle-right' aria-hidden='true'></i>",
 	        QuoteName: "Add your Quote Name ",
-	        RefNumHeader: "Add your Reference Number ",
+	        RefNumHeader: "Add your Reference Number "
         },
         fr: {
             DeliveryAddress: "Adresse de livraison",

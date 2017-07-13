@@ -72,7 +72,7 @@ function searchresults() {
         });
 
         return results;
-    }
+    };
 }
 
 function daySuffix(day) {
@@ -142,7 +142,7 @@ function weirdate() {
 	   result = "--";
 	}
         return result;
-    }
+    };
 }
 function weirfulldate() {
     return function (date, locale) {
@@ -156,7 +156,7 @@ function weirfulldate() {
             result = "--";
         }
         return result;
-    }
+    };
 }
 
 function weirGroupFromBuyersID() {
@@ -166,7 +166,7 @@ function weirGroupFromBuyersID() {
 		} else {
 			return currentBuyerID;
 		}
-	}
+	};
 }
 
 function reverseComments(Underscore) {
@@ -174,7 +174,7 @@ function reverseComments(Underscore) {
 		if(comments && comments.length) {
 			return Underscore.sortBy(comments, 'date').reverse();
 		}
-	}
+	};
 }
 
 function MaskedQuoteID() {
@@ -187,5 +187,5 @@ function MaskedQuoteID() {
         } else {
             return fields[2] + "-" + fields[3];
         }
-    }
+    };
 }

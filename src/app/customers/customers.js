@@ -217,7 +217,7 @@ function CustomerService($sce, OrderCloudSDK, $exceptionHandler) {
         CustomerTypes: _customerTypes,
         CreateBuyer: _createBuyer,
         CreateAddress: _createAddress,
-        UpdateAddress: _updateAddress,
+        UpdateAddress: _updateAddress
     };
 }
 

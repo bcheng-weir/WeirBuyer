@@ -1,14 +1,15 @@
-angular.module( 'orderCloud' )
-    .filter( 'customerPresearch', customerPresearch )
-    .filter( 'serialPreSearch', serialPreSearch )
-    .filter( 'tagPreSearch', tagPreSearch )
-    .filter( 'partPreSearch', partPreSearch )
-    .filter( 'serialnumber', serialnumber )
-    .filter( 'searchresults', searchresults )
+angular.module('orderCloud')
+    .filter('customerPresearch', customerPresearch)
+    .filter('serialPreSearch', serialPreSearch)
+    .filter('tagPreSearch', tagPreSearch)
+    .filter('partPreSearch', partPreSearch)
+    .filter('serialnumber', serialnumber)
+    .filter('searchresults', searchresults)
     .filter('weirdate', weirdate)
     .filter('weirfulldate', weirfulldate)
 	.filter('weirGroupFromBuyersID', weirGroupFromBuyersID)
 	.filter('reverseComments',reverseComments)
+    .filter('MaskedQuoteID',MaskedQuoteID)
 ;
 
 function serialnumber() {
@@ -71,7 +72,7 @@ function searchresults() {
         });
 
         return results;
-    }
+    };
 }
 
 function daySuffix(day) {
@@ -141,7 +142,7 @@ function weirdate() {
 	   result = "--";
 	}
         return result;
-    }
+    };
 }
 function weirfulldate() {
     return function (date, locale) {
@@ -155,7 +156,7 @@ function weirfulldate() {
             result = "--";
         }
         return result;
-    }
+    };
 }
 
 function weirGroupFromBuyersID() {
@@ -165,7 +166,7 @@ function weirGroupFromBuyersID() {
 		} else {
 			return currentBuyerID;
 		}
-	}
+	};
 }
 
 function reverseComments(Underscore) {
@@ -173,5 +174,18 @@ function reverseComments(Underscore) {
 		if(comments && comments.length) {
 			return Underscore.sortBy(comments, 'date').reverse();
 		}
-	}
+	};
+}
+
+function MaskedQuoteID() {
+    return function(serialNumber) {
+        var fields = serialNumber.split("-");
+        if (fields.length < 3) {
+            return serialNumber;
+        } else if (fields.length == 3) {
+            return fields[2];
+        } else {
+            return fields[2] + "-" + fields[3];
+        }
+    };
 }

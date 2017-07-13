@@ -185,7 +185,7 @@ function MaskedQuoteID() {
         } else if (fields.length == 3) {
             return fields[2];
         } else {
-            return fields[2] + "-" + fields[3]; //This gets the revision
+            return fields[2] + "-" + fields[3];
         }
     }
 }

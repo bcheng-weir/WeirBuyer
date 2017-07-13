@@ -620,34 +620,6 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         }
     }
 
-    //var lastSearchType = "";
-    //function setLastSearchType(type) {
-    //    lastSearchType = type;
-    //}
-    //function getLastSearchType() {
-    //    return lastSearchType;
-    //}
-
-    // Category representing the weir group of the buyer
-    //var weirGroup = {};
-    //function setWeirGroup(group) {
-    //    weirGroup = group;
-    //}
-    //function getWeirGroup() {
-    //    // TODO: Remove this
-    //    if (!weirGroup.ID) {
-    //	weirGroup = {
-    //                "ID": "WCVUK",
-    //                "Name": "Weir Controls and Valves UK",
-    //                "Description": null,
-    //                "ListOrder": 1,
-    //                "Active": true,
-    //                "ParentID": null
-    //              };
-    //    }
-    //    return weirGroup;
-    //}
-
     function addPartToQuote(part) {
         var deferred = $q.defer();
         var currentOrder = {};

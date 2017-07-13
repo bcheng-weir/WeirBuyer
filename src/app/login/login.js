@@ -54,9 +54,9 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
         .then(function (usr) {
             FS.identify(usr.ID, {
                 displayName: usr.FirstName + ' ' + usr.LastName,
-                email: usr.Email,
-                group: (usr.xp.WeirGroup && usr.xp.WeirGroup.label) ? usr.xp.WeirGroup.label : "Not set",
-                buyer: buyerid
+                email: usr.Email
+                //group: (usr.xp.WeirGroup && usr.xp.WeirGroup.label) ? usr.xp.WeirGroup.label : "Not set",
+                //buyer: buyerid
             });
         });
     }

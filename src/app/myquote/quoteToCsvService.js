@@ -21,7 +21,7 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 		});
 		var data = [
 			[Labels.Status, Quote.xp.Status],
-			[Labels.QuoteNumber, Quote.ID],
+			[Labels.QuoteNumber, $filter('MaskedQuoteID')(Quote.ID)],
             [Labels.QuoteName, (Quote.xp && Quote.xp.Name ? Quote.xp.Name : "")],
 			[Labels.YourReference, (Quote.xp && Quote.xp.RefNum ? Quote.xp.RefNum : "")],
 			[Labels.PONumber, (payment && payment.xp && payment.xp.PONumber ? payment.xp.PONumber : "")],

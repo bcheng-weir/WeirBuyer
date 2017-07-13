@@ -9,7 +9,7 @@
         <table id="quoteData">
             <tr>
                 <td ng-bind-html="printctrl.labels.QuoteNumber"></td>
-                <td><span ng-bind-html="printctrl.order.ID"></span></td>
+                <td><span ng-bind-html="printctrl.order.ID | MaskedQuoteID"></span></td>
             </tr>
             <tr>
                 <td ng-bind-html="printctrl.labels.QuoteName"></td>

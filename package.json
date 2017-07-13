@@ -4,7 +4,7 @@
   "description": "A seed project for custom Four51 Solutions built on AngularJS",
   "main": "app.js",
   "engines": {
-    "node": "7.10.1"
+    "node": "8.1.4"
   },
   "cacheDirectories": [
     "node_modules",

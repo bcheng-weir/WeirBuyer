@@ -1,7 +1,7 @@
 {
   "appname": "store.flowcontrol.weir",
   "tmpscope": "FullAccess",
-  "scope":["Shopper","ProductReader","BuyerReader","CatalogReader","CategoryReader","AddressAdmin","AddressReader","OrderAdmin","OrderReader","UnsubmittedOrderReader","PriceScheduleReader","BuyerUserAdmin","BuyerUserReader","UserGroupAdmin","UserGroupReader","ApprovalRuleReader","MeAdmin","MeXpAdmin","MeAddressAdmin"],
+  "scope":["BuyerAdmin","Shopper","ProductReader","BuyerReader","CatalogReader","CategoryReader","AddressAdmin","AddressReader","OrderAdmin","OrderReader","UnsubmittedOrderReader","PriceScheduleReader","BuyerUserAdmin","BuyerUserReader","UserGroupAdmin","UserGroupReader","ApprovalRuleReader","MeAdmin","MeXpAdmin","MeAddressAdmin"],
   "clientid": "85DC0813-F2F8-41D6-B741-80FA9EAC0D34",
   "buyerid": "",
   "environment": "prod",

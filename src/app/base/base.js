@@ -13,6 +13,8 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
 	    'https://weirwebhooks.azurewebsites.net/**',
 	    'http://www.store.flowcontrol.weir/**',
         'http://store.flowcontrol.weir/**',
+	    'https://api.ordercloud.io/**',
+	    'https://r.fullstory.com/**',
 	    'https://s3.us-east-2.amazonaws.com/ordercloudtest/**',
 	    'https://s3.eu-west-2.amazonaws.com/ordercloudfiles/**'
     ]);
@@ -86,6 +88,23 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
             },
             CurrentOrg: function(OrderCloudSDK, Me) {
             	return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
+            },
+            IdentifyMe : function(OrderCloudSDK, Me, $q) {
+                var dfd = $q.defer();
+                OrderCloudSDK.Me.Get()
+                    .then(function (usr) {
+                        FS.identify(usr.ID, {
+                            displayName: usr.FirstName + ' ' + usr.LastName,
+                            email: usr.Email
+                            //group: (usr.xp.WeirGroup && usr.xp.WeirGroup.label) ? usr.xp.WeirGroup.label : "Not set",
+                            //buyer: buyerid
+                        });
+                    })
+                    .catch(function (e) {
+                        console.log("An error was thrown: " + e.message);
+                        dfd.resolve();
+                    });
+                dfd.resolve();
             },
             ComponentList: function($state, $q, Underscore) {
                 var deferred = $q.defer();

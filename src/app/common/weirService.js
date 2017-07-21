@@ -51,8 +51,8 @@ function UserGroupsService($q, OrderCloudSDK) {
 
 function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, SearchTypeService, Me) {
     var orderStatuses = {
-        Enquiry: { id: "EN", label: { en: "Enquiry Submitted", fr: "FR: Enquiry Submitted" }, desc: "An enquiry for parts not found" },
-	    EnquiryReview: {id: "ER", label:{ en: "Enquiry Submitted", fr: "FR: Enquiry Submitted" },desc: "An enquiry under administrator review."},
+        Enquiry: { id: "EN", label: { en: "Enquiry Submitted", fr: "Demande envoyée" }, desc: "An enquiry for parts not found" },
+	    EnquiryReview: {id: "ER", label:{ en: "Enquiry Submitted", fr: "Demande envoyée" },desc: "An enquiry under administrator review."},
         Draft: { id: "DR", label: { en: "Draft", fr: "Brouillon" }, desc: "This is the current quote under construction" },
         Saved: { id: "SV", label: { en: "Saved", fr: "Cotation(s) enregistrée(s)" }, desc: "Quote has been saved but not yet submitted to weir as quote or order" },
         Submitted: { id: "SB", label: { en: "Quote Submitted for Review", fr: "Cotation(s) soumise(s) à révision" }, desc: "Customer has selected to request review OR review status is conditional based on POA items being included in quote" },
@@ -620,34 +620,6 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         }
     }
 
-    //var lastSearchType = "";
-    //function setLastSearchType(type) {
-    //    lastSearchType = type;
-    //}
-    //function getLastSearchType() {
-    //    return lastSearchType;
-    //}
-
-    // Category representing the weir group of the buyer
-    //var weirGroup = {};
-    //function setWeirGroup(group) {
-    //    weirGroup = group;
-    //}
-    //function getWeirGroup() {
-    //    // TODO: Remove this
-    //    if (!weirGroup.ID) {
-    //	weirGroup = {
-    //                "ID": "WCVUK",
-    //                "Name": "Weir Controls and Valves UK",
-    //                "Description": null,
-    //                "ListOrder": 1,
-    //                "Active": true,
-    //                "ParentID": null
-    //              };
-    //    }
-    //    return weirGroup;
-    //}
-
     function addPartToQuote(part) {
         var deferred = $q.defer();
         var currentOrder = {};
@@ -1198,7 +1170,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         var deferred = $q.defer();
 	    var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
-        var newQuoteId = createQuoteNumber(buyerId);
+        var newQuoteId = createQuoteNumber(buyerId, 0, Me.Org);
         var data = {
             ID: newQuoteId,
             Type: "Standard",
@@ -1238,33 +1210,42 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 }
             };
 	        OrderCloudSDK.LineItems.Create("Outgoing",data.ID, li)
-            .then(function (lineItem) {
-                defer.resolve({ Order: data, LineItem: lineItem });
-            })
-            .catch(function (ex) {
-                console.log(ex);
-                defer.reject(ex);
-            });
+                .then(function (lineItem) {
+                    defer.resolve({ Order: data, LineItem: lineItem });
+                })
+                .catch(function (ex) {
+                    defer.reject(ex);
+                });
             return defer.promise;
         }
         var queue = [];
-	    OrderCloudSDK.Orders.Create("Outgoing",data)
-        .then(function (quote) {
-            for (var p in enq.Parts) {
-                if (enq.Parts[p]) {
-                    queue.push(
-                        addLineItem(enq.SerialNumber, p, enq.Parts[p])
-                    );
+        //TODO - Complete quote creation process with ascending trycount if necessary.
+        //TODO - Patch the buyers quote id.
+        OrderCloudSDK.Buyers.Get(Me.Org.ID)
+            .then(function(buyer) {
+                Me.Org = buyer;
+                return OrderCloudSDK.Orders.Create("Outgoing",data)
+            })
+            .then(function (quote) {
+                for (var p in enq.Parts) {
+                    if (enq.Parts[p]) {
+                        queue.push(
+                            addLineItem(enq.SerialNumber, p, enq.Parts[p])
+                        );
+                    }
                 }
-            }
-            $q.all(queue)
-                .then(function () {
-                    deferred.resolve(data);
-                });
-        })
-        .catch(function (ex) {
-            deferred.reject(ex);
-        });
+                $q.all(queue)
+                    .then(function () {
+                        deferred.resolve(data);
+                    });
+            })
+            .then(function() {
+                var data = { xp: { NextOrderNumber: (Me.Org.xp.NextOrderNumber || 1) + 1 } };
+                return OrderCloudSDK.Buyers.Patch(Me.Org.ID, data);
+            })
+            .catch(function (ex) {
+                deferred.reject(ex);
+            });
         return deferred.promise;
     }
     return service;

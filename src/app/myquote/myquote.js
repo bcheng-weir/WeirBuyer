@@ -1484,7 +1484,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                 var data = {
                     Type: "PurchaseOrder",
                     xp: {
-                        PONumber: vm.PONumber
+                        PONumber: vm.PONumber,
+                        POEnteredByWeir: false
                     }
                 };
                 OrderCloudSDK.Payments.Create("Outgoing", vm.Quote.ID, data)
@@ -2715,7 +2716,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 				var data = {
 					Type: "PurchaseOrder",
 					xp: {
-						PONumber: vm.PONumber
+						PONumber: vm.PONumber,
+                        POEnteredByWeir: false
 					}
 				};
 				OrderCloudSDK.Payments.Create("Outgoing", vm.Quote.ID, data)

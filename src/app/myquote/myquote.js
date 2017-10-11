@@ -2760,7 +2760,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 					Type: "Order",
 					Revised: false,
 					PONumber: vm.PONumber,
-					PendingPO: false
+					PendingPO: false,
+                    POEnteredByWeir: false
 				}
 			};
 		} else {

@@ -28,6 +28,7 @@ function OrdersConfig($stateProvider) {
 		                Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //FromUserID and Total were throwing errors
 	                }
 		            // Filter on Me.Profile.ID == FromUserID
+					Parameters.filters = Parameters.filters || {};
 		            Parameters.filters.FromUserID = Me.Profile.ID;
                     return OrderCloudSDK.Orders.List("Outgoing", {'from':Parameters.from, 'to':Parameters.to, 'search':Parameters.search, 'page':Parameters.page, 'pageSize':Parameters.pageSize || 10, 'searchOn':Parameters.searchOn, 'sortBy':Parameters.sortBy, 'filters':Parameters.filters, 'buyerID':Me.GetBuyerID()});
 				}
@@ -290,8 +291,10 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
     function reviewOrder(orderId, status, buyerId) {
         if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id) {
             $state.transitionTo('readonly', { quoteID: orderId, buyerID: buyerId });
-        } else if (status == WeirService.OrderStatus.RevisedOrder.id) {
-            $state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });
+        } else if (status == WeirService.OrderStatus.RevisedOrder.id || status == WeirService.OrderStatus.RevisedQuote.id) {
+            $state.transitionTo('revised', {quoteID: orderId, buyerID: buyerId});
+        } else if (status == WeirService.OrderStatus.ConfirmedQuote.id || status == WeirService.OrderStatus.ConfirmedOrder.id) {
+            $state.transitionTo('submit', {quoteID: orderId, buyerID: buyerId});
         } else {
             WeirService.SetQuoteAsCurrentOrder(orderId)
                 .then(function () {

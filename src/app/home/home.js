@@ -10,13 +10,36 @@ function HomeConfig($stateProvider) {
 			url: '/home',
 			templateUrl: 'home/templates/home.tpl.html',
 			controller: 'HomeCtrl',
-			controllerAs: 'home'
-            //removing the resolve as it is not executing quickly enough to set language for the home and base. It is now
-            //line 247 of login.js and executes there.
+			controllerAs: 'home',
+            resolve: {
+                quotes: function(OrderCloudSDK) {
+                    var opts = {
+                        'pageSize':10,
+                        'sortBy':'DateCreated',
+                        'filters':{
+                            'xp.Type':'Quote',
+                            'xp.Status':'!DR',
+                            'xp.Active':true
+                        }
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing",opts);
+                },
+			    orders: function(OrderCloudSDK) {
+			        var opts = {
+			            'pageSize':10,
+                        'sortBy':'DateCreated',
+                        'filters':{
+			                'xp.Type':'Order',
+                            'xp.Active':true
+                        }
+                    };
+			        return OrderCloudSDK.Orders.List("Outgoing",opts);
+                }
+            }
 		});
 }
 
-function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTypeService) {
+function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTypeService, orders, quotes) {
     var vm = this;
 	if(WeirService.Locale() == 'fr') {
 		SearchTypeService.SetGlobalSearchFlag(true);
@@ -25,6 +48,15 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 	}
     vm.CurrentUser = Me.Profile;
 	vm.CurrentUserOrg = Me.Org;
+	vm.orders = orders;
+	vm.quotes = quotes;
+	vm.LookupStatus = WeirService.LookupStatus;
+	vm.locale =  WeirService.Locale;
+	vm.StatusLabel = function(status) {
+	    var statusObj = WeirService.LookupStatus(status);
+	    return statusObj.label[WeirService.Locale()];
+    };
+
     var labels = {
         en: {
             Search : "Search centre",
@@ -51,7 +83,16 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             SerialNumber: "Serial number",
             PartNumber: "Part number",
             TagNumber: "Tag number",
-	        PlaceHolder: "Enter serial, part, or tag number."
+	        PlaceHolder: "Enter serial, part, or tag number.",
+            YourDashboard: "Your Dashboard",
+            YourQuotes: "Your Quotes",
+            YourOrders: "Your Orders",
+            QuoteNumber: "Weir Quote No.",
+            QuoteReference: "Your Quote Ref:",
+            OrderNumber: "Weir Order No.",
+            OrderReference: "Your Order Ref",
+            Total: "Total",
+            Status: "Status"
         },
         fr: {
             Search : $sce.trustAsHtml("Centre de recherche"),
@@ -140,5 +181,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
                     });
                 break;
         }
+    };
+
+    vm.GoToOrder = function(orderId) {
+        $state.go("orders.goto", { orderID: orderId } );
     };
 }

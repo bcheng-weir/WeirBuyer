@@ -62,8 +62,76 @@
             </div>
         </div>
     </div>
+<br><br>
+    <section class="dashboard">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <span ng-bind-html="home.labels.YourDashboard" class="mainheader"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <span ng-bind-html="home.labels.YourQuotes" class="subheader"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-hover table-condensed oc-table-responsive">
+                            <thead>
+                                <tr>
+                                    <th ng-bind-html="home.labels.QuoteNumber"></th>
+                                    <th ng-bind-html="home.labels.QuoteReference"></th>
+                                    <th ng-bind-html="home.labels.Total"></th>
+                                    <th ng-bind-html="home.labels.Status"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="quote in home.quotes.Items">
+                                    <td><a href="#" ng-click=""><span ng-bind-html="quote.ID | MaskedQuoteID" class="weir-link"></span></a></td>
+                                    <td><span ng-bind-html="quote.xp.RefNum"></span></td>
+                                    <td><span ng-bind-html="quote.Total"></span></td>
+                                    <td><span ng-bind-html="home.StatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ'}[quote.xp.Status]"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <span ng-bind-html="home.labels.YourOrders" class="subheader"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-hover table-condensed oc-table-responsive">
+                            <thead>
+                            <tr>
+                                <th ng-bind-html="home.labels.OrderNumber"></th>
+                                <th ng-bind-html="home.labels.OrderReference"></th>
+                                <th ng-bind-html="home.labels.Total"></th>
+                                <th ng-bind-html="home.labels.Status"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="order in home.orders.Items">
+                                <td><a href="#" ng-click="home.GoToOrder(order.ID)"><span ng-bind-html="order.ID | MaskedQuoteID"></span></a></td>
+                                <td><span ng-bind-html="order.xp.RefNum"></span></td>
+                                <td><span ng-bind-html="order.Total"></span></td>
+                                <td><span ng-bind-html="home.StatusLabel(order.xp.Status)" ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="platform">
         <div class="container">
+            <!--Shut off per POC - Change Requests Sprint 3
             <div class="row">
                 <div class="panel blue">
                     <div class="row">
@@ -72,7 +140,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <div class="row">
                 <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
                     <div class="h-t-u">

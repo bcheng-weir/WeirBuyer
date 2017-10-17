@@ -37,6 +37,7 @@ function QuotesConfig($stateProvider) {
 					if(Parameters && Parameters.search && Parameters.search != 'undefined') {
 						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //,FromUserID,Total,xp
 					}
+					Parameters.filters = Parameters.filters || {};
 					Parameters.filters.FromUserID = Me.Profile.ID;
 					var opts = {
 						'from':Parameters.from,
@@ -91,7 +92,7 @@ function QuotesConfig($stateProvider) {
 			        var d = $q.defer();
 			        $localForage.setItem(storageName, { state: 'quotes', id: $stateParams.quoteID })
                         .then(function () {
-	                        OrderCloudSDK.Orders.List("Outgoing",$stateParams.quoteID)
+	                        OrderCloudSDK.Orders.Get("Outgoing",$stateParams.quoteID)
                                 .then(function (quote) {
                                     $localForage.removeItem(storageName);
                                     d.resolve(quote);
@@ -368,7 +369,7 @@ function InReviewQuotesController(WeirService, $sce, $scope) {
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function RouteToQuoteController($rootScope, $state, OrderCloud, WeirService, toastr, Quote) {
+function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote, Me) {
     if (Quote) {
         var status = Quote.xp.Status;
         var type = Quote.xp.Type;
@@ -376,13 +377,15 @@ function RouteToQuoteController($rootScope, $state, OrderCloud, WeirService, toa
             $state.go('orders.goto', { orderID: Quote.ID });
         } else if (status == WeirService.OrderStatus.RevisedQuote.id) {
             if (Quote.xp.Active) {
-                $state.go('revised', { quoteID: Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
+                $state.go('revised', { quoteID: Quote.ID });
             } else {
-                $state.go('readonly', { quoteID: Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
+                $state.go('readonly', { quoteID: Quote.ID });
             }
         } else if ([WeirService.OrderStatus.Submitted.id, WeirService.OrderStatus.Review.id, WeirService.OrderStatus.RejectedQuote.id, WeirService.OrderStatus.Enquiry.id, WeirService.OrderStatus.EnquiryReview.id].indexOf(status) > -1) {
-            $state.go('readonly', { quoteID: Quote.ID, buyerID: OrderCloud.BuyerID.Get() });
-        } else { // DR, SV, CQ?
+            $state.go('readonly', {quoteID: Quote.ID});
+        } else if ([WeirService.OrderStatus.ConfirmedQuote.id].indexOf(status) > -1) {
+            $state.go('submit', {quoteID: Quote.ID});
+        } else { // DR, SV
             WeirService.SetQuoteAsCurrentOrder(Quote.ID)
             .then(function () {
                 $rootScope.$broadcast('SwitchCart');

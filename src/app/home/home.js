@@ -92,7 +92,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             OrderNumber: "Weir Order No.",
             OrderReference: "Your Order Ref",
             Total: "Total",
-            Status: "Status"
+            Status: "Status",
+            AllQuotes: "View All Quotes",
+            AllOrders: "View All Orders"
         },
         fr: {
             Search : $sce.trustAsHtml("Centre de recherche"),
@@ -115,7 +117,18 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             TagNumber: $sce.trustAsHtml("Numéro du tag"),
             SarasinRSBD: $sce.trustAsHtml("Sarasin RSBD™"),
             SarasinRSBDMsg: $sce.trustAsHtml("Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD™ sont conçues pour garantir des performances, une sécurité et une fiabilité optimales."),
-	        PlaceHolder: $sce.trustAsHtml("Renseigner un numéro de série, de pièce ou de repère soupape.")
+	        PlaceHolder: $sce.trustAsHtml("Renseigner un numéro de série, de pièce ou de repère soupape."),
+            YourDashboard: $sce.trustAsHtml("FR: Your Dashboard"),
+            YourQuotes: $sce.trustAsHtml("FR: Your Quotes"),
+            YourOrders: $sce.trustAsHtml("FR: Your Orders"),
+            QuoteNumber: $sce.trustAsHtml("FR: Weir Quote No."),
+            QuoteReference: $sce.trustAsHtml("FR: Your Quote Ref:"),
+            OrderNumber: $sce.trustAsHtml("FR: Weir Order No."),
+            OrderReference: $sce.trustAsHtml("FR: Your Order Ref"),
+            Total: $sce.trustAsHtml("FR: Total"),
+            Status: $sce.trustAsHtml("FR: Status"),
+            AllQuotes: $sce.trustAsHtml("FR: View All Quotes"),
+            AllOrders: $sce.trustAsHtml("FR: View All Orders")
         }
     };
     vm.LanguageUsed = WeirService.Locale();
@@ -185,5 +198,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 
     vm.GoToOrder = function(orderId) {
         $state.go("orders.goto", { orderID: orderId } );
+    };
+
+    vm.GoToQuote = function(orderId) {
+        $state.go("quotes.goto", { quoteID: orderId } );
     };
 }

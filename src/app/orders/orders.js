@@ -289,12 +289,10 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
         $state.go('orders.submitted');
     }
     function reviewOrder(orderId, status, buyerId) {
-        if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id) {
+        if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id || status == WeirService.OrderStatus.Submitted.id) {
             $state.transitionTo('readonly', { quoteID: orderId, buyerID: buyerId });
-        } else if (status == WeirService.OrderStatus.RevisedOrder.id || status == WeirService.OrderStatus.RevisedQuote.id) {
+        } else if (status == WeirService.OrderStatus.RevisedOrder.id) {
             $state.transitionTo('revised', {quoteID: orderId, buyerID: buyerId});
-        } else if (status == WeirService.OrderStatus.ConfirmedQuote.id || status == WeirService.OrderStatus.ConfirmedOrder.id) {
-            $state.transitionTo('submit', {quoteID: orderId, buyerID: buyerId});
         } else {
             WeirService.SetQuoteAsCurrentOrder(orderId)
                 .then(function () {

@@ -156,6 +156,7 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
     vm.registrationAvailable = Underscore.filter(vm.organizationItems, function (item) {
         return item.StateRef == 'registration'
     }).length;
+
     var labels = {
         en: {
 	        title: "Please send us your feedback and suggestions",
@@ -324,7 +325,15 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
 		        "xp.Type": "Quote",
 		        "xp.Status": WeirService.OrderStatus.ConfirmedQuote.id,
 		        "xp.Active":true
-	        }
+	        },
+            "quotes.all": {
+                "xp.Type": "Quote",
+                "xp.Active": true
+            },
+            "orders.all": {
+                "xp.Type": "Order",
+                "xp.Active": true
+            }
         };
         $state.go(action, {filters: JSON.stringify(filter[action])}, {reload: true});
     }

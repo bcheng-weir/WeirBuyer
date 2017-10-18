@@ -19,27 +19,6 @@
                             <li>
                                 <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})" ng-bind-html="base.labels.Sarasin"></a>
                             </li>
-                            <!--<li uib-dropdown ng-if="!base.currentUser.Anonymous">
-                                <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourQuotes"></span> <span class="caret"></span></a>
-                                <ul uib-dropdown-menu>
-                                    <li><a ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
-                                    <li><a ng-click="base.OrderAction('quotes.saved')" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
-                                    <li ng-if="base.EnquiryAllowed()"><a ng-click="base.OrderAction('quotes.enquiry')" ng-bind-html="base.navlabels.EnquiryQuotes"></a></li>
-                                    <li><a ng-click="base.OrderAction('quotes.inreview')" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
-                                    <li><a ng-click="base.OrderAction('quotes.revised')" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
-                                    <li><a ng-click="base.OrderAction('quotes.confirmed')" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
-                                </ul>
-                            </li>
-                            <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-                                <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourOrders"></span><span class="caret"></span></a>
-                                <ul uib-dropdown-menu>
-                                    <li><a ng-click="base.OrderAction('orders.submitted')" ng-bind-html="base.navlabels.submitted"></a></li>
-                                    <li><a ng-click="base.OrderAction('orders.pending')" ng-bind-html="base.navlabels.pending"></a></li>
-                                    <li><a ng-click="base.OrderAction('orders.revised')" ng-bind-html="base.navlabels.revised"></a></li>
-                                    <li><a ng-click="base.OrderAction('orders.confirmed')" ng-bind-html="base.navlabels.confirmed"></a></li>
-                                    <li><a ng-click="base.OrderAction('orders.despatched')" ng-bind-html="base.navlabels.despatched"></a></li>
-                                </ul>
-                            </li>-->
                             <li uib-dropdown ng-if="!base.currentUser.Anonymous">
                                 <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
                                 <ul uib-dropdown-menu>
@@ -77,38 +56,11 @@
                         <!-- TODO: Put the Quote and Order links here. -->
                         <ul class="nav nav-tabs">
                             <li ng-if="!base.currentUser.Anonymous">
-                                <a href="#" uib-dropdown-toggle role="button" ng-bind-html="base.navlabels.YourQuotes"></a>
-                                <!--<ul uib-dropdown-menu>
-                                    <li><a ui-sref="myquote.detail" ng-bind-html="base.navlabels.Current"></a></li>
-                                    <li><a ng-click="base.OrderAction('quotes.saved')" ng-bind-html="base.navlabels.SavedQuotes"></a></li>
-                                    <li ng-if="base.EnquiryAllowed()"><a ng-click="base.OrderAction('quotes.enquiry')" ng-bind-html="base.navlabels.EnquiryQuotes"></a></li>
-                                    <li><a ng-click="base.OrderAction('quotes.inreview')" ng-bind-html="base.navlabels.ReviewQuotes"></a></li>
-                                    <li><a ng-click="base.OrderAction('quotes.revised')" ng-bind-html="base.navlabels.RevisedQuotes"></a></li>
-                                    <li><a ng-click="base.OrderAction('quotes.confirmed')" ng-bind-html="base.navlabels.ConfirmedQuotes"></a></li>
-                                </ul>-->
+                                <a ng-click="base.OrderAction('quotes.all')" role="button" ng-bind-html="base.navlabels.YourQuotes"></a>
                             </li>
                             <li ng-if="!base.currentUser.Anonymous">
-                                <a href="#" uib-dropdown-toggle role="button" ng-bind-html="base.navlabels.YourOrders"></a>
-                                <!--<ul uib-dropdown-menu>
-                                    <li><a ng-click="base.OrderAction('orders.submitted')" ng-bind-html="base.navlabels.submitted"></a></li>
-                                    <li><a ng-click="base.OrderAction('orders.pending')" ng-bind-html="base.navlabels.pending"></a></li>
-                                    <li><a ng-click="base.OrderAction('orders.revised')" ng-bind-html="base.navlabels.revised"></a></li>
-                                    <li><a ng-click="base.OrderAction('orders.confirmed')" ng-bind-html="base.navlabels.confirmed"></a></li>
-                                    <li><a ng-click="base.OrderAction('orders.despatched')" ng-bind-html="base.navlabels.despatched"></a></li>
-                                </ul>-->
+                                <a ng-click="base.OrderAction('orders.all')" role="button" ng-bind-html="base.navlabels.YourOrders"></a>
                             </li>
-                            <!--<li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})" ng-bind-html="base.labels.Batley"></a>
-                            </li>
-                            <li>
-                                <a  ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})" ng-bind-html="base.labels.Blakeborough"></a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})" ng-bind-html="base.labels.Hopkinsons"></a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})" ng-bind-html="base.labels.Sarasin"></a>
-                            </li>-->
                             <li class="active last">
                                 <a href="#" ng-click="base.sendToSearch()"><span ng-bind-html="base.navlabels.Search"></span><i class="fa fa-search" style="margin-left: 0.5em;"></i></a>
                             </li>

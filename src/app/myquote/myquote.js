@@ -1484,7 +1484,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
                 var data = {
                     Type: "PurchaseOrder",
                     xp: {
-                        PONumber: vm.PONumber
+                        PONumber: vm.PONumber,
+                        POEnteredByWeir: false
                     }
                 };
                 OrderCloudSDK.Payments.Create("Outgoing", vm.Quote.ID, data)
@@ -1500,7 +1501,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         } else if (!payment.xp || payment.xp.PONumber != vm.PONumber) {
             var data = {
                 xp: {
-                    PONumber: vm.PONumber
+                    PONumber: vm.PONumber,
+                    POEnteredByWeir: false
                 }
             };
             OrderCloudSDK.Payments.Patch("Outgoing", vm.Quote.ID, payment.ID, data)
@@ -1523,7 +1525,9 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    StatusDate: new Date(),
 				    Type: "Order",
 				    Revised: false,
-				    PONumber: vm.PONumber
+				    PONumber: vm.PONumber,
+                    POEnteredByWeir: false
+
 			    }
 		    };
 	    } else {
@@ -2715,7 +2719,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 				var data = {
 					Type: "PurchaseOrder",
 					xp: {
-						PONumber: vm.PONumber
+						PONumber: vm.PONumber,
+                        POEnteredByWeir: false
 					}
 				};
 				OrderCloudSDK.Payments.Create("Outgoing", vm.Quote.ID, data)
@@ -2731,8 +2736,9 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 		} else if (!payment.xp || payment.xp.PONumber != vm.PONumber) {
 			var data = {
 				xp: {
-					PONumber: vm.PONumber
-				}
+					PONumber: vm.PONumber,
+					POEnteredByWeir: false
+                }
 			};
 			OrderCloudSDK.Payments.Patch("Outgoing", vm.Quote.ID, payment.ID, data)
 				.then(function (pmt) {
@@ -2754,7 +2760,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 					Type: "Order",
 					Revised: false,
 					PONumber: vm.PONumber,
-					PendingPO: false
+					PendingPO: false,
+                    POEnteredByWeir: false
 				}
 			};
 		} else {

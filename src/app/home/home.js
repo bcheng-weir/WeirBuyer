@@ -57,6 +57,17 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 	    return statusObj.label[WeirService.Locale()];
     };
 
+    vm.OrderAction = _actions;
+    function _actions(action) {
+        var filter = {
+            "quotes.all": {
+                "xp.Type": "Quote",
+                "xp.Active": true
+            }
+        };
+        $state.go(action, { filters: JSON.stringify(filter[action]) }, { reload: true });
+    }
+
     var labels = {
         en: {
             Search : "Search centre",

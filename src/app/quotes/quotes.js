@@ -52,7 +52,13 @@ function QuotesConfig($stateProvider) {
 					return OrderCloudSDK.Orders.List("Outgoing",opts);
 				}
 			}
-		})
+        })
+        .state('quotes.all', {
+            url: '/all',
+            templateUrl: 'quotes/templates/quotes.all.tpl.html',
+            controller: 'SavedQuotesCtrl',
+            controllerAs: 'saved'
+        })
 		.state( 'quotes.saved', {
 			url: '/saved',
 			templateUrl: 'quotes/templates/quotes.saved.tpl.html',
@@ -192,30 +198,38 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 	};
 
 	var labels = {
-		en: {
-			Saved: "Saved",
+        en: {
+            All: "All Quotes",
+            Saved: "Saved Quotes",
 			Enquiry: "Enquiry",
 			InReview: "Quotes Submitted for Review",
 			Revised: "Revised Quotes",
 			Confirmed: "Confirmed Quotes",
 			LoadMore: "Load More",
-			Search: "Search"
+            Search: "Search",
+            SearchPlaceholder: "Search your quotes"
 		},
-		fr: {
+        fr: {
+            All: $sce.trustAsHtml(""),
 		    Saved: $sce.trustAsHtml("Enregistrée(s)"),
 			Enquiry: $sce.trustAsHtml("Demande"),
 		    InReview: $sce.trustAsHtml("Cotation(s) soumise(s) à révision"),
 		    Revised: $sce.trustAsHtml("Cotation(s) révisée(s)"),
 		    Confirmed: $sce.trustAsHtml("Cotation(s) confirmée(s)"),
 			LoadMore: $sce.trustAsHtml("Afficher plus"),
-            Search: $sce.trustAsHtml("Rechercher")
+            Search: $sce.trustAsHtml("Rechercher"),
+            SearchPlaceholder: $sce.trustAsHtml("")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 
 	vm.FilterActions = _filterActions;
 	function _filterActions(action) {
-		var filter = {
+        var filter = {
+            "quotes.all": {
+                "xp.Type": "Quote",
+                "xp.Active": true
+            },
 			"quotes.saved": {
 				"xp.Type": "Quote",
 				"xp.Status": WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,
@@ -248,7 +262,17 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 
 function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, CurrentOrderId) {
 	var vm = this;
-	vm.CurrentOrderId = CurrentOrderId;
+    vm.CurrentOrderId = CurrentOrderId;
+    vm.LookupStatus = WeirService.LookupStatus;
+    vm.locale = WeirService.Locale;
+    vm.StatusLabel = function (status) {
+        var statusObj = WeirService.LookupStatus(status);
+        return statusObj.label[WeirService.Locale()];
+    };
+
+    vm.GoToQuote = function (orderId) {
+        $state.go("quotes.goto", { quoteID: orderId });
+    };
 	
 	function _reviewQuote(quoteId, status, buyerId) {
 	    if (status == WeirService.OrderStatus.RejectedQuote.id) {
@@ -271,13 +295,15 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 
 	var labels = {
 		en: {
-		    Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " saved Quote" +  ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s"),
+            Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " saved Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s"),
+            SortText: "You can sort quotes by Quote Number, Total, Status, Date",
 		    QuoteNum: "Weir Quote Number",
 			QuoteName: "Quote Name",
 		    QuoteRef: "Your Quote Ref;",
             Total: "Total",
             Customer: "Customer",
-			Status: "Status",
+            Status: "Status",
+            Date: "Date",
             ValidTo: "Valid Until",
             OwnProduct: "Own Product",
             View: "View",
@@ -289,12 +315,14 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 		},
 		fr: {
 		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) sauvée(s)"),
-		    QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
+            SortText: $sce.trustAsHtml(""),
+            QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
 		    QuoteName: $sce.trustAsHtml("Nom de la cotation"),
 			QuoteRef: $sce.trustAsHtml("Votre Référence de cotation"),
             Total: $sce.trustAsHtml("Total"),
             Customer: $sce.trustAsHtml("Client"),
             Status: $sce.trustAsHtml("Statut"),
+            Date: $sce.trustAsHtml("Date"),
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
             OwnProduct: $sce.trustAsHtml("Propre Produit"),
             View: $sce.trustAsHtml("Voir"),
@@ -311,7 +339,10 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 	} else if ($state.is('quotes.confirmed')) {
 	    labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " confirmed Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
 	    labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation confirmée" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-	}
+    } else if ($state.is('quotes.all')) {
+        labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
+        labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
+    }
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.ReviewQuote = _reviewQuote;
 }

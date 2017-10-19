@@ -29,7 +29,6 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="quote in quotes.list.Items">
-                        <!--<td><span ng-bind-html="quote.ID | MaskedQuoteID"></span></td>-->
                         <td>
                             <a href="#" role="button" style="text-decoration:underline;padding-left:0px;" class="btn btn-link btn-md" ng-click="saved.GoToQuote(quote.ID)">
                                 {{quote.ID | MaskedQuoteID}}
@@ -43,11 +42,10 @@
                             <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
-                        <td><span ng-bind-html="saved.StatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ'}[quote.xp.Status]"></span></td>
+                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ'}[quote.xp.Status]"></span></td>
                         <td>{{quote.xp.StatusDate | weirdate}}</td>
                         <td>
                             <button class="btn btn-primary btn-md" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
-                            <!--<a ui-sref="revisions({quoteID:quote.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="saved.labels.Revisions" ng-if="quote.xp.Status!='SV'"></a>-->
                         </td>
                     </tr>
                 </tbody>

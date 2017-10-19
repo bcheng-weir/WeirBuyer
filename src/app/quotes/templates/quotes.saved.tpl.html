@@ -35,7 +35,7 @@
                             <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
-                        <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
+                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',RV:'btn-status btn-quote-RV',RQ:'btn-status btn-quote-RQ'}[quote.xp.Status]"></span></td>
                         <td>
                             <button class="btn btn-primary btn-md" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
                             <!--<a ui-sref="revisions({quoteID:quote.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="saved.labels.Revisions" ng-if="quote.xp.Status!='SV'"></a>-->

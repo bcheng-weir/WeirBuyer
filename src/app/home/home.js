@@ -63,6 +63,10 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             "quotes.all": {
                 "xp.Type": "Quote",
                 "xp.Active": true
+            },
+            "orders.all": {
+                "xp.Type": "Order",
+                "xp.Active": true
             }
         };
         $state.go(action, { filters: JSON.stringify(filter[action]) }, { reload: true });

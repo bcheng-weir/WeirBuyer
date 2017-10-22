@@ -30,7 +30,7 @@
                 <tbody>
                     <tr ng-repeat="quote in quotes.list.Items">
                         <td>
-                            <a href="#" role="button" style="text-decoration:underline;padding-left:0px;" class="btn btn-link btn-md" ng-click="saved.GoToQuote(quote.ID)">
+                            <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="saved.GoToQuote(quote.ID)">
                                 {{quote.ID | MaskedQuoteID}}
                             </a>
                             <br />
@@ -45,7 +45,7 @@
                         <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ'}[quote.xp.Status]"></span></td>
                         <td>{{quote.xp.StatusDate | weirdate}}</td>
                         <td>
-                            <button class="btn btn-primary btn-md" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
+                            <button class="btn btn-primary btn-md btn-review" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
                         </td>
                     </tr>
                 </tbody>

@@ -133,17 +133,17 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             SarasinRSBD: $sce.trustAsHtml("Sarasin RSBD™"),
             SarasinRSBDMsg: $sce.trustAsHtml("Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD™ sont conçues pour garantir des performances, une sécurité et une fiabilité optimales."),
 	        PlaceHolder: $sce.trustAsHtml("Renseigner un numéro de série, de pièce ou de repère soupape."),
-            YourDashboard: $sce.trustAsHtml("FR: Your Dashboard"),
-            YourQuotes: $sce.trustAsHtml("FR: Your Quotes"),
-            YourOrders: $sce.trustAsHtml("FR: Your Orders"),
-            QuoteNumber: $sce.trustAsHtml("FR: Weir Quote No."),
-            QuoteReference: $sce.trustAsHtml("FR: Your Quote Ref:"),
-            OrderNumber: $sce.trustAsHtml("FR: Weir Order No."),
-            OrderReference: $sce.trustAsHtml("FR: Your Order Ref"),
-            Total: $sce.trustAsHtml("FR: Total"),
-            Status: $sce.trustAsHtml("FR: Status"),
-            AllQuotes: $sce.trustAsHtml("FR: View All Quotes"),
-            AllOrders: $sce.trustAsHtml("FR: View All Orders")
+            YourDashboard: $sce.trustAsHtml("Votre tableau de bord"),
+            YourQuotes: $sce.trustAsHtml("Vos cotations"),
+            YourOrders: $sce.trustAsHtml("Vos commandes"),
+            QuoteNumber: $sce.trustAsHtml("Référence de cotation chez WEIR"),
+            QuoteReference: $sce.trustAsHtml("Votre Référence de cotation"),
+            OrderNumber: $sce.trustAsHtml("Numéro de commande WEIR"),
+            OrderReference: $sce.trustAsHtml("Votre réference de commande:"),
+            Total: $sce.trustAsHtml("Total"),
+            Status: $sce.trustAsHtml("Statut"),
+            AllQuotes: $sce.trustAsHtml("Voir tous les devis"),
+            AllOrders: $sce.trustAsHtml("Voir toutes les commandes")
         }
     };
     vm.LanguageUsed = WeirService.Locale();

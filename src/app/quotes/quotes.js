@@ -280,7 +280,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
             SearchPlaceholder: "Search your quotes"
 		},
         fr: {
-            All: $sce.trustAsHtml("FR: All Quotes"),
+            All: $sce.trustAsHtml("Tous les devis"),
             Saved: $sce.trustAsHtml("Enregistrée(s)"),
             SavedCount: $sce.trustAsHtml(SavedCount.Meta.TotalCount.toString() > 0 ? "Enregistrée(s) (" + SavedCount.Meta.TotalCount.toString() + ")" : "Enregistrée(s)"),
             Enquiry: $sce.trustAsHtml("Demande"),
@@ -293,7 +293,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
             ConfirmedCount: $sce.trustAsHtml(ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Cotation(s) confirmée(s) (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Cotation(s) confirmée(s)"),
 			LoadMore: $sce.trustAsHtml("Afficher plus"),
             Search: $sce.trustAsHtml("Rechercher"),
-            SearchPlaceholder: $sce.trustAsHtml("FR: Search your quotes")
+            SearchPlaceholder: $sce.trustAsHtml("Rechercher un devis")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -386,7 +386,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 		},
 		fr: {
 		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) sauvée(s)"),
-            SortText: $sce.trustAsHtml("FR: You can sort quotes by Quote Number, Total, Status, Date"),
+            SortText: $sce.trustAsHtml("Vous pouvez filtrer par numéro de devis, montant, statut et date"),
             QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
 		    QuoteName: $sce.trustAsHtml("Nom de la cotation"),
 			QuoteRef: $sce.trustAsHtml("Votre Référence de cotation"),

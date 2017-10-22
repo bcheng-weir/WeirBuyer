@@ -41,7 +41,7 @@
             <tbody>
                 <tr ng-repeat="order in orders.list.Items   ">
                     <td>
-                        <a href="#" role="button" style="text-decoration:underline;padding-left:0px;" class="btn btn-link btn-md" ng-click="orders.GoToOrder(order.ID)">
+                        <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="orders.GoToOrder(order.ID)">
                             {{order.ID | MaskedQuoteID}}
                         </a>
                         <br />
@@ -58,7 +58,7 @@
                     <td>{{order.xp.DeliveryDate | weirdate}}</td>
                     <td>{{order.xp.DateDespatched | weirdate}}</td>
                     <td>
-                        <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
+                        <button class="btn btn-primary btn-review" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
                     </td>
                 </tr>
             </tbody>

@@ -1,34 +1,71 @@
 #COMPONENT_Quotes {
-  padding-top:15px;
-  background-color:@component-quotes-bg;
+    padding-top:15px;
+    background-color:@component-quotes-bg;
 
-  tr th a:link, tr th a:visited, tr th a:hover, tr th a:active {
-    color: white;
-    text-decoration: underline;
-  }
+    tr th a:link, tr th a:visited, tr th a:hover, tr th a:active {
+        color: white;
+        text-decoration: underline;
+    }
 }
 
 .label-quote a {
-  background-color: #eeeeee;
-  color: black;
-  border: 1px solid lightgrey;
+    background-color: #eeeeee;
+    color: black;
+    border: 1px solid lightgrey;
 }
 
-.header {
+.all-quotes {
+    font-family: Arial;
+}
+
+.all-quotes .header {
+    font-family: Arial;
+    color: #425563;
     font-size: 21px;
     font-weight: bold;
 }
 
-.subheader {
+.all-quotes .subheader {
+    font-family: Arial;
+    color: #425563;
     font-size: 16px;
     font-weight: bold;
 }
 
-th {
+.all-quotes th {
+    font-weight: bold;
     height: 39px;
 }
 
-.input-search {
+.all-quotes td {
+    font-size: 14px;
+    color: #425563;
+}
+
+.all-quotes .quote-link {
+    text-decoration: underline;
+    color: #005bc8;
+    font-weight: normal;
+    padding-left: 0px;
+}
+
+.all-quotes .btn-review {
+    font-family: Arial;
+    width: 60px;
+    height: 25px;
+    background-color: #425563;
+    font-size: 12px;
+    color: #ffffff;
+    text-decoration: none solid rgb(255, 255, 255);
+    text-align: center;
+}
+
+.all-quotes h2 {
+    font-family: Arial;
+    color: #425563;
+}
+
+.all-quotes .input-search {
     width: 300px !important;
     height: 44px;
     border: 1px solid #c8c8c8;
@@ -39,10 +76,10 @@ th {
     text-decoration: none solid rgb(66, 85, 99);
     padding-left: 4px;
     margin-bottom: 23px;
-    margin-right: 17px;
+    margin-right: 14px;
 }
 
-.btn-search {
+.all-quotes .btn-search {
     width: 143px;
     height: 44px;
     border: 2px solid #425563;
@@ -56,33 +93,25 @@ th {
     margin-bottom: 23px;
 }
 
-.nav-pills > li > a {
+.all-quotes .nav-pills > li > a {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
-    width: 220px;
-    height: 44px;
-    font-family: Arial;
     font-size: 14px;
     text-decoration: none solid rgb(255, 255, 255);
     text-align: center;
-    white-space: nowrap;
-    padding-left: 0px;
-    padding-right: 0px;
-    display: inline-block;
-    z-index: 100;
 }
 
-.nav-pills > li {
+.all-quotes .nav-pills > li {
     margin-bottom: 10px;
 }
 
-.nav-pills a {
+.all-quotes .nav-pills a {
     border: 1px solid #c8c8c8;
     background-color: #ffffff;
     color: #425563;
 }
 
-.nav-pills > .active a {
+.all-quotes .nav-pills > .active a {
     border: 1px solid #1e59ae;
 }

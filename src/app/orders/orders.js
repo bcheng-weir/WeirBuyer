@@ -275,7 +275,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             InvoicedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes facturée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
             SortText: $sce.trustAsHtml("FR: You can sort orders by Order No, Total, Status, Date"),
             View: $sce.trustAsHtml("Voir"),
-            all: $sce.trustAsHtml("FR: All Orders"),
+            all: $sce.trustAsHtml("Toutes les commandes"),
             submitted: $sce.trustAsHtml("Soumis avec commande"),
             submittedCount: $sce.trustAsHtml(SubmittedCount.Meta.TotalCount.toString() > 0 ? "Soumis avec commande (" + SubmittedCount.Meta.TotalCount.toString() + ")" : "Soumis avec commande"),
             pending: $sce.trustAsHtml("Bon de commande soumis en attente"),

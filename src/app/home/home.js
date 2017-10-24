@@ -15,10 +15,9 @@ function HomeConfig($stateProvider) {
                 quotes: function(OrderCloudSDK) {
                     var opts = {
                         'pageSize':10,
-                        'sortBy':'DateCreated',
+                        'sortBy':'!DateCreated',
                         'filters':{
                             'xp.Type':'Quote',
-                            'xp.Status':'!DR',
                             'xp.Active':true
                         }
                     };
@@ -27,7 +26,7 @@ function HomeConfig($stateProvider) {
 			    orders: function(OrderCloudSDK) {
 			        var opts = {
 			            'pageSize':10,
-                        'sortBy':'DateCreated',
+                        'sortBy':'!DateCreated',
                         'filters':{
 			                'xp.Type':'Order',
                             'xp.Active':true

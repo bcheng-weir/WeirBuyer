@@ -29,7 +29,7 @@ function QuotesConfig($stateProvider) {
 						.catch(function (e) { d.resolve(null); });
 					return d.promise;
 				},
-				Parameters: function($stateParams, OrderCloudParameters) {
+                Parameters: function($stateParams, OrderCloudParameters) {
 					return OrderCloudParameters.Get($stateParams);
 				},
 				Quotes: function(OrderCloudSDK, WeirService, Parameters, Me) {
@@ -51,68 +51,71 @@ function QuotesConfig($stateProvider) {
 					};
 					return OrderCloudSDK.Orders.List("Outgoing",opts);
                 },
-                SavedCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = {
+                CountParameters: function ($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                },
+                SavedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.Saved.id + "|" + WeirService.OrderStatus.Draft.id,
                         'xp.Active': true
                     };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters
+                        'filters': CountParameters.filters
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                EnquiryCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = {
+                EnquiryCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id,
                         'xp.Active': true
                     };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters
+                        'filters': CountParameters.filters
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                InReviewCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = {
+                InReviewCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.Review.id,
                         'xp.Active': true
                     };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters
+                        'filters': CountParameters.filters
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                RevisedCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = {
+                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
                         'xp.Active': true
                     };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters
+                        'filters': CountParameters.filters
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                ConfirmedCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = {
+                ConfirmedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.ConfirmedQuote.id,
                         'xp.Active': true
                     };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters
+                        'filters': CountParameters.filters
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 }
@@ -178,7 +181,7 @@ function QuotesConfig($stateProvider) {
 function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudSDK, OrderCloudParameters, SavedCount, EnquiryCount, InReviewCount, RevisedCount, ConfirmedCount) {
 	var vm = this;
 	vm.list = Quotes;
-	vm.parameters = Parameters;
+    vm.parameters = Parameters;
 	vm.Customer = CurrentCustomer;
 	vm.MyOrg = Me.Org;
 	vm.EnquiryAllowed = function() {
@@ -227,7 +230,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 	};
 
 	//Conditionally set, reverse, remove the sortBy parameter & reload the state
-	vm.updateSort = function(value) {
+    vm.updateSort = function(value) {
 		value ? angular.noop() : value = vm.sortSelection;
 		switch(vm.parameters.sortBy) {
 			case value:
@@ -451,6 +454,7 @@ function InReviewQuotesController(WeirService, $sce, $scope) {
 		    Approver: "Approver",
 			Reviewer: "Reviewer",
             Status: "Status",
+            Date: "Date",
             ValidTo: "Valid Until",
 			View: "View"
 		},
@@ -464,6 +468,7 @@ function InReviewQuotesController(WeirService, $sce, $scope) {
 		    Approver: $sce.trustAsHtml("Approbateur;"),
 			Reviewer: $sce.trustAsHtml("Révisé par"),
             Status: $sce.trustAsHtml("Statut"),
+            Date: $sce.trustAsHtml("Date"),
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 			View: $sce.trustAsHtml("Voir")
 	}

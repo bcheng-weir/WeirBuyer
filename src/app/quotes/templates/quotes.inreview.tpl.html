@@ -22,6 +22,7 @@
                         </th>
                         <th ng-bind-html='inreview.labels.Reviewer'>t</th>
                         <th ng-bind-html='inreview.labels.Status'></th>
+                        <th ng-bind-html='inreview.labels.Date'></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -36,6 +37,7 @@
                         </td>
                         <td>{{quote.xp.ReviewerName}}</td>
                         <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SB:'btn-status btn-quote-SB',RE:'btn-status btn-quote-RE'}[quote.xp.Status]"></span></td>
+                        <td>{{quote.xp.StatusDate | weirdate}}</td>
                         <td>
                             <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="inreview.labels.View"></a>
                         </td>

@@ -24,6 +24,7 @@
 					</th>
 					<th ng-bind-html='saved.labels.Reviewer'></th>
 					<th ng-bind-html='saved.labels.Status'></th>
+                    <th ng-bind-html='saved.labels.Date'></th>
 					<th></th>
 				</tr>
 				</thead>
@@ -39,7 +40,8 @@
 					</td>
 					<td>{{quote.xp.ReviewerName}}</td>
                     <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{CQ:'btn-status btn-quote-CQ'}[quote.xp.Status]"></span></td>
-					<td><button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button></td>
+                    <td>{{quote.xp.StatusDate | weirdate}}</td>
+                    <td><button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button></td>
 				</tr>
 				</tbody>
 			</table>

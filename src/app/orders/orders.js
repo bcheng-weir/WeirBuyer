@@ -32,52 +32,55 @@ function OrdersConfig($stateProvider) {
 		            Parameters.filters.FromUserID = Me.Profile.ID;
                     return OrderCloudSDK.Orders.List("Outgoing", {'from':Parameters.from, 'to':Parameters.to, 'search':Parameters.search, 'page':Parameters.page, 'pageSize':Parameters.pageSize || 10, 'searchOn':Parameters.searchOn, 'sortBy':Parameters.sortBy, 'filters':Parameters.filters, 'buyerID':Me.GetBuyerID()});
                 },
-                SubmittedCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = {"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                CountParameters: function ($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                },
+                SubmittedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = {"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters,
+                        'filters': CountParameters.filters,
                         'buyerID': Me.GetBuyerID()
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                PendingCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = { "xp.Type": "Order", "xp.PendingPO": true, "xp.Active": true };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                PendingCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = { "xp.Type": "Order", "xp.PendingPO": true, "xp.Active": true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters,
+                        'filters': CountParameters.filters,
                         'buyerID': Me.GetBuyerID()
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                RevisedCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active": true };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active": true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters,
+                        'filters': CountParameters.filters,
                         'buyerID': Me.GetBuyerID()
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                ConfirmedCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active": true };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                ConfirmedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active": true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters,
+                        'filters': CountParameters.filters,
                         'buyerID': Me.GetBuyerID()
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                DespatchedCount: function (OrderCloudSDK, WeirService, Parameters, Me) {
-                    Parameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Despatched.id, "xp.Active": true };
-                    Parameters.filters.FromUserID = Me.Profile.ID;
+                DespatchedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Despatched.id, "xp.Active": true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
-                        'filters': Parameters.filters,
+                        'filters': CountParameters.filters,
                         'buyerID': Me.GetBuyerID()
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
@@ -247,7 +250,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    OrderRef: "Your Order ref;",
 		    Total: "Order Value",
 		    Customer: "Customer",
-		    Status: "Status",
+            Status: "Status",
+            Date: "Date",
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this order. Are you sure you want to proceed?",
 		    Revisions: "Revisions",
 		    PONumber: "Your PO Number",
@@ -273,7 +277,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    ConfirmedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes confirmée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    DespatchedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes expédiée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
             InvoicedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes facturée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-            SortText: $sce.trustAsHtml("FR: You can sort orders by Order No, Total, Status, Date"),
+            SortText: $sce.trustAsHtml("Vous pouvez filtrer par numéro de commandes, montant, statut et date"),
             View: $sce.trustAsHtml("Voir"),
             all: $sce.trustAsHtml("Toutes les commandes"),
             submitted: $sce.trustAsHtml("Soumis avec commande"),
@@ -292,7 +296,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    OrderRef: $sce.trustAsHtml("Votre référence de commande"),
 		    Total: $sce.trustAsHtml("Montant total"),
 		    Customer: $sce.trustAsHtml("Client"),
-		    Status: $sce.trustAsHtml("Statut"),
+            Status: $sce.trustAsHtml("Statut"),
+            Date: $sce.trustAsHtml("Date"),
 		    ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action changera votre panier pour cette commande. Voulez-vous continuer?"),
 		    Revisions: $sce.trustAsHtml("Révisions"),
 		    PONumber: $sce.trustAsHtml("Votre numéro de commande"),
@@ -306,7 +311,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    EstDelivery: $sce.trustAsHtml("Délai de livraison estimé"),
             NoMatches: $sce.trustAsHtml("Aucun résultat"),
             Search: $sce.trustAsHtml("Rechercher"),
-            SearchPlaceholder: $sce.trustAsHtml("FR: Search your orders"),
+            SearchPlaceholder: $sce.trustAsHtml("Rechercher un commandes"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
 	    }
     };

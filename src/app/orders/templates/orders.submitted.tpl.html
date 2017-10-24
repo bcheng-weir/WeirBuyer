@@ -26,6 +26,7 @@
                     </a>
                 </th>
                 <th ng-bind-html='orders.labels.Status'></th>
+                <th ng-bind-html='orders.labels.Date'></th>
                 <th></th>
             </tr>
             </thead>
@@ -41,6 +42,7 @@
                     <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
                 </td>
                 <td><span ng-bind-html="orders.getStatusLabel(order.xp.Status)" ng-class="{SP:'btn-status btn-order-SP'}[order.xp.Status]"></span></td>
+                <td>{{order.xp.StatusDate | weirdate}}</td>
                 <td><button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button></td>
             </tr>
             </tbody>

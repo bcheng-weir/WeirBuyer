@@ -18,7 +18,12 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="quote in quotes.list.Items">
-                    <td class="text-blue"><span ng-bind-html="quote.ID | MaskedQuoteID"></span></td>
+                    <td>
+                        <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="quotes.GoToQuote(quote.ID)">
+                            {{quote.ID | MaskedQuoteID}}
+                        </a>
+                        <br />
+                    </td>
                     <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
                     <td>
                         <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="enquiry.labels.View"></a>

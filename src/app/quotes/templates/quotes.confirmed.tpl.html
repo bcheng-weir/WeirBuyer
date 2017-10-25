@@ -30,7 +30,12 @@
 				</thead>
 				<tbody>
 				<tr ng-repeat="quote in quotes.list.Items">
-					<td><span ng-bind-html="quote.ID | MaskedQuoteID"></span></td>
+                    <td>
+                        <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="quotes.GoToQuote(quote.ID)">
+                            {{quote.ID | MaskedQuoteID}}
+                        </a>
+                        <br />
+                    </td>
 					<td>{{quote.xp.Name}}</td>
 					<td>{{quote.xp.RefNum}}</td>
 					<td ng-switch on="quotes.Customer.id | weirGroupFromBuyersID">

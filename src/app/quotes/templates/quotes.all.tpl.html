@@ -30,7 +30,7 @@
                 <tbody>
                     <tr ng-repeat="quote in quotes.list.Items">
                         <td>
-                            <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="saved.GoToQuote(quote.ID)">
+                            <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="quotes.GoToQuote(quote.ID)">
                                 {{quote.ID | MaskedQuoteID}}
                             </a>
                             <br />

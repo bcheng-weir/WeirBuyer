@@ -32,7 +32,12 @@
             </thead>
             <tbody>
             <tr ng-repeat="order in orders.list.Items   ">
-                <td><span ng-bind-html="order.ID | MaskedQuoteID"></span></td>
+                <td>
+                    <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="orders.GoToOrder(order.ID)">
+                        {{order.ID | MaskedQuoteID}}
+                    </a>
+                    <br />
+                </td>
                 <td>{{order.xp.Name}}</td>
                 <td>{{order.xp.RefNum}}</td>
                 <td>{{order.xp.PONumber}}</td>

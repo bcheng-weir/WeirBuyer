@@ -335,7 +335,11 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			}
 		};
 		return JSON.stringify(filter[action]);
-	}
+    }
+
+    vm.GoToQuote = function (orderId) {
+        $state.go("quotes.goto", { quoteID: orderId });
+    };
 }
 
 function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, CurrentOrderId) {
@@ -343,10 +347,6 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
     vm.CurrentOrderId = CurrentOrderId;
     vm.LookupStatus = WeirService.LookupStatus;
     vm.locale = WeirService.Locale;
-
-    vm.GoToQuote = function (orderId) {
-        $state.go("quotes.goto", { quoteID: orderId });
-    };
 	
 	function _reviewQuote(quoteId, status, buyerId) {
 	    if (status == WeirService.OrderStatus.RejectedQuote.id) {

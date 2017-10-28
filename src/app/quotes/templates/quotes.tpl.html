@@ -1,5 +1,5 @@
 <article id="COMPONENT_Quotes" class="container-fluid all-quotes">
-    <div class="row" style="margin-top:44px;">
+    <div class="row">
         <div class="col-md-2">
             <ul class="nav nav-pills nav-stacked" ng-if="['quotes.all', 'quotes.saved', 'quotes.inreview', 'quotes.enquiry', 'quotes.revised', 'quotes.confirmed'].indexOf(application.$state.current.name) > -1">
                 <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.all({filters:quotes.FilterActions('quotes.all')})"><a href="#" ng-bind-html='quotes.labels.All'></a></li>
@@ -26,7 +26,7 @@
                 <fieldset class="form-group" ng-class="{'text-center':application.$ocMedia('max-width:767px')}">
                     <span ng-class="{'btn-group':orders.searchResults}">
                         <button type="submit" class="btn btn-primary btn-search"><span style="margin-left:8px;" ng-bind-html="quotes.labels.Search"></span><i class="fa fa-search fa-inverse" style="float:right;"></i></button>
-                        <button ng-if="quotes.searchResults" ng-click="quotes.clearSearch()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
+                        <button ng-if="quotes.searchResults" ng-click="quotes.clearSearch()" type="button" class="btn btn-primary btn-search" ng-bind-html="quotes.labels.Clear"></button>
                     </span>
                     <span ng-class="{'btn-group':quotes.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
                         <button type="button" class="btn btn-default" ng-click="quotes.showFilters=!quotes.showFilters" ng-bind-html="quotes.labels.Filters"></button>

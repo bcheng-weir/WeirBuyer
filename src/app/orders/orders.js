@@ -266,6 +266,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 			NoMatches: "No Matches Found.",
             Search: "Search",
             SearchPlaceholder: "Search your orders",
+            Clear: "Clear Search",
 			Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters")
 	    },
         fr: {
@@ -312,6 +313,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             NoMatches: $sce.trustAsHtml("Aucun résultat"),
             Search: $sce.trustAsHtml("Rechercher"),
             SearchPlaceholder: $sce.trustAsHtml("Rechercher un commandes"),
+            Clear: $sce.trustAsHtml("FR: Clear Search"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
 	    }
     };

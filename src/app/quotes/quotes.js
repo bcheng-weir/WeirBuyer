@@ -370,7 +370,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 	var labels = {
 		en: {
             Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " saved Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s"),
-            SortText: "You can sort quotes by Quote Number, Total, Status, Date",
+            SortText: "You can sort quotes by Quote Number, Total, Date",
 		    QuoteNum: "Weir Quote Number",
 			QuoteName: "Quote Name",
 		    QuoteRef: "Your Quote Ref;",
@@ -389,7 +389,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 		},
 		fr: {
 		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) sauvée(s)"),
-            SortText: $sce.trustAsHtml("Vous pouvez filtrer par numéro de devis, montant, statut et date"),
+            SortText: $sce.trustAsHtml("Vous pouvez filtrer par numéro de devis, montant, et date"),
             QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
 		    QuoteName: $sce.trustAsHtml("Nom de la cotation"),
 			QuoteRef: $sce.trustAsHtml("Votre Référence de cotation"),

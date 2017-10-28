@@ -1,5 +1,5 @@
 <article id="COMPONENT_Orders" class="container-fluid all-quotes">
-    <div class="row" style="margin-top:44px;">
+    <div class="row">
         <div class="col-md-2">
             <!--ng-if="['orders.submitted', 'orders.pending', 'orders.revised', 'orders.confirmed', 'orders.despatched', 'orders.invoiced'].indexOf(application.$state.current.name) > -1"-->
             <ul class="nav nav-pills nav-stacked">
@@ -27,7 +27,7 @@
                 <fieldset class="form-group" ng-class="{'text-center':application.$ocMedia('max-width:767px')}">
                     <span ng-class="{'btn-group':orders.searchResults}">
                         <button type="submit" class="btn btn-primary btn-search"><span style="margin-left:8px;" ng-bind-html="orders.labels.Search"></span><i class="fa fa-search fa-inverse" style="float:right;"></i></button>
-                        <button ng-if="orders.searchResults" ng-click="orders.clearSearch()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
+                        <button ng-if="orders.searchResults" ng-click="orders.clearSearch()" type="button" class="btn btn-primary btn-search btn-clear" ng-bind-html="orders.labels.Clear"></button>
                     </span>
                     <span ng-class="{'btn-group':orders.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
                         <button type="button" class="btn btn-default" ng-click="orders.showFilters=!orders.showFilters" ng-bind-html="orders.labels.Filters"></button>

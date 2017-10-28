@@ -280,7 +280,8 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
             ConfirmedCount: ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmed Quotes (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmed Quotes",
 			LoadMore: "Load More",
             Search: "Search",
-            SearchPlaceholder: "Search your quotes"
+            SearchPlaceholder: "Search your quotes",
+            Clear: "Clear Search"
 		},
         fr: {
             All: $sce.trustAsHtml("Tous les devis"),
@@ -296,7 +297,8 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
             ConfirmedCount: $sce.trustAsHtml(ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Cotation(s) confirmée(s) (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Cotation(s) confirmée(s)"),
 			LoadMore: $sce.trustAsHtml("Afficher plus"),
             Search: $sce.trustAsHtml("Rechercher"),
-            SearchPlaceholder: $sce.trustAsHtml("Rechercher un devis")
+            SearchPlaceholder: $sce.trustAsHtml("Rechercher un devis"),
+            Clear: $sce.trustAsHtml("FR: Clear Search")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

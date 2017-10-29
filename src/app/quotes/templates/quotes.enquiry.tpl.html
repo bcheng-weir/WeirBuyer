@@ -24,7 +24,10 @@
                         </a>
                         <br />
                     </td>
-                    <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
+                    <!--<td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>-->
+                    <td>
+                        <span ng-bind-html="quotes.getStatusLabel(quote.xp.Status) + '; ' + (quote.xp.StatusDate | weirdate)" class="btn-status btn-quote-EN"></span>
+                    </td>
                     <td>
                         <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="enquiry.labels.View"></a>
                     </td>

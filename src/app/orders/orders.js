@@ -313,7 +313,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             NoMatches: $sce.trustAsHtml("Aucun résultat"),
             Search: $sce.trustAsHtml("Rechercher"),
             SearchPlaceholder: $sce.trustAsHtml("Rechercher un commandes"),
-            Clear: $sce.trustAsHtml("FR: Clear Search"),
+            Clear: $sce.trustAsHtml("Effacer le rechercher"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
 	    }
     };

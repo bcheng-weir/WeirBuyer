@@ -298,7 +298,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			LoadMore: $sce.trustAsHtml("Afficher plus"),
             Search: $sce.trustAsHtml("Rechercher"),
             SearchPlaceholder: $sce.trustAsHtml("Rechercher un devis"),
-            Clear: $sce.trustAsHtml("FR: Clear Search")
+            Clear: $sce.trustAsHtml("Effacer le rechercher")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

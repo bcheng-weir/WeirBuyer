@@ -297,7 +297,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
             ConfirmedCount: $sce.trustAsHtml(ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Cotation(s) confirmée(s) (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Cotation(s) confirmée(s)"),
 			LoadMore: $sce.trustAsHtml("Afficher plus"),
             Search: $sce.trustAsHtml("Rechercher"),
-            SearchPlaceholder: $sce.trustAsHtml("Rechercher un devis"),
+            SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
             Clear: $sce.trustAsHtml("Effacer le rechercher")
 		}
 	};

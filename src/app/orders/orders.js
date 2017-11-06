@@ -312,7 +312,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    EstDelivery: $sce.trustAsHtml("Délai de livraison estimé"),
             NoMatches: $sce.trustAsHtml("Aucun résultat"),
             Search: $sce.trustAsHtml("Rechercher"),
-            SearchPlaceholder: $sce.trustAsHtml("Rechercher un commandes"),
+            SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
             Clear: $sce.trustAsHtml("Effacer le rechercher"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
 	    }

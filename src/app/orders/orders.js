@@ -265,7 +265,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    EstDelivery: "Estimated Delivery Date",
 			NoMatches: "No Matches Found.",
             Search: "Search",
-            SearchPlaceholder: "Search your orders",
+            SearchPlaceholder: "Search by Weir quote or order number",
             Clear: "Clear Search",
 			Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters")
 	    },

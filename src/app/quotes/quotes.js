@@ -280,7 +280,7 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
             ConfirmedCount: ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmed Quotes (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmed Quotes",
 			LoadMore: "Load More",
             Search: "Search",
-            SearchPlaceholder: "Search your quotes",
+            SearchPlaceholder: "Search by Weir quote or order number",
             Clear: "Clear Search"
 		},
         fr: {

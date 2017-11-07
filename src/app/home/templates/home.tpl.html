@@ -62,8 +62,8 @@
             </div>
         </div>
     </div>
-<hr>
-    <section class="dashboard">
+<hr ng-hide="home.quotes.Meta.TotalCount == 0 && home.orders.Meta.TotalCount == 0">
+    <section class="dashboard" ng-hide="home.quotes.Meta.TotalCount == 0 && home.orders.Meta.TotalCount == 0">
         <div class="container">
             <div class="row">
                     <div class="col-md-12 text-center" style="margin-bottom: 20px;">
@@ -97,6 +97,9 @@
                                               ng-style="{height: ((home.CurrentUserOrg.ID | weirGroupFromBuyersID) == 'WPIFR') ? '42px' : ''}"
                                               ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>
                                 </tr>
+                                <tr ng-hide="home.quotes.Meta.TotalCount > 0">
+                                    <td colspan="4"><button class="btn btn-disabled" ng-bind-html="home.labels.NoQuotes"></button></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -128,6 +131,9 @@
                                               ng-style="{height: ((home.CurrentUserOrg.ID | weirGroupFromBuyersID) == 'WPIFR') ? '42px' : ''}"
                                               ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>
                                 </tr>
+                                <tr ng-hide="home.orders.Meta.TotalCount > 0">
+                                    <td colspan="4"><button class="btn btn-disabled" ng-bind-html="home.labels.NoOrders"></button></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -135,10 +141,10 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6" style="padding-left:0px;padding-right:4px;">
-                        <button class="btn btn-primary" ng-click="home.OrderAction('quotes.all')" ng-bind-html="home.labels.AllQuotes"></button>
+                        <button ng-hide="home.quotes.Meta.TotalCount == 0" class="btn btn-primary" ng-click="home.OrderAction('quotes.all')" ng-bind-html="home.labels.AllQuotes"></button>
                     </div>
                     <div class="col-md-6" style="padding-right:0px;padding-left:4px;">
-                        <button class="btn btn-primary" ng-click="home.OrderAction('orders.all')" ng-bind-html="home.labels.AllOrders"></button>
+                        <button ng-hide="home.orders.Meta.TotalCount == 0" class="btn btn-primary" ng-click="home.OrderAction('orders.all')" ng-bind-html="home.labels.AllOrders"></button>
                     </div>
                 </div>
             </div>

@@ -108,7 +108,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             Total: "Total",
             Status: "Status",
             AllQuotes: "View All Quotes",
-            AllOrders: "View All Orders"
+            AllOrders: "View All Orders",
+            NoQuotes: "No quotes currently in progress",
+            NoOrders: "No orders currently in progress"
         },
         fr: {
             Search : $sce.trustAsHtml("Centre de recherche"),
@@ -142,7 +144,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             Total: $sce.trustAsHtml("Total"),
             Status: $sce.trustAsHtml("Statut"),
             AllQuotes: $sce.trustAsHtml("Voir tous les devis"),
-            AllOrders: $sce.trustAsHtml("Voir toutes les commandes")
+            AllOrders: $sce.trustAsHtml("Voir toutes les commandes"),
+            NoQuotes: $sce.trustAsHtml("Pas de cotation en cours"),
+            NoOrders: $sce.trustAsHtml("Pas de commande en cours")
         }
     };
     vm.LanguageUsed = WeirService.Locale();

@@ -22,7 +22,14 @@ function OrdersConfig($stateProvider) {
                 Parameters: function($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-	            Orders: function(OrderCloudSDK, WeirService, Parameters, Me) {
+	            Orders: function(OrderCloudSDK, WeirService, Parameters, Me, CurrentUser, CurrentOrg) {
+	                if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!Parameters.filters){
+	                    Parameters.filters = {};
+                    }
 		            //return WeirService.FindOrders(Parameters, false);
 		            if (Parameters.search) {
 		                Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //FromUserID and Total were throwing errors

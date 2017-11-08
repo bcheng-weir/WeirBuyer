@@ -42,7 +42,14 @@ function OrdersConfig($stateProvider) {
                 CountParameters: function ($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                SubmittedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                SubmittedCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = {"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
@@ -52,7 +59,14 @@ function OrdersConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                PendingCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                PendingCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = { "xp.Type": "Order", "xp.PendingPO": true, "xp.Active": true };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
@@ -62,7 +76,14 @@ function OrdersConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active": true };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
@@ -72,7 +93,14 @@ function OrdersConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                ConfirmedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                ConfirmedCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active": true };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
@@ -82,7 +110,14 @@ function OrdersConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                DespatchedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                DespatchedCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Despatched.id, "xp.Active": true };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {

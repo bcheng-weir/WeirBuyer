@@ -61,7 +61,14 @@ function QuotesConfig($stateProvider) {
                 CountParameters: function ($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                SavedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                SavedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.Saved.id + "|" + WeirService.OrderStatus.Draft.id,
@@ -74,7 +81,14 @@ function QuotesConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                EnquiryCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                EnquiryCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id,
@@ -87,7 +101,14 @@ function QuotesConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                InReviewCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                InReviewCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.Review.id,
@@ -100,7 +121,14 @@ function QuotesConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
@@ -113,7 +141,14 @@ function QuotesConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                ConfirmedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                ConfirmedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(!CountParameters.filters){
+                        CountParameters.filters = {};
+                    }
                     CountParameters.filters = {
                         'xp.Type': 'Quote',
                         "xp.Status": WeirService.OrderStatus.ConfirmedQuote.id,

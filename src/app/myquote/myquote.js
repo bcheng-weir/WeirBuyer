@@ -192,7 +192,11 @@ function MyQuoteConfig($stateProvider) {
 		        IsShopper: function (UserGroupsService) {
 		            return UserGroupsService.IsUserInGroup([UserGroupsService.Groups.Shoppers])
 		        },
-				Catalog:  function (OrderCloudSDK, Me) {
+				Catalog:  function (OrderCloudSDK, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
                     return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
                 },
                 Buyer : function(OrderCloudSDK, Me){
@@ -345,7 +349,11 @@ function MyQuoteConfig($stateProvider) {
 				Payments: function ($stateParams, OrderCloudSDK) {
 					return OrderCloudSDK.Payments.List("Outgoing", $stateParams.quoteID);
 				},
-				Catalog:  function (OrderCloudSDK, Me) {
+				Catalog:  function (OrderCloudSDK, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
 					return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
 				},
                 Buyer : function(OrderCloudSDK, Me){
@@ -436,7 +444,11 @@ function MyQuoteConfig($stateProvider) {
 				Payments: function ($stateParams, OrderCloudSDK) {
 					return OrderCloudSDK.Payments.List("Outgoing", $stateParams.quoteID);
 				},
-				Catalog:  function (OrderCloudSDK, Me) {
+				Catalog:  function (OrderCloudSDK, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
 					return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
 				},
 				Buyer : function(OrderCloudSDK, Me){
@@ -527,7 +539,11 @@ function MyQuoteConfig($stateProvider) {
 				Payments: function ($stateParams, OrderCloudSDK) {
 					return OrderCloudSDK.Payments.List("Outgoing", $stateParams.quoteID);
 				},
-				Catalog:  function (OrderCloudSDK, Me) {
+				Catalog:  function (OrderCloudSDK, Me, CurrentUser, CurrentOrg) {
+                    if(!Me.Profile || !Me.Org){
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
 					return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
 				},
 				Buyer : function(OrderCloudSDK, Me){

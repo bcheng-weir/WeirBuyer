@@ -3,8 +3,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group has-feedback" ng-repeat="number in part.partNumbers track by $index">
-                    <label ng-if="$index == 0 && part.partNumbers.length <= 1" ng-bind-html='part.labels.EnterPart'></label>
-                    <label ng-if="$index == 0 && part.partNumbers.length > 1" ng-bind-html='part.labels.EnterParts'></label>
+                    <label class="search-by" ng-if="$index == 0 && part.partNumbers.length <= 1" ng-bind-html='search.labels.PartSearch'></label>
+                    <label class="search-by" ng-if="$index == 0 && part.partNumbers.length > 1" ng-bind-html='search.labels.PartSearch'></label>
                     <div class="input-group col-md-12">
                         <input
                             ng-model="part.partNumbers[$index]"
@@ -23,7 +23,7 @@
                 <button type="button" class="btn btn-link" ng-click="part.addPartNumber()" ng-bind-html='part.labels.AddMore'><i class="fa fa-plus"></i></button>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default" ng-show="part.showClearSearch()" ng-click="part.clearSearch()" ng-bind-html='part.labels.ClearSearch'></button>
-                    <button type="submit" class="btn btn-primary" ng-bind-html='part.labels.Search'></button>
+                    <button type="submit" class="btn btn-lg btn-primary" ng-bind-html='part.labels.Search'></button>
                 </div>
             </div>
         </div>

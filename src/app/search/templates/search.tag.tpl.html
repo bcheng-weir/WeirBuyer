@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group has-feedback" ng-repeat="number in tag.tags track by $index">
-			<label ng-if="$index == 0" ng-bind-html='tag.labels.EnterTag'><span ng-if="tag.tags.length > 1"></span></label>
+			        <label class="search-by" ng-if="$index == 0" ng-bind-html='search.labels.TagSearch'><span ng-if="tag.tags.length > 1"></span></label>
                     <div class="input-group col-md-12">
                         <!--<input type="text" class="form-control" ng-change="tag.updateTagList(tag.tags[$index])" ng-model="tag.tags[$index]" typeahead-min-length="3" uib-typeahead="v.xp.TagNumber as (v.xp.TagNumber + ' - ' + v.Description) for v in tag.TagMatches | tagPreSearch:$viewValue" />-->
                         <input
@@ -23,7 +23,7 @@
 		<button type="button" class="btn btn-link" ng-click="tag.addTag()" ng-bind-html='tag.labels.AddMore'><i class="fa fa-plus"></i></button>
                 <div class="pull-right">
 			<button type="button" class="btn btn-default" ng-show="tag.showClearSearch()" ng-click="tag.clearSearch()" ng-bind-html='tag.labels.ClearSearch'></button>
-			<button type="submit" class="btn btn-primary" ng-bind-html='tag.labels.Search'></button>
+			<button type="submit" class="btn btn-lg btn-primary" ng-bind-html='tag.labels.Search'></button>
                 </div>
             </div>
         </div>

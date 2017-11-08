@@ -1,35 +1,48 @@
-<article id="COMPONENT_Quotes" class="container-fluid">
-	<ul class="nav nav-pills nav-justified" ng-if="['quotes.saved', 'quotes.inreview', 'quotes.enquiry', 'quotes.revised', 'quotes.confirmed'].indexOf(application.$state.current.name) > -1">
-		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.saved({filters:quotes.FilterActions('quotes.saved')})"><a href="#" ng-bind-html='quotes.labels.Saved'></a></li>
-		<li ng-if="quotes.EnquiryAllowed()" role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.enquiry({filters:quotes.FilterActions('quotes.enquiry')})"><a href="#" ng-bind-html='quotes.labels.Enquiry'></a></li>
-		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.inreview({filters:quotes.FilterActions('quotes.inreview')})"><a href="#" ng-bind-html='quotes.labels.InReview'></a></li>
-		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.revised({filters:quotes.FilterActions('quotes.revised')})"><a href="#" ng-bind-html='quotes.labels.Revised'></a></li>
-		<li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="quotes.confirmed({filters:quotes.FilterActions('quotes.confirmed')})"><a href="#" ng-bind-html='quotes.labels.Confirmed'></a></li>
-	</ul>
-	<hr>
-	<!--====== SEARCH/FILTERS ======-->
-	<form name="QuoteSearchForm" class="form-inline" ng-submit="quotes.search()">
-		<fieldset class="form-group">
-			<input type="search" placeholder="{{quotes.labels.SearchPlaceholder}}" ng-model="quotes.parameters.search" class="form-control">
-		</fieldset>
-		<fieldset class="form-group" ng-class="{'text-center':application.$ocMedia('max-width:767px')}">
-            <span ng-class="{'btn-group':orders.searchResults}">
-                <button type="submit" class="btn btn-primary" ng-bind-html="quotes.labels.Search"></button>
-                <button ng-if="quotes.searchResults" ng-click="quotes.clearSearch()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
-            </span>
-			<span ng-class="{'btn-group':quotes.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
-                <button type="button" class="btn btn-default" ng-click="quotes.showFilters=!quotes.showFilters" ng-bind-html="quotes.labels.Filters"></button>
-                <button ng-if="quotes.filtersApplied" ng-click="quotes.clearFilters()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
-            </span>
-		</fieldset>
-	</form>
-	<div ui-view style="padding-top:10px"></div>
-	<div class="text-center" ng-if="application.$ocMedia('min-width:768px') && quotes.list.Meta.TotalPages > 1">
-		<uib-pagination boundary-links="quotes.list.Meta.TotalPages > 5" max-size="5"
-						total-items="quotes.list.Meta.TotalCount" items-per-page="quotes.list.Meta.PageSize"
-						ng-model="quotes.list.Meta.Page" ng-change="quotes.pageChanged()"></uib-pagination>
-	</div>
-	<footer>
-        <div rsm-footer></div>
-    </footer>
+<article id="COMPONENT_Quotes" class="container-fluid all-quotes">
+    <div class="row">
+        <div class="col-md-2">
+            <ul class="nav nav-pills nav-stacked" ng-if="['quotes.all', 'quotes.saved', 'quotes.inreview', 'quotes.enquiry', 'quotes.revised', 'quotes.confirmed'].indexOf(application.$state.current.name) > -1">
+                <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.all({filters:quotes.FilterActions('quotes.all')})"><a href="#" ng-bind-html='quotes.labels.All'></a></li>
+                <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.saved({filters:quotes.FilterActions('quotes.saved')})"><a href="#" ng-bind-html='quotes.labels.SavedCount'></a></li>
+                <li ng-if="quotes.EnquiryAllowed()" role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.enquiry({filters:quotes.FilterActions('quotes.enquiry')})"><a href="#" ng-bind-html='quotes.labels.EnquiryCount'></a></li>
+                <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.inreview({filters:quotes.FilterActions('quotes.inreview')})"><a href="#" ng-bind-html='quotes.labels.InReviewCount'></a></li>
+                <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.revised({filters:quotes.FilterActions('quotes.revised')})"><a href="#" ng-bind-html='quotes.labels.RevisedCount'></a></li>
+                <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.confirmed({filters:quotes.FilterActions('quotes.confirmed')})"><a href="#" ng-bind-html='quotes.labels.ConfirmedCount'></a></li>
+            </ul>
+        </div>
+        <!--<hr>-->
+        <div class="col-md-10" style="padding-right:0px;padding-left:0px;">
+            <h2 ng-if="['quotes.all'].indexOf(application.$state.current.name) > -1">{{quotes.labels.All}}</h2>
+            <h2 ng-if="['quotes.saved'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Saved}}</h2>
+            <h2 ng-if="['quotes.enquiry'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Enquiry}}</h2>
+            <h2 ng-if="['quotes.inreview'].indexOf(application.$state.current.name) > -1">{{quotes.labels.InReview}}</h2>
+            <h2 ng-if="['quotes.revised'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Revised}}</h2>
+            <h2 ng-if="['quotes.confirmed'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Confirmed}}</h2>
+            <!--====== SEARCH/FILTERS ======-->
+            <form name="QuoteSearchForm" class="form-inline" ng-submit="quotes.search()">
+                <fieldset class="form-group">
+                    <input type="search" placeholder="{{quotes.labels.SearchPlaceholder}}" ng-model="quotes.parameters.search" class="form-control input-search">
+                </fieldset>
+                <fieldset class="form-group" ng-class="{'text-center':application.$ocMedia('max-width:767px')}">
+                    <span ng-class="{'btn-group':orders.searchResults}">
+                        <button type="submit" class="btn btn-primary btn-search"><span style="margin-left:8px;" ng-bind-html="quotes.labels.Search"></span><i class="fa fa-search fa-inverse" style="float:right;"></i></button>
+                        <button ng-if="quotes.searchResults" ng-click="quotes.clearSearch()" type="button" class="btn btn-primary btn-search btn-clear" ng-bind-html="quotes.labels.Clear"></button>
+                    </span>
+                    <span ng-class="{'btn-group':quotes.filtersApplied}" ng-if="application.$ocMedia('max-width:767px')">
+                        <button type="button" class="btn btn-default" ng-click="quotes.showFilters=!quotes.showFilters" ng-bind-html="quotes.labels.Filters"></button>
+                        <button ng-if="quotes.filtersApplied" ng-click="quotes.clearFilters()" type="button" class="btn btn-default"><i class="fa fa-times"></i></button>
+                    </span>
+                </fieldset>
+            </form>
+            <div ui-view style="padding-top:10px"></div>
+            <div class="text-center" ng-if="application.$ocMedia('min-width:768px') && quotes.list.Meta.TotalPages > 1">
+                <uib-pagination boundary-links="quotes.list.Meta.TotalPages > 5" max-size="5"
+                                total-items="quotes.list.Meta.TotalCount" items-per-page="quotes.list.Meta.PageSize"
+                                ng-model="quotes.list.Meta.Page" ng-change="quotes.pageChanged()"></uib-pagination>
+            </div>
+        </div>
+        <footer>
+            <div rsm-footer></div>
+        </footer>
+    </div>
 </article>

@@ -4,7 +4,7 @@
 </div>
 <div class="row" ng-if="orders.list.Items.length">
     <div class="col-md-12">
-        <h3 ng-bind-html='orders.labels.PendingHeader'></h3>
+        <h3 class="header" ng-bind-html='orders.labels.PendingHeader'></h3>
         <h5 ng-bind-html='orders.labels.PendingNotice'></h5>
         <table class="table table-hover table-condensed oc-table-responsive">
             <thead>
@@ -26,12 +26,18 @@
                     </a>
                 </th>
                 <th ng-bind-html='orders.labels.Status'></th>
+                <th ng-bind-html='orders.labels.Date'></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="order in orders.list.Items   ">
-                <td><span ng-bind-html="order.ID | MaskedQuoteID"></span></td>
+                <td>
+                    <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="orders.GoToOrder(order.ID)">
+                        {{order.ID | MaskedQuoteID}}
+                    </a>
+                    <br />
+                </td>
                 <td>{{order.xp.Name}}</td>
                 <td>{{order.xp.RefNum}}</td>
                 <td ng-switch on="orders.Customer.id | weirGroupFromBuyersID">
@@ -39,16 +45,12 @@
                     <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
                     <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
                 </td>
-                <td>{{orders.getStatusLabel(order.xp.Status) + "; " + (order.xp.StatusDate | weirdate)}}</td>
+                <td><span ng-bind-html="orders.getStatusLabel(order.xp.Status)" ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>
+                <td>{{order.xp.StatusDate | weirdate}}</td>
                 <td><button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button></td>
             </tr>
             </tbody>
         </table>
-        <div class="text-center" ng-if="application.$ocMedia('min-width:768px') && orders.list.Meta.TotalPages > 1">
-            <uib-pagination boundary-links="orders.list.Meta.TotalPages > 5" max-size="5"
-                            total-items="orders.list.Meta.TotalCount" items-per-page="orders.list.Meta.PageSize"
-                            ng-model="orders.list.Meta.Page" ng-change="orders.pageChanged()"></uib-pagination>
-        </div>
         <button type="button"
                 ng-if="application.$ocMedia('max-width:767px')"
                 class="btn btn-default btn-block btn-md"

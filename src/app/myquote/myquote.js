@@ -264,7 +264,7 @@ function MyQuoteConfig($stateProvider) {
 		})
 		.state('revised', {
 			parent: 'base',
-			url: '/revised?quoteID&buyerID',
+			url: '/revised?quoteID',
 			templateUrl: 'myquote/templates/myquote.revised.tpl.html',
 			controller: 'RevisedQuoteCtrl',
 			controllerAs: 'revised',
@@ -355,7 +355,7 @@ function MyQuoteConfig($stateProvider) {
 		})
 		.state('readonly', {
 			parent: 'base',
-		    url: '/readonly?quoteID&buyerID',
+		    url: '/readonly?quoteID',
 		    templateUrl: 'myquote/templates/myquote.readonly.tpl.html',
 		    controller: 'ReadonlyQuoteCtrl',
 		    controllerAs: 'readonly',
@@ -446,7 +446,7 @@ function MyQuoteConfig($stateProvider) {
 		})
 		.state('submit', {
 			parent: 'base',
-			url: '/submit?quoteID&buyerID',
+			url: '/submit?quoteID',
 			templateUrl: 'myquote/templates/myquote.submit.tpl.html',
 			controller: 'SubmitCtrl',
 			controllerAs: 'submit',

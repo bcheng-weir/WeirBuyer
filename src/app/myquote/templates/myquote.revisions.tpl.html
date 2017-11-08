@@ -44,7 +44,7 @@
             <th scope="row">{{quote.ID | MaskedQuoteID}}</th>
             <td>{{quote.xp.RefNum}}</td>
             <td>{{quote.xp.CustomerName}}</td>
-            <td>{{quote.FromUserFirstName}} {{quote.FromUserLastName}}</td>
+            <td>{{quote.FromUser.FirstName}} {{quote.FromUser.LastName}}</td>
             <td class="text-right" ng-switch on="quote.xp.Currency">
                 <span ng-switch-when="EUR">{{quote.Total | currency: '&euro;'}}</span>
                 <span ng-switch-when="GBP">{{quote.Total | currency: '&#163;'}}</span>

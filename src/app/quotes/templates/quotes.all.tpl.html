@@ -1,28 +1,29 @@
 <ui-view>
-   <div class="row">
+    <div class="row">
         <div class="col-md-12">
-            <h3 class="header"><span ng-bind-html='inreview.labels.Header'></h3>
+            <h3 class="header" ng-bind-html='saved.labels.Header'></h3>
+            <h5 class="subheader" ng-bind-html='saved.labels.SortText'></h5>
             <table class="table table-hover table-condensed oc-table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">
                             <a href="#" role="button" ng-click="quotes.updateSort('ID')">
-                                {{inreview.labels.QuoteNum}}
+                                {{saved.labels.QuoteNum}}
                                 <i class="fa fa-caret-down" ng-show="quotes.parameters.sortBy == 'ID'"></i>
                                 <i class="fa fa-caret-up" ng-show="quotes.parameters.sortBy == '!ID'"></i>
                             </a>
                         </th>
-                        <th ng-bind-html='inreview.labels.QuoteRef'></th>
+                        <th ng-bind-html='saved.labels.QuoteName'></th>
+                        <th ng-bind-html='saved.labels.QuoteRef'></th>
                         <th scope="col">
                             <a href="#" role="button" ng-click="quotes.updateSort('Total')">
-                                {{inreview.labels.Total}}
+                                {{saved.labels.Total}}
                                 <i class="fa fa-caret-down" ng-show="quotes.parameters.sortBy == 'Total'"></i>
                                 <i class="fa fa-caret-up" ng-show="quotes.parameters.sortBy == '!Total'"></i>
                             </a>
                         </th>
-                        <th ng-bind-html='inreview.labels.Reviewer'>t</th>
-                        <th ng-bind-html='inreview.labels.Status'></th>
-                        <th ng-bind-html='inreview.labels.Date'></th>
+                        <th ng-bind-html='saved.labels.Status'></th>
+                        <th ng-bind-html='saved.labels.Date'></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -34,17 +35,17 @@
                             </a>
                             <br />
                         </td>
+                        <td>{{quote.xp.Name}}</td>
                         <td>{{quote.xp.RefNum}}</td>
                         <td ng-switch on="quotes.Customer.id | weirGroupFromBuyersID">
                             <span ng-switch-when="WPIFR">{{quote.Total | currency:'&euro; '}}</span>
                             <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
-                        <td>{{quote.xp.ReviewerName}}</td>
-                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SB:'btn-status btn-quote-SB',RE:'btn-status btn-quote-RE'}[quote.xp.Status]"></span></td>
+                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>
                         <td>{{quote.xp.StatusDate | weirdate}}</td>
                         <td>
-                            <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="inreview.labels.View"></a>
+                            <button class="btn btn-primary btn-md btn-review" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
                         </td>
                     </tr>
                 </tbody>

@@ -62,113 +62,204 @@
             </div>
         </div>
     </div>
-    <section class="platform">
+<hr ng-hide="home.quotes.Meta.TotalCount == 0 && home.orders.Meta.TotalCount == 0">
+    <section class="dashboard" ng-hide="home.quotes.Meta.TotalCount == 0 && home.orders.Meta.TotalCount == 0">
         <div class="container">
             <div class="row">
-                <div class="panel blue">
-                    <div class="row">
-                        <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
-                            <p ng-bind-html="home.labels.PlatformMsg1"></p>
+                    <div class="col-md-12 text-center" style="margin-bottom: 20px;">
+                        <span ng-bind-html="home.labels.YourDashboard" class="mainheader"></span>
+                    </div>
+                <br>
+                <div class="col-md-6 text-center" style="padding-left:0px;padding-right:4px;">
+                    <div class="col-md-12 borderbox">
+                        <div class="col-md-12 text-center home-header">
+                            <span ng-bind-html="home.labels.YourQuotes" class="subheader"></span>
                         </div>
+                        <table class="table table-hover table-condensed oc-table-responsive">
+                            <thead>
+                                <tr>
+                                    <th ng-bind-html="home.labels.QuoteNumber" class="col1"></th>
+                                    <th ng-bind-html="home.labels.QuoteReference" class="col2"></th>
+                                    <th ng-bind-html="home.labels.Total" class="col3"></th>
+                                    <th ng-bind-html="home.labels.Status" class="col4"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="quote in home.quotes.Items">
+                                    <td><a href="#" ng-click="home.GoToQuote(quote.ID)"><span ng-bind-html="quote.ID | MaskedQuoteID" class="weir-link"></span></a></td>
+                                    <td><span ng-bind-html="quote.xp.RefNum"></span></td>
+                                    <td ng-switch on="home.CurrentUserOrg.ID | weirGroupFromBuyersID">
+                                        <span ng-switch-when="WPIFR">{{quote.Total | currency:'&euro; '}}</span>
+                                        <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
+                                        <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
+                                    </td>
+                                    <td><span ng-bind-html="home.StatusLabel(quote.xp.Status)"
+                                              ng-style="{height: ((home.CurrentUserOrg.ID | weirGroupFromBuyersID) == 'WPIFR') ? '42px' : ''}"
+                                              ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>
+                                </tr>
+                                <tr ng-hide="home.quotes.Meta.TotalCount > 0">
+                                    <td colspan="4"><button class="btn btn-disabled" ng-bind-html="home.labels.NoQuotes"></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center" style="padding-right:0px;padding-left:4px;">
+                    <div class="col-md-12 borderbox">
+                        <div class="col-md-12 text-center home-header">
+                            <span ng-bind-html="home.labels.YourOrders" class="subheader"></span>
+                        </div>
+                        <table class="table table-hover table-condensed oc-table-responsive">
+                            <thead>
+                                <tr>
+                                    <th ng-bind-html="home.labels.QuoteNumber" class="col1"></th>
+                                    <th ng-bind-html="home.labels.QuoteReference" class="col2"></th>
+                                    <th ng-bind-html="home.labels.Total" class="col3"></th>
+                                    <th ng-bind-html="home.labels.Status" class="col4"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="order in home.orders.Items">
+                                    <td><a href="#" ng-click="home.GoToOrder(order.ID)"><span ng-bind-html="order.ID | MaskedQuoteID" class="weir-link"></span></a></td>
+                                    <td><span ng-bind-html="order.xp.RefNum"></span></td>
+                                    <td ng-switch on="home.CurrentUserOrg.ID | weirGroupFromBuyersID">
+                                        <span ng-switch-when="WPIFR">{{order.Total | currency:'&euro; '}}</span>
+                                        <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
+                                        <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
+                                    </td>
+                                    <td><span ng-bind-html="home.StatusLabel(order.xp.Status)"
+                                              ng-style="{height: ((home.CurrentUserOrg.ID | weirGroupFromBuyersID) == 'WPIFR') ? '42px' : ''}"
+                                              ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>
+                                </tr>
+                                <tr ng-hide="home.orders.Meta.TotalCount > 0">
+                                    <td colspan="4"><button class="btn btn-disabled" ng-bind-html="home.labels.NoOrders"></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6" style="padding-left:0px;padding-right:4px;">
+                        <button ng-hide="home.quotes.Meta.TotalCount == 0" class="btn btn-primary" ng-click="home.OrderAction('quotes.all')" ng-bind-html="home.labels.AllQuotes"></button>
+                    </div>
+                    <div class="col-md-6" style="padding-right:0px;padding-left:4px;">
+                        <button ng-hide="home.orders.Meta.TotalCount == 0" class="btn btn-primary" ng-click="home.OrderAction('orders.all')" ng-bind-html="home.labels.AllOrders"></button>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
-                    <div class="h-t-u">
-                        <h2 ng-bind-html="home.labels.PlatformMsg2Header"></h2>
-                        <p ng-bind-html="home.labels.PlatformMsg2"> </p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
-    <section class="details">
-        <div class="container">
-            <div class="row">
-                <div class="steps">
-                    <div class="col-xs-12 col-md-3">
-                        <div class="step">
-                            <div class="number">
-                                1
-                            </div><img alt="" src="assets/images/search.jpg">
-                            <h4 ng-bind-html="home.labels.DetailsSearchHeader"></h4>
-                            <p ng-bind-html="home.labels.DeatilsSearchMsg"></p>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-3">
-                        <div class="step">
-                            <div class="number">
-                                2
-                            </div><img alt="" src="assets/images/quote.jpg">
-                            <h4 ng-bind-html="home.labels.DetailsQuoteHeader"></h4>
-                            <p ng-bind-html="home.labels.DetailsQuoteMsg"></p>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-3">
-                        <div class="step">
-                            <div class="number">
-                                3
-                            </div><img alt="" src="assets/images/detail.jpg">
-                            <h4 ng-bind-html="home.labels.DetailsDetailsHeader"></h4>
-                            <p ng-bind-html="home.labels.DetailsDetailsMsg"></p>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-3">
-                        <div class="step">
-                            <div class="number">
-                                4
-                            </div><img alt="" src="assets/images/submit.jpg">
-                            <h4 ng-bind-html="home.labels.DetailsSubmitHeader"></h4>
-                            <p ng-bind-html="home.labels.DetailsSubmitMsg"></p>
-                            <br>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-12 col-md-offset-1 col-md-10 col-md-offset-2 text-center">
-                    <div class="success">
+
+    <hr>
+
+        <section class="platform">
+            <div class="container">
+                <!--Shut off per POC - Change Requests Sprint 3
+                <div class="row">
+                    <div class="panel blue">
                         <div class="row">
-                            <div class="col-xs-1">
-                                <i aria-hidden="true" class="fa fa-check"></i>
+                            <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
+                                <p ng-bind-html="home.labels.PlatformMsg1"></p>
                             </div>
-                            <div class="col-xs-11">
-                                <p ng-bind-html="home.labels.OrderMsg"></p>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="row">
+                    <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
+                        <div class="h-t-u">
+                            <h2 ng-bind-html="home.labels.PlatformMsg2Header"></h2>
+                            <p ng-bind-html="home.labels.PlatformMsg2"> </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="details">
+            <div class="container">
+                <div class="row">
+                    <div class="steps">
+                        <div class="col-xs-12 col-md-3">
+                            <div class="step">
+                                <div class="number">
+                                    1
+                                </div><img alt="" src="assets/images/search.jpg">
+                                <h4 ng-bind-html="home.labels.DetailsSearchHeader"></h4>
+                                <p ng-bind-html="home.labels.DeatilsSearchMsg"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <div class="step">
+                                <div class="number">
+                                    2
+                                </div><img alt="" src="assets/images/quote.jpg">
+                                <h4 ng-bind-html="home.labels.DetailsQuoteHeader"></h4>
+                                <p ng-bind-html="home.labels.DetailsQuoteMsg"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <div class="step">
+                                <div class="number">
+                                    3
+                                </div><img alt="" src="assets/images/detail.jpg">
+                                <h4 ng-bind-html="home.labels.DetailsDetailsHeader"></h4>
+                                <p ng-bind-html="home.labels.DetailsDetailsMsg"></p>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <div class="step">
+                                <div class="number">
+                                    4
+                                </div><img alt="" src="assets/images/submit.jpg">
+                                <h4 ng-bind-html="home.labels.DetailsSubmitHeader"></h4>
+                                <p ng-bind-html="home.labels.DetailsSubmitMsg"></p>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 col-md-offset-1 col-md-10 col-md-offset-2 text-center">
+                        <div class="success">
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    <i aria-hidden="true" class="fa fa-check"></i>
+                                </div>
+                                <div class="col-xs-11">
+                                    <p ng-bind-html="home.labels.OrderMsg"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    <section class="brands">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12 col-md-10 col-md-8 col-lg-offset-2 col-md-offset-1 text-center">
-                    <h2 ng-bind-html="home.labels.Brands"></h2>
-                    <p ng-bind-html="home.labels.BrandsMsg"></p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'en'" ng-repeat="brand in home.BrandUK track by brand.title">
-                    <div class="featured-link">
-                        <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
-                        <p ng-bind-html="brand.description"> </p>
+        </section>
+        <section class="brands">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-md-10 col-md-8 col-lg-offset-2 col-md-offset-1 text-center">
+                        <h2 ng-bind-html="home.labels.Brands"></h2>
+                        <p ng-bind-html="home.labels.BrandsMsg"></p>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'fr'" ng-repeat="brand in home.BrandFR track by brand.title">
-                    <div class="featured-link">
-                        <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
-                        <p ng-bind-html="brand.description"></p>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'en'" ng-repeat="brand in home.BrandUK track by brand.title">
+                        <div class="featured-link">
+                            <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
+                            <p ng-bind-html="brand.description"> </p>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'fr'" ng-repeat="brand in home.BrandFR track by brand.title">
+                        <div class="featured-link">
+                            <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
+                            <p ng-bind-html="brand.description"></p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    <section>
-        <footer>
-            <div rsm-footer></div>
-        </footer>
-    </section>
+        </section>
+        <section>
+            <footer>
+                <div rsm-footer></div>
+            </footer>
+        </section>
 </article>

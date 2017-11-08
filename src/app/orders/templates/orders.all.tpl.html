@@ -1,0 +1,73 @@
+<!--====== LIST ======-->
+<div class="no-matches" ng-if="!orders.list.Items.length">
+    <b>{{orders.labels.NoMatches}}</b>
+</div>
+<div class="row" ng-if="orders.list.Items.length">
+    <div class="col-md-12">
+        <h3 class="header" ng-bind-html='orders.labels.AllHeader'></h3>
+        <h5 class="subheader" ng-bind-html='orders.labels.SortText'></h5>
+        <table class="table table-hover table-condensed oc-table-responsive">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <a href="#" role="button" ng-click="orders.updateSort('ID')">
+                            {{orders.labels.OrderNum}}
+                            <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'ID'"></i>
+                            <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!ID'"></i>
+                        </a>
+                    </th>
+                    <th ng-bind-html='orders.labels.PONumber'></th>
+                    <th scope="col">
+                        <a href="#" role="button" ng-click="orders.updateSort('Total')">
+                            {{orders.labels.Total}}
+                            <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'Total'"></i>
+                            <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!Total'"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="#" role="button" ng-click="orders.updateSort('DateSubmitted')">
+                            {{orders.labels.OrderDate}}
+                            <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'DateSubmitted'"></i>
+                            <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!DateSubmitted'"></i>
+                        </a>
+                    </th>
+                    <th ng-bind-html='orders.labels.Status'></th>
+                    <th ng-bind-html='orders.labels.Reviewer'></th>
+                    <th ng-bind-html='orders.labels.EstDelivery'></th>
+                    <th ng-bind-html='orders.labels.DateDespatched'></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="order in orders.list.Items   ">
+                    <td>
+                        <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="orders.GoToOrder(order.ID)">
+                            {{order.ID | MaskedQuoteID}}
+                        </a>
+                        <br />
+                    </td>
+                    <td>{{order.xp.PONumber}}</td>
+                    <td ng-switch on="orders.Customer.id | weirGroupFromBuyersID">
+                        <span ng-switch-when="WPIFR">{{order.Total | currency:'&euro; '}}</span>
+                        <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
+                        <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
+                    </td>
+                    <td>{{order.DateSubmitted | weirdate}}</td>
+                    <td><span ng-bind-html="orders.getStatusLabel(order.xp.Status)" ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>
+                    <td>{{order.xp.ReviewerName}}</td>
+                    <td>{{order.xp.DeliveryDate | weirdate}}</td>
+                    <td>{{order.xp.DateDespatched | weirdate}}</td>
+                    <td>
+                        <button class="btn btn-primary btn-review" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button"
+                ng-if="application.$ocMedia('max-width:767px')"
+                class="btn btn-default btn-block btn-md"
+                ng-show="orders.list.Meta.Page < orders.list.Meta.TotalPages"
+                ng-click="orders.loadMore()" ng-bind-html="orders.labels.loadMore"></button>
+        <p><i ng-bind-html='tagDetail.headers.LeadTimeNotice'></i></p>
+    </div>
+</div>

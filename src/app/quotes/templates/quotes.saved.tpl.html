@@ -1,7 +1,7 @@
 <ui-view>
    <div class="row">
         <div class="col-md-12">
-            <h3 ng-bind-html='saved.labels.Header'></h3>
+            <h3 class="header" ng-bind-html='saved.labels.Header'></h3>
             <table class="table table-hover table-condensed oc-table-responsive">
                 <thead>
                     <tr>
@@ -22,12 +22,18 @@
                             </a>
                         </th>
                         <th ng-bind-html='saved.labels.Status'></th>
+                        <th ng-bind-html='saved.labels.Date'></th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="quote in quotes.list.Items">
-                        <td><span ng-bind-html="quote.ID | MaskedQuoteID"></span></td>
+                        <td>
+                            <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="quotes.GoToQuote(quote.ID)">
+                                {{quote.ID | MaskedQuoteID}}
+                            </a>
+                            <br />
+                        </td>
                         <td>{{quote.xp.Name}}</td>
                         <td>{{quote.xp.RefNum}}</td>
                         <td ng-switch on="quotes.Customer.id | weirGroupFromBuyersID">
@@ -35,7 +41,8 @@
                             <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
-                        <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
+                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',RV:'btn-status btn-quote-RV',RQ:'btn-status btn-quote-RQ'}[quote.xp.Status]"></span></td>
+                        <td>{{quote.xp.StatusDate | weirdate}}</td>
                         <td>
                             <button class="btn btn-primary btn-md" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
                             <!--<a ui-sref="revisions({quoteID:quote.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="saved.labels.Revisions" ng-if="quote.xp.Status!='SV'"></a>-->

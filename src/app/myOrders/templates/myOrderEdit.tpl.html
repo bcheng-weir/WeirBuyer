@@ -3,7 +3,7 @@
         <b>Edit {{myOrderEdit.order.Type}} Order:</b> {{myOrderEdit.orderID}}
     </h3>
     <h4>
-        From User: <a ui-sref="users.edit({userid: myOrderEdit.order.FromUserID})" target="_blank">{{myOrderEdit.order.FromUserID}}</a>
+        From User: <a ui-sref="users.edit({userid: myOrderEdit.order.FromUser.ID})" target="_blank">{{myOrderEdit.order.FromUser.ID}}</a>
     </h4>
     <div ng-form="EditForm">
         <div ng-form="GeneralOrderInfo">
@@ -63,7 +63,7 @@
                                 type="text"
                                 class="form-control"
                                 ng-model="myOrderEdit.order.BillingAddressID"
-                                uib-typeahead="address.ID as address.AddressName for address in myOrderEdit.billingAddressTypeAhead($viewValue, myOrderEdit.order.FromUserID)"/>
+                                uib-typeahead="address.ID as address.AddressName for address in myOrderEdit.billingAddressTypeAhead($viewValue, myOrderEdit.order.FromUser.ID)"/>
                         </fieldset>
                         <fieldset class="form-group">
                             <label>Billing Address</label>

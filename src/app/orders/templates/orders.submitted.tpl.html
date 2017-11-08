@@ -4,7 +4,7 @@
 </div>
 <div class="row" ng-if="orders.list.Items.length">
     <div class="col-md-12">
-        <h3 ng-bind-html='orders.labels.SubmittedHeader'></h3>
+        <h3 class="header" ng-bind-html='orders.labels.SubmittedHeader'></h3>
         <table class="table table-hover table-condensed oc-table-responsive">
             <thead>
             <tr>
@@ -26,12 +26,18 @@
                     </a>
                 </th>
                 <th ng-bind-html='orders.labels.Status'></th>
+                <th ng-bind-html='orders.labels.Date'></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr ng-repeat="order in orders.list.Items   ">
-                <td><span ng-bind-html="order.ID | MaskedQuoteID"></span></td>
+                <td>
+                    <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="orders.GoToOrder(order.ID)">
+                        {{order.ID | MaskedQuoteID}}
+                    </a>
+                    <br />
+                </td>
                 <td>{{order.xp.Name}}</td>
                 <td>{{order.xp.RefNum}}</td>
                 <td>{{order.xp.PONumber}}</td>
@@ -40,7 +46,8 @@
                     <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
                     <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
                 </td>
-                <td>{{orders.getStatusLabel(order.xp.Status) + "; " + (order.xp.StatusDate | weirdate)}}</td>
+                <td><span ng-bind-html="orders.getStatusLabel(order.xp.Status)" ng-class="{SP:'btn-status btn-order-SP'}[order.xp.Status]"></span></td>
+                <td>{{order.xp.StatusDate | weirdate}}</td>
                 <td><button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button></td>
             </tr>
             </tbody>

@@ -28,7 +28,7 @@
         <div class="form-group">
             <label class="col-sm-1">Created By:</label>
             <div class="col-sm-11">
-                {{ordersDetail.order.FromUserFirstName + ' ' + ordersDetail.order.FromUserLastName}}
+                {{ordersDetail.order.FromUser.FirstName + ' ' + ordersDetail.order.FromUser.LastName}}
             </div>
         </div>
         <div class="form-group" ng-if="ordersDetail.order.PaymentMethod">

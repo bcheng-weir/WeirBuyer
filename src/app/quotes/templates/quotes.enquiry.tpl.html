@@ -1,7 +1,7 @@
 <ui-view>
     <div class="row">
         <div class="col-md-12">
-            <h3><span ng-bind-html='enquiry.labels.Header'></h3>
+            <h3 class="header"><span ng-bind-html='enquiry.labels.Header'></h3>
             <table class="table table-hover table-condensed oc-table-responsive">
                 <thead>
                 <tr>
@@ -18,8 +18,16 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="quote in quotes.list.Items">
-                    <td class="text-blue"><span ng-bind-html="quote.ID | MaskedQuoteID"></span></td>
-                    <td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>
+                    <td>
+                        <a href="#" role="button" class="btn btn-link btn-md quote-link" ng-click="quotes.GoToQuote(quote.ID)">
+                            {{quote.ID | MaskedQuoteID}}
+                        </a>
+                        <br />
+                    </td>
+                    <!--<td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>-->
+                    <td>
+                        <span ng-bind-html="quotes.getStatusLabel(quote.xp.Status) + '; ' + (quote.xp.StatusDate | weirdate)" class="btn-status btn-quote-EN"></span>
+                    </td>
                     <td>
                         <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="enquiry.labels.View"></a>
                     </td>

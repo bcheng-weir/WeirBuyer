@@ -10,13 +10,35 @@ function HomeConfig($stateProvider) {
 			url: '/home',
 			templateUrl: 'home/templates/home.tpl.html',
 			controller: 'HomeCtrl',
-			controllerAs: 'home'
-            //removing the resolve as it is not executing quickly enough to set language for the home and base. It is now
-            //line 247 of login.js and executes there.
+			controllerAs: 'home',
+            resolve: {
+                quotes: function(OrderCloudSDK) {
+                    var opts = {
+                        'pageSize':10,
+                        'sortBy':'!DateCreated',
+                        'filters':{
+                            'xp.Type':'Quote',
+                            'xp.Active':true
+                        }
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing",opts);
+                },
+			    orders: function(OrderCloudSDK) {
+			        var opts = {
+			            'pageSize':10,
+                        'sortBy':'!DateCreated',
+                        'filters':{
+			                'xp.Type':'Order',
+                            'xp.Active':true
+                        }
+                    };
+			        return OrderCloudSDK.Orders.List("Outgoing",opts);
+                }
+            }
 		});
 }
 
-function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTypeService) {
+function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTypeService, orders, quotes) {
     var vm = this;
 	if(WeirService.Locale() == 'fr') {
 		SearchTypeService.SetGlobalSearchFlag(true);
@@ -25,6 +47,30 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 	}
     vm.CurrentUser = Me.Profile;
 	vm.CurrentUserOrg = Me.Org;
+	vm.orders = orders;
+	vm.quotes = quotes;
+	vm.LookupStatus = WeirService.LookupStatus;
+	vm.locale =  WeirService.Locale;
+	vm.StatusLabel = function(status) {
+	    var statusObj = WeirService.LookupStatus(status);
+	    return statusObj.label[WeirService.Locale()];
+    };
+
+    vm.OrderAction = _actions;
+    function _actions(action) {
+        var filter = {
+            "quotes.all": {
+                "xp.Type": "Quote",
+                "xp.Active": true
+            },
+            "orders.all": {
+                "xp.Type": "Order",
+                "xp.Active": true
+            }
+        };
+        $state.go(action, { filters: JSON.stringify(filter[action]) }, { reload: true });
+    }
+
     var labels = {
         en: {
             Search : "Search centre",
@@ -51,7 +97,20 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             SerialNumber: "Serial number",
             PartNumber: "Part number",
             TagNumber: "Tag number",
-	        PlaceHolder: "Enter serial, part, or tag number."
+	        PlaceHolder: "Enter serial, part, or tag number.",
+            YourDashboard: "Your Dashboard",
+            YourQuotes: "Your Quotes",
+            YourOrders: "Your Orders",
+            QuoteNumber: "Weir Quote No.",
+            QuoteReference: "Your Quote Ref:",
+            OrderNumber: "Weir Order No.",
+            OrderReference: "Your Order Ref",
+            Total: "Total",
+            Status: "Status",
+            AllQuotes: "View All Quotes",
+            AllOrders: "View All Orders",
+            NoQuotes: "No quotes currently in progress",
+            NoOrders: "No orders currently in progress"
         },
         fr: {
             Search : $sce.trustAsHtml("Centre de recherche"),
@@ -74,7 +133,20 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             TagNumber: $sce.trustAsHtml("Numéro du tag"),
             SarasinRSBD: $sce.trustAsHtml("Sarasin RSBD™"),
             SarasinRSBDMsg: $sce.trustAsHtml("Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD™ sont conçues pour garantir des performances, une sécurité et une fiabilité optimales."),
-	        PlaceHolder: $sce.trustAsHtml("Renseigner un numéro de série, de pièce ou de repère soupape.")
+	        PlaceHolder: $sce.trustAsHtml("Renseigner un numéro de série, de pièce ou de repère soupape."),
+            YourDashboard: $sce.trustAsHtml("Votre tableau de bord"),
+            YourQuotes: $sce.trustAsHtml("Vos cotations"),
+            YourOrders: $sce.trustAsHtml("Vos commandes"),
+            QuoteNumber: $sce.trustAsHtml("Référence de cotation chez WEIR"),
+            QuoteReference: $sce.trustAsHtml("Votre Référence de cotation"),
+            OrderNumber: $sce.trustAsHtml("Numéro de commande WEIR"),
+            OrderReference: $sce.trustAsHtml("Votre réference de commande:"),
+            Total: $sce.trustAsHtml("Total"),
+            Status: $sce.trustAsHtml("Statut"),
+            AllQuotes: $sce.trustAsHtml("Voir tous les devis"),
+            AllOrders: $sce.trustAsHtml("Voir toutes les commandes"),
+            NoQuotes: $sce.trustAsHtml("Pas de cotation en cours"),
+            NoOrders: $sce.trustAsHtml("Pas de commande en cours")
         }
     };
     vm.LanguageUsed = WeirService.Locale();
@@ -140,5 +212,13 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
                     });
                 break;
         }
+    };
+
+    vm.GoToOrder = function(orderId) {
+        $state.go("orders.goto", { orderID: orderId } );
+    };
+
+    vm.GoToQuote = function(orderId) {
+        $state.go("quotes.goto", { quoteID: orderId } );
     };
 }

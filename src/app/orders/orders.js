@@ -35,10 +35,69 @@ function OrdersConfig($stateProvider) {
 		                Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //FromUserID and Total were throwing errors
 	                }
 		            // Filter on Me.Profile.ID == FromUserID
+					Parameters.filters = Parameters.filters || {};
 		            Parameters.filters.FromUserID = Me.Profile.ID;
                     return OrderCloudSDK.Orders.List("Outgoing", {'from':Parameters.from, 'to':Parameters.to, 'search':Parameters.search, 'page':Parameters.page, 'pageSize':Parameters.pageSize || 10, 'searchOn':Parameters.searchOn, 'sortBy':Parameters.sortBy, 'filters':Parameters.filters, 'buyerID':Me.GetBuyerID()});
-				}
+                },
+                CountParameters: function ($stateParams, OrderCloudParameters) {
+                    return OrderCloudParameters.Get($stateParams);
+                },
+                SubmittedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = {"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
+                    var opts = {
+                        'pageSize': 10,
+                        'filters': CountParameters.filters,
+                        'buyerID': Me.GetBuyerID()
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing", opts);
+                },
+                PendingCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = { "xp.Type": "Order", "xp.PendingPO": true, "xp.Active": true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
+                    var opts = {
+                        'pageSize': 10,
+                        'filters': CountParameters.filters,
+                        'buyerID': Me.GetBuyerID()
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing", opts);
+                },
+                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active": true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
+                    var opts = {
+                        'pageSize': 10,
+                        'filters': CountParameters.filters,
+                        'buyerID': Me.GetBuyerID()
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing", opts);
+                },
+                ConfirmedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active": true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
+                    var opts = {
+                        'pageSize': 10,
+                        'filters': CountParameters.filters,
+                        'buyerID': Me.GetBuyerID()
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing", opts);
+                },
+                DespatchedCount: function (OrderCloudSDK, WeirService, CountParameters, Me) {
+                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Despatched.id, "xp.Active": true };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
+                    var opts = {
+                        'pageSize': 10,
+                        'filters': CountParameters.filters,
+                        'buyerID': Me.GetBuyerID()
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing", opts);
+                }
             }
+        })
+        .state('orders.all', {
+            url: '/all',
+            templateUrl: 'orders/templates/orders.all.tpl.html',
+            parent: 'orders'
         })
         .state('orders.submitted', {
             url: '/submitted',
@@ -87,7 +146,7 @@ function OrdersConfig($stateProvider) {
     ;
 }
 
-function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, OrderCloudParameters, Orders, Parameters, Me, WeirService, CurrentCustomer) {
+function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, OrderCloudParameters, Orders, Parameters, Me, WeirService, CurrentCustomer, SubmittedCount, PendingCount, RevisedCount, ConfirmedCount, DespatchedCount) {
     var vm = this;
     vm.list = Orders;
     vm.parameters = Parameters;
@@ -170,27 +229,36 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
     };
 
     var labels = {
-    	en: {
+        en: {
+            AllHeader: vm.list.Meta.TotalCount.toString() + " Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
     		SubmittedHeader: vm.list.Meta.TotalCount.toString() + " Submitted Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    PendingHeader: vm.list.Meta.TotalCount.toString() + " Pending Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    PendingNotice: "Orders submitted pending PO will not be confirmed until Weir have received a Purchase Order",
 		    RevisedHeader: vm.list.Meta.TotalCount.toString() + " Revised Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    ConfirmedHeader: vm.list.Meta.TotalCount.toString() + " Confirmed Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    DespatchedHeader: vm.list.Meta.TotalCount.toString() + " Despatched Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-		    InvoicedHeader: vm.list.Meta.TotalCount.toString() + " Invoiced Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-		    View: "View",
-		    submitted: "Submitted with PO",
-		    pending: "Submitted Pending PO",
-		    revised: "Revised",
-		    confirmed: "Confirmed",
-		    despatched: "Despatched",
+            InvoicedHeader: vm.list.Meta.TotalCount.toString() + " Invoiced Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+            SortText: "You can sort orders by Order No, Total, Date",
+            View: "View",
+            all: "All Orders",
+            submitted: "Submitted with PO",
+            submittedCount: SubmittedCount.Meta.TotalCount.toString() > 0 ? "Submitted with PO (" + SubmittedCount.Meta.TotalCount.toString() + ")" : "Submitted with PO",
+            pending: "Submitted Pending PO",
+            pendingCount: PendingCount.Meta.TotalCount.toString() > 0 ? "Submitted Pending PO (" + PendingCount.Meta.TotalCount.toString() + ")" : "Submitted Pending PO",
+            revised: "Revised",
+            revisedCount: RevisedCount.Meta.TotalCount.toString() > 0 ? "Revised (" + RevisedCount.Meta.TotalCount.toString() + ")" : "Revised",
+            confirmed: "Confirmed",
+            confirmedCount: ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmed (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmed",
+            despatched: "Despatched",
+            despatchedCount: DespatchedCount.Meta.TotalCount.toString() > 0 ? "Despatched (" + DespatchedCount.Meta.TotalCount.toString() + ")" : "Despatched",
 		    invoiced: "Invoiced",
 	        OrderNum: "Weir Order No.",
 		    OrderName: "Your Order Name",
 		    OrderRef: "Your Order ref;",
 		    Total: "Order Value",
 		    Customer: "Customer",
-		    Status: "Status",
+            Status: "Status",
+            Date: "Date",
 		    ReplaceCartMessage: "Continuing with this action will change your cart to this order. Are you sure you want to proceed?",
 		    Revisions: "Revisions",
 		    PONumber: "Your PO Number",
@@ -203,30 +271,41 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    DateInvoiced: "Date Invoiced",
 		    EstDelivery: "Estimated Delivery Date",
 			NoMatches: "No Matches Found.",
-			Search: "Search",
+            Search: "Search",
+            SearchPlaceholder: "Search by Weir quote or order number",
+            Clear: "Clear Search",
 			Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters")
 	    },
-	    fr: {
+        fr: {
+            AllHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commande" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 	        SubmittedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes soumise" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 	        PendingHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes en attente" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    PendingNotice: $sce.trustAsHtml("Les commandes soumises en attente ne seront pas confirmées tant que Weir n'aura pas reçu de bon de commande"),
 		    RevisedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " cotations révisée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    ConfirmedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes confirmée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    DespatchedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes expédiée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-		    InvoicedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes facturée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-		    View: $sce.trustAsHtml("Voir"),
-		    submitted: $sce.trustAsHtml("Soumis avec commande"),
-		    pending: $sce.trustAsHtml("Bon de commande soumis en attente"),
-		    revised: $sce.trustAsHtml("Révisé"),
-		    confirmed: $sce.trustAsHtml("Confirmée"),
-		    despatched: $sce.trustAsHtml("Expédiée"),
+            InvoicedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes facturée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+            SortText: $sce.trustAsHtml("Vous pouvez filtrer par numéro de devis, montant, et date"),
+            View: $sce.trustAsHtml("Voir"),
+            all: $sce.trustAsHtml("Toutes les commandes"),
+            submitted: $sce.trustAsHtml("Commande avec Bon de Commande"),
+            submittedCount: $sce.trustAsHtml(SubmittedCount.Meta.TotalCount.toString() > 0 ? "Commande avec Bon de Commande (" + SubmittedCount.Meta.TotalCount.toString() + ")" : "Commande avec Bon de Commande"),
+            pending: $sce.trustAsHtml("Commande sans Bon de Commande"),
+            pendingCount: $sce.trustAsHtml(PendingCount.Meta.TotalCount.toString() > 0 ? "Commande sans Bon de Commande (" + PendingCount.Meta.TotalCount.toString() + ")" : "Commande sans Bon de Commande"),
+            revised: $sce.trustAsHtml("Révisé"),
+            revisedCount: $sce.trustAsHtml(RevisedCount.Meta.TotalCount.toString() > 0 ? "Révisé (" + RevisedCount.Meta.TotalCount.toString() + ")" : "Révisé"),
+            confirmed: $sce.trustAsHtml("Confirmée"),
+            confirmedCount: $sce.trustAsHtml(ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmée (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmée"),
+            despatched: $sce.trustAsHtml("Expédiée"),
+            despatchedCount: $sce.trustAsHtml(DespatchedCount.Meta.TotalCount.toString() > 0 ? "Expédiée (" + DespatchedCount.Meta.TotalCount.toString() + ")" : "Expédiée"),
 		    invoiced: $sce.trustAsHtml("Facturée"),
 		    OrderNum: $sce.trustAsHtml("Numéro de commande WEIR"),
 		    OrderName: $sce.trustAsHtml("Votre libellé de commande"),
 		    OrderRef: $sce.trustAsHtml("Votre référence de commande"),
 		    Total: $sce.trustAsHtml("Montant total"),
 		    Customer: $sce.trustAsHtml("Client"),
-		    Status: $sce.trustAsHtml("Statut"),
+            Status: $sce.trustAsHtml("Statut"),
+            Date: $sce.trustAsHtml("Date"),
 		    ReplaceCartMessage: $sce.trustAsHtml("La poursuite de cette action changera votre panier pour cette commande. Voulez-vous continuer?"),
 		    Revisions: $sce.trustAsHtml("Révisions"),
 		    PONumber: $sce.trustAsHtml("Votre numéro de commande"),
@@ -240,6 +319,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    EstDelivery: $sce.trustAsHtml("Délai de livraison estimé"),
             NoMatches: $sce.trustAsHtml("Aucun résultat"),
             Search: $sce.trustAsHtml("Rechercher"),
+            SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
+            Clear: $sce.trustAsHtml("Effacer le rechercher"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
 	    }
     };
@@ -247,7 +328,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 
 	vm.FilterActions = _filterActions;
 	function _filterActions(action) {
-		var filter = {
+        var filter = {
+            "orders.all": { "xp.Type": "Order", "xp.Active": true },
 			"orders.submitted":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true},
 			"orders.pending":{"xp.Type":"Order", "xp.PendingPO":true, "xp.Active":true},
 			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id+"|"+WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active":true},
@@ -273,7 +355,11 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 					});
 			}
 		}
-	}
+    }
+
+    vm.GoToOrder = function (orderId) {
+        $state.go("orders.goto", { orderID: orderId });
+    };
 }
 function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, Me) {
     if (Order) {
@@ -295,10 +381,10 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
         $state.go('orders.submitted');
     }
     function reviewOrder(orderId, status, buyerId) {
-        if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id) {
+        if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id || status == WeirService.OrderStatus.Submitted.id) {
             $state.transitionTo('readonly', { quoteID: orderId, buyerID: buyerId });
         } else if (status == WeirService.OrderStatus.RevisedOrder.id) {
-            $state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });
+            $state.transitionTo('revised', {quoteID: orderId, buyerID: buyerId});
         } else {
             WeirService.SetQuoteAsCurrentOrder(orderId)
                 .then(function () {

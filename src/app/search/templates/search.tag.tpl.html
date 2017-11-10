@@ -17,16 +17,20 @@
                             type="text"
                             typeahead-min-length="3"
                             uib-typeahead="cat.xp.TagNumber as (cat.xp.TagNumber + ' - ' + cat.Description) for cat in tag.updateTagList($viewValue)">
-                        <div class="input-group-addon-search-page">
-                            <button class="btn search action-btn" name="ss" type="submit"><i class="icon-search white"></i></button>
-                        </div>
                         <span class="input-group-addon" ng-if="tag.tags.length > 1" ng-click="tag.removeTag($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>
 		<button type="button" class="btn btn-link" ng-click="tag.addTag()" ng-bind-html='tag.labels.AddMore'><i class="fa fa-plus"></i></button>
                 <div class="pull-right">
-			<button type="button" class="btn btn-default" ng-show="tag.showClearSearch()" ng-click="tag.clearSearch()" ng-bind-html='tag.labels.ClearSearch'></button>
-			<button type="submit" class="btn btn-lg btn-primary" ng-bind-html='tag.labels.Search'></button>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-search">
+                            <span style="margin-left:8px;" ng-bind-html="tag.labels.Search"></span>
+                            <i class="fa fa-search fa-inverse" style="float:right;"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-default" ng-click="tag.clearSearch()" ng-bind-html='tag.labels.ClearSearch'></button>
+                    </div>
                 </div>
             </div>
         </div>

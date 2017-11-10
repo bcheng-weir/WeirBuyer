@@ -16,16 +16,20 @@
                             type="text"
                             typeahead-min-length="3"
                             uib-typeahead="cat.xp.SN+' - '+cat.Description as (cat.xp.SN + ' - ' + cat.Description) for cat in serial.updateSerialList($viewValue)">
-                        <div class="input-group-addon-search-page">
-                            <button class="btn search action-btn" name="ss" type="submit"><i class="icon-search white"></i></button>
-                        </div>
                         <span class="input-group-addon" ng-if="serial.serialNumbers.length > 1" ng-click="serial.removeSerialNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>
 		        <button type="button" class="btn btn-link" ng-click="serial.addSerialNumber()" ng-bind-html='serial.labels.AddMore'><i class="fa fa-plus"></i></button>
                 <div class="pull-right">
-                    <button type="button" class="btn btn-default" ng-show="serial.showClearSearch()" ng-click="serial.clearSearch()" ng-bind-html='serial.labels.ClearSearch'></button>
-                    <button type="submit" class="btn btn-lg btn-primary" ng-bind-html='serial.labels.Search'></button>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-search">
+                            <span style="margin-left:8px;" ng-bind-html="serial.labels.Search"></span>
+                            <i class="fa fa-search fa-inverse" style="float:right;"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-default" ng-click="serial.clearSearch()" ng-bind-html='serial.labels.ClearSearch'></button>
+                    </div>
                 </div>
             </div>
         </div>

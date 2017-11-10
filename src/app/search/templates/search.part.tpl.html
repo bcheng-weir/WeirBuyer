@@ -17,16 +17,20 @@
                             type="text"
                             typeahead-min-length="3"
                             uib-typeahead="p.Name as (p.Name + ' - ' + p.Description) for p in part.updatePartList($viewValue)">
-                        <div class="input-group-addon-search-page">
-                            <button class="btn search action-btn" name="ss" type="submit"><i class="icon-search white"></i></button>
-                        </div>
                         <span class="input-group-addon" ng-if="part.partNumbers.length > 1" ng-click="part.removePartNumber($index)"><i class="fa fa-minus text-danger"></i></span>
                     </div>
                 </div>
                 <button type="button" class="btn btn-link" ng-click="part.addPartNumber()" ng-bind-html='part.labels.AddMore'><i class="fa fa-plus"></i></button>
                 <div class="pull-right">
-                    <button type="button" class="btn btn-default" ng-show="part.showClearSearch()" ng-click="part.clearSearch()" ng-bind-html='part.labels.ClearSearch'></button>
-                    <button type="submit" class="btn btn-lg btn-primary" ng-bind-html='part.labels.Search'></button>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-search">
+                            <span style="margin-left:8px;" ng-bind-html="part.labels.Search"></span>
+                            <i class="fa fa-search fa-inverse" style="float:right;"></i>
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-default" ng-click="part.clearSearch()" ng-bind-html="part.labels.ClearSearch"></button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -30,21 +30,27 @@
             <div class="row">
                 <div class="col-xs-6 col-email-message">
                     <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
-                        <button class="btn btn-lg btn-success pull-right" ng-click="submit.submitOrder(false)" ng-bind-html='submit.labels.SubmitOrderAndEmail'></button>
+                        <div class="col-xs-12">
+                            <button style="width:250px;" class="btn btn-lg btn-success pull-right" ng-click="submit.submitOrder(false)" ng-bind-html='submit.labels.SubmitOrderAndEmail'></button>
+                        </div>
                     </div>
                     <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
-                        <div class="col-xs-12"><h6 class="email-message pull-right" ng-bind-html="submit.labels.EmailPoMessage"></h6></div>
+                        <div class="col-xs-12">
+                            <h6 class="email-message pull-right" ng-bind-html="submit.labels.EmailPoMessage"></h6>
+                        </div>
                     </div>
-                </div>
-                <div class="col-xs-6">
+                <!--</div>
+                <div class="col-xs-6">-->
                     <div class="row">
                         <div class="col-xs-12">
-                            <button class="btn btn-lg btn-success pull-right" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button>
+                            <button style="width:250px;" class="btn btn-lg btn-success pull-right" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <div class="pull-right"><h6 class="pon-link"><a href="#pon" ng-bind-html="submit.labels.POEntry"></a></h6></div>
+                            <div class="pull-right">
+                                <h6 class="pon-link"><a href="#pon" ng-bind-html="submit.labels.POEntry"></a></h6>
+                            </div>
                         </div>
                     </div>
                 </div>

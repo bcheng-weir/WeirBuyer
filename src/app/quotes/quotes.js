@@ -189,7 +189,7 @@ function QuotesConfig($stateProvider) {
 		})
 		.state( 'quotes.revised', {
 			url: '/revised',
-			templateUrl: 'quotes/templates/quotes.saved.tpl.html',
+			templateUrl: 'quotes/templates/quotes.revised.tpl.html',
 			controller: 'SavedQuotesCtrl',
 			controllerAs: 'saved'
 		})
@@ -429,7 +429,8 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 			ConfirmedListMessage: "You can convert confirmed quotes to orders. View the confirmed quote and select; Submit Order.<br><br>Confirmed quotes are valid for 30 days from confirmation",
 			Revisions: "Revisions",
             Search: "Search",
-            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters")
+            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters"),
+            Reviewer: "Reviewer"
 		},
 		fr: {
 		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) sauvée(s)"),
@@ -448,7 +449,8 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             ConfirmedListMessage: $sce.trustAsHtml("Vous pouvez convertir des devis confirmés en commandes. Affichez le devis confirmé et sélectionnez: Soumettre l'ordre. Les devis confirmés sont valables pendant 30 jours &agrave; partir de la confirmation."),
 			Revisions: $sce.trustAsHtml("Révisions"),
             Search: $sce.trustAsHtml("Rechercher"),
-            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
+            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres"),
+            Reviewer: $sce.trustAsHtml("Révisé par")
 		}
 	};
 	if ($state.is('quotes.revised')) {

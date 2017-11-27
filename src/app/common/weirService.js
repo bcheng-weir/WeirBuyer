@@ -161,19 +161,24 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 
     function getLocale() {
         var localeOfUser = $cookieStore.get('language');
-        if (localeOfUser == null || localeOfUser == false) {
-            //set the expiration date of the cookie.
-            var now = new Date();
-            var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+
+        //set the expiration date of the cookie.
+        var now = new Date();
+        var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+
+        if(Me.Org.xp && Me.Org.xp.Lang) {
+            localeOfUser = Me.Org.xp.Lang.id;
+        } else if (localeOfUser == null || localeOfUser == false) {
             //getting the language of the user's browser
             localeOfUser = navigator.language;
             localeOfUser = localeOfUser.substr(0, 2);
-            //setting the cookie.
-            $cookieStore.put('language', localeOfUser, {
-                expires: exp
-            });
-
         }
+
+        //setting the cookie.
+        $cookieStore.put('language', localeOfUser, {
+            expires: exp
+        });
+
         return localeOfUser;
     }
 

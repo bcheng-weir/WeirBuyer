@@ -166,7 +166,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         var now = new Date();
         var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
 
-        if(Me.Org.xp && Me.Org.xp.Lang) {
+        if(Me && Me.Org && Me.Org.xp && Me.Org.xp.Lang) {
             localeOfUser = Me.Org.xp.Lang.id;
         } else if (localeOfUser == null || localeOfUser == false) {
             //getting the language of the user's browser

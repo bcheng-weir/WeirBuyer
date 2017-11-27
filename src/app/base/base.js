@@ -165,6 +165,7 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             Batley: "About Batley",
             Blakeborough: "About Blakeborough",
             Hopkinsons: "About Hopkinsons",
+            Sarasin: "About Sarasin",
             Feedback: "Beta feedback",
             Register: "Register/Login",
             Logout: "Logout"

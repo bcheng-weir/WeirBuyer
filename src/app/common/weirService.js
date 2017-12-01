@@ -1147,9 +1147,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             }
         })
         .then(function (brands) {
+	    var lang = getLocale();
             var matches = { manufacturers: [], valvetypes: {}, catalog: enqCat };
             for (var i = 0; i < brands.Items.length; i++) {
                 var tmp = brands.Items[i];
+		if (lang && tmp.xp && tmp.xp[lang] && tmp.xp[lang].Name) tmp.Name = tmp.xp[lang].Name;
                 if (tmp.ParentID) {
                     matches.valvetypes[tmp.ParentID] = matches.valvetypes[tmp.ParentID] || [];
                     matches.valvetypes[tmp.ParentID].push(tmp);
@@ -1168,7 +1170,22 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     }
 
     function getEnquiryParts(catalogID, valveType) {
-        return OrderCloudSDK.Me.ListProducts({'page':1, 'pageSize':50, 'sortBy':"Name", 'categoryID':valveType.ID, 'catalogID':catalogID});
+        var deferred = $q.defer();
+        OrderCloudSDK.Me.ListProducts({'page':1, 'pageSize':50, 'sortBy':"Name", 'categoryID':valveType.ID, 'catalogID':catalogID})
+	.then(function(parts) {
+	    var lang = getLocale();
+	    if (lang) {
+                for (var i = 0; i < parts.Items.length; i++) {
+                    var tmp = parts.Items[i];
+		    if (tmp.xp && tmp.xp[lang] && tmp.xp[lang].Description) tmp.Description = tmp.xp[lang].Description;
+	        }
+	    }
+            deferred.resolve(parts);
+	})
+        .catch(function (ex) {
+            deferred.reject(ex);
+        });
+        return deferred.promise;
     }
 
     function submitEnquiry(enq) {

@@ -86,6 +86,7 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, toastr, Me
     vm.info = EnquiryService;
     vm.locale = WeirService.Locale();
     vm.info = EnquiryService;
+    vm.WeirGroup = Me.Org.xp.WeirGroup.label;
     vm.searchAgain = function () {
         var searchType = WeirService.GetLastSearchType();
         searchType = searchType || WeirService.SearchType.Serial;

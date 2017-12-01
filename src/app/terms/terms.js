@@ -9,12 +9,19 @@ function TermsConfig($stateProvider) {
             url: '/termsandconditions',
             templateUrl: 'terms/templates/termsandconditions.tpl.html',
             controller: 'TermsAndConditionsCtrl',
-            controllerAs: 'termsAndCondition'
+            controllerAs: 'termsAndCondition',
+            resolve: {
+                WeirGroup: function (Me) {
+                    return Me.Org.xp.WeirGroup.label;
+                }
+            }
         });
 }
 
-function TermsAndConditionsController($sce,WeirService){
+function TermsAndConditionsController($sce, WeirService, WeirGroup) {
     var vm = this;
+    vm.lang = WeirService.Locale();
+    vm.WeirGroup = WeirGroup;
     var labels = {
         en: {
             TermsAndConditions: "Terms And Conditions"
@@ -24,7 +31,7 @@ function TermsAndConditionsController($sce,WeirService){
         }
     };
     var navlabels = WeirService.navBarLabels();
-    switch (WeirService.Locale()) {
+    switch (vm.lang) {
         case 'fr':
             vm.navlabels = navlabels.fr;
             break;

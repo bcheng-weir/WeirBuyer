@@ -19,6 +19,8 @@
             <label for="addressFirstNameInput">{{customers.labels.FirstName}}</label>
             <input id="addressFirstNameInput" type="text" class="form-control" ng-model="customerAddressCreate.address.FirstName"/>
         </div>
+    </div>
+    <div class="row">
         <div class="col-sm-6 form-group">
             <label for="addressLastNameInput">{{customers.labels.LastName}}</label>
             <input id="addressLastNameInput" type="text" class="form-control" ng-model="customerAddressCreate.address.LastName"/>
@@ -29,6 +31,8 @@
             <label for="addressStreet1Input">{{customers.labels.StreetOne}}</label>
             <input id="addressStreet1Input" type="text" class="form-control" ng-model="customerAddressCreate.address.Street1" required/>
         </div>
+    </div>
+    <div class="row">
         <div class="col-sm-6 form-group">
             <label for="addressStreet2Input">{{customers.labels.StreetTwo}}</label>
             <input id="addressStreet2Input" type="text" class="form-control" ng-model="customerAddressCreate.address.Street2"/>
@@ -36,9 +40,17 @@
     </div>
     <div class="row">
         <div class="col-sm-6 form-group">
+            <label for="addressStreet3Input">{{customers.labels.StreetThree}}</label>
+            <input id="addressStreet3Input" type="text" class="form-control" ng-model="customerAddressCreate.address.xp.Street3" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
             <label for="addressCityInput">{{customers.labels.City}}</label>
             <input id="addressCityInput" type="text" class="form-control" ng-model="customerAddressCreate.address.City" required/>
         </div>
+    </div>
+    <div class="row">
         <div class="col-sm-3 form-group">
             <label for="addressStateInput">{{customers.labels.County}}</label>
             <input  id="addressStateInput" class="form-control" ng-model="customerAddressCreate.address.State" />
@@ -52,8 +64,10 @@
         <div class="col-sm-6 form-group">
             <label for="addressCountryInput">{{customers.labels.Country}}</label>
             <select  id="addressCountryInput" class="form-control" ng-options="country.value as country.label for country in customerAddressCreate.countries" ng-model="customerAddressCreate.address.Country" required>
-                </select>
+            </select>
         </div>
+    </div>
+    <div class="row">
         <div class="col-sm-6 form-group">
             <label for="addressPhoneInput">{{customers.labels.PhoneNumber}}</label>
             <input id="addressPhoneInput" type="text" class="form-control" ng-model="customerAddressCreate.address.Phone"/>

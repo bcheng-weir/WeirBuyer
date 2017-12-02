@@ -1187,6 +1187,7 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
         return result ? result.label : '';
     };
 
+	var currencySymbol = Me.Org.xp.WeirGroup.id == 2 ? "€" : "£";
     var labels = {
         en: {
             DefaultAddress: "Your Default Address",
@@ -1204,11 +1205,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             ShippingAddressTitle: "Shipping Address Set",
             //carriage labels
             CarriageOptionsMsg: "Carriage Options",
-            CarriageStandardPrice: "£ " +  $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
+            CarriageStandardPrice: currencySymbol + " " + $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
             CarriageExWorks: "Ex works",
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
-            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of £"+ $scope.$parent.myquote.CarriageRateForBuyer +  " per order to one UK address.",
+            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of " + currencySymbol + $scope.$parent.myquote.CarriageRateForBuyer +  " per order to one UK address.",
             CarriageInfoP2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
             CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
         },
@@ -1228,14 +1229,13 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             ShippingAddressTitle: "Adresse de livraison",
             //carriage labels
             CarriageOptionsMsg: "Options de transport",
-            CarriageStandardPrice: $scope.$parent.myquote.CarriageRateForBuyer + " € livraison",
+            CarriageStandardPrice: $scope.$parent.myquote.CarriageRateForBuyer + " " + currencySymbol + " livraison",
             CarriageExWorks: "Départ Usine",
             SelectOption: "Veuillez sélectionner votre option de transport",
             CarriageInfo: "Informations de livraison",
-            CarriageInfoP1: "Pour les commandes de pièces de rechange effectuées sur cette plate-forme, le prix forfaitaire est de "+ $scope.$parent.myquote.CarriageRateForBuyer +  "  €  par commande.",
+            CarriageInfoP1: "Pour les commandes de pièces de rechange effectuées sur cette plate-forme, le prix forfaitaire est de "+ $scope.$parent.myquote.CarriageRateForBuyer +  "  " + currencySymbol + "  par commande.",
             CarriageInfoP2: "La livraison sera préparé en fonction de vos instructions.",
             CarriageInfoP3: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"
-
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

@@ -242,16 +242,10 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'en'" ng-repeat="brand in home.BrandUK track by brand.title">
+                    <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-repeat="brand in home.Brand track by brand.title">
                         <div class="featured-link">
                             <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
                             <p ng-bind-html="brand.description"> </p>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'fr'" ng-repeat="brand in home.BrandFR track by brand.title">
-                        <div class="featured-link">
-                            <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
-                            <p ng-bind-html="brand.description"></p>
                         </div>
                     </div>
                 </div>

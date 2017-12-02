@@ -94,6 +94,8 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             BlakeboroughMsg: "The Blakeborough® brand has been at the forefront of designing and manufacturing control, choke and steam conditioning valves for more than 70 years.",
             Hopkinsons: "Hopkinsons®",
             HopkinsonsMsg: "Established over 160 years ago, the Hopkinsons® brand is renowned for long and dependable service life, generation after generation.",
+            SarasinRSBD: "Sarasin RSBD™",
+            SarasinRSBDMsg: "Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD™ sont conçues pour garantir des performances, une sécurité et une fiabilité optimales.",
             SerialNumber: "Serial number",
             PartNumber: "Part number",
             TagNumber: "Tag number",
@@ -172,8 +174,8 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
         vm.selectedItem = label;
     };
     //using a repeater to display these in a div.
-    if(vm.LanguageUsed == 'en' ) vm.BrandUK = [{title: vm.labels.Batley, description: vm.labels.BatleyMsg, url: "0"}, {title: vm.labels.Blakeborough, description: vm.labels.BlakeboroughMsg, url: "1"}, {title: vm.labels.Hopkinsons, description: vm.labels.HopkinsonsMsg, url: "2"}];
-    if(vm.LanguageUsed == 'fr' ) vm.BrandFR = [{title: vm.labels.SarasinRSBD, description: vm.labels.SarasinRSBDMsg, url: "3"}];
+    if(Me.Org.xp.WeirGroup.id == 1 ) vm.Brand = [{title: vm.labels.Batley, description: vm.labels.BatleyMsg, url: "0"}, {title: vm.labels.Blakeborough, description: vm.labels.BlakeboroughMsg, url: "1"}, {title: vm.labels.Hopkinsons, description: vm.labels.HopkinsonsMsg, url: "2"}];
+    if(Me.Org.xp.WeirGroup.id == 2 ) vm.Brand = [{title: vm.labels.SarasinRSBD, description: vm.labels.SarasinRSBDMsg, url: "3"}];
 
 	vm.SearchProducts = function(val) {
 		//The search method to execute.

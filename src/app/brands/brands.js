@@ -18,7 +18,7 @@ function BrandConfig($stateProvider) {
 		})
 }
 
-function BrandController(Parameters, WeirService, $sce) {
+function BrandController(Parameters, WeirService, $sce, Me) {
 	var vm = this;
 	vm.list = [
         'batley-valve',
@@ -41,7 +41,12 @@ function BrandController(Parameters, WeirService, $sce) {
             Hopkinsons: $sce.trustAsHtml("Hopkinsons<sup>®</sup>"),
             AboutHopkinsons: $sce.trustAsHtml("Hopkinsons<sup>®</sup>"),
             HopkinsonsTitle: "A leading standard in global process sectors",
-            HopkinsonsMsg: $sce.trustAsHtml("Established over 160 years ago, the Hopkinsons<sup>®</sup> brand is renowned for long and dependable service life, generation after generation.")
+            HopkinsonsMsg: $sce.trustAsHtml("Established over 160 years ago, the Hopkinsons<sup>®</sup> brand is renowned for long and dependable service life, generation after generation."),
+
+            SarasinRSBD: "Sarasin RSBD<sup>™</sup>",
+            AboutSarasinRSBD: "Sarasin-RSBD<sup>™</sup>",
+            SarasinRSBDTitle: "",
+            SarasinRSBDMsg: "Sarasin-RSBD<sup>™</sup> valves are trusted globally, from oil and gas to power industries."
         },
         fr: {
             SarasinRSBD: $sce.trustAsHtml("Sarasin RSBD<sup>™</sup>"),
@@ -51,6 +56,7 @@ function BrandController(Parameters, WeirService, $sce) {
         }
     };
     vm.LanguageUsed = WeirService.Locale();
+    vm.WeirGroup = Me.Org.xp.WeirGroup.id;
     vm.labels = WeirService.LocaleResources(labels);
 
     function getBrand(brand) {

@@ -122,7 +122,9 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         GetValve: getValve,
         GetEnquiryParts: getEnquiryParts,
         GetEnquiryCategories: getEnquiryCategories,
-        SubmitEnquiry: submitEnquiry
+        SubmitEnquiry: submitEnquiry,
+        SetEnglishTranslationValve: _setEnglishTranslationValve,
+        SetEnglishTranslationParts: _setEnglishTranslationParts
     };
 
     function assignAddressToGroups(addressId) {
@@ -251,11 +253,20 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 
         CurrentOrder.GetCurrentCustomer()
 		.then(function (cust) {
+		    var opts = {};
 		    if (cust) {
 		        if (SearchTypeService.IsGlobalSearch()) {
-			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
-		                "xp.SN": serialNumber
-		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
+                    opts = {
+                        'page':1,
+                        'pageSize':50,
+                        'sortBy':"Name",
+                        'filters': {
+                            "xp.SN": serialNumber
+                        },
+                        'depth':"all",
+                        'catalogID':Me.Org.xp.WeirGroup.label
+                    };
+			        OrderCloudSDK.Me.ListCategories(opts)
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];
@@ -271,10 +282,18 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 	                        return deferred.reject(ex);
                         });
 		        } else {
-			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters': {
-		                "xp.SN": serialNumber,
-		                "ParentID": cust.id
-		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
+		            var filters = {"xp.SN": serialNumber};
+		            if (Me.Org.xp.WeirGroup.label == "WVCUK") { //FR users will still search globally.
+                        filters.ParentID = cust.id;
+                    }
+
+                    opts = {'page':1,
+                        'pageSize':50,
+                        'filters': filters,
+                        'depth':"all",
+                        'catalogID':Me.Org.xp.WeirGroup.label
+                    };
+			        OrderCloudSDK.Me.ListCategories(opts)
                         .then(function (matches) {
                             if (matches.Items.length == 1) {
                                 result = matches.Items[0];
@@ -387,7 +406,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 });
                 result.Parts.push.apply(result.Parts, hasPrices);
                 result.Parts.push.apply(result.Parts, noPrices);
-                deferred.resolve(result);
+                deferred.resolve(_setEnglishTranslationValve(result));
             })
             .catch(function (ex) {
                 deferred.reject(ex);
@@ -406,14 +425,26 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             if (number) {
                                 queue.push((function () {
                                     var d = $q.defer();
-	                                OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
-                                        "xp.SN": number
-                                    }, 'depth':"all", 'catalogID':cust.id.substring(0, 5)})
+	                                OrderCloudSDK.Me.ListCategories({
+                                            'page':1,
+                                            'pageSize':50,
+                                            'sortBy':"Name",
+                                            'filters':{
+                                                "xp.SN": number
+                                            },
+                                            'depth':"all",
+                                            'catalogID':cust.id.substring(0, 5)})
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
                                             }
-	                                        OrderCloudSDK.Me.ListCategories({'search':number, 'page':1, 'pageSize':50, 'searchOn':"Description", 'depth':"all", 'catalogID':cust.id.substring(0, 5)})
+	                                        OrderCloudSDK.Me.ListCategories({
+                                                    'search':number,
+                                                    'page':1,
+                                                    'pageSize':50,
+                                                    'searchOn':"Description",
+                                                    'depth':"all",
+                                                    'catalogID':cust.id.substring(0, 5)})
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
                                                         results.push({Number:  matchesDescription.Items[0].xp.SN, Detail: matchesSN.Items[0]});
@@ -442,13 +473,29 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             if (number) {
                                 queue.push((function () {
                                     var d = $q.defer();
-	                                OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{ "xp.SN": number }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
+                                    var filters = {"xp.SN": number};
+                                    if (Me.Org.xp.WeirGroup.label == "WVCUK") { //FR users will still search globally.
+                                        filters.ParentID = cust.id;
+                                    }
+
+	                                OrderCloudSDK.Me.ListCategories({
+                                            'page':1,
+                                            'pageSize':50,
+                                            'sortBy':"Name",
+                                            'filters': filters,
+                                            'depth':"all",
+                                            'catalogID':Me.Org.xp.WeirGroup.label})
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
                                             }
-	                                        OrderCloudSDK.Me.ListCategories({'search':number, 'page':1, 'pageSize':50, 'searchOn':"Description",
-                                                'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
+	                                        OrderCloudSDK.Me.ListCategories({
+                                                    'search':number,
+                                                    'page':1,
+                                                    'pageSize':50,
+                                                    'searchOn':"Description",
+                                                    'depth':"all",
+                                                    'catalogID':Me.Org.xp.WeirGroup.label})
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
                                                         results.push({
@@ -623,6 +670,37 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 }
             });
         }
+    }
+
+    function _setEnglishTranslationValve(valve) {
+        if(getLocale() == "en") {
+            //ToDO Move the translated xp vals to the standard places.
+            if (valve.xp && valve.xp.en) {
+                valve.Description = valve.xp.en.Description;
+                if(valve.xp.Specs) {
+                    valve.xp.Specs.Inlet = valve.xp.en.xpInlet;
+                    valve.xp.Specs.Outlet = valve.xp.en.xpOutlet;
+                }
+            }
+            if (valve.Parts && valve.Parts.length > 0) {
+                _setEnglishTranslationParts(valve.Parts);
+            }
+        }
+
+        return valve;
+    }
+
+    function _setEnglishTranslationParts(searchResults) {
+        if(getLocale() == "en") {
+            //ToDO Move the translated xp vals to the standard places.
+            angular.forEach(searchResults, function(value, key) {
+                if (value.xp && value.xp.en) {
+                    value.Description = value.xp.en.Description;
+                }
+            });
+        }
+
+        return searchResults;
     }
 
     function addPartToQuote(part) {

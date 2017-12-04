@@ -26,12 +26,12 @@ function AddressFormDirective(OCGeography, WeirService, $sce) {
             CompanyName: $sce.trustAsHtml("Nom de l'entreprise"),
             FirstName: $sce.trustAsHtml("Prénom"),
             LastName: $sce.trustAsHtml("Nom"),
-            StreetOne: $sce.trustAsHtml("Rue 1"),
-            StreetTwo: $sce.trustAsHtml("Rue 2"),
-            StreetThree: $sce.trustAsHtml("Rue 3"),
+            StreetOne: $sce.trustAsHtml("Adresse ligne 1"),
+            StreetTwo: $sce.trustAsHtml("Adresse ligne 2"),
+            StreetThree: $sce.trustAsHtml("Adresse ligne 3"),
             City: $sce.trustAsHtml("Ville"),
-            County: $sce.trustAsHtml("Région"),
-            PostCode: $sce.trustAsHtml("Code postal"),
+            County: $sce.trustAsHtml("Departement / Province / Région"),
+            PostCode: $sce.trustAsHtml("Code Postal / Zip code"),
             Country: $sce.trustAsHtml("Pays"),
             PhoneNumber: $sce.trustAsHtml("Numéro de télephone")
         }

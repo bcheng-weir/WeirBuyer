@@ -563,6 +563,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
     vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	vm.Quote = QuoteShareService.Quote;
@@ -1966,6 +1967,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 
 	vm.BuyerID = Me.GetBuyerID();
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
 
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
@@ -2331,6 +2333,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
                                  imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloudSDK, FilesService, FileSaver, Catalog, Me) {
     var vm = this;
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
 	vm.buyer = Me.Org;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
@@ -2518,6 +2521,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
                           PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me, FilesService, FileSaver, Catalog) {
 	var vm = this;
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
 	vm.buyer = Me.Org;
 	vm.NewComment = null;
 	vm.ImageBaseUrl = imageRoot;

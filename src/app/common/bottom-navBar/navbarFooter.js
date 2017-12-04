@@ -31,9 +31,9 @@ function navConfig($stateProvider) {
         })
     ;
 }
-function footerController(WeirService){
+function footerController(WeirService, Me){
     var vm = this;
-
+    vm.Contact = Me.Org.xp.WeirGroup.id;
     var navlabels = WeirService.navBarLabels();
     switch (WeirService.Locale()) {
         case 'fr':

@@ -95,7 +95,7 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             Hopkinsons: "Hopkinsons®",
             HopkinsonsMsg: "Established over 160 years ago, the Hopkinsons® brand is renowned for long and dependable service life, generation after generation.",
             SarasinRSBD: "Sarasin RSBD™",
-            SarasinRSBDMsg: "Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD™ sont conçues pour garantir des performances, une sécurité et une fiabilité optimales.",
+            SarasinRSBDMsg: "Sarasin-RSBD™ spring and pilot operated pressure relief valves are designed to provide optimum performance, safety and reliability.",
             SerialNumber: "Serial number",
             PartNumber: "Part number",
             TagNumber: "Tag number",

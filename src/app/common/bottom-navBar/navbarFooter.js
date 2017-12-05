@@ -33,7 +33,16 @@ function navConfig($stateProvider) {
 }
 function footerController(WeirService, Me){
     var vm = this;
-    vm.Contact = Me.Org.xp.WeirGroup.id;
+    vm.LangOfUser = WeirService.Locale();
+    vm.BusinessOrigin;
+    if(Me.Org)
+    {
+        vm.BusinessOrigin = Me.Org.xp.WeirGroup.id;
+    }
+    else
+    {
+        vm.BusinessOrigin = null;
+    }
     var navlabels = WeirService.navBarLabels();
     switch (WeirService.Locale()) {
         case 'fr':

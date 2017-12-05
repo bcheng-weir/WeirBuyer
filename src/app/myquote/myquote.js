@@ -123,6 +123,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 		            var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang.id;
 		            CurrentOrder.GetID()
                         .then(function (id) {
 	                        OrderCloudSDK.LineItems.List("Outgoing",id, { 'page':1, 'pageSize':100 })
@@ -133,7 +134,17 @@ function MyQuoteConfig($stateProvider) {
                                     } else {
 	                                    LineItemHelpers.GetBlankProductInfo(data.Items, Customer);
                                         LineItemHelpers.GetProductInfo(data.Items)
-                                            .then(function () { dfd.resolve(data); });
+                                            .then(function () {
+                                                if (lang && data.Items) {
+                                                    for (var i = 0; i < data.Items.length; i++) {
+                                                        var tmp = data.Items[i];
+                                                        if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                            tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                        }
+                                                    }
+                                                }
+                                            	dfd.resolve(data);
+                                            });
                                     }
                                 })
 		                        .catch(function(ex) {
@@ -293,6 +304,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang.id;
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -301,7 +313,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -327,6 +349,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang.id;
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -335,7 +358,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -388,6 +421,7 @@ function MyQuoteConfig($stateProvider) {
 						errorTitle = "Error";
 					}
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang.id;
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -396,7 +430,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -422,6 +466,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang.id;
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -430,7 +475,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -483,6 +538,7 @@ function MyQuoteConfig($stateProvider) {
 						errorTitle = "Error";
 					}
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang.id;
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -491,7 +547,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -517,6 +583,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang.id;
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -525,7 +592,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -2330,7 +2407,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloudSDK, FilesService, FileSaver, Catalog, Me) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, FilesService, FileSaver, Catalog, Me) {
     var vm = this;
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;

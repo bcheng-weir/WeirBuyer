@@ -692,12 +692,13 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         if(getLocale() == "en") {
             //ToDO Move the translated xp vals to the standard places.
             angular.forEach(searchResults, function(value, key) {
+                if(value.Product && value.Product.xp && value.Product.xp.en)
+                    value.Product.Description = value.Product.xp.en.Description;
                 if (value.xp && value.xp.en) {
                     value.Description = value.xp.en.Description;
                 }
             });
         }
-
         return searchResults;
     }
 
@@ -1248,19 +1249,19 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     function getEnquiryParts(catalogID, valveType) {
         var deferred = $q.defer();
         OrderCloudSDK.Me.ListProducts({'page':1, 'pageSize':50, 'sortBy':"Name", 'categoryID':valveType.ID, 'catalogID':catalogID})
-	.then(function(parts) {
-	    var lang = getLocale();
-	    if (lang) {
-                for (var i = 0; i < parts.Items.length; i++) {
-                    var tmp = parts.Items[i];
-		    if (tmp.xp && tmp.xp[lang] && tmp.xp[lang].Description) tmp.Description = tmp.xp[lang].Description;
-	        }
-	    }
-            deferred.resolve(parts);
-	})
-        .catch(function (ex) {
-            deferred.reject(ex);
-        });
+	        .then(function(parts) {
+	            var lang = getLocale();
+	            if (lang) {
+                    for (var i = 0; i < parts.Items.length; i++) {
+                        var tmp = parts.Items[i];
+		                if (tmp.xp && tmp.xp[lang] && tmp.xp[lang].Description) tmp.Description = tmp.xp[lang].Description;
+	                }
+	            }
+                deferred.resolve(_setEnglishTranslationParts(parts)); //_setEnglishTranslationParts
+	        })
+            .catch(function (ex) {
+                deferred.reject(ex);
+            });
         return deferred.promise;
     }
 

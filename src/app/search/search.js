@@ -270,7 +270,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	};
 }
 
-function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts, Group) {
+function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts, Group, Me) {
     var vm = this;
     vm.SerialNumberMatches = [];
 	vm.WeirGroup = Group;
@@ -333,6 +333,21 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
+    if (Me.Org.xp.Lang && Me.Org.xp.Lang.id == "en" && Me.Org.xp.WeirGroup.id == 2) {
+		vm.labels.SearchBySerialNumberSecondLine = "Serial number example; 004443020002 (12 characters - from 2006 to present); ";
+		vm.labels.SearchBySerialNumberThirdLine = "Serial number example: 001/054845 (3 characters, 1 forward slash , 6 characters - between 1996 & 2006)";
+        vm.labels.SearchBySerialNumberFourthLine = "Valve description example;<br>" + "9DX2HGPFL<br>" + "P12D1330A-D-MM";
+
+        vm.labels.CheckNamePlate = "Check your valve Nameplate";
+        vm.labels.CheckNamePlateDescription = "Nameplate is located on the side of the valve";
+        vm.labels.IdentifySNTitle = "Identify your Serial Number";
+        vm.labels.IdentifySNDescriptionLine1 = "New serial number is composed of 12 digit, not more, not less.";
+        vm.labels.IdentifySNDescriptionLine2 = "Old serial numbers are composed as follow for example: 001/054845";
+        vm.labels.TypeSNTitle = "Type your S/N on the platform";
+        vm.labels.TypeSNTitleDescriptionLine1 = "/!\\ For new Serial Number, do not type the last 4 digit and the forward slash";
+        vm.labels.TypeSNTitleDescriptionLine2 = "For old Serial Number, Type the 3 first digit, the forward slash and finally the 6 following digit. <br> Do not type the second forward slash and the two last digit";
+	}
+
     WeirService.SetLastSearchType(WeirService.SearchType.Serial);
 
     vm.serialNumbers = [null];

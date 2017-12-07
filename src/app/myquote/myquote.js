@@ -123,7 +123,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 		            var dfd = $q.defer();
-                    var lang = Me.Org.xp.Lang.id;
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 		            CurrentOrder.GetID()
                         .then(function (id) {
 	                        OrderCloudSDK.LineItems.List("Outgoing",id, { 'page':1, 'pageSize':100 })
@@ -304,7 +304,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 					var dfd = $q.defer();
-                    var lang = Me.Org.xp.Lang.id;
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -349,7 +349,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
-                        var lang = Me.Org.xp.Lang.id;
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -421,7 +421,7 @@ function MyQuoteConfig($stateProvider) {
 						errorTitle = "Error";
 					}
 					var dfd = $q.defer();
-                    var lang = Me.Org.xp.Lang.id;
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -466,7 +466,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
-                        var lang = Me.Org.xp.Lang.id;
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -538,7 +538,7 @@ function MyQuoteConfig($stateProvider) {
 						errorTitle = "Error";
 					}
 					var dfd = $q.defer();
-                    var lang = Me.Org.xp.Lang.id;
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -583,7 +583,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
-                        var lang = Me.Org.xp.Lang.id;
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {

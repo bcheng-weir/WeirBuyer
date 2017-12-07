@@ -206,7 +206,7 @@
                                 <ul>
                                     <li ng-bind-html="serial.labels.TypeSNTitleDescriptionLine1" style="font-size: 13px" class="text-left"></li>
                                     <li ng-bind-html="serial.labels.TypeSNTitleDescriptionLine2" style="font-size: 13px" class="text-left"></li>
-                                    <li ng-bind-html="serial.labels.TypeSNTitleDescriptionLine3" style="font-size: 13px" class="text-left"></li>
+                                    <li ng-if="serial.labels.TypeSNTitleDescriptionLine3" ng-bind-html="serial.labels.TypeSNTitleDescriptionLine3" style="font-size: 13px" class="text-left"></li>
                                 </ul>
                                 <div id="imgDiv3">
                                     <figure id="imgPic3">

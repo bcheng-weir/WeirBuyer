@@ -66,7 +66,7 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 				data.push([DeliveryAddress.Street1]);
                 DeliveryAddress.Street2 ? data.push([DeliveryAddress.Street2]) : null;
                 DeliveryAddress.xp.Street3 ? data.push([DeliveryAddress.xp.Street3]) : null;
-				data.push([DeliveryAddress.Zip, "", DeliveryAddress.City]);
+				data.push([DeliveryAddress.Zip + ", " + DeliveryAddress.City]);
 				data.push([country(DeliveryAddress.Country)]);
 			}
 		}

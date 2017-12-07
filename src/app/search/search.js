@@ -341,11 +341,11 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
         vm.labels.CheckNamePlate = "Check your valve Nameplate";
         vm.labels.CheckNamePlateDescription = "Nameplate is located on the side of the valve";
         vm.labels.IdentifySNTitle = "Identify your Serial Number";
-        vm.labels.IdentifySNDescriptionLine1 = "New serial number is composed of 12 digit, not more, not less.";
-        vm.labels.IdentifySNDescriptionLine2 = "Old serial numbers are composed as follow for example: 001/054845";
+        vm.labels.IdentifySNDescriptionLine1 = "New serial number is composed of 12 digits, not more, not less.";
+        vm.labels.IdentifySNDescriptionLine2 = "Old serial numbers are composed as follows for example: 001/054845";
         vm.labels.TypeSNTitle = "Type your S/N on the platform";
-        vm.labels.TypeSNTitleDescriptionLine1 = "/!\\ For new Serial Number, do not type the last 4 digit and the forward slash";
-        vm.labels.TypeSNTitleDescriptionLine2 = "For old Serial Number, Type the 3 first digit, the forward slash and finally the 6 following digit. <br> Do not type the second forward slash and the two last digit";
+        vm.labels.TypeSNTitleDescriptionLine1 = "/!\\ For new Serial Number, do not type the last 4 digits and the forward slash";
+        vm.labels.TypeSNTitleDescriptionLine2 = "For old Serial Number, Type the 3 first digits, the forward slash and finally the 6 following digits. <br> Do not type the second forward slash and the two last digits";
 	}
 
     WeirService.SetLastSearchType(WeirService.SearchType.Serial);

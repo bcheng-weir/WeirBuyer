@@ -1247,6 +1247,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 
 function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me) {
     var vm = this;
+    vm.Comments = QuoteShareService.Comments;
+    vm.NewComment = null;
     var activeAddress = function (address) {
         return address.xp.active == true;
     };
@@ -1266,6 +1268,12 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
     };
 
 	var currencySymbol = Me.Org.xp.WeirGroup.id == 2 ? "€" : "£";
+
+	vm.exWorksOnly = function() {
+		//WPIFR EN lang users only see Ex Works for now.
+		return Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en";
+	};
+
     var labels = {
         en: {
             DefaultAddress: "Your Default Address",
@@ -1289,7 +1297,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             CarriageInfo: "Delivery Information",
             CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of " + currencySymbol + $scope.$parent.myquote.CarriageRateForBuyer +  " per order to one UK address.",
             CarriageInfoP2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
-            CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
+            CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested.",
+            Add: "Add",
+            Cancel: "Cancel",
+            Comments: "Comments",
+            AddedComment: " added a comment - "
         },
         fr: {
             DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
@@ -1313,7 +1325,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             CarriageInfo: "Informations de livraison",
             CarriageInfoP1: "Pour les commandes de pièces de rechange effectuées sur cette plate-forme, le prix forfaitaire est de "+ $scope.$parent.myquote.CarriageRateForBuyer +  "  " + currencySymbol + "  par commande.",
             CarriageInfoP2: "La livraison sera préparé en fonction de vos instructions.",
-            CarriageInfoP3: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"
+            CarriageInfoP3: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées",
+            Add: $sce.trustAsHtml("Ajouter"),
+            Cancel: $sce.trustAsHtml("Annuler"),
+            Comments: $sce.trustAsHtml("Commentaires"),
+            AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - ")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1380,6 +1396,16 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
                     $exceptionHandler(ex);
                 }
             });
+    }
+
+    vm.AddComment = function() {
+        $scope.$parent.myquote.AddNewComment(vm.NewComment)
+            .then(function(result) {
+                if(result) {
+                    vm.Comments = result.xp.CommentsToWeir;
+                }
+            });
+        vm.NewComment = null;
     }
 }
 

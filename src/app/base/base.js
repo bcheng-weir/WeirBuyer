@@ -168,7 +168,9 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             Sarasin: "About Sarasin",
             Feedback: "Beta feedback",
             Register: "Register/Login",
-            Logout: "Logout"
+            Logout: "Logout",
+            BrandsUK: "Batley<br>Blakeborough<br>Hopkinsons",
+            BrandsFR: "Sarasin - RSBD"
         },
         fr: {
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
@@ -252,6 +254,26 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             }
         });
         modalInstance.result;
+    };
+
+    vm.showAppNavigation = function() {
+        //Can the user swap between FR and EN.
+        var show = false;
+        if(Me.Org && Me.Org.xp && Me.Org.xp.AKA) {
+            angular.forEach(Me.Org.xp.AKA, function(value, key) {
+                if(Me.Org.xp.WeirGroup.Label != key.substring(0,5)) {
+                    show = true;
+                }
+            });
+        }
+        return show;
+    };
+
+    vm.AppLocale = function() {
+        if (Me.Org && Me.Org.xp && Me.Org.xp.WeirGroup) {
+            return Me.Org.xp.WeirGroup.label;
+        }
+        return false;
     };
 
     function _isMobile() {

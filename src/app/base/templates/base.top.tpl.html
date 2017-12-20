@@ -1,52 +1,58 @@
 <div class="mce-container-body">
     <div class="container-fluid">
         <div class="row">
-            <nav class="navbar navbar-default">
-                <div class="container-fluid topNavBar">
-                    <div class="col-md-5">
-                        <div class="row" >
-                            <div class="col-md-2 pull-left buyerNavigationImage">
+            <div class="col-md-12">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid topNavBar">
+                            <div class="col-md-5" style="padding-left: 0px; padding-right: 0px;" id="BASE_TOP_BRANDINFO" ng-show="base.showAppNavigation()">
+                                <div class="row">
+                                    <div class="col-md-2 pull-left">
+                                        <div class="buyerNavigationImage">
+                                        </div> <!-- Need to put interaction here--->
+                                    </div>
+                                    <div class="buyerNavigationBrandDisplayed" ng-if="base.AppLocale()=='WVCUK'"> <!-- If WVCUK -->
+                                        <p class="buyerNavigationBrandDisplayedTest" ng-bind-html="base.labels.BrandsUK"></p>
+                                    </div>
+                                    <div class="buyerNavigationBrandDisplayed" ng-if="base.AppLocale()=='WPIFR'"> <!-- if WPIFR_EN -->
+                                        <p class="buyerNavigationBrandDisplayedTest" ng-bind-html="base.labels.BrandsFR"></p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-3 buyerNavigationBrandDisplayed">
-                                <p style="position: relative;top: 50%;transform: translateY(-50%); ">Test</p>
-
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
-                        <ul class="nav navbar-nav navbar-right brand-top-fix col-md-6">
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})" ng-bind-html="base.labels.Batley"></a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})" ng-bind-html="base.labels.Blakeborough"></a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})" ng-bind-html="base.labels.Hopkinsons"></a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})" ng-bind-html="base.labels.Sarasin"></a>
-                            </li>
-                            <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-                                <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
-                                <ul uib-dropdown-menu>
-                                    <li class="dropdown-header" ng-bind-html="base.currentUser.FirstName + ' ' + base.currentUser.LastName"></li>
-                                    <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
-                                    <li class="divider"></li>
-                                    <li><a ng-click="application.logout()" ng-bind-html="base.labels.Logout"></a></li>
+                            <!-- Collect the nav links, forms, and other content for toggling -->
+                            <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
+                                <ul class="nav navbar-nav navbar-right brand-top-fix col-md-6">
+                                    <li>
+                                        <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})" ng-bind-html="base.labels.Batley"></a>
+                                    </li>
+                                    <li>
+                                        <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})" ng-bind-html="base.labels.Blakeborough"></a>
+                                    </li>
+                                    <li>
+                                        <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})" ng-bind-html="base.labels.Hopkinsons"></a>
+                                    </li>
+                                    <li>
+                                        <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})" ng-bind-html="base.labels.Sarasin"></a>
+                                    </li>
+                                    <li uib-dropdown ng-if="!base.currentUser.Anonymous">
+                                        <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
+                                        <ul uib-dropdown-menu>
+                                            <li class="dropdown-header" ng-bind-html="base.currentUser.FirstName + ' ' + base.currentUser.LastName"></li>
+                                            <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
+                                            <li class="divider"></li>
+                                            <li><a ng-click="application.logout()" ng-bind-html="base.labels.Logout"></a></li>
+                                        </ul>
+                                    </li>
+                                    <li ng-if="base.currentUser.Anonymous && base.registrationAvailable">
+                                        <a href="" ui-sref="registration" ui-sref-active="active">{{base.labels.Register}}</a>
+                                    </li>
+                                    <li>
+                                        <ordercloud-minicart order="catalog.currentOrder"></ordercloud-minicart>
+                                    </li>
                                 </ul>
-                            </li>
-                            <li ng-if="base.currentUser.Anonymous && base.registrationAvailable">
-                                <a href="" ui-sref="registration" ui-sref-active="active">{{base.labels.Register}}</a>
-                            </li>
-                            <li>
-                                <ordercloud-minicart order="catalog.currentOrder"></ordercloud-minicart>
-                            </li>
-                        </ul>
-                    </div><!-- /.navbar-collapse -->
-                </div>
-            </nav>
+                            </div><!-- /.navbar-collapse -->
+                        </div>
+                </nav>
+            </div>
         </div>
         <div class="row">
             <div class="pull-left" style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 2em;">

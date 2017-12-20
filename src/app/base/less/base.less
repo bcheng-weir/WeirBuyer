@@ -9,6 +9,25 @@
   &.desktop-right {
     transition:right 200ms ease-in-out, left 200ms ease-in-out;
   }
+
+  .brands-uk-upper-left {
+    text-align:left;
+    color:#005eb8;
+    font-size:10px;
+    padding: 2px 0px 0px 0px;
+    line-height: 12px;
+  }
+
+  .brands-fr-upper-left {
+    text-align:left;
+    color:#005eb8;
+    font-size:10px;
+    padding: 2px 0px 0px 0px;
+    line-height:3.5;
+    display: inline-block;
+    vertical-align: middle;
+    //line-height: 12px;
+  }
 }
 
 @media(min-width:@screen-md-min) {
@@ -233,6 +252,7 @@
 #BASE_TOP .buyerNavigationImage {
   width: 32px;
   height: 32px;
+  display: block;
   fill: #005eb8;
   background-image: url('../../../assets/images/MaterialIcon2.png');
 }
@@ -247,6 +267,12 @@
   font-weight: 400;
   text-decoration: none solid rgb(0, 94, 184);
   text-align: center;
+}
+
+#BASE_TOP .buyerNavigationBrandDisplayedTest{
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 #BASE_TOP .last {

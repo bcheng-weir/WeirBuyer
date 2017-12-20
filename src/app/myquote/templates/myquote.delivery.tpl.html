@@ -101,9 +101,9 @@
                 <div class="col-md-12" style="margin-left: 0px;">
                     <span><b>{{delivery.labels.CarriageInfo}}</b></span>
                     <ul style="margin-top: 2%;">
-                        <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP1}}</li>
-                        <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP2}}</li>
-                        <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP3}}</li>
+                        <li style="margin-top: 1%;" ng-if="delivery.deliveryInformation.Line1">{{delivery.deliveryInformation.Line1}}</li>
+                        <li style="margin-top: 1%;" ng-if="delivery.deliveryInformation.Line2">{{delivery.deliveryInformation.Line2}}</li>
+                        <li style="margin-top: 1%;" ng-if="delivery.deliveryInformation.Line3">{{delivery.deliveryInformation.Line3}}</li>
                     </ul>
                 </div>
             </div>

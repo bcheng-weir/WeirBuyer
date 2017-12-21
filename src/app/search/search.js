@@ -23,7 +23,14 @@ function SearchConfig($stateProvider) {
 			resolve: {
 				CurrentCustomer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
-				}
+                },
+                Catalog: function (OrderCloudSDK, Me, CurrentUser, CurrentOrg) {
+                    if (!Me.Profile || !Me.Org) {
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
+                }
 			}
 		})
 		.state( 'search.serial', {
@@ -112,7 +119,7 @@ function SearchConfig($stateProvider) {
 		});
 }
 
-function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, CurrentCustomer, Me, imageRoot, SearchTypeService) {
+function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, CurrentCustomer, Me, imageRoot, SearchTypeService, Catalog) {
 	var vm = this;
 	vm.searchType = WeirService.GetLastSearchType();
 	vm.IsServiceOrg = (Me.Org.xp.Type.id == 2);
@@ -122,6 +129,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	    Me.Org.xp.Customers = [];
 	}
     vm.AvailableCustomers = Me.Org.xp.Customers;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 
     vm.ImageBaseUrl = imageRoot;
     vm.GetValveImageUrl = function (img) {

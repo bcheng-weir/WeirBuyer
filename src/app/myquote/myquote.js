@@ -641,6 +641,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
     vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	vm.Quote = QuoteShareService.Quote;
@@ -1439,7 +1440,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 					//(QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
                             //((vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) ||
                             //(vm.Quote.FromUserID == QuoteShareService.Me.ID && (allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1)));
-	vm.fileStore = fileStore;
+    vm.fileStore = fileStore;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -2067,6 +2069,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.BuyerID = Me.GetBuyerID();
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
@@ -2170,10 +2173,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			AddedComment: " added a comment - ",
 			Add: "Add",
 			Cancel: "Cancel",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			PONumber: "PO Number;",
 			POA: "POA",
 			DescriptionOfShipping: {
@@ -2225,10 +2224,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
 			Add: $sce.trustAsHtml("Ajouter"),
 			Cancel: $sce.trustAsHtml("Annuler"),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
-			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 			DescriptionOfShipping: {
@@ -2433,6 +2428,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
     var vm = this;
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 	vm.buyer = Me.Org;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
@@ -2490,11 +2486,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Currency: "Currency",
 	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order",
-	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 	        ViewRevisions: "View Previous Revisions",
-	        ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-	        POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 	        PONumber: "PO Number;",
             POA: "POA",
 	        PartTypes: "Part types for;",
@@ -2537,11 +2529,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Currency: $sce.trustAsHtml("Devise"),
 	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos cotations"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
-	        PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande"),
-	        ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-	        POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-	        LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 	        PartTypes: $sce.trustAsHtml("Pièces pour:"),
@@ -2621,6 +2609,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	var vm = this;
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 	vm.buyer = Me.Org;
 	vm.NewComment = null;
 	vm.ImageBaseUrl = imageRoot;
@@ -2685,13 +2674,9 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			SubmitOrderWithPO: "Submit Order",
 			EmailPoMessage: "*Your order will be confirmed<br class='message-break'>following receipt of your PO.",
 			POEntry: "Enter PO Number",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			DragAndDrop: "Drag and drop Files Here to Upload",
 			PONeededHeader: "Please Provide a Purchase Order to Finalise your Order",
 			POUpload: "Upload PO Document",
-			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			Add: "Add",
 			Cancel: "Cancel",
 			AddedComment: " added a comment - ",
@@ -2740,13 +2725,9 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			SubmitOrderWithPO: $sce.trustAsHtml("Commander avec bon<br>de commande"),
 			EmailPoMessage: $sce.trustAsHtml("Votre commande sera confirmée<br class='message-break'>après réception de votre bon de commande."),
 			POEntry: $sce.trustAsHtml("Entrer une r&eacute;f&eacute;rence de commande"),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 			DragAndDrop: $sce.trustAsHtml("Faites glisser vos documents ici pour les t&eacute;l&eacute;charger"),
 			PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
 			POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
-			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			Add: $sce.trustAsHtml("Ajouter"),
 			Cancel: $sce.trustAsHtml("Annule"),
 			AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),

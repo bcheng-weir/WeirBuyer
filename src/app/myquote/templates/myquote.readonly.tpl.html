@@ -79,9 +79,18 @@
                     <tr ng-repeat="line in readonly.LineItems">
                         <td ng-bind-html="line.xp.SN" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
                         <td ng-bind-html="line.xp.TagNumber" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
-                        <td ng-bind-html="line.Product.Name" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
-                        <td ng-bind-html="line.Product.Description"></td>
-                        <td ng-bind-html="line.Product.xp.ReplacementSchedule" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                        <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                            <span ng-if="!line.xp.ProductName" ng-bind-html="line.Product.Name"></span>
+                            <span ng-if="line.xp.ProductName" ng-bind-html="line.xp.ProductName"></span>
+                        </td>
+                        <td>
+                            <span ng-if="!line.xp.Description" ng-bind-html="line.Product.Description"></span>
+                            <span ng-if="line.xp.Description" ng-bind-html="line.xp.Description"></span>
+                        </td>
+                        <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                            <span ng-if="!line.xp.ReplacementSchedule" ng-bind-html="line.Product.xp.ReplacementSchedule"></span>
+                            <span ng-if="line.xp.ReplacementSchedule" ng-bind-html="line.xp.ReplacementSchedule"></span>
+                        </td>
                         <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
                             <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
                             <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>

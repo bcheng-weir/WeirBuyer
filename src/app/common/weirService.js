@@ -124,7 +124,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         GetEnquiryCategories: getEnquiryCategories,
         SubmitEnquiry: submitEnquiry,
         SetEnglishTranslationValve: _setEnglishTranslationValve,
-        SetEnglishTranslationParts: _setEnglishTranslationParts
+        SetEnglishTranslationParts: _setEnglishTranslationParts,
+        UserBuyers: userBuyers
     };
 
     function assignAddressToGroups(addressId) {
@@ -1264,58 +1265,6 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             });
         return deferred.promise;
     }
-    //check if the user has other buyer's associated to their account.
-    //Note has not been tested with proposed data structure.
-    function userBuyers($q, OrderCloudSDK)
-    {
-        var deferred = $q.defer();
-        var multiBuyer = [];
-        OrderCloudSDK.Me.Get()
-            .then(function (user) {
-                if(user)
-                {
-                    if(user.xp.AKA)
-                    {
-                        //need to parse the AKA object to see which buyers this user has access to and confirm access.
-                        for(var buyerAssociated in user.xp.AKA)
-                        {
-                            if(user.xp.AKA[buyerAssociated] != null)
-                            {
-                                var buyerID = user.xp.AKA[buyerAssociated];
-                                OrderCloudSDK.Buyers.Get(buyerID).then(function (returnedBuyer) {
-                                        if(returnedBuyer.xp != null)
-                                        {
-                                            if(returnedBuyer.xp.WeirGroup)
-                                            {
-                                                if(returnedBuyer.xp.WeirGroup.label)
-                                                {
-                                                    var buyerLabel = returnedBuyer.xp.WeirGroup.label;
-                                                    if(multiBuyer.indexOf(buyerLabel) == -1) //do we need to polyfill this for old IE?
-                                                    {
-                                                        multiBuyer.add(buyerLabel);
-                                                    }
-                                                    else
-                                                    {
-                                                        //do nothing
-                                                    }
-                                                }
-                                            }
-                                        }
-                                })
-                            }
-                        }
-                    }
-                }
-                deferred.resolve(multiBuyer);
-
-            })
-            .catch(function (ex) {
-                console.log(ex.toString());
-                return deferred.reject([]); //return an empty array something went wrong.
-            });
-
-        return deferred.promise;
-    }
 
     function submitEnquiry(enq) {
         var deferred = $q.defer();
@@ -1399,5 +1348,29 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             });
         return deferred.promise;
     }
+
+    //check if the user has other buyer's associated to their account.
+    //Note has not been tested with proposed data structure.
+    function userBuyers()
+    {
+        var deferred = $q.defer();
+        var multiBuyer = [];
+        OrderCloudSDK.Buyers.List()
+            .then(function(buyers) {
+                var currentBuyer = buyers.Items[0];
+                if(currentBuyer.xp && currentBuyer.xp.AKA) {
+                    for(var buyer in currentBuyer.xp.AKA) {
+                        multiBuyer.push(buyer);
+                    }
+                }
+                deferred.resolve(multiBuyer);
+            })
+            .catch(function(ex) {
+                deferred.reject([]);
+            });
+
+        return deferred.promise;
+    }
+
     return service;
 }

@@ -2,8 +2,7 @@ angular.module('orderCloud')
     .config(LoginConfig)
     .factory('LoginService', LoginService)
     .controller('LoginCtrl', LoginController)
-    .controller('NewPassCtrl', NewPasswordController)
-;
+    .controller('NewPassCtrl', NewPasswordController);
 
 function LoginConfig($stateProvider) {
     $stateProvider
@@ -13,10 +12,15 @@ function LoginConfig($stateProvider) {
             controller: 'LoginCtrl',
             controllerAs: 'login'
         })
-    ;
+		.state('loginDivisions', {
+			url: '/loginDivision',
+			templateUrl: 'login/templates/login.division.tpl.html',
+			controller: 'LoginCtrl',
+			controllerAs: 'login'
+		});
 }
 
-function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymous, appname, $localForage, Me, $window) {
+function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymous, appname, $localForage, Me, $window, WeirService) {
     return {
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
@@ -27,28 +31,31 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
         RouteAfterLogin: _routeAfterLogin
     };
 
+    //clean up and add option to goto the division selection screen.
+	//division selection will then routeAfterLogin
     function _routeAfterLogin() {
         SetFSInfo();
         var storageName = appname + '.routeto';
         $localForage.getItem(storageName)
-        .then(function (rte) {
-            $localForage.removeItem(storageName);
-            if (rte && rte.state) {
-                if (rte.state == 'orders') {
-                    $state.go('orders.goto', { orderID: rte.id });
-                } else if (rte.state == 'quotes') {
-                    $state.go('quotes.goto', { quoteID: rte.id });
-                } else {
-                    $state.go('home');
-                }
-            } else {
-                $state.go('home');
-            }
-        })
-        .catch(function () {
-            $state.go('home');
-        });
+			.then(function (rte) {
+				$localForage.removeItem(storageName);
+				if (rte && rte.state) {
+					if (rte.state == 'orders') {
+						$state.go('orders.goto', { orderID: rte.id });
+					} else if (rte.state == 'quotes') {
+						$state.go('quotes.goto', { quoteID: rte.id });
+					} else {
+						$state.go('home');
+					}
+				} else {
+					$state.go('home');
+				}
+			})
+			.catch(function () {
+				$state.go('home');
+			});
     }
+
     function SetFSInfo() {
         var dfd = $q.defer();
         OrderCloudSDK.Me.Get()
@@ -56,8 +63,6 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
                 FS.identify(usr.ID, {
                     displayName: usr.FirstName + ' ' + usr.LastName,
                     email: usr.Email
-                    //group: (usr.xp.WeirGroup && usr.xp.WeirGroup.label) ? usr.xp.WeirGroup.label : "Not set",
-                    //buyer: buyerid
                 });
             })
             .catch(function (e) {
@@ -116,36 +121,7 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
     }
 
     // We are not using this base functionality. Only remember the user name.
-    function _rememberMe(username) {
-
-        /*TokenRefresh.GetToken()
-            .then(function (refreshToken) {
-                if (refreshToken) {
-                    TokenRefresh.Refresh(refreshToken)
-                        .then(function(token) {
-         OrderCloudSDK.Auth.SetToken(token.access_token);
-         OrderCloudSDK.Buyers.List()
-	                            .then(function (buyers) {
-	                                if (buyers && buyers.Items.length > 0) {
-	                                    var buyer = buyers.Items[0];
-	                                    buyerid = buyer.ID;
-         OrderCloudSDK.BuyerID.Set(buyer.ID);
-	                                    CurrentOrder.Remove()
-	                                        .then(function () {
-	                                            return CurrentOrder.SetCurrentCustomer({ id: buyer.ID, name: buyer.Name });
-	                                        });
-	                                    _routeAfterLogin();
-	                                }
-                                });
-                        })
-                        .catch(function () {
-                            toastr.error('Your token has expired, please log in again.');
-                        });
-                } else {
-                    _logout();
-                }
-            });*/
-    }
+    function _rememberMe(username) { }
 
     function _setUsername(username) {
 	    $localForage.setItem('username',username);
@@ -161,7 +137,7 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
     }
 }
 
-function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $uibModal, ocRoles) {
+function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $state, ocRoles) {
 	var vm = this;
 	var username = null;
 	LoginService.GetUsername()
@@ -240,51 +216,59 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 	vm.submit = function () {
 		vm.loading = OrderCloudSDK.Auth.Login(vm.credentials.Username, vm.credentials.Password, clientid, scope)
 			.then(function (data) {
-				if (vm.rememberStatus) {
-					LoginService.SetUsername(vm.credentials.Username);
-				} else {
-					LoginService.SetUsername(null);
-				}
-				OrderCloudSDK.SetToken(data.access_token);
+                if (vm.rememberStatus) {
+                    LoginService.SetUsername(vm.credentials.Username);
+                } else {
+                    LoginService.SetUsername(null);
+                }
+                OrderCloudSDK.SetToken(data.access_token);
 
-				var roles = ocRoles.Set(data.access_token);
-				if (roles.length === 1 && roles[0] === 'PasswordReset') {
-					vm.token = data.access_token;
-					vm.form = 'resetByToken';
-				} else {
-					//$state.go('home');
-					//LoginService.RouteAfterLogin();
-				}
+                var roles = ocRoles.Set(data.access_token);
+                if (roles.length === 1 && roles[0] === 'PasswordReset') {
+                    vm.token = data.access_token;
+                    vm.form = 'resetByToken';
+                }
 
-				OrderCloudSDK.Buyers.List().then(function (buyers) {
-					if (buyers && buyers.Items.length > 0) {
-						var buyer = buyers.Items[0];
-						Me.SetBuyerID(buyer.ID); //set the cookie in Me
-						CurrentOrder.Remove()
-							.then(function () {
-								return CurrentOrder.SetCurrentCustomer({id: buyer.ID, name: buyer.Name});
-							});
-						var lang = WeirService.Locale();
-						//set the expiration date of the cookie.
-						var now = new Date();
-						var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
-						if (buyer.xp.WeirGroup.id == 2) {
-							//make it fr
-							lang = "fr";
-							$cookieStore.put('language', 'fr', {
-								expires: exp
-							});
-						}
-						if (buyer.xp.WeirGroup.id == 1) {
-							//make it en
-							lang = "en";
-							$cookieStore.put('language', 'en', {
-								expires: exp
-							});
-						}
-						LoginService.RouteAfterLogin();
+                return OrderCloudSDK.Buyers.List()
+            })
+			.then(function (buyers) {
+				if (buyers && buyers.Items.length > 0) {
+					var buyer = buyers.Items[0];
+					Me.SetBuyerID(buyer.ID); //set the cookie in Me
+					CurrentOrder.Remove()
+						.then(function () {
+							return CurrentOrder.SetCurrentCustomer({id: buyer.ID, name: buyer.Name});
+						});
+					var lang = WeirService.Locale();
+					//set the expiration date of the cookie.
+					var now = new Date();
+					var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+					if (buyer.xp.WeirGroup.id == 2) {
+						//make it fr
+						lang = "fr";
+						$cookieStore.put('language', 'fr', {
+							expires: exp
+						});
 					}
-				});
+					if (buyer.xp.WeirGroup.id == 1) {
+						//make it en
+						lang = "en";
+						$cookieStore.put('language', 'en', {
+							expires: exp
+						});
+					}
+				}
+			})
+			.then(function() {
+				return WeirService.UserBuyers()
+			})
+			.then(function(buyers) {
+                if(buyers.length > 0) {
+                    //vm.setForm('chooseDivision');
+                    $state.go('loginDivisions');
+                } else {
+                    LoginService.RouteAfterLogin();
+                }
 			})
 			.catch(function (ex) {
 				if (ex.status == 400 && ex.data) {
@@ -366,26 +350,6 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 				vm.credentials.ConfirmPassword = null;
 			});
 	};
-
-	/*var today = new Date();
-	var stop = new Date('2017-05-25');
-	if (stop.getTime() >= today.getTime()) {
-		var newPasswordInstance = $uibModal.open({
-			animation: true,
-			ariaLabelledBy: 'modal-title',
-			ariaDescribedBy: 'modal-body',
-			templateUrl: 'login/templates/login.newpassword.tpl.html',
-			size: 'md',
-			controller: 'NewPassCtrl',
-			controllerAs: 'login'
-		});
-
-		newPasswordInstance.result.then(function ($result) {
-			vm.setForm($result);
-		}, function () {
-			// do nothing
-		});
-	}*/
 }
 
 function NewPasswordController($uibModalInstance, $sce, WeirService) {

@@ -140,7 +140,7 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
+function BaseController($document, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
@@ -402,6 +402,16 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
                 $state.go('search', {}, {reload: true});
             });
     };
+
+    vm.selectBrand = function() {
+        var parentElem = angular.element($document[0].querySelector('body'));
+        $uibModal.open({
+            animation:true,
+            size:'lg',
+            templateUrl:'brands/templates/brands.select.tpl.html',
+            appendTo: parentElem
+        });
+    }
 }
 
 function NewQuoteModalController($uibModalInstance, WeirService, $sce) {

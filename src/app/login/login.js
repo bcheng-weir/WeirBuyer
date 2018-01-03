@@ -30,7 +30,9 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
         Logout: _logout,
         RouteAfterLogin: _routeAfterLogin
     };
-
+    //global
+    var WhoAmI = null;
+    //end global
     //clean up and add option to goto the division selection screen.
 	//division selection will then routeAfterLogin
     function _routeAfterLogin() {
@@ -137,7 +139,7 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
     }
 }
 
-function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $state, ocRoles) {
+function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $q, $state, ocRoles) {
 	var vm = this;
 	var username = null;
 	LoginService.GetUsername()
@@ -214,6 +216,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 	vm.languageOfUser = WeirService.Locale();
 
 	vm.submit = function () {
+	    //make into a seperate function?
 		vm.loading = OrderCloudSDK.Auth.Login(vm.credentials.Username, vm.credentials.Password, clientid, scope)
 			.then(function (data) {
                 if (vm.rememberStatus) {
@@ -239,6 +242,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 						.then(function () {
 							return CurrentOrder.SetCurrentCustomer({id: buyer.ID, name: buyer.Name});
 						});
+                    //WhoAmI = Me;
 					var lang = WeirService.Locale();
 					//set the expiration date of the cookie.
 					var now = new Date();
@@ -259,6 +263,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 					}
 				}
 			})
+            //end seperate function for dry
 			.then(function() {
 				return WeirService.UserBuyers()
 			})
@@ -350,6 +355,130 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 				vm.credentials.ConfirmPassword = null;
 			});
 	};
+    function UserBuyerArray(){
+        var dfd = $q.defer();
+        WeirService.UserBuyers()
+            .then(function (buyers) {
+                dfd.resolve(buyers);
+            })
+            .catch(function (err) {
+                console.log(err);
+                dfd.reject("Please confirm login information.");
+
+            });
+        return dfd.promise;
+    };
+    function mapToBuyer(arrOfBuyer, divisionSelected) {
+        var dfd = $q.defer();
+        var impersonation = {
+            ClientID: clientid,
+            Roles: []
+        };
+        var continueLooping = true;
+        angular.forEach(arrOfBuyer, function (value, key) {
+            if(continueLooping) {
+                if (value.substring(0, 5) == divisionSelected) //toDo check if we can have multiple buyers in same division
+                {
+                    if (key != true) {
+                        //logic check required
+                        console.log(Me);
+                        OrderCloudSDK.Me.Get()
+                            .then(function (identity) {
+                                console.log(identity);
+                                impersonation.Roles = identity.AvailableRoles;
+                                OrderCloudSDK.Users.GetAccessToken(value, identity.ID + "-" + value, impersonation)
+                                    .then(function (token) {
+                                        continueLooping = false;
+                                        console.log(token);
+                                        //begin dupe code
+                                        OrderCloudSDK.Auth.Login()
+                                            .then(function (data) {
+                                                if (vm.rememberStatus) {
+                                                    LoginService.SetUsername(vm.credentials.Username);
+                                                } else {
+                                                    LoginService.SetUsername(null);
+                                                }
+                                                OrderCloudSDK.SetToken(data.access_token);
+
+                                                var roles = ocRoles.Set(data.access_token);
+                                                if (roles.length === 1 && roles[0] === 'PasswordReset') {
+                                                    vm.token = data.access_token;
+                                                    vm.form = 'resetByToken';
+                                                }
+
+                                                return OrderCloudSDK.Buyers.List()
+                                            })
+                                            .then(function (buyers) {
+                                                if (buyers && buyers.Items.length > 0) {
+                                                    var buyer = buyers.Items[0];
+                                                    Me.SetBuyerID(buyer.ID); //set the cookie in Me
+                                                    CurrentOrder.Remove()
+                                                        .then(function () {
+                                                            return CurrentOrder.SetCurrentCustomer({id: buyer.ID, name: buyer.Name});
+                                                        });
+                                                    var lang = WeirService.Locale();
+                                                    //set the expiration date of the cookie.
+                                                    var now = new Date();
+                                                    var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+                                                    if (buyer.xp.WeirGroup.id == 2) {
+                                                        //make it fr
+                                                        lang = "fr";
+                                                        $cookieStore.put('language', 'fr', {
+                                                            expires: exp
+                                                        });
+                                                    }
+                                                    if (buyer.xp.WeirGroup.id == 1) {
+                                                        //make it en
+                                                        lang = "en";
+                                                        $cookieStore.put('language', 'en', {
+                                                            expires: exp
+                                                        });
+                                                    }
+                                                }
+                                            })
+
+                                        //end dupe code
+                                    })
+
+                            })
+                            .catch(function (err) {
+                                console.log(err);
+                            })
+                    }
+                    else {
+                        //toDo we just leave it as is - can we assume all people logging in through the UI only have 1 account?
+                        continue;
+                    }
+
+                }
+            }
+        });
+        return dfd.promise;
+    };
+
+
+    vm.DivisionSelection = function(selectedDivision) {
+        var dfd = $q.defer();
+        console.log('worked!');
+        UserBuyerArray()
+            .then(function (buyersAvailable) {
+                if (selectedDivision == 'WVCUK') {
+                    mapToBuyer(buyersAvailable, selectedDivision);
+                    dfd.resolve();
+
+                }
+                if (selectedDivision == 'WPIFR') {
+                    mapToBuyer(buyersAvailable, selectedDivision);
+                    dfd.resolve();
+                }
+            })
+                .catch(function (err) {
+                    console.log(err);
+                    dfd.reject(err);
+                });
+
+        return dfd.promise;
+    };
 }
 
 function NewPasswordController($uibModalInstance, $sce, WeirService) {

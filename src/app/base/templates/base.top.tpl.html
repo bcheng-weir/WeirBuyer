@@ -8,10 +8,17 @@
                             <div class="col-md-6">
                                 <div class="collapse navbar-collapse pull-left" id="BASE_TOP_COLLAPSE" ng-show="base.showAppNavigation()">
                                     <ul class="nav navbar-nav navbar-left brand-top-fix">
-                                        <li class="pull-left" ng-if="base.AppLocale()=='WVCUK'"> <!-- If WVCUK -->
+                                        <li class="pull-left" ng-if="base.AppLocale()=='WVCUK'"
+                                            uib-tooltip="Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
+                                            tooltip-placement="right"
+                                            tooltip-trigger="mouseenter"> <!-- If WVCUK -->
                                             <a class="brands-uk-upper-left" ng-bind-html="base.labels.BrandsUK"></a>
                                         </li>
-                                        <li style="margin:auto;" ng-if="base.AppLocale()=='WPIFR'"> <!-- if WPIFR_EN -->
+                                        <li style="margin:auto;" ng-if="base.AppLocale()=='WPIFR'"
+                                            uib-tooltip-html="base.labels.TooltipSarasin"
+                                            tooltip-placement="right"
+                                            tooltip-trigger="mouseenter"
+                                            tooltip-class="customClass"> <!-- if WPIFR_EN -->
                                             <a class="brands-fr-upper-left" ng-bind-html="base.labels.BrandsFR" href="#" ng-click="base.selectBrand()"></a>
                                         </li>
                                     </ul>

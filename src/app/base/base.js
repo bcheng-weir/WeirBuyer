@@ -170,7 +170,9 @@ function BaseController($document, $state, $rootScope, $uibModal, CurrentOrder, 
             Register: "Register/Login",
             Logout: "Logout",
             BrandsUK: "Batley<br>Blakeborough<br>Hopkinsons",
-            BrandsFR: "Sarasin - RSBD"
+            BrandsFR: "Sarasin - RSBD",
+            TooltipSarasin: $sce.trustAsHtml("Your enquiries will be managed by your existing Sarasin-RSBD<sup>TM</sup> aftermarket spares team"),
+            TooltipBBH: "Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
         },
         fr: {
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
@@ -179,7 +181,9 @@ function BaseController($document, $state, $rootScope, $uibModal, CurrentOrder, 
             suggestion: $sce.trustAsHtml("Suggestion"),
             Sarasin: $sce.trustAsHtml("À propos de Sarasin"),
             Register: $sce.trustAsHtml("Inscription / Connexion"),
-            Logout: $sce.trustAsHtml("Se déconnecter")
+            Logout: $sce.trustAsHtml("Se déconnecter"),
+            TooltipSarasin: $sce.trustAsHtml("Your enquiries will be managed by your existing Sarasin-RSBD<sup>TM</sup> aftermarket spares team"),
+            TooltipBBH: "Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

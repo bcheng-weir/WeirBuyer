@@ -12,7 +12,7 @@
                                             uib-tooltip="Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
                                             tooltip-placement="right"
                                             tooltip-trigger="mouseenter"> <!-- If WVCUK -->
-                                            <a class="brands-uk-upper-left" ng-bind-html="base.labels.BrandsUK"></a>
+                                            <a class="brands-uk-upper-left" ng-bind-html="base.labels.BrandsUK" href="#" ng-click="base.selectBrand()"></a>
                                         </li>
                                         <li style="margin:auto;" ng-if="base.AppLocale()=='WPIFR'"
                                             uib-tooltip-html="base.labels.TooltipSarasin"

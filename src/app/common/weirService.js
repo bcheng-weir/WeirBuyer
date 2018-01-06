@@ -49,7 +49,7 @@ function UserGroupsService($q, OrderCloudSDK) {
     }
 }
 
-function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, SearchTypeService, Me) {
+function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService) {
     var orderStatuses = {
         Enquiry: { id: "EN", label: { en: "Enquiry Submitted", fr: "Demande envoyée" }, desc: "An enquiry for parts not found" },
 	    EnquiryReview: {id: "ER", label:{ en: "Enquiry Submitted", fr: "Demande envoyée" },desc: "An enquiry under administrator review."},
@@ -125,7 +125,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         SubmitEnquiry: submitEnquiry,
         SetEnglishTranslationValve: _setEnglishTranslationValve,
         SetEnglishTranslationParts: _setEnglishTranslationParts,
-        UserBuyers: userBuyers
+        UserBuyers: userBuyers,
+        DivisionSelection: DivisionSelection
     };
 
     function assignAddressToGroups(addressId) {
@@ -1370,6 +1371,152 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             });
 
         return deferred.promise;
+    }
+    function userBuyersObj()
+    {
+        var deferred = $q.defer();
+        OrderCloudSDK.Buyers.List()
+            .then(function(buyers) {
+                var currentBuyer = buyers.Items[0];
+                if(currentBuyer.xp && currentBuyer.xp.AKA) {
+                    deferred.resolve(currentBuyer.xp.AKA);
+
+                }
+                else{
+                    deferred.resolve([]);
+                }
+            })
+            .catch(function(ex) {
+                deferred.reject([]);
+            });
+
+        return deferred.promise;
+    }
+    function UserBuyerArray() {
+        var dfd = $q.defer();
+        userBuyersObj()
+            .then(function (buyers) {
+                dfd.resolve(buyers);
+            })
+            .catch(function (err) {
+                console.log(err);
+                dfd.reject("Please confirm login information.");
+
+            });
+        return dfd.promise;
+    }
+    function DivisionSelection(selectedDivision) {
+        var dfd = $q.defer();
+        UserBuyerArray()
+            .then(function (buyersAvailable) {
+                if (selectedDivision == 'WVCUK') {
+                    mapToBuyer(buyersAvailable, selectedDivision).then(function () {
+                        console.log("UK");
+                        dfd.resolve();
+                    });
+
+                }
+                if (selectedDivision == 'WPIFR') {
+                    mapToBuyer(buyersAvailable, selectedDivision).then(function () {
+                        console.log("FR");
+                        dfd.resolve();
+                    });
+                }
+            })
+            .catch(function (err) {
+                console.log(err);
+                dfd.reject(err);
+            });
+
+        return dfd.promise;
+    };
+
+    //params is an array of available buyers, and division wished to map to
+    function mapToBuyer(arrOfBuyer, divisionSelected) {
+        var dfd = $q.defer();
+        var impersonation = {
+            ClientID: clientid,
+            Roles: []
+        };
+        var continueLooping = true;
+        angular.forEach(arrOfBuyer, function (value, key) {
+            if (continueLooping) {
+                if (key.substring(0, 5) == divisionSelected) //toDo check if we can have multiple buyers in same division
+                {
+                    if (Me != null) {
+                        //if they are already in the division they want to be in, just route. In the future
+                        //may need to support multiple buyers in same division.
+                        if (Me.GetBuyerID().substring(0, 5) == divisionSelected) {
+                            LoginService.RouteAfterLogin();
+                        }
+                    }
+                    //logic check required
+                    console.log(Me);
+                    OrderCloudSDK.Me.Get()
+                        .then(function (identity) {
+                            console.log(identity);
+                            impersonation.Roles = identity.AvailableRoles;
+                            var userNameToQuery = "";
+                            if (value != true) {
+                                userNameToQuery = identity.ID + "-" + key;
+                            }
+                            else {
+                                userNameToQuery = identity.ID.substring(0, identity.ID.indexOf('-'));
+                            }
+                            return OrderCloudSDK.Users.GetAccessToken(key, userNameToQuery, impersonation);
+                        })
+                        .then(function (token) {
+                            console.log(token);
+                            OrderCloudSDK.SetToken(token.access_token);
+                            continueLooping = false;
+                            return OrderCloudSDK.Buyers.List()
+                        })
+                        .then(function (buyers) {
+
+                            if (buyers && buyers.Items.length > 0) {
+                                var buyer = buyers.Items[0];
+                                CurrentOrder.Remove()
+                                    .then(function () {
+                                        return CurrentOrder.SetCurrentCustomer({
+                                            id: buyer.ID,
+                                            name: buyer.Name
+                                        });
+                                    });
+                                //set the expiration date of the cookie.
+                                var now = new Date();
+                                var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+                                var lang = getLocale();
+                                if (buyer.xp.WeirGroup.id == 2) {
+                                    //make it fr
+                                    lang = "fr";
+                                    $cookieStore.put('language', 'fr', {
+                                        expires: exp
+                                    });
+                                }
+                                if (buyer.xp.WeirGroup.id == 1) {
+                                    //make it en
+                                    lang = "en";
+                                    $cookieStore.put('language', 'en', {
+                                        expires: exp
+                                    });
+                                }
+                                Me.SetBuyerID(buyer.ID)
+                            }
+                            LoginService.RouteAfterLogin();
+                            dfd.resolve();
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                            toastr.error("Please logout and try again.");
+                        });
+                }
+            }
+        });
+        //if no division equals the aka buyers, then proceed to default.
+        if(continueLooping){
+            LoginService.RouteAfterLogin();
+        }
+        return dfd.promise;
     }
 
     return service;

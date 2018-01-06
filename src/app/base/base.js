@@ -3,6 +3,7 @@ angular.module('orderCloud')
     .controller('BaseCtrl', BaseController)
     .controller('NewQuoteCtrl', NewQuoteModalController)
     .controller('FeedbackCtrl', FeedbackController)
+    .controller('DivisionCtrl', DivisionSelectorController)
     .filter('occomponents', occomponents)
 ;
 
@@ -408,14 +409,16 @@ function BaseController($document, $state, $rootScope, $uibModal, CurrentOrder, 
     };
 
     vm.selectBrand = function() {
-        var parentElem = angular.element($document[0].querySelector('body'));
+        //var parentElem = angular.element($document[0].querySelector('body'));
         $uibModal.open({
             animation:true,
             size:'lg',
             templateUrl:'brands/templates/brands.select.tpl.html',
-            appendTo: parentElem
+            controller: 'DivisionCtrl',
+            controllerAs: 'division'
+            //appendTo: parentElem
         });
-    }
+    };
 }
 
 function NewQuoteModalController($uibModalInstance, WeirService, $sce) {
@@ -456,6 +459,30 @@ function occomponents() {
         });
 
         return result;
+    }
+}
+
+function DivisionSelectorController($sce, $uibModalInstance, $window, $q, WeirService) {
+    var vm = this;
+    vm.BrandSelected = function (selectedDivision) {
+        var dfd = $q.defer();
+        WeirService.DivisionSelection(selectedDivision)
+            .then(function () {
+                console.log("Success!");
+                $uibModalInstance.close();
+                //due to cache reset- reload window.
+                $window.location.reload();
+                dfd.resolve();
+            })
+            .catch(function (err) {
+                //what should be the error handling?
+                console.log(err);
+                dfd.reject();
+
+
+            });
+
+        return dfd.promise;
     }
 }
 

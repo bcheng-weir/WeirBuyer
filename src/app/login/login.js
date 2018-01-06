@@ -20,7 +20,7 @@ function LoginConfig($stateProvider) {
 		});
 }
 
-function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymous, appname, $localForage, Me, $window, WeirService) {
+function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymous, appname, $localForage, Me, $window) {
     return {
         SendVerificationCode: _sendVerificationCode,
         ResetPassword: _resetPassword,
@@ -140,85 +140,85 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
 }
 
 function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $q, $state, ocRoles) {
-	var vm = this;
-	var username = null;
-	LoginService.GetUsername()
-		.then(function (myUsername) {
-			console.log('My User Name: ' + myUsername);
-			username = myUsername;
-			vm.credentials = {
-				Username: username,
-				Password: null
-			};
-			vm.rememberStatus = username ? true : false;
-		});
+    var vm = this;
+    var username = null;
+    LoginService.GetUsername()
+        .then(function (myUsername) {
+            console.log('My User Name: ' + myUsername);
+            username = myUsername;
+            vm.credentials = {
+                Username: username,
+                Password: null
+            };
+            vm.rememberStatus = username ? true : false;
+        });
 
-	vm.token = $stateParams.token;
-	vm.form = vm.token ? 'reset' : 'login';
-	vm.setForm = function (form) {
-		vm.form = form;
-	};
-	var labels = {
-		en: {
-			LoginLabel: "Please enter your login details",
-			ForgotLabel: "Enter your email, and we’ll send you instructions on how to reset your password",
-			UsernameLabel: "Username",
-			PasswordLabel: "Password",
-			BackToLoginLabel: "Back to Login",
-			ForgotPasswordLabel: "Forgot Password",
+    vm.token = $stateParams.token;
+    vm.form = vm.token ? 'reset' : 'login';
+    vm.setForm = function (form) {
+        vm.form = form;
+    };
+    var labels = {
+        en: {
+            LoginLabel: "Please enter your login details",
+            ForgotLabel: "Enter your email, and we’ll send you instructions on how to reset your password",
+            UsernameLabel: "Username",
+            PasswordLabel: "Password",
+            BackToLoginLabel: "Back to Login",
+            ForgotPasswordLabel: "Forgot Password",
             ResetCodeLabel: "Reset Password with Verification Code",
-			NewPasswordLabel: "New Password",
-			RememberMe: "Remember Me",
-			WorldWide: "Go to global website",
-			ConfirmPasswordLabel: "Confirm Password",
-			ResetPasswordMessage: "Your password has been reset.",
-			ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
-			ResetPasswordLabel: "Reset Password",
-			SubmitLabel: $sce.trustAsHtml("Submit  <i class='icon-right-arrow'></i>"),
-			BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter.",
-			ResetToastr: "Please reset your password",
-			ResetMessage: "Due to a change in how we store password information, we must ask all registered users to reset their passwords. You can use the same password as before: ",
-			VerificationCodeLabel: "Verification code"
-		},
-		fr: {
-			LoginLabel: $sce.trustAsHtml("Veuillez saisir vos identifiants"),
-			ForgotLabel: $sce.trustAsHtml("Veuillez renseigner votre email. Nous vous enverrons les instructions nécessaires afin de réinitialiser votre mot de passe."),
-			UsernameLabel: $sce.trustAsHtml("Nom d'utilisateur"),
-			PasswordLabel: $sce.trustAsHtml("Mot de passe"),
-			BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
-			ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
+            NewPasswordLabel: "New Password",
+            RememberMe: "Remember Me",
+            WorldWide: "Go to global website",
+            ConfirmPasswordLabel: "Confirm Password",
+            ResetPasswordMessage: "Your password has been reset.",
+            ForgotMessageLabel: "Forgot Password email has been sent. Please check your email in order to reset your password.",
+            ResetPasswordLabel: "Reset Password",
+            SubmitLabel: $sce.trustAsHtml("Submit  <i class='icon-right-arrow'></i>"),
+            BadUsernamePassword: "We are not able to recognise the email or password entered. Please check and re-enter.",
+            ResetToastr: "Please reset your password",
+            ResetMessage: "Due to a change in how we store password information, we must ask all registered users to reset their passwords. You can use the same password as before: ",
+            VerificationCodeLabel: "Verification code"
+        },
+        fr: {
+            LoginLabel: $sce.trustAsHtml("Veuillez saisir vos identifiants"),
+            ForgotLabel: $sce.trustAsHtml("Veuillez renseigner votre email. Nous vous enverrons les instructions nécessaires afin de réinitialiser votre mot de passe."),
+            UsernameLabel: $sce.trustAsHtml("Nom d'utilisateur"),
+            PasswordLabel: $sce.trustAsHtml("Mot de passe"),
+            BackToLoginLabel: $sce.trustAsHtml("Retourner &agrave; l'identification"),
+            ForgotPasswordLabel: $sce.trustAsHtml("Mot de passe oubli&eacute;"),
             ResetCodeLabel: $sce.trustAsHtml("Réinitialiser le mot de passe avec le code de vérification."),
-			RememberMe: $sce.trustAsHtml("Se souvenir de mes identifiants"),
-			WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
-			NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
-			ConfirmPasswordLabel: $sce.trustAsHtml("Confirmer votre mot de passe"),
-			ResetPasswordMessage: $sce.trustAsHtml("Votre mot de passe a été réinitialisé"),
-			ForgotMessageLabel: $sce.trustAsHtml("Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe."),
-			ResetPasswordLabel: $sce.trustAsHtml("Changer de mot de passe"),
-			SubmitLabel: $sce.trustAsHtml("Soumettre  <i class='icon-right-arrow'></i>"),
-			BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de vérifier vos identifiant, puis veuillez réessayer."),
-			ResetToastr: $sce.trustAsHtml("Veuillez réinitialiser votre mot de passe"),
-			ResetMessage: $sce.trustAsHtml("En raison d'une modification de la façon dont nous stockons les informations sur les mots de passe, nous demandons à tous les utilisateurs enregistrés de réinitialiser leurs mots de passe. Vous pouvez bien sûr réutiliser le même mot de passe que précédemment."),
+            RememberMe: $sce.trustAsHtml("Se souvenir de mes identifiants"),
+            WorldWide: $sce.trustAsHtml("Acc&eacute;der au site global"),
+            NewPasswordLabel: $sce.trustAsHtml("Nouveau mot de passe"),
+            ConfirmPasswordLabel: $sce.trustAsHtml("Confirmer votre mot de passe"),
+            ResetPasswordMessage: $sce.trustAsHtml("Votre mot de passe a été réinitialisé"),
+            ForgotMessageLabel: $sce.trustAsHtml("Un e-mail a &eacute;t&eacute; envoy&eacute;. Veuillez regarder vos e-mails afin de changer votre mot de passe."),
+            ResetPasswordLabel: $sce.trustAsHtml("Changer de mot de passe"),
+            SubmitLabel: $sce.trustAsHtml("Soumettre  <i class='icon-right-arrow'></i>"),
+            BadUsernamePassword: $sce.trustAsHtml("Nous ne reconnaissons pas cet e-mail ou ce mot de passe. Merci de vérifier vos identifiant, puis veuillez réessayer."),
+            ResetToastr: $sce.trustAsHtml("Veuillez réinitialiser votre mot de passe"),
+            ResetMessage: $sce.trustAsHtml("En raison d'une modification de la façon dont nous stockons les informations sur les mots de passe, nous demandons à tous les utilisateurs enregistrés de réinitialiser leurs mots de passe. Vous pouvez bien sûr réutiliser le même mot de passe que précédemment."),
             VerificationCodeLabel: $sce.trustAsHtml("Code de vérification")
-		}
-	};
-	var navlabels = WeirService.navBarLabels();
-	switch (WeirService.Locale()) {
-		case 'fr':
-			vm.labels = labels.fr;
-			vm.navlabels = navlabels.fr;
-			break;
-		default:
-			vm.labels = labels.en;
-			vm.navlabels = navlabels.en;
-			break;
-	}
-	vm.languageOfUser = WeirService.Locale();
+        }
+    };
+    var navlabels = WeirService.navBarLabels();
+    switch (WeirService.Locale()) {
+        case 'fr':
+            vm.labels = labels.fr;
+            vm.navlabels = navlabels.fr;
+            break;
+        default:
+            vm.labels = labels.en;
+            vm.navlabels = navlabels.en;
+            break;
+    }
+    vm.languageOfUser = WeirService.Locale();
 
-	vm.submit = function () {
-	    //make into a seperate function?
-		vm.loading = OrderCloudSDK.Auth.Login(vm.credentials.Username, vm.credentials.Password, clientid, scope)
-			.then(function (data) {
+    vm.submit = function () {
+        //make into a seperate function?
+        vm.loading = OrderCloudSDK.Auth.Login(vm.credentials.Username, vm.credentials.Password, clientid, scope)
+            .then(function (data) {
                 if (vm.rememberStatus) {
                     LoginService.SetUsername(vm.credentials.Username);
                 } else {
@@ -234,248 +234,143 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
 
                 return OrderCloudSDK.Buyers.List()
             })
-			.then(function (buyers) {
-				if (buyers && buyers.Items.length > 0) {
-					var buyer = buyers.Items[0];
-					Me.SetBuyerID(buyer.ID); //set the cookie in Me
-					CurrentOrder.Remove()
-						.then(function () {
-							return CurrentOrder.SetCurrentCustomer({id: buyer.ID, name: buyer.Name});
-						});
+            .then(function (buyers) {
+                if (buyers && buyers.Items.length > 0) {
+                    var buyer = buyers.Items[0];
+                    Me.SetBuyerID(buyer.ID); //set the cookie in Me
+                    CurrentOrder.Remove()
+                        .then(function () {
+                            return CurrentOrder.SetCurrentCustomer({id: buyer.ID, name: buyer.Name});
+                        });
                     //WhoAmI = Me;
-					var lang = WeirService.Locale();
-					//set the expiration date of the cookie.
-					var now = new Date();
-					var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
-					if (buyer.xp.WeirGroup.id == 2) {
-						//make it fr
-						lang = "fr";
-						$cookieStore.put('language', 'fr', {
-							expires: exp
-						});
-					}
-					if (buyer.xp.WeirGroup.id == 1) {
-						//make it en
-						lang = "en";
-						$cookieStore.put('language', 'en', {
-							expires: exp
-						});
-					}
-				}
-			})
+                    var lang = WeirService.Locale();
+                    //set the expiration date of the cookie.
+                    var now = new Date();
+                    var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+                    if (buyer.xp.WeirGroup.id == 2) {
+                        //make it fr
+                        lang = "fr";
+                        $cookieStore.put('language', 'fr', {
+                            expires: exp
+                        });
+                    }
+                    if (buyer.xp.WeirGroup.id == 1) {
+                        //make it en
+                        lang = "en";
+                        $cookieStore.put('language', 'en', {
+                            expires: exp
+                        });
+                    }
+                }
+            })
             //end seperate function for dry
-			.then(function() {
-				return WeirService.UserBuyers()
-			})
-			.then(function(buyers) {
-                if(buyers.length > 0) {
+            .then(function () {
+                return WeirService.UserBuyers()
+            })
+            .then(function (buyers) {
+                if (buyers.length > 0) {
                     //vm.setForm('chooseDivision');
                     $state.go('loginDivisions');
                 } else {
                     LoginService.RouteAfterLogin();
                 }
-			})
-			.catch(function (ex) {
-				if (ex.status == 400 && ex.data) {
-					ex.data.error = vm.labels.BadUsernamePassword;
-				}
-				$exceptionHandler(ex);
-			});
-	};
+            })
+            .catch(function (ex) {
+                if (ex.status == 400 && ex.data) {
+                    ex.data.error = vm.labels.BadUsernamePassword;
+                }
+                $exceptionHandler(ex);
+            });
+    };
 
-	vm.resetPasswordByToken = function () {
-		vm.loading = OrderCloudSDK.Me.ResetPasswordByToken({
-			NewPassword: vm.credentials.NewPassword
-		})
-		.then(function () {
-			vm.setForm('resetSuccess');
-			vm.credentials = {
-				Username: null,
-				Password: null
-			};
-		})
-		.catch(function (ex) {
-			$exceptionHandler(ex);
-		});
-	};
-
-	vm.resetPasswordByCode = function() {
-		var passwordReset = {
-            clientid:clientid,
-			username:vm.credentials.Username,
-			password:vm.credentials.Password
-		};
-
-		vm.loading = OrderCloudSDK.PasswordResets.ResetPasswordByVerificationCode(vm.credentials.VerificationCode, passwordReset)
-			.then(function() {
+    vm.resetPasswordByToken = function () {
+        vm.loading = OrderCloudSDK.Me.ResetPasswordByToken({
+            NewPassword: vm.credentials.NewPassword
+        })
+            .then(function () {
                 vm.setForm('resetSuccess');
                 vm.credentials = {
                     Username: null,
                     Password: null
                 };
-			})
-			.catch(function(ex) {
-				$exceptionHandler(ex);
-			});
-	};
+            })
+            .catch(function (ex) {
+                $exceptionHandler(ex);
+            });
+    };
 
-	vm.setCookie = function (lang) {
-		var now = new Date();
-		var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
-		$cookieStore.put('language', lang, {
-			expires: exp
-		});
-		window.location.reload();
-	};
+    vm.resetPasswordByCode = function () {
+        var passwordReset = {
+            clientid: clientid,
+            username: vm.credentials.Username,
+            password: vm.credentials.Password
+        };
 
-	vm.forgotPassword = function () {
-		LoginService.SendVerificationCode(vm.credentials.Email)
-			.then(function () {
-				vm.setForm('login');//verificationCodeSuccess
-				vm.credentials.Email = null;
-			})
-			.catch(function (ex) {
-				$exceptionHandler(ex);
-			});
-	};
+        vm.loading = OrderCloudSDK.PasswordResets.ResetPasswordByVerificationCode(vm.credentials.VerificationCode, passwordReset)
+            .then(function () {
+                vm.setForm('resetSuccess');
+                vm.credentials = {
+                    Username: null,
+                    Password: null
+                };
+            })
+            .catch(function (ex) {
+                $exceptionHandler(ex);
+            });
+    };
 
-	vm.resetPassword = function () {
-		LoginService.ResetPassword(vm.credentials, vm.token)
-			.then(function () {
-				vm.setForm('resetSuccess');
-				vm.token = null;
-				vm.credentials.ResetUsername = null;
-				vm.credentials.NewPassword = null;
-				vm.credentials.ConfirmPassword = null;
-			})
-			.catch(function (ex) {
-				$exceptionHandler(ex);
-				vm.credentials.ResetUsername = null;
-				vm.credentials.NewPassword = null;
-				vm.credentials.ConfirmPassword = null;
-			});
-	};
+    vm.setCookie = function (lang) {
+        var now = new Date();
+        var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+        $cookieStore.put('language', lang, {
+            expires: exp
+        });
+        window.location.reload();
+    };
 
-    function UserBuyerArray(){
+    vm.forgotPassword = function () {
+        LoginService.SendVerificationCode(vm.credentials.Email)
+            .then(function () {
+                vm.setForm('login');//verificationCodeSuccess
+                vm.credentials.Email = null;
+            })
+            .catch(function (ex) {
+                $exceptionHandler(ex);
+            });
+    };
+
+    vm.resetPassword = function () {
+        LoginService.ResetPassword(vm.credentials, vm.token)
+            .then(function () {
+                vm.setForm('resetSuccess');
+                vm.token = null;
+                vm.credentials.ResetUsername = null;
+                vm.credentials.NewPassword = null;
+                vm.credentials.ConfirmPassword = null;
+            })
+            .catch(function (ex) {
+                $exceptionHandler(ex);
+                vm.credentials.ResetUsername = null;
+                vm.credentials.NewPassword = null;
+                vm.credentials.ConfirmPassword = null;
+            });
+    };
+
+
+
+
+    vm.DivisionSelection = function (selectedDivision) {
         var dfd = $q.defer();
-        WeirService.UserBuyers()
-            .then(function (buyers) {
-                dfd.resolve(buyers);
+        WeirService.DivisionSelection(selectedDivision)
+            .then(function () {
+                console.log("Success!");
+                dfd.resolve();
             })
             .catch(function (err) {
+                //what should be the error handling?
                 console.log(err);
-                dfd.reject("Please confirm login information.");
 
             });
-        return dfd.promise;
-    }
-
-    function mapToBuyer(arrOfBuyer, divisionSelected) {
-        var dfd = $q.defer();
-        var impersonation = {
-            ClientID: clientid,
-            Roles: []
-        };
-        var continueLooping = true;
-        angular.forEach(arrOfBuyer, function (value, key) {
-            if(continueLooping) {
-                if (value.substring(0, 5) == divisionSelected) //toDo check if we can have multiple buyers in same division
-                {
-                    if (key != true) {
-                        //logic check required
-                        console.log(Me);
-                        OrderCloudSDK.Me.Get()
-                            .then(function (identity) {
-                                console.log(identity);
-                                impersonation.Roles = identity.AvailableRoles;
-                                return OrderCloudSDK.Users.GetAccessToken(value, identity.ID + "-" + value, impersonation);
-                            })
-							.then(function (token) {
-                                continueLooping = false;
-                                console.log(token);
-                                //begin dupe code
-                                return OrderCloudSDK.Auth.Login();
-                            })
-							.then(function (data) {
-								if (vm.rememberStatus) {
-									LoginService.SetUsername(vm.credentials.Username);
-								} else {
-									LoginService.SetUsername(null);
-								}
-								OrderCloudSDK.SetToken(data.access_token);
-
-								var roles = ocRoles.Set(data.access_token);
-								if (roles.length === 1 && roles[0] === 'PasswordReset') {
-									vm.token = data.access_token;
-									vm.form = 'resetByToken';
-								}
-
-								return OrderCloudSDK.Buyers.List();
-							})
-							.then(function (buyers) {
-								if (buyers && buyers.Items.length > 0) {
-                                    var buyer = buyers.Items[0];
-                                    Me.SetBuyerID(buyer.ID); //set the cookie in Me
-                                    var lang = WeirService.Locale();
-                                    //set the expiration date of the cookie.
-                                    var now = new Date();
-                                    var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
-                                    if (buyer.xp.WeirGroup.id == 2) {
-                                        //make it fr
-                                        lang = "fr";
-                                        $cookieStore.put('language', 'fr', {
-                                            expires: exp
-                                        });
-                                    }
-                                    if (buyer.xp.WeirGroup.id == 1) {
-                                        //make it en
-                                        lang = "en";
-                                        $cookieStore.put('language', 'en', {
-                                            expires: exp
-                                        });
-                                    }
-                                }
-							})
-							.then(function() {
-                                CurrentOrder.Remove()
-                                    .then(function () {
-                                        return CurrentOrder.SetCurrentCustomer({
-                                            id: buyer.ID,
-                                            name: buyer.Name
-                                        });
-                                    });
-							})
-                            .catch(function (err) {
-                                console.log(err);
-                            });
-                    }
-                } else {
-                    LoginService.RouteAfterLogin();
-				}
-            }
-        });
-        return dfd.promise;
-    }
-
-
-    vm.DivisionSelection = function(selectedDivision) {
-        var dfd = $q.defer();
-        UserBuyerArray()
-            .then(function (buyersAvailable) {
-                if (selectedDivision == 'WVCUK') {
-                    mapToBuyer(buyersAvailable, selectedDivision);
-                    dfd.resolve();
-
-                }
-                if (selectedDivision == 'WPIFR') {
-                    mapToBuyer(buyersAvailable, selectedDivision);
-                    dfd.resolve();
-                }
-            })
-			.catch(function (err) {
-				console.log(err);
-				dfd.reject(err);
-			});
 
         return dfd.promise;
     };

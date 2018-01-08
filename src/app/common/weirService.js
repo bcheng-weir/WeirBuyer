@@ -1414,7 +1414,6 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                         console.log("UK");
                         dfd.resolve();
                     });
-
                 }
                 if (selectedDivision == 'WPIFR') {
                     mapToBuyer(buyersAvailable, selectedDivision).then(function () {

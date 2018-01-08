@@ -462,7 +462,7 @@ function occomponents() {
     }
 }
 
-function DivisionSelectorController($sce, $uibModalInstance, $window, $q, WeirService) {
+function DivisionSelectorController($uibModalInstance, $window, $q, WeirService) {
     var vm = this;
     vm.BrandSelected = function (selectedDivision) {
         var dfd = $q.defer();

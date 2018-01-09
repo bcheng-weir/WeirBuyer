@@ -63,11 +63,13 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 			} else if (DeliveryAddress.Country=="FR") {
 				data.push([DeliveryAddress.FirstName + " " + DeliveryAddress.LastName, ""]);
 				data.push([DeliveryAddress.CompanyName]);
-				data.push([DeliveryAddress.Street1]);
+                DeliveryAddress.Street1 ? data.push([DeliveryAddress.Street1]) : null;
                 DeliveryAddress.Street2 ? data.push([DeliveryAddress.Street2]) : null;
                 DeliveryAddress.xp.Street3 ? data.push([DeliveryAddress.xp.Street3]) : null;
-				data.push([DeliveryAddress.Zip + ", " + DeliveryAddress.City]);
-				data.push([country(DeliveryAddress.Country)]);
+                DeliveryAddress.City ? data.push([DeliveryAddress.City]) : null;
+                DeliveryAddress.State ? data.push([DeliveryAddress.State]) : null;
+                DeliveryAddress.Zip ? data.push([DeliveryAddress.Zip]) : null;
+                DeliveryAddress.Country ? data.push([country(DeliveryAddress.Country)]) : null;
 			}
 		}
 		data.push(["", ""]);

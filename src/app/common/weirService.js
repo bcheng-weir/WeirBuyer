@@ -1455,6 +1455,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                         .then(function (identity) {
                             console.log(identity);
                             impersonation.Roles = identity.AvailableRoles;
+                            impersonation.Roles.push("Shopper");
                             var userNameToQuery = "";
                             if (value != true) {
                                 userNameToQuery = identity.ID + "-" + key;

@@ -1396,8 +1396,8 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal,
-    OrderCloudSDK, QuoteShareService, Underscore, OCGeography, CurrentOrder, Customer, fileStore, FilesService,
-	$scope, FileSaver, UITotal) {
+    OrderCloudSDK, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, fileStore, FilesService,
+	$scope, FileSaver, UITotal, Catalog) {
 	//CheckStateChangeService.checkFormOnStateChange($scope);
 	var vm = this;
 	vm.currentState = $state.$current.name;

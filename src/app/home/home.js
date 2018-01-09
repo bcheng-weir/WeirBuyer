@@ -12,7 +12,7 @@ function HomeConfig($stateProvider) {
 			controller: 'HomeCtrl',
 			controllerAs: 'home',
             resolve: {
-                quotes: function(OrderCloudSDK) {
+                quotes: function(OrderCloudSDK,Me,CurrentUser,CurrentOrg) {
                     var opts = {
                         'pageSize':10,
                         'sortBy':'!DateCreated',
@@ -21,9 +21,16 @@ function HomeConfig($stateProvider) {
                             'xp.Active':true
                         }
                     };
+                    if (!Me.Profile || !Me.Org) {
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(Me && Me.Profile && Me.Profile.ID) {
+                        opts.filters.FromUserID = Me.Profile.ID;
+                    }
                     return OrderCloudSDK.Orders.List("Outgoing",opts);
                 },
-			    orders: function(OrderCloudSDK) {
+			    orders: function(OrderCloudSDK,Me,CurrentUser,CurrentOrg) {
 			        var opts = {
 			            'pageSize':10,
                         'sortBy':'!DateCreated',
@@ -32,6 +39,13 @@ function HomeConfig($stateProvider) {
                             'xp.Active':true
                         }
                     };
+                    if (!Me.Profile || !Me.Org) {
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if(Me && Me.Profile && Me.Profile.ID) {
+                        opts.filters.FromUserID = Me.Profile.ID;
+                    }
 			        return OrderCloudSDK.Orders.List("Outgoing",opts);
                 }
             }

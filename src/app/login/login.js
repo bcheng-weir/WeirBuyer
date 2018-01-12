@@ -364,6 +364,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
         WeirService.DivisionSelection(selectedDivision)
             .then(function () {
                 console.log("Success!");
+                $window.location.reload();
                 dfd.resolve();
             })
             .catch(function (err) {

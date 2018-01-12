@@ -56,6 +56,7 @@
                 <span ng-if="ordersDetail.order.BillingAddress.FirstName || ordersDetail.order.BillingAddress.LastName">{{ordersDetail.order.BillingAddress.FirstName + ' ' + ordersDetail.order.BillingAddress.LastName}}<br /></span>
                 <span>{{ordersDetail.order.BillingAddress.Street1}}<br /></span>
                 <span ng-if="ordersDetail.order.BillingAddress.Street2">{{ordersDetail.order.BillingAddress.Street2}}<br /></span>
+                <span ng-if="ordersDetail.order.BillingAddress.xp.Street3">{{ordersDetail.order.BillingAddress.xp.Street3}}<br /></span>
                 <span>{{ordersDetail.order.BillingAddress.City + ', ' + ordersDetail.order.BillingAddress.State + ' ' + ordersDetail.order.BillingAddress.Zip}}<br /></span>
             </div>
         </div>
@@ -66,6 +67,7 @@
                 <span ng-if="ordersDetail.order.ShippingAddress.FirstName || ordersDetail.order.ShippingAddress.LastName">{{ordersDetail.order.ShippingAddress.FirstName + ' ' + ordersDetail.order.ShippingAddress.LastName}}<br /></span>
                 <span>{{ordersDetail.order.ShippingAddress.Street1}}<br /></span>
                 <span ng-if="ordersDetail.order.ShippingAddress.Street2">{{ordersDetail.order.ShippingAddress.Street2}}<br /></span>
+                <span ng-if="ordersDetail.order.ShippingAddress.xp.Street3">{{ordersDetail.order.ShippingAddress.xp.Street3}}<br /></span>
                 <span>{{ordersDetail.order.ShippingAddress.City + ', ' + ordersDetail.order.ShippingAddress.State + ' ' + ordersDetail.order.ShippingAddress.Zip}}<br /></span>
             </div>
         </div>

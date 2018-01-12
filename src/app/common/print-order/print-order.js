@@ -80,7 +80,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 	$timeout($window.print,1);
 }
 
-function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$document) {
+function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$document,Me) {
 	var vm = this;
 	var labels = {
 		en: {
@@ -106,14 +106,14 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$do
 			uitotal:$scope.uitotal
 		};
 		var templates = {
-			en:'common/print-order/templates/printorder.tpl.html',
-			fr:'common/print-order/templates/printorderfr.tpl.html'
+			WVCUK:'common/print-order/templates/printorder.tpl.html',
+			WPIFR:'common/print-order/templates/printorderfr.tpl.html'
 		};
 		var parentElem = angular.element($document[0].querySelector('body'));
 		$uibModal.open({
 			animation:true,
 			size:'lg',
-			templateUrl:templates[WeirService.Locale()],
+			templateUrl:templates[Me.Org.xp.WeirGroup.label],
 			controller:'printOrderCtrl',
 			controllerAs:'printctrl',
 			appendTo: parentElem,

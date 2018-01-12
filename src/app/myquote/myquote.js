@@ -123,6 +123,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 		            var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 		            CurrentOrder.GetID()
                         .then(function (id) {
 	                        OrderCloudSDK.LineItems.List("Outgoing",id, { 'page':1, 'pageSize':100 })
@@ -133,7 +134,17 @@ function MyQuoteConfig($stateProvider) {
                                     } else {
 	                                    LineItemHelpers.GetBlankProductInfo(data.Items, Customer);
                                         LineItemHelpers.GetProductInfo(data.Items)
-                                            .then(function () { dfd.resolve(data); });
+                                            .then(function () {
+                                                if (lang && data.Items) {
+                                                    for (var i = 0; i < data.Items.length; i++) {
+                                                        var tmp = data.Items[i];
+                                                        if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                            tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                        }
+                                                    }
+                                                }
+                                            	dfd.resolve(data);
+                                            });
                                     }
                                 })
 		                        .catch(function(ex) {
@@ -293,6 +304,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -301,7 +313,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -327,6 +349,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -335,7 +358,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -388,6 +421,7 @@ function MyQuoteConfig($stateProvider) {
 						errorTitle = "Error";
 					}
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -396,7 +430,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -422,6 +466,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -430,7 +475,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -483,6 +538,7 @@ function MyQuoteConfig($stateProvider) {
 						errorTitle = "Error";
 					}
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -491,7 +547,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -517,6 +583,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -525,7 +592,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -563,6 +640,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
     vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	vm.Quote = QuoteShareService.Quote;
@@ -862,10 +941,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	        ApprovedMessage: "The revised quote has been accepted",
 	        ApprovedTitle: "Quote Updated",
 	        SubmitWithPO: "Submit Order",
-	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-		    ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-		    POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-		    LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 		    Currency: "Currency",
 			Search: "Search",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
@@ -916,10 +991,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
 			ApprovedTitle: $sce.trustAsHtml("Cotation mise à jour"),
 			SubmitWithPO: $sce.trustAsHtml("Commander avec bon de commande"),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
-			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			Currency: $sce.trustAsHtml("Devise"),
             Search: $sce.trustAsHtml("Rechercher"),
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
@@ -1085,7 +1156,6 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Cancel: "Cancel",
 			Comments: "Comments",
 			AddedComment: " added a comment - ",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			SaveToContinue: "*Save to Continue",
 			POA: "POA"
 		},
@@ -1115,7 +1185,6 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Cancel: $sce.trustAsHtml("Annuler"),
 			Comments: $sce.trustAsHtml("Commentaires"),
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
 			SaveToContinue: $sce.trustAsHtml("*Veuillez enregistrer afin de continuer"),
             POA: $sce.trustAsHtml("POA")
 		}
@@ -1167,8 +1236,10 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me, Catalog) {
     var vm = this;
+    vm.Comments = QuoteShareService.Comments;
+    vm.NewComment = null;
     var activeAddress = function (address) {
         return address.xp.active == true;
     };
@@ -1187,6 +1258,15 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
         return result ? result.label : '';
     };
 
+	var currencySymbol = Me.Org.xp.WeirGroup.id == 2 ? "€" : "£";
+
+	vm.exWorksOnly = function() {
+		//WPIFR EN lang users only see Ex Works for now.
+		return Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en";
+    };
+
+    vm.deliveryInformation = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.DeliveryInformationFR_EN : Catalog.xp.DeliveryInformation;
+
     var labels = {
         en: {
             DefaultAddress: "Your Default Address",
@@ -1197,20 +1277,20 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             BackToQuote: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quote",
             InfoText1: "Delivery costs will be confirmed on Order.",
             InfoText2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
-            InfoText3: "Lead time for all orders will be based on the longest lead time from the list of spares requested.",
             ShippingAddress: "Shipping address successfully selected.",
             ShippingAddressSet: "Shipping address set to ",
             Success: "Success",
             ShippingAddressTitle: "Shipping Address Set",
             //carriage labels
             CarriageOptionsMsg: "Carriage Options",
-            CarriageStandardPrice: "£ " +  $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
+            CarriageStandardPrice: currencySymbol + " " + $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
             CarriageExWorks: "Ex works",
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
-            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of £"+ $scope.$parent.myquote.CarriageRateForBuyer +  " per order to one UK address.",
-            CarriageInfoP2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
-            CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
+            Add: "Add",
+            Cancel: "Cancel",
+            Comments: "Comments",
+            AddedComment: " added a comment - "
         },
         fr: {
             DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
@@ -1228,14 +1308,14 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             ShippingAddressTitle: "Adresse de livraison",
             //carriage labels
             CarriageOptionsMsg: "Options de transport",
-            CarriageStandardPrice: $scope.$parent.myquote.CarriageRateForBuyer + " € livraison",
+            CarriageStandardPrice: $scope.$parent.myquote.CarriageRateForBuyer + " " + currencySymbol + " livraison",
             CarriageExWorks: "Départ Usine",
             SelectOption: "Veuillez sélectionner votre option de transport",
             CarriageInfo: "Informations de livraison",
-            CarriageInfoP1: "Pour les commandes de pièces de rechange effectuées sur cette plate-forme, le prix forfaitaire est de "+ $scope.$parent.myquote.CarriageRateForBuyer +  "  €  par commande.",
-            CarriageInfoP2: "La livraison sera préparé en fonction de vos instructions.",
-            CarriageInfoP3: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"
-
+            Add: $sce.trustAsHtml("Ajouter"),
+            Cancel: $sce.trustAsHtml("Annuler"),
+            Comments: $sce.trustAsHtml("Commentaires"),
+            AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - ")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1303,11 +1383,21 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
                 }
             });
     }
+
+    vm.AddComment = function() {
+        $scope.$parent.myquote.AddNewComment(vm.NewComment)
+            .then(function(result) {
+                if(result) {
+                    vm.Comments = result.xp.CommentsToWeir;
+                }
+            });
+        vm.NewComment = null;
+    }
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal,
-    OrderCloudSDK, QuoteShareService, Underscore, OCGeography, CurrentOrder, Customer, fileStore, FilesService,
-	$scope, FileSaver, UITotal) {
+    OrderCloudSDK, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, fileStore, FilesService,
+	$scope, FileSaver, UITotal, Catalog) {
 	//CheckStateChangeService.checkFormOnStateChange($scope);
 	var vm = this;
 	vm.currentState = $state.$current.name;
@@ -1339,7 +1429,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 					//(QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
                             //((vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) ||
                             //(vm.Quote.FromUserID == QuoteShareService.Me.ID && (allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1)));
-	vm.fileStore = fileStore;
+    vm.fileStore = fileStore;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -1966,6 +2057,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 
 	vm.BuyerID = Me.GetBuyerID();
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
@@ -2069,10 +2162,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			AddedComment: " added a comment - ",
 			Add: "Add",
 			Cancel: "Cancel",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			PONumber: "PO Number;",
 			POA: "POA",
 			DescriptionOfShipping: {
@@ -2124,10 +2213,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
 			Add: $sce.trustAsHtml("Ajouter"),
 			Cancel: $sce.trustAsHtml("Annuler"),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
-			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 			DescriptionOfShipping: {
@@ -2328,9 +2413,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloudSDK, FilesService, FileSaver, Catalog, Me) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, FilesService, FileSaver, Catalog, Me) {
     var vm = this;
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 	vm.buyer = Me.Org;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
@@ -2388,11 +2475,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Currency: "Currency",
 	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order",
-	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 	        ViewRevisions: "View Previous Revisions",
-	        ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-	        POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 	        PONumber: "PO Number;",
             POA: "POA",
 	        PartTypes: "Part types for;",
@@ -2435,11 +2518,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Currency: $sce.trustAsHtml("Devise"),
 	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos cotations"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
-	        PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande"),
-	        ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-	        POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-	        LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 	        PartTypes: $sce.trustAsHtml("Pièces pour:"),
@@ -2518,6 +2597,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
                           PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me, FilesService, FileSaver, Catalog) {
 	var vm = this;
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 	vm.buyer = Me.Org;
 	vm.NewComment = null;
 	vm.ImageBaseUrl = imageRoot;
@@ -2582,13 +2663,9 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			SubmitOrderWithPO: "Submit Order",
 			EmailPoMessage: "*Your order will be confirmed<br class='message-break'>following receipt of your PO.",
 			POEntry: "Enter PO Number",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			DragAndDrop: "Drag and drop Files Here to Upload",
 			PONeededHeader: "Please Provide a Purchase Order to Finalise your Order",
 			POUpload: "Upload PO Document",
-			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			Add: "Add",
 			Cancel: "Cancel",
 			AddedComment: " added a comment - ",
@@ -2637,13 +2714,9 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			SubmitOrderWithPO: $sce.trustAsHtml("Commander avec bon<br>de commande"),
 			EmailPoMessage: $sce.trustAsHtml("Votre commande sera confirmée<br class='message-break'>après réception de votre bon de commande."),
 			POEntry: $sce.trustAsHtml("Entrer une r&eacute;f&eacute;rence de commande"),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 			DragAndDrop: $sce.trustAsHtml("Faites glisser vos documents ici pour les t&eacute;l&eacute;charger"),
 			PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
 			POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
-			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			Add: $sce.trustAsHtml("Ajouter"),
 			Cancel: $sce.trustAsHtml("Annule"),
 			AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),

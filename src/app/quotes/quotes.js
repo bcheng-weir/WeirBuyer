@@ -204,7 +204,7 @@ function QuotesConfig($stateProvider) {
 			controller: 'RouteToQuoteCtrl',
 			resolve: {
 			    Quote: function ($q, appname, $localForage, $stateParams, OrderCloudSDK) {
-			        var storageName = appname + '.routeto';
+			        /*var storageName = appname + '.routeto';
 			        var d = $q.defer();
 			        $localForage.setItem(storageName, { state: 'quotes', id: $stateParams.quoteID })
                         .then(function () {
@@ -214,7 +214,8 @@ function QuotesConfig($stateProvider) {
                                     d.resolve(quote);
                                 });
                         });
-			        return d.promise;
+			        return d.promise;*/
+			        return OrderCloudSDK.Orders.Get("Outgoing", $stateParams.quoteID);
 			    }
 			}
 		});

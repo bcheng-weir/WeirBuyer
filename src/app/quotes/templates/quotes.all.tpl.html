@@ -42,7 +42,7 @@
                             <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
-                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>
+                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN',ER:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>
                         <td>{{quote.xp.StatusDate | weirdate}}</td>
                         <td>
                             <button class="btn btn-primary btn-md btn-review" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>

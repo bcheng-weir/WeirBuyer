@@ -11,7 +11,7 @@
                     </div>
 
                     <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;">
-                        <print-order-button buyer="revised.buyer" order="revised.Quote" items="revised.LineItems" address="revised.ShippingAddress" pocontent="revised.Catalog.xp.POContent"></print-order-button>
+                        <print-order-button buyer="revised.buyer" order="revised.Quote" items="revised.LineItems" address="revised.ShippingAddress" pocontent="revised.POContent"></print-order-button>
                     </div>
                     <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;" ng-csv="revised.ToCsvJson" add-bom="true" filename="{{revised.CsvFilename}}">
                         <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
@@ -196,6 +196,7 @@
                 <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.xp.Street3"></span><br>
                     <span><span ng-bind-html="revised.ShippingAddress.Zip"></span> <span ng-bind-html="revised.ShippingAddress.City"></span></span><br>
                     <span ng-bind-html="revised.country(revised.ShippingAddress.Country)"></span>
             </div>
@@ -204,6 +205,7 @@
                 <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.xp.Street3"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.City"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Zip"></span><br>
                 <span ng-bind-html="revised.country(revised.ShippingAddress.Country)"></span>
@@ -213,6 +215,7 @@
                 <span ng-bind-html="revised.ShippingAddress.CompanyName"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street1"></span><br>
                 <span ng-bind-html="revised.ShippingAddress.Street2"></span><br>
+                <span ng-bind-html="revised.ShippingAddress.xp.Street3"></span><br>
                 <span><span ng-bind-html="revised.ShippingAddress.City"></span>, <span ng-bind-html="revised.ShippingAddress.State"></span>
                     <span ng-bind-html="revised.ShippingAddress.Zip"></span></span><br>
                 <span ng-bind-html="revised.country(revised.ShippingAddress.Country)"></span>
@@ -220,10 +223,10 @@
             <hr>
             <div class="row">
                 <div class="col-xs-8">
-                    <p><span ng-bind-html='revised.labels.ReplacementGuidance'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='revised.labels.POAGuidance'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='revised.labels.LeadTimeNotice'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='revised.labels.PriceDisclaimer'></span></p>
+                    <p><span ng-bind-html='revised.SharedContent.ReplacementGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='revised.SharedContent.POAGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='revised.SharedContent.LeadTimeNotice'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='revised.SharedContent.PriceDisclaimer'></span></p>
                 </div>
             </div>
         </div>

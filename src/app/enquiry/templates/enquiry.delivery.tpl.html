@@ -23,6 +23,7 @@
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
                     <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <span ng-bind-html="item.xp.Street3" ng-if="item.xp.Street3"></span><br ng-if="item.xp.Street3">
                     <span><span ng-bind-html="item.Zip"></span>, <span ng-bind-html="item.City"></span></span><br />
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
                     <div class="address-cell-btn">
@@ -33,6 +34,7 @@
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
                     <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <span ng-bind-html="item.xp.Street3" ng-if="item.xp.Street3"></span><br ng-if="item.xp.Street3">
                     <span ng-bind-html="item.City"></span><br>
                     <span ng-bind-html="item.Zip"></span><br>
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br ng-if="!item.Street2">
@@ -44,6 +46,7 @@
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
                     <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <span ng-bind-html="item.xp.Street3" ng-if="item.xp.Street3"></span><br ng-if="item.xp.Street3">
                     <p><span ng-bind-html="item.City"></span>, <span ng-bind-html="item.State"></span>, <span ng-bind-html="item.Zip"></span></p><br>
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
                     <div class="address-cell-btn">

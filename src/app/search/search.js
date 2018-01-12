@@ -23,7 +23,14 @@ function SearchConfig($stateProvider) {
 			resolve: {
 				CurrentCustomer: function(CurrentOrder) {
 					return CurrentOrder.GetCurrentCustomer();
-				}
+                },
+                Catalog: function (OrderCloudSDK, Me, CurrentUser, CurrentOrg) {
+                    if (!Me.Profile || !Me.Org) {
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    return OrderCloudSDK.Catalogs.Get(Me.Org.xp.WeirGroup.label);
+                }
 			}
 		})
 		.state( 'search.serial', {
@@ -112,7 +119,7 @@ function SearchConfig($stateProvider) {
 		});
 }
 
-function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, CurrentCustomer, Me, imageRoot, SearchTypeService) {
+function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, CurrentCustomer, Me, imageRoot, SearchTypeService, Catalog) {
 	var vm = this;
 	vm.searchType = WeirService.GetLastSearchType();
 	vm.IsServiceOrg = (Me.Org.xp.Type.id == 2);
@@ -122,6 +129,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	    Me.Org.xp.Customers = [];
 	}
     vm.AvailableCustomers = Me.Org.xp.Customers;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 
     vm.ImageBaseUrl = imageRoot;
     vm.GetValveImageUrl = function (img) {
@@ -224,9 +232,6 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 			AllValves: "All Valves",
 			MyValves: "My Valves",
 			Select: "Select",
-			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			NotAvailable: "N/A",
             ApplyFilter: "OK"
 		},
@@ -244,9 +249,6 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 		    AllValves:  $sce.trustAsHtml("Toutes les soupapes"),
 		    MyValves: $sce.trustAsHtml("Mes soupapes achetées"),
 		    Select: $sce.trustAsHtml("S&eacute;lectionner"),
-		    ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-		    POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-		    PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 		    NotAvailable: $sce.trustAsHtml("Non Applicable"),
 		    ApplyFilter: $sce.trustAsHtml("OK")
 	    }
@@ -270,7 +272,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	};
 }
 
-function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts, Group) {
+function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProducts, Group, Me) {
     var vm = this;
     vm.SerialNumberMatches = [];
 	vm.WeirGroup = Group;
@@ -333,6 +335,21 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
+    if (Me.Org.xp.Lang && Me.Org.xp.Lang.id == "en" && Me.Org.xp.WeirGroup.id == 2) {
+		vm.labels.SearchBySerialNumberSecondLine = "Serial number example; 004443020002 (12 characters - from 2006 to present); ";
+		vm.labels.SearchBySerialNumberThirdLine = "Serial number example: 001/054845 (3 characters, 1 forward slash , 6 characters - between 1996 & 2006)";
+        vm.labels.SearchBySerialNumberFourthLine = "Valve description example;<br>" + "9DX2HGPFL<br>" + "P12D1330A-D-MM";
+
+        vm.labels.CheckNamePlate = "Check your valve Nameplate";
+        vm.labels.CheckNamePlateDescription = "Nameplate is located on the side of the valve";
+        vm.labels.IdentifySNTitle = "Identify your Serial Number";
+        vm.labels.IdentifySNDescriptionLine1 = "New serial number is composed of 12 digits, not more, not less.";
+        vm.labels.IdentifySNDescriptionLine2 = "Old serial numbers are composed as follows for example: 001/054845";
+        vm.labels.TypeSNTitle = "Type your S/N on the platform";
+        vm.labels.TypeSNTitleDescriptionLine1 = "/!\\ For new Serial Number, do not type the last 4 digits and the forward slash";
+        vm.labels.TypeSNTitleDescriptionLine2 = "For old Serial Number, Type the 3 first digits, the forward slash and finally the 6 following digits. <br> Do not type the second forward slash and the two last digits";
+	}
+
     WeirService.SetLastSearchType(WeirService.SearchType.Serial);
 
     vm.serialNumbers = [null];
@@ -513,7 +530,6 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, Wei
 			LeadTime: "Lead time (days)",
 			Price: "Price per item or set",
 			Qty: "Quantity",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			AddToQuote: "Add to Quote"
 		},
 		fr: {
@@ -525,7 +541,6 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, Wei
 		    LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
 		    Price: $sce.trustAsHtml("Prix par item ou par kit"),
 			Qty: $sce.trustAsHtml("Quantit&eacute;"),
-			LeadTimeNotice: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es"),
 			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la cotation")
 		}
 	};
@@ -636,7 +651,6 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 			LeadTime: "Lead time (days)",
 			Price: "Price per item or set",
 			Qty: "Quantity",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			AddToQuote: "Add to Quote",
 			POA: "POA"
 		},
@@ -651,7 +665,6 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 			LeadTime: $sce.trustAsHtml("D&eacute;lai de livraison (journées)"),
 			Price: $sce.trustAsHtml("Prix par item ou par kit"),
 			Qty: $sce.trustAsHtml("Quantit&eacute;"),
-			LeadTimeNotice: $sce.trustAsHtml("Le d&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le d&eacute;lai le plus long de la liste des pi&egrave;ces de rechanges demand&eacute;es"),
 			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la cotation"),
 			POA: $sce.trustAsHtml("POA")
 		}
@@ -883,7 +896,6 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 			LeadTime: "Lead time (days)",
 			Price: "Price per item or set",
 			Qty: "Quantity",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			AddToQuote: "Add to Quote"
 		},
 		fr: {
@@ -895,7 +907,6 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 			LeadTime: $sce.trustAsHtml("D&eacute;lai de mise en &oelig;uvre (journées)"),
 			Price: $sce.trustAsHtml("Prix par article ou ensemble"),
 			Qty: $sce.trustAsHtml("Quantit&eacute;"),
-			LeadTimeNotice: $sce.trustAsHtml("D&eacute;lai de livraison pour toutes les commandes sera bas&eacute; sur le plus long d&eacute;lai de la liste des pi&eacute;ces de rechange demand&eacute;es"),
 			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la proposition")
 		}
 	};

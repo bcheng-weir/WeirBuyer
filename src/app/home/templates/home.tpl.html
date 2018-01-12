@@ -95,7 +95,7 @@
                                     </td>
                                     <td><span ng-bind-html="home.StatusLabel(quote.xp.Status)"
                                               ng-style="{height: ((home.CurrentUserOrg.ID | weirGroupFromBuyersID) == 'WPIFR') ? '42px' : ''}"
-                                              ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>
+                                              ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN',ER:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>
                                 </tr>
                                 <tr ng-hide="home.quotes.Meta.TotalCount > 0">
                                     <td colspan="4"><button class="btn btn-disabled" ng-bind-html="home.labels.NoQuotes"></button></td>
@@ -242,16 +242,10 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'en'" ng-repeat="brand in home.BrandUK track by brand.title">
+                    <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-repeat="brand in home.Brand track by brand.title">
                         <div class="featured-link">
                             <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
                             <p ng-bind-html="brand.description"> </p>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4 brand-panel" ng-if="home.LanguageUsed == 'fr'" ng-repeat="brand in home.BrandFR track by brand.title">
-                        <div class="featured-link">
-                            <a href="brands/{{brand.url}}" ng-bind-html="brand.title"> <i class="icon-right-arrow"></i></a>
-                            <p ng-bind-html="brand.description"></p>
                         </div>
                     </div>
                 </div>

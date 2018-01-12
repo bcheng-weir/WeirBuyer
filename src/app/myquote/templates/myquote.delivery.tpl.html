@@ -25,6 +25,7 @@
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
                     <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <span ng-bind-html="item.xp.Street3" ng-if="item.xp.Street3"></span><br ng-if="item.xp.Street3">
                     <span><span ng-bind-html="item.Zip"></span>, <span ng-bind-html="item.City"></span></span><br />
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br><br>
                     <div class="address-cell-btn">
@@ -35,6 +36,7 @@
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
                     <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <span ng-bind-html="item.xp.Street3" ng-if="item.xp.Street3"></span><br ng-if="item.xp.Street3">
                     <span ng-bind-html="item.City"></span><br>
                     <span ng-bind-html="item.Zip"></span><br>
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br>
@@ -46,6 +48,7 @@
                     <span ng-bind-html="item.CompanyName"></span><br>
                     <span ng-bind-html="item.Street1"></span><br>
                     <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
+                    <span ng-bind-html="item.xp.Street3" ng-if="item.xp.Street3"></span><br ng-if="item.xp.Street3">
                     <p><span ng-bind-html="item.City"></span>, <span ng-bind-html="item.State"></span>, <span ng-bind-html="item.Zip"></span></p><br>
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br><br>
                     <div class="address-cell-btn">
@@ -60,9 +63,6 @@
                 </div>
                 <div class="col-md-2"></div>
             </div>
-
-
-
         </div>
         <div class="col-md-5">
             <div class="row" style="margin-left: 0px;">
@@ -73,8 +73,6 @@
                     </div>
                 </div>
             </div>
-
-
             <div class="row" style="margin-left: 0px; margin-top:8px; background-color: #eff0f1;">
                 <div class="col-md-12">
                     <div>
@@ -82,8 +80,16 @@
                     </div>
                     <div>
                         <form name="carriageForm" style="margin-top:1%;">
-                            <div class="row" style="margin-left: 5px"><label style="font-weight: 200;"><input type="radio" value="standard" ng-model="myquote.Quote.xp.CarriageRateType" ><span style="margin-left: 10px;">{{delivery.labels.CarriageStandardPrice}}</span></label></div><br />
-                            <div class="row"  style="margin-top: -2%; margin-left: 5px"><label style="font-weight: 200;"><input type="radio" value="exworks" ng-model="myquote.Quote.xp.CarriageRateType" ><span style="margin-left: 10px;">{{delivery.labels.CarriageExWorks}}</span></label></div>
+                            <div class="row" style="margin-left: 5px" ng-hide="delivery.exWorksOnly()">
+                                <label style="font-weight: 200;"></label>
+                                <input type="radio" value="standard" ng-model="myquote.Quote.xp.CarriageRateType" >
+                                <span style="margin-left: 10px;">{{delivery.labels.CarriageStandardPrice}}</span>
+                            </div><br />
+                            <div class="row"  style="margin-top: -2%; margin-left: 5px">
+                                <label style="font-weight: 200;"></label>
+                                <input type="radio" value="exworks" ng-model="myquote.Quote.xp.CarriageRateType" >
+                                <span style="margin-left: 10px;">{{delivery.labels.CarriageExWorks}}</span>
+                            </div>
                         </form>
                     </div>
                     <div style="margin-left: 2%; margin-top: 1%; margin-bottom: 2%">
@@ -95,13 +101,51 @@
                 <div class="col-md-12" style="margin-left: 0px;">
                     <span><b>{{delivery.labels.CarriageInfo}}</b></span>
                     <ul style="margin-top: 2%;">
-                        <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP1}}</li>
-                        <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP2}}</li>
-                        <li style="margin-top: 1%;">{{delivery.labels.CarriageInfoP3}}</li>
+                        <li style="margin-top: 1%;" ng-if="delivery.deliveryInformation.Line1">{{delivery.deliveryInformation.Line1}}</li>
+                        <li style="margin-top: 1%;" ng-if="delivery.deliveryInformation.Line2">{{delivery.deliveryInformation.Line2}}</li>
+                        <li style="margin-top: 1%;" ng-if="delivery.deliveryInformation.Line3">{{delivery.deliveryInformation.Line3}}</li>
                     </ul>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-md-12"> <!-- Comments to Weir -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p style="padding: 10px 0px 10px 0px"><strong><span ng-bind-html='myquote.labels.CommentNotice' ng-if="myquote.Quote.xp.Status == 'SV' || myquote.Quote.xp.Status == 'DR'"> </span></strong></p>
+                                    <ul class="nav nav-tabs">
+                                        <li class="active comments"><a href="#" id="Comments" ng-bind-html="delivery.labels.Comments"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row" ng-repeat="comment in delivery.Comments | reverseComments"> <!-- ng-repeat comment in comments to weir -->
+                                <div class="col-xs-12">
+                                    <div>
+                                        <span ng-bind-html="comment.by"></span>
+                                        <span ng-bind-html="delivery.labels.AddedComment"></span>
+                                        <span ng-bind-html="comment.date | weirdate"></span>
+                                    </div>
+                                    <br>
+                                    <div>
+                                        <span ng-bind-html="comment.val"></span>
+                                    </div>
+                                    <hr>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <textarea cols="50" rows="6" ng-model="delivery.NewComment"></textarea>
+                                    <br>
+                                    <button class="btn btn-primary" ng-bind-html="delivery.labels.Add" ng-click="delivery.AddComment()"></button>
+                                    <button class="btn btn-default" ng-bind-html="delivery.labels.Cancel" ng-click="delivery.NewComment=null"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

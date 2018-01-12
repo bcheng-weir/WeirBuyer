@@ -5,25 +5,42 @@
                 <nav class="navbar navbar-default">
                     <div class="container-fluid topNavBar">
                         <div class="row">
-                            <div class="col-md-4">
-                                <div class="collapse navbar-collapse pull-left" id="BASE_TOP_COLLAPSE" ng-show="base.showAppNavigation()">
-                                    <ul class="nav navbar-nav navbar-left brand-top-fix">
-                                        <li class="pull-left" ng-if="base.AppLocale()=='WVCUK'"
-                                            uib-tooltip="Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
-                                            tooltip-placement="right"
-                                            tooltip-trigger="mouseenter"
-                                            tooltip-class="customClass"> <!-- If WVCUK -->
-                                            <a class="brands-uk-upper-left" ng-bind-html="base.labels.BrandsUK" href="#" ng-click="base.selectBrand()"></a>
-                                        </li>
-                                        <li style="margin:auto;" ng-if="base.AppLocale()=='WPIFR'"
-                                            uib-tooltip-html="base.labels.TooltipSarasin"
-                                            tooltip-placement="right"
-                                            tooltip-trigger="mouseenter"
-                                            tooltip-class="customClass"> <!-- if WPIFR_EN -->
-                                            <a class="brands-fr-upper-left" ng-bind-html="base.labels.BrandsFR" href="#" ng-click="base.selectBrand()"></a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <div class="col-md-4" style="margin: 0; padding: 0;">
+                                <ul style="margin: 0px; padding: 0px; list-style-type: none; ">
+                                    <li>
+                                        <div class="collapse navbar-collapse pull-left" style="margin: 0; padding: 0;" id="BASE_TOP_COLLAPSE" ng-show="base.showAppNavigation()">
+                                            <ul class="nav navbar-nav navbar-left brand-top-fix" style="border: 1px solid blue;margin-top: 0;margin-bottom: 0;">
+                                                <li class="pull-left">
+                                                    <img src="../../../assets/images/MaterialIcon2.png" style="margin: 0 auto; width: 100%;vertical-align: middle;" ng-click="base.selectBrand()" />
+                                                </li>
+                                                <li class="pull-right" style="border-left: 1px solid blue;  padding-right: 20px; padding-left: 5px;" ng-if="base.AppLocale()=='WVCUK'"
+                                                    uib-tooltip="Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
+                                                    tooltip-placement="right"
+                                                    tooltip-trigger="mouseenter"
+                                                    tooltip-class="customClass"> <!-- If WVCUK -->
+                                                    <div style="padding-right: 20px; padding-left: 5px; margin: 1px; padding: 1px;">
+                                                        <a class="brands-uk-upper-left" href="#">
+                                                            <ul style="margin: 0px; padding: 0px; list-style-type: none;">
+                                                                <li ng-bind-html="base.labels.BrandsUK1"></li>
+                                                                <li ng-bind-html="base.labels.BrandsUK2"></li>
+                                                                <li ng-bind-html="base.labels.BrandsUK3"></li>
+                                                            </ul>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                                <li class="pull-right" style="margin:auto; border-left: 1px solid blue; " ng-if="base.AppLocale()=='WPIFR'"
+                                                    uib-tooltip-html="base.labels.TooltipSarasin"
+                                                    tooltip-placement="right"
+                                                    tooltip-trigger="mouseenter"
+                                                    tooltip-class="customClass"> <!-- if WPIFR_EN -->
+                                                    <div style="padding-right: 20px; padding-left: 5px;">
+                                                        <a class="brands-fr-upper-left" ng-bind-html="base.labels.BrandsFR" href="#"></a>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
                             </div>
                             <div class="col-md-8">
                                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -62,6 +79,11 @@
                         </div>
                     </div>
                 </nav>
+            </div>
+            <div>
+                <ul style="list-style-type: none; margin: 0; padding: 0;">
+                     <!-- ToDo put the overflow menu in here. When the button is clicked, ng-show will display these items and fill in the menu -->
+                </ul>
             </div>
         </div>
         <div class="row">

@@ -49,7 +49,7 @@ function UserGroupsService($q, OrderCloudSDK) {
     }
 }
 
-function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService) {
+function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService, $window) {
     var orderStatuses = {
         Enquiry: { id: "EN", label: { en: "Enquiry Submitted", fr: "Demande envoyée" }, desc: "An enquiry for parts not found" },
 	    EnquiryReview: {id: "ER", label:{ en: "Enquiry Submitted", fr: "Demande envoyée" },desc: "An enquiry under administrator review."},
@@ -126,6 +126,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         SetEnglishTranslationValve: _setEnglishTranslationValve,
         SetEnglishTranslationParts: _setEnglishTranslationParts,
         UserBuyers: userBuyers,
+        //needs to call $window.location.reload(); if using this function.
         DivisionSelection: DivisionSelection
     };
 
@@ -1431,6 +1432,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     };
 
     //params is an array of available buyers, and division wished to map to
+    //anything calling this needs to call - $window.location.reload();
     function mapToBuyer(arrOfBuyer, divisionSelected) {
         var dfd = $q.defer();
         var impersonation = {

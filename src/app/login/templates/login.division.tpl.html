@@ -44,14 +44,14 @@
                     <div class="row">
                         <div class="col-md-3"><!-- White space --></div>
                         <div class="col-md-2 brand-blue login-brand-data">
-                            Batley<br>
-                            Blakeborough<br>
-                            Hopkinsons
+                            Batley<sup>®</sup><br>
+                            Blakeborough<sup>®</sup><br>
+                            Hopkinsons<sup>®</sup>
                         </div>
                         <div class="col-md-2"><!-- Center white area --></div>
                         <div class="col-md-2 brand-blue login-brand-data">
                             <br>
-                            Sarasin-RSBD<br>
+                            Sarasin-RSBD<sup>&trade;</sup><br>
                             &nbsp;
                         </div>
                         <div class="col-md-3"><!-- White space --></div>
@@ -60,27 +60,49 @@
                     <div class="row">
                         <div class="col-md-3"><!-- White space --></div>
                         <div class="col-md-2 login-brand-data brand-gray">
-                            Search, view and order spares for your Batley, Blakeborough, or Hopkinsons valves.
+                            Search, view and order<br>spares for your Batley<sup>®</sup>,<br>Blakeborough<sup>®</sup>, and<br>Hopkinsons<sup>®</sup> valves.
                         </div>
                         <div class="col-md-2"><!-- Center white area --></div>
                         <div class="col-md-2 login-brand-data brand-gray">
-                            <br>Search, view and orders spares for your Sarasin-RSBD valves.;
+                            <br>Search, view and order<br>spares for your<br>Sarasin-RSBD<sup>&trade;</sup> valves.
                         </div>
                         <div class="col-md-3"><!-- White space --></div>
                     </div>
                     <div class="row">
                         <div class="col-md-3"><!-- White space --></div>
                         <div class="col-md-2 login-brand-data brand-gray">
-                            <button class="btn btn-default" ng-click="login.DivisionSelection('WVCUK')" style="width:100%;">Go</button>
+                            <button class="btn btn-default login-brand-btn btn-uk" ng-click="login.DivisionSelection('WVCUK')" style="width:100%;"
+                                    ng-mouseover="txtUK={'background-color':'#425563','color':'#FFFFFF'}"
+                                    ng-mouseleave="txtUK={'background-color':'#FFFFFF','color':'#FFFFFF'}">
+                                Go <span class="to-the-right"><i class='fa fa-angle-right' aria-hidden='true'></i></span>
+                            </button>
                         </div>
                         <div class="col-md-2"><!-- Center white area --></div>
                         <div class="col-md-2 login-brand-data brand-gray">
-                            <button class="btn btn-default" ng-click="login.DivisionSelection('WPIFR')" style="width:100%;">Go</button>
+                            <button class="btn btn-default  login-brand-btn btn-fr" ng-click="login.DivisionSelection('WPIFR')" style="width:100%;"
+                                    ng-mouseover="txtFR={'background-color':'#425563','color':'#FFFFFF'}"
+                                    ng-mouseleave="txtFR={'background-color':'#FFFFFF','color':'#FFFFFF'}">
+                                Go <span class="to-the-right"><i class='fa fa-angle-right' aria-hidden='true'></i></span>
+                            </button>
                         </div>
                         <div class="col-md-3"><!-- White space --></div>
                     </div>
+
                     <div class="row">
-                        <div class="col-md-12">&nbsp;<br><br><br>&nbsp;</div>
+                        <div class="col-md-3"><!-- White space --></div>
+                        <div class="col-md-2 login-brand-data txt-uk" ng-style="txtUK">
+                            Your enquiries will be managed by your existing<br>
+                            Weir Valves & Controls UK aftermarket spares team.
+                        </div>
+                        <div class="col-md-2"><!-- Center white area --></div>
+                        <div class="col-md-2 login-brand-data txt-fr" ng-style="txtFR">
+                            Your enquiries will be managed by your existing Sarasin-RSBD<sup>&trade;</sup> aftermarket spares team.
+                        </div>
+                        <div class="col-md-3"><!-- White space --></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">&nbsp;<br></div>
                     </div>
                 </div>
             </section>

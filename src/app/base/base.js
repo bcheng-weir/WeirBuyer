@@ -141,7 +141,7 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($document, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
+function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
@@ -170,8 +170,10 @@ function BaseController($document, $state, $rootScope, $uibModal, CurrentOrder, 
             Feedback: "Beta feedback",
             Register: "Register/Login",
             Logout: "Logout",
-            BrandsUK: "Batley<br>Blakeborough<br>Hopkinsons",
-            BrandsFR: "Sarasin - RSBD",
+            BrandsUK1: $sce.trustAsHtml("Batley<sup>®</sup>"),
+            BrandsUK2: $sce.trustAsHtml("Blakeborough<sup>®</sup>"),
+            BrandsUK3: $sce.trustAsHtml("Hopkinsons<sup>®</sup>"),
+            BrandsFR: $sce.trustAsHtml("Sarasin - RSBD<sup>TM</sup>"),
             TooltipSarasin: $sce.trustAsHtml("Your enquiries will be managed by your existing Sarasin-RSBD<sup>TM</sup> aftermarket spares team"),
             TooltipBBH: "Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
         },
@@ -408,7 +410,7 @@ function BaseController($document, $state, $rootScope, $uibModal, CurrentOrder, 
             });
     };
 
-    vm.selectBrand = function() {
+    /*vm.selectBrand = function() { //deprecated TODO delete
         //var parentElem = angular.element($document[0].querySelector('body'));
         $uibModal.open({
             animation:true,
@@ -418,7 +420,42 @@ function BaseController($document, $state, $rootScope, $uibModal, CurrentOrder, 
             controllerAs: 'division'
             //appendTo: parentElem
         });
+    };*/
+
+    var brandTemplate = {
+        'WPIFR':'base/templates/base.brandspopoverFR.tpl.html',
+        'WVCUK':'base/templates/base.brandspopoverUK.tpl.html'
     };
+    vm.brandsPopover = {
+        templateUrl: Me.Org.ID.substring(0,5)=='WVCUK' ? brandTemplate['WPIFR'] : brandTemplate['WVCUK']
+    };
+
+    vm.selectBrand = function(selectedDivision) {
+        var dfd = $q.defer();
+        WeirService.DivisionSelection(selectedDivision)
+            .then(function () {
+                //due to cache reset- reload window.
+                $window.location.reload();
+                dfd.resolve();
+            })
+            .catch(function (err) {
+                //what should be the error handling?
+                console.log(err);
+                dfd.reject();
+            });
+        return dfd.promise;
+    }
+
+    vm.currentImage = "../../../assets/images/MaterialIcon1.svg";
+    vm.toggleImage = function() {
+        if(vm.currentImage == "../../../assets/images/MaterialIcon1.svg") {
+            vm.currentImage = "../../../assets/images/MaterialIcon2.svg";
+            vm.brandIcon={'background-color':'#425563'};
+        } else {
+            vm.currentImage = "../../../assets/images/MaterialIcon1.svg";
+            vm.brandIcon={'background-color':'#e9e9e9'};
+        }
+    }
 }
 
 function NewQuoteModalController($uibModalInstance, WeirService, $sce) {
@@ -478,8 +515,6 @@ function DivisionSelectorController($uibModalInstance, $window, $q, WeirService)
                 //what should be the error handling?
                 console.log(err);
                 dfd.reject();
-
-
             });
 
         return dfd.promise;

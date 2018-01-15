@@ -563,7 +563,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, Wei
 
 }
 
-function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
+function PartController( $state, $sce , WeirService, Me, $scope, SearchProducts ) {
     var vm = this;
     vm.PartMatches = [];
 	vm.WeirGroup = Me.Org.xp.WeirGroup.label;
@@ -618,7 +618,7 @@ function PartController( $state, $sce , WeirService, Me, SearchProducts ) {
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.updatePartList = function (input) {
-		return SearchProducts.GetPart(input, null);
+		return SearchProducts.GetPart(input,  $scope.search.Customer);
 	};
 }
 

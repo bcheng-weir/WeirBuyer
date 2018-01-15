@@ -10,14 +10,16 @@
                                     <li>
                                         <div class="collapse navbar-collapse pull-left" style="margin: 0; padding: 0;" id="BASE_TOP_COLLAPSE" ng-show="base.showAppNavigation()">
                                             <ul class="nav navbar-nav navbar-left brand-top-fix" style="border: 1px solid blue;margin-top: 0;margin-bottom: 0;">
-                                                <li class="pull-left">
-                                                    <img src="../../../assets/images/MaterialIcon2.png" style="margin: 0 auto; width: 100%;vertical-align: middle;" ng-click="base.selectBrand()" />
+                                                <li class="pull-left" ng-style="base.brandIcon">
+                                                    <!--<img src="../../../assets/images/MaterialIcon2.png" style="margin: 0 auto; width: 100%;vertical-align: middle;" ng-click="base.selectBrand()" />-->
+                                                    <img ng-src="{{base.currentImage}}"
+                                                         popover-placement="bottom"
+                                                         uib-popover-template="base.brandsPopover.templateUrl"
+                                                         class="material-icon"
+                                                         ng-click="base.toggleImage();"
+                                                    />
                                                 </li>
-                                                <li class="pull-right" style="border-left: 1px solid blue;  padding-right: 20px; padding-left: 5px;" ng-if="base.AppLocale()=='WVCUK'"
-                                                    uib-tooltip="Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
-                                                    tooltip-placement="right"
-                                                    tooltip-trigger="mouseenter"
-                                                    tooltip-class="customClass"> <!-- If WVCUK -->
+                                                <li class="pull-right" style="border-left: 1px solid blue;  padding-right: 20px; padding-left: 5px;" ng-if="base.AppLocale()=='WVCUK'"> <!-- If WVCUK -->
                                                     <div style="padding-right: 20px; padding-left: 5px; margin: 1px; padding: 1px;">
                                                         <a class="brands-uk-upper-left" href="#">
                                                             <ul style="margin: 0px; padding: 0px; list-style-type: none;">
@@ -28,11 +30,7 @@
                                                         </a>
                                                     </div>
                                                 </li>
-                                                <li class="pull-right" style="margin:auto; border-left: 1px solid blue; " ng-if="base.AppLocale()=='WPIFR'"
-                                                    uib-tooltip-html="base.labels.TooltipSarasin"
-                                                    tooltip-placement="right"
-                                                    tooltip-trigger="mouseenter"
-                                                    tooltip-class="customClass"> <!-- if WPIFR_EN -->
+                                                <li class="pull-right" style="margin:auto; border-left: 1px solid blue; " ng-if="base.AppLocale()=='WPIFR'"> <!-- if WPIFR_EN -->
                                                     <div style="padding-right: 20px; padding-left: 5px;">
                                                         <a class="brands-fr-upper-left" ng-bind-html="base.labels.BrandsFR" href="#"></a>
                                                     </div>

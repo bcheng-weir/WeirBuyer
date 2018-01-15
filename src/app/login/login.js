@@ -47,14 +47,14 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
 					} else if (rte.state == 'quotes') {
 						$state.go('quotes.goto', { quoteID: rte.id });
 					} else {
-						$state.go('home');
+						$state.go('home',{},{reload:true});
 					}
 				} else {
-					$state.go('home');
+					$state.go('home',{},{reload:true});
 				}
 			})
 			.catch(function () {
-				$state.go('home');
+				$state.go('home',{},{reload:true});
 			});
     }
 

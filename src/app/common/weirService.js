@@ -1413,12 +1413,14 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 if (selectedDivision == 'WVCUK') {
                     mapToBuyer(buyersAvailable, selectedDivision).then(function () {
                         console.log("UK");
+                        $window.location.reload();
                         dfd.resolve();
                     });
                 }
                 if (selectedDivision == 'WPIFR') {
                     mapToBuyer(buyersAvailable, selectedDivision).then(function () {
                         console.log("FR");
+                        $window.location.reload();
                         dfd.resolve();
                     });
                 }

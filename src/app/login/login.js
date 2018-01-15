@@ -139,7 +139,7 @@ function LoginService($q, $state, OrderCloudSDK, TokenRefresh, clientid, anonymo
     }
 }
 
-function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $q, $state, ocRoles) {
+function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, OrderCloudSDK, LoginService, WeirService, CurrentOrder, clientid, scope, Me, $q, $window, $state, ocRoles) {
     var vm = this;
     var username = null;
     LoginService.GetUsername()
@@ -363,8 +363,7 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
         var dfd = $q.defer();
         WeirService.DivisionSelection(selectedDivision)
             .then(function () {
-                console.log("Success!");
-                $window.location.reload();
+                //$window.location.reload();
                 dfd.resolve();
             })
             .catch(function (err) {

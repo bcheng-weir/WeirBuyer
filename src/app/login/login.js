@@ -363,7 +363,10 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
         var dfd = $q.defer();
         WeirService.DivisionSelection(selectedDivision)
             .then(function () {
-                //$window.location.reload();
+                $uibModalInstance.close();
+            })
+            .then(function () {
+                //$state.reload();
                 dfd.resolve();
             })
             .catch(function (err) {

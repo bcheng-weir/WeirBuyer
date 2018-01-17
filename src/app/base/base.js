@@ -504,10 +504,10 @@ function DivisionSelectorController($uibModalInstance, $window, $q, WeirService)
         var dfd = $q.defer();
         WeirService.DivisionSelection(selectedDivision)
             .then(function () {
-                console.log("Success!");
                 $uibModalInstance.close();
-                //due to cache reset- reload window.
-                $window.location.reload();
+            })
+            .then(function () {
+                //$state.reload();
                 dfd.resolve();
             })
             .catch(function (err) {

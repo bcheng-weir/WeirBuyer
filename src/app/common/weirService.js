@@ -751,6 +751,7 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                         d.resolve();
                                     }
                                 } else {
+                                    _setEnglishTranslationParts(products.Items);
                                     angular.forEach(products.Items, function (product) {
                                         var result = {Number: number, Detail: product};
                                         results.Parts.push(result);
@@ -792,9 +793,11 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             //ToDO Move the translated xp vals to the standard places.
             angular.forEach(searchResults, function (value, key) {
                 if (value.Product && value.Product.xp && value.Product.xp.en)
-                    value.Product.Description = value.Product.xp.en.Description;
-                if (value.xp && value.xp.en) {
-                    value.Description = value.xp.en.Description;
+                    value.Product.Description = value.Product.xp.en.Description || value.Product.Description;
+                else if (value.xp && value.xp.en) {
+                    value.Description = value.xp.en.Description || value.Description;
+                } else if (value.Detail && value.Detail.xp && value.Detail.xp.en) {
+                    value.Detail.Description = value.Detail.xp.en.Description || value.Detail.Description;
                 }
             });
         }

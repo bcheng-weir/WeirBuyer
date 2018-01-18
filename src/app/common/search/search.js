@@ -248,11 +248,11 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 							.then(function(altResponse) {
 								partResults.push.apply(altResponse.Items);
 								//return
-                                dfd.resolve(WeirService.SetEnglishTranslationParts(partResults));
+                                dfd.resolve(partResults);
 							});
 					} else {
 						//return
-                        dfd.resolve(response.Items);
+					    dfd.resolve(WeirService.SetEnglishTranslationParts(response.Items));
 					}
 				});
 		} else {

@@ -141,7 +141,7 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
+function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, $window, base, Me) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
@@ -435,7 +435,6 @@ function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrd
         WeirService.DivisionSelection(selectedDivision)
             .then(function () {
                 //due to cache reset- reload window.
-                $window.location.reload();
                 dfd.resolve();
             })
             .catch(function (err) {
@@ -505,10 +504,10 @@ function DivisionSelectorController($uibModalInstance, $window, $q, WeirService)
         var dfd = $q.defer();
         WeirService.DivisionSelection(selectedDivision)
             .then(function () {
-                console.log("Success!");
                 $uibModalInstance.close();
-                //due to cache reset- reload window.
-                $window.location.reload();
+            })
+            .then(function () {
+                //$state.reload();
                 dfd.resolve();
             })
             .catch(function (err) {

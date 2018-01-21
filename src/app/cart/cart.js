@@ -124,10 +124,11 @@ function CartController($q, $rootScope, $timeout, OrderCloudSDK, LineItemHelpers
     });
 }
 
-function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, OrderCloudSDK, LineItemHelpers, CurrentOrder, Underscore, WeirService) {
+function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, OrderCloudSDK, LineItemHelpers, CurrentOrder, Underscore, WeirService, Me) {
     var vm = this;
     vm.LineItems = {};
-    vm.Order = null;
+    vm.currency = (Me.Org.xp.WeirGroup.label == "WVCUK") ? ("£") : ((Me.Org.xp.WeirGroup.label == "WPIFR") ? ("€") : (""));
+
     vm.showLineItems = false;
     vm.$ocMedia = $ocMedia;
     vm.TotalItems = 0;

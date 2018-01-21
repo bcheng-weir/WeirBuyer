@@ -129,7 +129,7 @@
                                     </td>
                                     <td><span ng-bind-html="home.StatusLabel(order.xp.Status)"
                                               ng-style="{height: ((home.CurrentUserOrg.ID | weirGroupFromBuyersID) == 'WPIFR') ? '42px' : ''}"
-                                              ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>
+                                              ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',SB:'btn-status btn-order-SB',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>
                                 </tr>
                                 <tr ng-hide="home.orders.Meta.TotalCount > 0">
                                     <td colspan="4"><button class="btn btn-disabled" ng-bind-html="home.labels.NoOrders"></button></td>

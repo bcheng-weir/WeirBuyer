@@ -138,11 +138,13 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 			filter.ParentID = Me.Org.ID;
 		}
 
+		//depth:Me.Org.xp.WeirGroup.id == "1" ? null:"all",
 		OrderCloudSDK.Me.ListCategories({
 				page:1,
 				pageSize:20,
+            	sortBy: "Name",
 				filters:filter,
-				depth:Me.Org.xp.WeirGroup.id == "1" ? null:"all",
+            	depth:"all",
 				catalogID:Me.Org.xp.WeirGroup.label})
 			.then(function(response) {
 				OrderCloudSDK.Me.ListCategories({
@@ -176,10 +178,16 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 		    "xp.TagNumber":lookForThisPartialTagNumber+"*"
 	    };
 	    if(Me.Org.xp.WeirGroup.id=="1") { //No global search for UK
-		    filter.ParentID = Me.Org.ID;
+		    filter.ParentID = Me.Org.ID; //Not on tag number.
 	    }
 
-	    OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter, 'depth':Me.Org.xp.WeirGroup.id=="1" ? null : "all", 'catalogID':Me.Org.xp.WeirGroup.label })
+	    OrderCloudSDK.Me.ListCategories({
+				'page':1,
+				'pageSize':20,
+            	'sortBy': "Name",
+				'filters':filter,
+				'depth':"all",
+				'catalogID':Me.Org.xp.WeirGroup.label })
             .then(function(response) {
             	dfd.resolve(WeirService.SetEnglishTranslationParts(response.Items));
             });
@@ -188,11 +196,27 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 
     function _getAllPartNumbers(lookForThisPartialPartNumber) {
     	var dfd = $q.defer();
-	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':{"Name": lookForThisPartialPartNumber+"*"} })
+	    OrderCloudSDK.Me.ListProducts({
+				'page':1,
+				'pageSize':20,
+            	'sortBy': "Name",
+            	'search': Me.Org.xp.WeirGroup.label,
+            	'searchOn': "ID",
+				'filters':{
+					"Name": lookForThisPartialPartNumber+"*"
+				}})
             .then(function(response) {
 	            if(Me.Org.xp.WeirGroup.label == "WVCUK") {
 		            partResults = response.Items;
-		            return OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':{"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"} })
+		            return OrderCloudSDK.Me.ListProducts({
+							'page':1,
+							'pageSize':20,
+                        	'sortBy': "Name",
+                        	'search': Me.Org.xp.WeirGroup.label,
+                        	'searchOn': "ID",
+							'filters':{
+								"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"
+							}})
 			            .then(function(altResponse) {
 				            partResults.push.apply(altResponse.Items);
 				            //return partResults;
@@ -233,18 +257,30 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 			}
 		};
 
-		//If a UK user, OR not a global search, and not a serial search: set a ParentID filter
-		if(SearchTypeService.GetLastSearchType() != "s" && (Me.Org.xp.WeirGroup.id=="1" || !SearchTypeService.IsGlobalSearch())) {
+		//If a UK user, OR not a global search, and a serial search: set a ParentID filter
+		if(SearchTypeService.GetLastSearchType() == "s" || SearchTypeService.GetLastSearchType() == "t" && (Me.Org.xp.WeirGroup.id=="1" || !SearchTypeService.IsGlobalSearch())) {
 			filter[SearchTypeService.GetLastSearchType()].ParentID = forThisCustomer.id;
 		}
 
 		if(SearchTypeService.GetLastSearchType() == "p") {
 			//return
-			OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary} )
+			OrderCloudSDK.Me.ListProducts({
+					'search':forThisCustomer.id.substring(0,5),
+                	'searchOn': "ID",
+					'page':1,
+					'pageSize':20,
+                	'sortBy': "Name",
+					'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary} )
 				.then(function(response) {
 					if(Me.Org.xp.WeirGroup.label == "WVCUK") {
 						partResults = response.Items;
-						OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].secondary })
+						OrderCloudSDK.Me.ListProducts({
+                            	'search':forThisCustomer.id.substring(0,5),
+                            	'searchOn': "ID",
+								'page':1,
+								'pageSize':20,
+                            	'sortBy': "Name",
+								'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].secondary })
 							.then(function(altResponse) {
 								partResults.push.apply(altResponse.Items);
 								//return
@@ -261,8 +297,9 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 				OrderCloudSDK.Me.ListCategories({
 						'page':1,
 						'pageSize':20,
+                    	'sortBy': "Name",
 						'filters':filter[SearchTypeService.GetLastSearchType()],
-						'depth': Me.Org.xp.WeirGroup.id == "1" ? null : "all",
+						'depth':"all",
 						'catalogID':Me.Org.xp.WeirGroup.label })
                     .then(function (response) {
                         //return
@@ -283,7 +320,13 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
                     });
             } else {
                 //return
-				OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.xp.WeirGroup.label })
+				OrderCloudSDK.Me.ListCategories({
+						'page':1,
+						'pageSize':20,
+						'filters':filter[SearchTypeService.GetLastSearchType()],
+						'depth':"all",
+                    	'sortBy': "Name",
+						'catalogID':Me.Org.xp.WeirGroup.label })
                     .then(function (response) {
                         //return
                         dfd.resolve(WeirService.SetEnglishTranslationParts(response.Items));

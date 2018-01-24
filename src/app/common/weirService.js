@@ -631,9 +631,14 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                 var d = $q.defer();
                                 if (SearchTypeService.IsGlobalSearch()) {
                                     OrderCloudSDK.Me.ListCategories({
-                                        'page': 1, 'pageSize': 50, 'sortBy': "Name", 'filters': {
+                                        'page': 1,
+                                        'pageSize': 50,
+                                        'sortBy': "Name",
+                                        'filters': {
                                             "xp.TagNumber": number
-                                        }, 'depth': "all", 'catalogID': Me.Org.xp.WeirGroup.label
+                                        },
+                                        'depth': "all",
+                                        'catalogID': Me.Org.xp.WeirGroup.label
                                     })
                                         .then(function (matches) {
                                             if (matches.Items.length > 0) {
@@ -651,10 +656,13 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                         });
                                 } else {
                                     OrderCloudSDK.Me.ListCategories({
-                                        'page': 1, 'pageSize': 50, 'filters': {
+                                        'page': 1,
+                                        'pageSize': 50,
+                                        'filters': {
                                             "xp.TagNumber": number,
                                             "ParentID": cust.id
-                                        }, 'catalogID': Me.Org.xp.WeirGroup.label
+                                        },
+                                        'catalogID': Me.Org.xp.WeirGroup.label
                                     })
                                         .then(function (matches) {
                                             if (matches.Items.length > 0) {

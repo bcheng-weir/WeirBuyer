@@ -1607,7 +1607,7 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             });
 
         return dfd.promise;
-    };
+    }
 
     //params is an array of available buyers, and division wished to map to
     function mapToBuyer(arrOfBuyer, divisionSelected) {
@@ -1634,11 +1634,11 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                     impersonation.Roles = identity.AvailableRoles;
                                     impersonation.Roles.push("Shopper");
                                     var userNameToQuery = "";
-                                    if (value != true) {
-                                        userNameToQuery = identity.ID + "-" + key;
+                                    if (value == true) {
+                                        userNameToQuery = key + "-" + identity.ID;
                                     }
                                     else {
-                                         userNameToQuery = identity.ID.substring(0, identity.ID.indexOf('-'));
+                                        userNameToQuery = identity.ID.substring(identity.ID.lastIndexOf("-")+1,identity.ID.length);
                                     }
                                     return OrderCloudSDK.Users.GetAccessToken(key, userNameToQuery, impersonation);
                                 })

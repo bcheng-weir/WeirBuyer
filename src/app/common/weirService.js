@@ -4,7 +4,7 @@ angular.module( 'orderCloud' )
     .factory('WeirService', WeirService)
 ;
 function SearchTypeService() {
-    var searchglobal = false;
+    var searchglobal = false; //We are not using SetGlobalSearchFlag. Is it deprecated?
     var lastSearchType = 's';
     var svc = {
         IsGlobalSearch: function () { return searchglobal; },
@@ -1635,10 +1635,10 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                     impersonation.Roles.push("Shopper");
                                     var userNameToQuery = "";
                                     if (value == true) {
-                                        userNameToQuery = key + "-" + identity.ID;
+                                        userNameToQuery = key + "-" + identity.Username;
                                     }
                                     else {
-                                        userNameToQuery = identity.ID.substring(identity.ID.lastIndexOf("-")+1,identity.ID.length);
+                                        userNameToQuery = identity.ID.substring(identity.Username.lastIndexOf("-")+1,identity.ID.length);
                                     }
                                     return OrderCloudSDK.Users.GetAccessToken(key, userNameToQuery, impersonation);
                                 })

@@ -2021,7 +2021,17 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		) {
 			return null;
 		} else {
-			return "UPDATED"
+            if(current.Product.xp.LeadTime === previous.Product.xp.LeadTime && current.xp.LeadTime === previous.xp.LeadTime
+                && current.Product.xp.ReplacementSchedule === previous.Product.xp.ReplacementSchedule && current.xp.ReplacementSchedule === previous.xp.ReplacementSchedule
+                && current.Product.Description === previous.Product.Description && current.xp.Description === previous.xp.Description
+                && current.Product.Name === previous.Product.Name && current.xp.ProductName === previous.xp.ProductName
+				&& current.Quantity === previous.Quantity)
+            {
+                return null;
+            }
+            else {
+                return "UPDATED";
+            }
 		}
 	}
 	if(LineItems) { //hopefully an easier way to set labels.
@@ -2109,7 +2119,13 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
     vm.ShowUpdatedShipping = function () {
         if(vm.Quote.xp.OldShippingData) {
             if (vm.Quote.ShippingCost != vm.Quote.xp.OldShippingData.ShippingCost || vm.Quote.xp.ShippingDescription != vm.Quote.xp.OldShippingData.ShippingDescription) {
-                return true;
+            	if(vm.Quote.xp.WasEnquiry  == true && vm.Quote.xp.OldShippingData.ShippingCost === 0 && vm.Quote.ShippingCost > 0
+					&& vm.Quote.xp.OldShippingData.ShippingDescription == null)
+            	{
+
+					return false;
+				}
+                else return true;
             } else {
                 return false;
             }

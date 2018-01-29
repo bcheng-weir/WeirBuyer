@@ -10,13 +10,15 @@
                                     <li>
                                         <div class="collapse navbar-collapse pull-left" style="margin: 0; padding: 0;" id="BASE_TOP_COLLAPSE" ng-show="base.showAppNavigation()">
                                             <ul class="nav navbar-nav navbar-left brand-top-fix" style="border: 1px solid #005EB8;margin-top: 0;margin-bottom: 0;">
-                                                <li class="brand-icon" ng-style="base.brandIcon">
+                                                <li class="brand-icon" ng-style="base.brandIcon"
+                                                    tooltip-placement="bottom"
+                                                    uib-tooltip="Open to search, view and order valves spares by brand."
+                                                    tooltip-class="customClass">
                                                     <img ng-src="{{base.currentImage}}"
                                                          popover-placement="bottom"
                                                          uib-popover-template="base.brandsPopover.templateUrl"
                                                          class="material-icon"
-                                                         ng-click="base.toggleImage();"
-                                                    />
+                                                         ng-click="base.toggleImage();"/>
                                                 </li>
                                                 <li class="pull-right" style="border-left: 1px solid #005EB8;  padding-right: 20px; padding-left: 5px;" ng-if="base.AppLocale()=='WVCUK'"> <!-- If WVCUK -->
                                                     <div style="padding-right: 20px; padding-left: 5px; margin: 1px; padding: 1px;">

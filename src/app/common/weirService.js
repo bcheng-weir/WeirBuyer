@@ -1635,10 +1635,10 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                     impersonation.Roles.push("Shopper");
                                     var userNameToQuery = "";
                                     if (value == true) {
-                                        userNameToQuery = key + "-" + identity.Username;
+                                        userNameToQuery = identity.ID.substring(identity.Username.lastIndexOf("-")+1,identity.ID.length);
                                     }
                                     else {
-                                        userNameToQuery = identity.ID.substring(identity.Username.lastIndexOf("-")+1,identity.ID.length);
+                                        userNameToQuery = key + "-" + identity.Username;
                                     }
                                     return OrderCloudSDK.Users.GetAccessToken(key, userNameToQuery, impersonation);
                                 })

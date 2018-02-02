@@ -62,20 +62,20 @@
                         <td ng-bind-html="line.xp.SN"></td>
                         <td ng-bind-html="line.xp.TagNumber"></td>
                         <td>
-                            <span ng-if="!line.xp.ProductName" ng-bind-html="line.Product.Name"></span>
-                            <span ng-if="line.xp.ProductName" ng-bind-html="line.xp.ProductName"></span>
+                            <!--<span ng-if="!line.xp.ProductName" ng-bind-html="line.Product.Name"></span>-->
+                            <span ng-bind-html="line.xp.ProductName"></span>
                         </td>
                         <td>
-                            <span ng-if="!line.xp.Description" ng-bind-html="line.Product.Description"></span>
-                            <span ng-if="line.xp.Description" ng-bind-html="line.xp.Description"></span>
+                            <!--<span ng-if="!line.xp.Description" ng-bind-html="line.Product.Description"></span>-->
+                            <span ng-bind-html="line.xp.Description"></span>
                         </td>
                         <td>
-                            <span ng-if="!line.xp.ReplacementSchedule" ng-bind-html="line.Product.xp.ReplacementSchedule"></span>
-                            <span ng-if="line.xp.ReplacementSchedule" ng-bind-html="line.xp.ReplacementSchedule"></span>
+                            <!--<span ng-if="!line.xp.ReplacementSchedule" ng-bind-html="line.Product.xp.ReplacementSchedule"></span>-->
+                            <span ng-bind-html="line.xp.ReplacementSchedule"></span>
                         </td>
                         <td>
-                            <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
-                            <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
+                            <!--<span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>-->
+                            <span ng-bind-html="line.xp.LeadTime"></span>
                         </td>
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="revised.labels.POA"></td>
                         <td ng-if="line.UnitPrice">

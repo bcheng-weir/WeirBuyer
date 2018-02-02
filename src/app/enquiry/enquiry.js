@@ -242,6 +242,7 @@ function EnquirySelectController($state, $sce, WeirService, PartList, EnquirySer
         return false;
     };
 }
+
 function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore, toastr, Addresses, OCGeography, Me) {
     var vm = this;
     vm.enq = EnquiryService;

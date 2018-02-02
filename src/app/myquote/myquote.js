@@ -138,6 +138,7 @@ function MyQuoteConfig($stateProvider) {
                                                 if (lang && data.Items) {
                                                     for (var i = 0; i < data.Items.length; i++) {
                                                         var tmp = data.Items[i];
+                                                        //Might need to look through the apps and other sections and make this the item.xp.Description or wherever is appropriate to put it.
                                                         if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
                                                             tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
                                                         }

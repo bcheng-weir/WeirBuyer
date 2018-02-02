@@ -33,12 +33,12 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 
 		angular.forEach(LineItems, function (item) {
 			var line = [];
-			line.push((item.xp.SN) ? item.xp.SN : "");
-			line.push((item.xp.TagNumber) ? item.xp.TagNumber : "");
-			line.push((item.xp.ProductName) ? item.xp.ProductName : item.Product.Name);
-			line.push((item.xp.Description) ? item.xp.Description : item.Product.Description);
-			line.push((item.xp.ReplacementSchedule) ? item.xp.ReplacementSchedule : item.Product.xp.ReplacementSchedule);
-			line.push((item.xp.LeadTime) ? item.xp.LeadTime : item.Product.xp.LeadTime);
+			line.push(item.xp.SN);
+			line.push(item.xp.TagNumber);
+			line.push(item.xp.ProductName);
+			line.push(item.xp.Description);
+			line.push(item.xp.ReplacementSchedule);
+			line.push(item.xp.LeadTime);
 			line.push(currency);
 			line.push(item.UnitPrice);
 			line.push(item.Quantity);

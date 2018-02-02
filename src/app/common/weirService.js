@@ -878,7 +878,11 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                 Quantity: part.Quantity,
                 xp: {
                     SN: part.xp.SN,
-                    TagNumber: part.xp.TagNumber
+                    TagNumber: part.xp.TagNumber,
+                    LeadTime: part.Detail.xp.LeadTime,
+                    ReplacementSchedule: part.Detail.xp.ReplacementSchedule,
+                    Description: part.Detail.Description,
+                    ProductName: part.Detail.Name
                 }
             };
 
@@ -1478,13 +1482,19 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             data.xp.CommentsToWeir.push(enq.Comment);
         }
 
-        function addLineItem(sernum, itemId, qty) {
+        function addLineItem(sernum, itemId, qty, PartDetails) {
             var defer = $q.defer();
+
             var li = {
                 ProductID: itemId,
                 Quantity: qty,
                 xp: {
-                    SN: sernum
+                    SN: sernum,
+                    TagNumber: "",
+                    ProductName: PartDetails.Name,
+                    Description: PartDetails.Description,
+                    ReplacementSchedule: "",
+                    LeadTime: ""
                 }
             };
             OrderCloudSDK.LineItems.Create("Outgoing", data.ID, li)
@@ -1508,9 +1518,13 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             .then(function (quote) {
                 for (var p in enq.Parts) {
                     if (enq.Parts[p]) {
-                        queue.push(
-                            addLineItem(enq.SerialNumber, p, enq.Parts[p])
-                        );
+                        angular.forEach(enq.PartList, function(val, key) {
+                            if(val.ID === p) {
+                                queue.push(
+                                    addLineItem(enq.SerialNumber, p, enq.Parts[p], val)
+                                );
+                            }
+                        });
                     }
                 }
                 $q.all(queue)

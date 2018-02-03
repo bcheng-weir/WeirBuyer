@@ -334,7 +334,10 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                 return deferred.reject(ex);
                             });
                     } else {
-                        var filters = {"xp.SN": serialNumber};
+                        var filters = {
+                            "xp.SN": serialNumber
+                        };
+
                         if (Me.Org.xp.WeirGroup.label == "WVCUK") { //FR users will still search globally.
                             filters.ParentID = cust.id;
                         }

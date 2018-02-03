@@ -4,7 +4,7 @@ angular.module( 'orderCloud' )
     .factory('WeirService', WeirService)
 ;
 function SearchTypeService() {
-    var searchglobal = false;
+    var searchglobal = false; //We are not using SetGlobalSearchFlag. Is it deprecated?
     var lastSearchType = 's';
     var svc = {
         IsGlobalSearch: function () { return searchglobal; },
@@ -334,7 +334,10 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                 return deferred.reject(ex);
                             });
                     } else {
-                        var filters = {"xp.SN": serialNumber};
+                        var filters = {
+                            "xp.SN": serialNumber
+                        };
+
                         if (Me.Org.xp.WeirGroup.label == "WVCUK") { //FR users will still search globally.
                             filters.ParentID = cust.id;
                         }
@@ -878,7 +881,11 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                 Quantity: part.Quantity,
                 xp: {
                     SN: part.xp.SN,
-                    TagNumber: part.xp.TagNumber
+                    TagNumber: part.xp.TagNumber,
+                    LeadTime: part.Detail.xp.LeadTime,
+                    ReplacementSchedule: part.Detail.xp.ReplacementSchedule,
+                    Description: part.Detail.Description,
+                    ProductName: part.Detail.Name
                 }
             };
 
@@ -1478,13 +1485,19 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             data.xp.CommentsToWeir.push(enq.Comment);
         }
 
-        function addLineItem(sernum, itemId, qty) {
+        function addLineItem(sernum, itemId, qty, PartDetails) {
             var defer = $q.defer();
+
             var li = {
                 ProductID: itemId,
                 Quantity: qty,
                 xp: {
-                    SN: sernum
+                    SN: sernum,
+                    TagNumber: "",
+                    ProductName: PartDetails.Name,
+                    Description: PartDetails.Description,
+                    ReplacementSchedule: "",
+                    LeadTime: ""
                 }
             };
             OrderCloudSDK.LineItems.Create("Outgoing", data.ID, li)
@@ -1508,9 +1521,13 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             .then(function (quote) {
                 for (var p in enq.Parts) {
                     if (enq.Parts[p]) {
-                        queue.push(
-                            addLineItem(enq.SerialNumber, p, enq.Parts[p])
-                        );
+                        angular.forEach(enq.PartList, function(val, key) {
+                            if(val.ID === p) {
+                                queue.push(
+                                    addLineItem(enq.SerialNumber, p, enq.Parts[p], val)
+                                );
+                            }
+                        });
                     }
                 }
                 $q.all(queue)
@@ -1607,7 +1624,7 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             });
 
         return dfd.promise;
-    };
+    }
 
     //params is an array of available buyers, and division wished to map to
     function mapToBuyer(arrOfBuyer, divisionSelected) {
@@ -1634,11 +1651,11 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                     impersonation.Roles = identity.AvailableRoles;
                                     impersonation.Roles.push("Shopper");
                                     var userNameToQuery = "";
-                                    if (value != true) {
-                                        userNameToQuery = identity.ID + "-" + key;
+                                    if (value == true) {
+                                        userNameToQuery = identity.ID.substring(identity.Username.lastIndexOf("-")+1,identity.ID.length);
                                     }
                                     else {
-                                         userNameToQuery = identity.ID.substring(0, identity.ID.indexOf('-'));
+                                        userNameToQuery = key + "-" + identity.Username;
                                     }
                                     return OrderCloudSDK.Users.GetAccessToken(key, userNameToQuery, impersonation);
                                 })

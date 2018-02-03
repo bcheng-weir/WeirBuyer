@@ -138,6 +138,7 @@ function MyQuoteConfig($stateProvider) {
                                                 if (lang && data.Items) {
                                                     for (var i = 0; i < data.Items.length; i++) {
                                                         var tmp = data.Items[i];
+                                                        //Might need to look through the apps and other sections and make this the item.xp.Description or wherever is appropriate to put it.
                                                         if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
                                                             tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
                                                         }
@@ -1987,43 +1988,55 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
 
+    function notUpdated(newObj, oldObj)
+    {
+        if(typeof newObj !== "undefined" && typeof oldObj !== "undefined" && newObj === oldObj)
+        {
+            return true;
+        }
+        else
+        {
+            if(newObj == oldObj || (!newObj || newObj == 0) && (typeof oldObj === "undefined" || oldObj == null))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 	//Part of the label comparison
-	function compare(current,previous) {
-		if(current.Quantity === previous.Quantity &&
-			current.UnitPrice === previous.UnitPrice &&
-			current.xp.TagNumber === previous.xp.TagNumber &&
-			current.xp.SN === previous.xp.SN &&
-			(
-				(typeof current.Product.xp.LeadTime !== "undefined" && typeof previous.Product.xp.LeadTime !== "undefined" &&
-					current.Product.xp.LeadTime === previous.Product.xp.LeadTime) ||
-				(typeof current.xp.LeadTime !== "undefined" && typeof previous.xp.LeadTime !== "undefined" &&
-					current.xp.LeadTime === previous.xp.LeadTime)
-			) &&
-			(
-				(typeof current.Product.xp.ReplacementSchedule !== "undefined" && typeof previous.Product.xp.ReplacementSchedule !== "undefined" &&
-					current.Product.xp.ReplacementSchedule === previous.Product.xp.ReplacementSchedule) ||
-				(typeof current.xp.ReplacementSchedule !== "undefined" && typeof previous.xp.ReplacementSchedule !== "undefined" &&
-					current.xp.ReplacementSchedule === previous.xp.ReplacementSchedule)
-			) &&
-			(
-				(typeof current.Product.Description !== "undefined" && typeof previous.Product.Description !== "undefined" &&
-					current.Product.Description === previous.Product.Description) ||
-				(typeof current.xp.Description !== "undefined" && typeof previous.xp.Description !== "undefined" &&
-					current.xp.Description === previous.xp.Description)
-			)
-			&&
-			(
-				(typeof current.Product.Name !== "undefined" && typeof previous.Product.Name !== "undefined" &&
-					current.Product.Name === previous.Product.Name) ||
-				(typeof current.xp.ProductName !== "undefined" && typeof previous.xp.ProductName !== "undefined" &&
-					current.xp.ProductName === previous.xp.ProductName)
-			)
-		) {
-			return null;
-		} else {
-			return "UPDATED"
-		}
-	}
+    function compare(current,previous) {
+        if (notUpdated(current.Quantity, previous.Quantity) &&
+            notUpdated(current.UnitPrice, previous.UnitPrice) &&
+            notUpdated(current.xp.TagNumber, previous.xp.TagNumber) &&
+            notUpdated(current.xp.SN, previous.xp.SN) &&
+            (
+                notUpdated(current.xp.LeadTime, previous.xp.LeadTime) == false
+                ||  notUpdated(current.Product.xp.LeadTime, previous.Product.xp.LeadTime) == false ? false : true
+            ) &&
+            (
+                notUpdated(current.Product.xp.ReplacementSchedule, previous.Product.xp.ReplacementSchedule) == false
+                || notUpdated(current.xp.ReplacementSchedule , previous.xp.ReplacementSchedule) == false ? false : true
+            ) &&
+            (
+                notUpdated(current.Product.Description , previous.Product.Description) == false ||
+                notUpdated(current.xp.Description , previous.xp.Description) == false ? false : true
+            )
+            &&
+            (
+                notUpdated(current.Product.Name , previous.Product.Name) == false ||
+                notUpdated(current.xp.ProductName , previous.xp.ProductName) == false ? false : true
+            )
+        )
+        {
+            return null;
+        }
+        else {
+            return "UPDATED";
+        }
+    }
 	if(LineItems) { //hopefully an easier way to set labels.
 		// For each line item, does it exist in previous line items?  If NO then NEW, else are the fields different between the two? If YES then updated.
 		vm.LineItems = Underscore.filter(LineItems.Items, function(item) {
@@ -2109,7 +2122,13 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
     vm.ShowUpdatedShipping = function () {
         if(vm.Quote.xp.OldShippingData) {
             if (vm.Quote.ShippingCost != vm.Quote.xp.OldShippingData.ShippingCost || vm.Quote.xp.ShippingDescription != vm.Quote.xp.OldShippingData.ShippingDescription) {
-                return true;
+            	if(vm.Quote.xp.WasEnquiry  == true && vm.Quote.xp.OldShippingData.ShippingCost === 0 && vm.Quote.ShippingCost > 0
+					&& vm.Quote.xp.OldShippingData.ShippingDescription == null)
+            	{
+
+					return false;
+				}
+                else return true;
             } else {
                 return false;
             }

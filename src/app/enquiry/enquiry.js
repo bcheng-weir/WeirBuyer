@@ -242,6 +242,7 @@ function EnquirySelectController($state, $sce, WeirService, PartList, EnquirySer
         return false;
     };
 }
+
 function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore, toastr, Addresses, OCGeography, Me) {
     var vm = this;
     vm.enq = EnquiryService;
@@ -364,9 +365,14 @@ function NewEnquiryAddressModalController($uibModalInstance, $sce, WeirService) 
     };
 }
 
-function EnquiryReviewController($state, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography) {
+function EnquiryReviewController($state, $location, $anchorScroll, $window, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography) {
     var vm = this;
     vm.enq = EnquiryService;
+    vm.ScrollTo = function () {
+        $location.hash('MyEnquiry');
+        $anchorScroll();
+    };
+    vm.ScrollTo();
     vm.finalParts = _.filter(vm.enq.PartList, function(part) {
     	return part.quantity > 0;
     });

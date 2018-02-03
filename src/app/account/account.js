@@ -24,7 +24,7 @@ function AccountConfig($stateProvider) {
 	;
 }
 
-function AccountService($q, $uibModal, OrderCloudSDK) {
+function AccountService($q, $uibModal, OrderCloudSDK, clientid, scope) {
 	var service = {
 		Update: _update
 	};
@@ -53,7 +53,7 @@ function AccountService($q, $uibModal, OrderCloudSDK) {
 				Username: currentProfile.Username,
 				Password: password
 			};
-			OrderCloudSDK.GetToken(checkPasswordCredentials)
+			OrderCloudSDK.Auth.Login(checkPasswordCredentials.Username, checkPasswordCredentials.Password, clientid, scope)
 				.then(function() {
 					updateUser();
 				})

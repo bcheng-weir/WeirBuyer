@@ -129,7 +129,8 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	    Me.Org.xp.Customers = [];
 	}
     vm.AvailableCustomers = Me.Org.xp.Customers;
-    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
+    vm.FrAppEnLang = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? true : false;
+    vm.SharedContent = vm.FrAppEnLang ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 
     vm.ImageBaseUrl = imageRoot;
     vm.GetValveImageUrl = function (img) {
@@ -232,7 +233,7 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 			AllValves: "All Valves",
 			MyValves: "My Valves",
 			Select: "Select",
-			NotAvailable: "N/A",
+			NotAvailable: "Not Applicable",
             ApplyFilter: "OK"
 		},
 		fr: {

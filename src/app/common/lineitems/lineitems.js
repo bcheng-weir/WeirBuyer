@@ -75,7 +75,6 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
         var queue = [];
         angular.forEach(productIDs, function (productid) {
             if(productid != "PLACEHOLDER") {
-                //queue.push(OrderCloud.Products.Get(productid)); // This has to be as Me() or we won't get the price schedule
                 queue.push(OrderCloudSDK.Me.GetProduct(productid));
             }
         });
@@ -83,9 +82,11 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
             .then(function (results) {
                 angular.forEach(li, function (item) {
                     if(item.ProductID != "PLACEHOLDER") {
-                        // set POA if the item has a unit price of 0
-	                    //item.UnitPrice = item.UnitPrice==0 ? 'POA' : item.UnitPrice;
                         item.Product = angular.copy(Underscore.where(results, {ID: item.ProductID})[0]);
+                        item.xp.ProductName = typeof item.xp.ProductName === 'undefined' ? item.Product.Name: item.xp.ProductName;
+                        item.xp.Description = typeof item.xp.Description === 'undefined' ? item.Product.Description : item.xp.Description;
+                        item.xp.ReplacementSchedule = typeof item.xp.ReplacementSchedule === 'undefined' ? item.Product.xp.ReplacementSchedule : item.xp.ReplacementSchedule;
+                        item.xp.LeadTime = typeof item.xp.LeadTime === 'undefined' ?  item.Product.xp.LeadTime: item.xp.LeadTime;
                     }
                 });
                 dfd.resolve(li);
@@ -101,16 +102,18 @@ function LineItemFactory($rootScope, $q, $state, $uibModal, Underscore, OrderClo
 				item.Product = {
 					"Name": item.xp.ProductName,
 					"Description": item.xp.Description,
-					"xp": {
-						"ReplacementSchedule": item.xp.ReplacementSchedule,
-						"LeadTime": item.xp.LeadTime
-					},
 					"StandardPriceSchedule": {
 						"xp": {
 							"Currency":Customer.id.substring(0,5)=='WPIFR'?'EUR':'GBP'
 						}
 					}
 				};
+                item.xp.ProductName = typeof item.xp.ProductName === 'undefined' ? item.Product.Name: item.xp.ProductName;
+                item.xp.Description = typeof item.xp.Description === 'undefined' ? item.Product.Description : item.xp.Description;
+                item.xp.ReplacementSchedule = typeof item.xp.ReplacementSchedule === 'undefined' ? item.Product.xp.ReplacementSchedule : item.xp.ReplacementSchedule;
+                item.xp.LeadTime = typeof item.xp.LeadTime === 'undefined' ?  item.Product.xp.LeadTime: item.xp.LeadTime;
+                item.xp.TagNumber = typeof item.xp.TagNumber === 'undefined' ? "" : item.xp.TagNumber;
+                item.xp.SN = typeof item.xp.SN === 'undefined' ? "" : item.xp.SN;
 			}
 		});
 

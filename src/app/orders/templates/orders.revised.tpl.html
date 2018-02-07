@@ -33,8 +33,19 @@
                         <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!DateSubmitted'"></i>
                     </a>
                 </th>
+
+                <th scope="col">
+                    <a href="#" role="button" ng-click="orders.updateSort('DateCreated')">
+                        {{orders.labels.Date}}
+                        <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'DateCreated'"></i>
+                        <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!DateCreated'"></i>
+                    </a>
+                </th>
+                <th>
+                    {{orders.labels.statusDate}}
+                </th>
+
                 <th ng-bind-html='orders.labels.Status'></th>
-                <th ng-bind-html='orders.labels.Date'></th>
                 <th></th>
                 <th></th>
             </tr>
@@ -57,8 +68,17 @@
                 </td>
                 <td>{{order.xp.ReviewerName}}</td>
                 <td>{{order.DateSubmitted | weirdate}}</td>
+
+                <td>
+                    <span ng-if="order.DateCreated" ng-bind-html="orders.dateOf(order.DateCreated) | weirdate : orders.WeirGroup"></span>
+                    <span ng-if="!order.DateCreated"></span>
+                </td>
+                <td>
+                    <span ng-if="order.xp.StatusDate" ng-bind-html="orders.dateOf(order.xp.StatusDate) | weirdate : orders.WeirGroup"></span>
+                    <span ng-if="!order.xp.StatusDate"></span>
+                </td>
+
                 <td><span ng-bind-html="orders.getStatusLabel(order.xp.Status)" ng-class="{RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR'}[order.xp.Status]"></span></td>
-                <td>{{order.xp.StatusDate | weirdate}}</td>
                 <td>
                     <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
                 </td>

@@ -263,6 +263,10 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             });
     };
 
+    vm.dateOf = function(utcDate) {
+        return new Date(utcDate);
+    };
+
     var labels = {
         en: {
             AllHeader: vm.list.Meta.TotalCount.toString() + " Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
@@ -309,7 +313,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             Search: "Search",
             SearchPlaceholder: "Search by Weir quote or order number",
             Clear: "Clear Search",
-			Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters")
+			Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters"),
+            statusDate: "Status Date"
 	    },
         fr: {
             AllHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commande" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
@@ -356,7 +361,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             Search: $sce.trustAsHtml("Rechercher"),
             SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
             Clear: $sce.trustAsHtml("Effacer le rechercher"),
-            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres")
+            Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres"),
+            statusDate: $sce.trustAsHtml("FR: Status Date")
 	    }
     };
     vm.labels = labels[WeirService.Locale()];

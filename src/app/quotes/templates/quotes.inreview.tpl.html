@@ -20,9 +20,20 @@
                                 <i class="fa fa-caret-up" ng-show="quotes.parameters.sortBy == '!Total'"></i>
                             </a>
                         </th>
-                        <th ng-bind-html='inreview.labels.Reviewer'>t</th>
+                        <th ng-bind-html='inreview.labels.Reviewer'></th>
+
+                        <th scope="col">
+                            <a href="#" role="button" ng-click="quotes.updateSort('DateCreated')">
+                                {{quotes.labels.quoteDate}}
+                                <i class="fa fa-caret-down" ng-show="quotes.parameters.sortBy == 'DateCreated'"></i>
+                                <i class="fa fa-caret-up" ng-show="quotes.parameters.sortBy == '!DateCreated'"></i>
+                            </a>
+                        </th>
+                        <th>
+                            {{quotes.labels.statusDate}}
+                        </th>
+
                         <th ng-bind-html='inreview.labels.Status'></th>
-                        <th ng-bind-html='inreview.labels.Date'></th>
                         <th></th>
                     </tr>
                 </thead>
@@ -41,8 +52,17 @@
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
                         <td>{{quote.xp.ReviewerName}}</td>
+
+                        <td>
+                            <span ng-if="quote.DateCreated" ng-bind-html="quotes.dateOf(quote.DateCreated) | weirdate : quotes.WeirGroup"></span>
+                            <span ng-if="!quote.DateCreated"></span>
+                        </td>
+                        <td>
+                            <span ng-if="quote.xp.StatusDate" ng-bind-html="quotes.dateOf(quote.xp.StatusDate) | weirdate : quotes.WeirGroup"></span>
+                            <span ng-if="!quote.xp.StatusDate"></span>
+                        </td>
+
                         <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SB:'btn-status btn-quote-SB',RE:'btn-status btn-quote-RE'}[quote.xp.Status]"></span></td>
-                        <td>{{quote.xp.StatusDate | weirdate}}</td>
                         <td>
                             <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="inreview.labels.View"></a>
                         </td>

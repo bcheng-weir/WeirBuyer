@@ -314,7 +314,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             SearchPlaceholder: "Search by Weir quote or order number",
             Clear: "Clear Search",
 			Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters"),
-            statusDate: "Status Date"
+            statusDate: "Date Updated",
+            submittedDate: "Submitted Date"
 	    },
         fr: {
             AllHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commande" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
@@ -362,7 +363,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
             Clear: $sce.trustAsHtml("Effacer le rechercher"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres"),
-            statusDate: $sce.trustAsHtml("FR: Status Date")
+            statusDate: $sce.trustAsHtml("Date de mise à jour"),
+            submittedDate: $sce.trustAsHtml("Submitted Date")
 	    }
     };
     vm.labels = labels[WeirService.Locale()];

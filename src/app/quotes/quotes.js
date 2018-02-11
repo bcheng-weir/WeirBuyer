@@ -329,8 +329,8 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
             Search: "Search",
             SearchPlaceholder: "Search by Weir quote or order number",
             Clear: "Clear Search",
-			statusDate: "Status Date",
-			quoteDate: "Quote Date"
+			statusDate: "Date Updated",
+			submittedDate: "Submitted Date"
 		},
         fr: {
             All: $sce.trustAsHtml("Tous les devis"),
@@ -348,8 +348,8 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
             Search: $sce.trustAsHtml("Rechercher"),
             SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
             Clear: $sce.trustAsHtml("Effacer le rechercher"),
-            statusDate: $sce.trustAsHtml("Status Date"),
-            quoteDate: $sce.trustAsHtml("FR: Quote Date")
+            statusDate: $sce.trustAsHtml("Date de mise à jour"),
+            submittedDate: $sce.trustAsHtml("Date d’envoi")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

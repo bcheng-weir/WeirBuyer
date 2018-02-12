@@ -49,7 +49,7 @@ function UserGroupsService($q, OrderCloudSDK) {
     }
 }
 
-function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService, $window) {
+function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService, $window, Underscore) {
     var orderStatuses = {
         Enquiry: {
             id: "EN",
@@ -1367,18 +1367,26 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
     }
 
     function sortEnquiryCategories(valveType) {
-        var items = {
+        /*var items = {
             "Soupape de sûreté conventionnelle - Type Série P Starflow": 1,
             "Soupape d'expansion thermique - Type Série 9": 2,
             "Soupape pilotées - Type Série 76, Série 78 et Stareco": 3,
             "Soupape vapeur basse/moyenne pression - ASME I - Type Starflow V": 4,
             "Soupape vapeur haute pression - ASME I - Type Starsteam": 5,
             "Soupape pilotées basse pression - API2000 - Type Série 74LP": 6
+        };*/
+
+        var items = {
+            "74LP - API2000 Low pressure piloted safety relief valve":1,
+            "Pilot Operated Pressure Relief Valve (POPRV) - 76, 78, 86 & Stareco Type":2,
+            "Pressure Safety Valve (PSV) - Starflow type":3,
+            "Starflow V - ASME I Pressure relief valve":4,
+            "Thermal Safety Valve (TSV) - 9 Series Type":5,
+            "Other valve model (please add description to your enquiry)":6
         };
 
-        console.log(valveType);
         var result = Underscore.sortBy(valveType, function (valve) {
-            return items[valve.Name];
+            return items[valve.xp.en.Name];
         });
         return result;
     }
@@ -1415,7 +1423,9 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                         matches.manufacturers.push(tmp);
                     }
                 }
-                //matches.valvetypes["WPIFR-Sarasin-SAR"] = sortEnquiryCategories(matches.valvetypes["WPIFR-Sarasin-SAR"]); now sorted in console.
+                if (lang == 'en') {
+                    matches.valvetypes["WPIFR-Sarasin-SAR"] = sortEnquiryCategories(matches.valvetypes["WPIFR-Sarasin-SAR"]); //now sorted in console.
+                }
 
                 deferred.resolve(matches);
             })

@@ -27,11 +27,6 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 		vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	}
 
-	vm.country = function (c) {
-		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-		return result ? result.label : '';
-	};
-
 	var labels = {
 		en: {
 			QuoteNumber: "Quote Number; ",
@@ -77,7 +72,7 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];
-	$timeout($window.print,1);
+	$timeout($window.print,10);
 }
 
 function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$document,Me) {

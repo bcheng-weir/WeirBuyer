@@ -166,7 +166,7 @@
                         <span ng-bind-html="readonly.ShippingAddress.Street2"></span><br ng-if="readonly.ShippingAddress.Street2">
                         <span ng-bind-html="readonly.ShippingAddress.xp.Street3"></span><br ng-if="readonly.ShippingAddress.xp.Street3">
                         <span><span ng-bind-html="readonly.ShippingAddress.Zip"></span> <span ng-bind-html="readonly.ShippingAddress.City"></span></span><br>
-                        <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
+                        <span ng-bind-html="readonly.Quote.CountryName"></span>
                     </div>
                     <div ng-if="readonly.ShippingAddress.Country=='GB'">
                         <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
@@ -175,7 +175,7 @@
                         <span ng-bind-html="readonly.ShippingAddress.xp.Street3"></span><br ng-if="readonly.ShippingAddress.xp.Street3">
                         <span ng-bind-html="readonly.ShippingAddress.City"></span><br>
                         <span ng-bind-html="readonly.ShippingAddress.Zip"></span><br>
-                        <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
+                        <span ng-bind-html="readonly.Quote.CountryName"></span>
                     </div>
                     <div ng-if="readonly.ShippingAddress.Country!='GB' && readonly.ShippingAddress.Country!='FR'">
                         <span ng-bind-html="readonly.ShippingAddress.CompanyName"></span><br>
@@ -185,7 +185,7 @@
                             <span><span ng-bind-html="readonly.ShippingAddress.City"></span>,
                                 <span ng-bind-html="readonly.ShippingAddress.State"></span>
                              <span ng-bind-html="readonly.ShippingAddress.Zip"></span></span><br>
-                            <span ng-bind-html="readonly.country(readonly.ShippingAddress.Country)"></span>
+                            <span ng-bind-html="readonly.Quote.CountryName"></span>
                     </div>
                 </div>
             </div>

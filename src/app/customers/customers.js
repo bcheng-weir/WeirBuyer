@@ -495,9 +495,11 @@ function CustomerCreateCtrl($q, $state, toastr, CustomerService, OCGeography) {
     var vm = this;
     vm.WeirGroups = CustomerService.WeirGroups;
     vm.types = CustomerService.CustomerTypes;
-    vm.countries = OCGeography.Countries;
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.states = OCGeography.States;
-    //vm.labels = CustomerService.Labels[WeirService.Locale()];
     vm.Submit = _submit;
 
     function _submit() {
@@ -533,7 +535,10 @@ function CustomerAddressEditCtrl($exceptionHandler, $state, $scope, toastr, Orde
         addressID = SelectedAddress.ID;
     vm.addressName = SelectedAddress.AddressName;
     vm.address = SelectedAddress;
-    vm.countries = OCGeography.Countries;
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.states = OCGeography.States;
     //vm.labels = CustomerService.Labels[WeirService.Locale()];
     var original = angular.copy(vm.address); //use this to make the copy if there are dirty items. Set the active to false and primary to false if versioning.
@@ -651,7 +656,10 @@ function CustomerAddressEditCtrl($exceptionHandler, $state, $scope, toastr, Orde
 
 function CustomerAddressCreateCtrl($exceptionHandler, $state, toastr, OrderCloudSDK, OCGeography, CustomerService, SelectedBuyer, Underscore, WeirService) {
     var vm = this;
-    vm.countries = OCGeography.Countries;
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.states = OCGeography.States;
     vm.address = {Country: null};
     //vm.labels = CustomerService.Labels[WeirService.Locale()];

@@ -1,57 +1,58 @@
 <div class="form-group" ng-form="address_form">
     <div class="row">
         <div class="col-md-6">
-            <label for="address_name" ng-bind-html="labels.AddressName"></label>
+            <label for="address_name" ng-bind-html="adrsFrm.labels.AddressName"></label>
             <input required="true" id="address_name" type="text" ng-model="address.AddressName" class="form-control">
         </div>
         <div class="col-md-6">
-            <label for="address_company" ng-bind-html="labels.CompanyName"></label>
+            <label for="address_company" ng-bind-html="adrsFrm.labels.CompanyName"></label>
             <input id="address_company" type="text" ng-model="address.CompanyName" class="form-control">
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
-            <label for="address_firstname" ng-bind-html="labels.FirstName"></label>
+            <label for="address_firstname" ng-bind-html="adrsFrm.labels.FirstName"></label>
             <input ng-required="isbilling" id="address_firstname" type="text" ng-model="address.FirstName" class="form-control">
         </div>
         <div class="col-md-6">
-            <label for="address_lastname" ng-bind-html="labels.LastName"></label>
+            <label for="address_lastname" ng-bind-html="adrsFrm.labels.LastName"></label>
             <input ng-required="isbilling" id="address_lastname" type="text" ng-model="address.LastName" class="form-control">
         </div>
     </div>
     <div>
-        <label for="address_street1" ng-bind-html="labels.StreetOne"></label>
+        <label for="address_street1" ng-bind-html="adrsFrm.labels.StreetOne"></label>
         <input required="true" id="address_street1" type="text" ng-model="address.Street1" class="form-control">
     </div>
     <div>
-        <label for="address_street2" ng-bind-html="labels.StreetTwo"></label>
+        <label for="address_street2" ng-bind-html="adrsFrm.labels.StreetTwo"></label>
         <input id="address_street2" type="text" ng-model="address.Street2" class="form-control">
     </div>
     <div>
-        <label for="address_street3" ng-bind-html="labels.StreetThree"></label>
+        <label for="address_street3" ng-bind-html="adrsFrm.labels.StreetThree"></label>
         <input id="address_street3" type="text" ng-model="address.xp.Street3" class="form-control">
     </div>
     <div class="row">
         <div class="col-md-4">
-            <label for="address_zip" ng-bind-html="labels.PostCode"></label>
+            <label for="address_zip" ng-bind-html="adrsFrm.labels.PostCode"></label>
             <input required="true" id="address_zip" type="text" ng-model="address.Zip" class="form-control" maxlength="10" minlength="5">
         </div>
         <div class="col-md-4">
-            <label for="address_city" ng-bind-html="labels.City"></label>
+            <label for="address_city" ng-bind-html="adrsFrm.labels.City"></label>
             <input required="true" id="address_city" type="text" ng-model="address.City" class="form-control">
         </div>
         <div class="col-md-4">
-            <label for="address_state" ng-bind-html="labels.County"></label>
+            <label for="address_state" ng-bind-html="adrsFrm.labels.County"></label>
             <input id="address_state" class="form-control" ng-model="address.State" />
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
-            <label for="address_country" ng-bind-html="labels.Country"></label>
-            <select class="form-control" id="address_country" ng-model="address.Country" ng-options="country.value as country.label for country in countries" required/>
+            <label for="address_country" ng-bind-html="adrsFrm.labels.Country"></label>
+            <select class="form-control" id="address_country" ng-model="address.Country"
+                    ng-options="country.code as country.name for country in adrsFrm.countries" required/>
         </div>
         <div class="col-md-6">
-            <label for="address_phone" ng-bind-html="labels.PhoneNumber"></label>
+            <label for="address_phone" ng-bind-html="adrsFrm.labels.PhoneNumber"></label>
             <input id="address_phone" type="text" ng-model="address.Phone" class="form-control">
         </div>
     </div>

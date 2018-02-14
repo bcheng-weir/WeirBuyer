@@ -48,7 +48,8 @@
     <div class="row">
         <div class="col-md-6">
             <label for="address_country" ng-bind-html="labels.Country"></label>
-            <select class="form-control" id="address_country" ng-model="address.Country" ng-options="country.value as country.label for country in countries" required/>
+            <select class="form-control" id="address_country" ng-model="address.Country"
+                    ng-options="country.code as country.name for country in countries" required/>
         </div>
         <div class="col-md-6">
             <label for="address_phone" ng-bind-html="labels.PhoneNumber"></label>

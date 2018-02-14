@@ -172,7 +172,7 @@
                 <span ng-bind-html='myquote.ShippingAddress.Street2' ng-if="myquote.ShippingAddress.Street2"></span><br ng-if="myquote.ShippingAddress.Street2">
                 <span ng-bind-html='myquote.ShippingAddress.xp.Street3' ng-if="myquote.ShippingAddress.xp.Street3"></span><br ng-if="myquote.ShippingAddress.xp.Street3">
                 <span><span ng-bind-html='myquote.ShippingAddress.Zip'></span> <span ng-bind-html='myquote.ShippingAddress.City'></span></span><br>
-                <span ng-bind-html='review.country(myquote.ShippingAddress.Country)'></span>
+                <span ng-bind-html='review.Quote.CountryName'></span>
             </div>
             <div ng-if="myquote.ShippingAddress.Country=='GB'">
                 <span ng-bind-html="myquote.ShippingAddress.FirstName"></span> <span ng-bind-html="myquote.ShippingAddress.LastName"></span><br>
@@ -182,7 +182,7 @@
                 <span ng-bind-html='myquote.ShippingAddress.xp.Street3' ng-if="myquote.ShippingAddress.xp.Street3"></span><br ng-if="myquote.ShippingAddress.xp.Street3">
                 <span ng-bind-html='myquote.ShippingAddress.City'></span><br>
                 <span ng-bind-html='myquote.ShippingAddress.Zip'></span><br>
-                <span ng-bind-html='review.country(myquote.ShippingAddress.Country)'></span>
+                <span ng-bind-html='review.Quote.CountryName'></span>
             </div>
             <div ng-if="myquote.ShippingAddress.Country!='GB' && myquote.ShippingAddress.Country!='FR'">
                 <span ng-bind-html="myquote.ShippingAddress.FirstName"></span> <span ng-bind-html="myquote.ShippingAddress.LastName"></span><br>
@@ -191,7 +191,7 @@
                 <span ng-bind-html='myquote.ShippingAddress.Street2' ng-if="myquote.ShippingAddress.Street2"></span><br ng-if="myquote.ShippingAddress.Street2">
                 <span ng-bind-html='myquote.ShippingAddress.xp.Street3' ng-if="myquote.ShippingAddress.xp.Street3"></span><br ng-if="myquote.ShippingAddress.xp.Street3">
                 <span><span ng-bind-html='myquote.ShippingAddress.City'></span>, <span ng-bind-html='myquote.ShippingAddress.State'></span> <span ng-bind-html='myquote.ShippingAddress.Zip'></span></span><br>
-                <span ng-bind-html='review.country(myquote.ShippingAddress.Country)'></span>
+                <span ng-bind-html='review.Quote.CountryName'></span>
             </div>
             <span ng-if="review.Step=='Review'" ng-click="review.changeAddress()">
                 <a href="#" ng-html-bind="review.labels.ChangeAddr"></a>

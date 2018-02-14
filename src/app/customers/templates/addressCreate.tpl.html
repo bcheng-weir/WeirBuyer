@@ -63,7 +63,9 @@
     <div class="row">
         <div class="col-sm-6 form-group">
             <label for="addressCountryInput">{{customers.labels.Country}}</label>
-            <select  id="addressCountryInput" class="form-control" ng-options="country.value as country.label for country in customerAddressCreate.countries" ng-model="customerAddressCreate.address.Country" required>
+            <select  id="addressCountryInput" class="form-control"
+                     ng-options="country.code as country.name for country in customerAddressCreate.countries"
+                     ng-model="customerAddressCreate.address.Country" required>
             </select>
         </div>
     </div>

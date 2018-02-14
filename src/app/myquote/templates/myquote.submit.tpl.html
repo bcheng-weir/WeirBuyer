@@ -163,7 +163,7 @@
                 {{submit.ShippingAddress.Street2}}<br>
                 {{submit.ShippingAddress.xp.Street3}}<br>
                 {{submit.ShippingAddress.Zip}} {{submit.ShippingAddress.City}}<br>
-                {{submit.country(submit.ShippingAddress.Country)}}
+                {{submit.Quote.CountryName}}
             </div>
             <div ng-if="submit.ShippingAddress.Country=='GB'">
                 <span ng-bind-html="submit.ShippingAddress.FirstName"></span> <span ng-bind-html="submit.ShippingAddress.LastName"></span><br>
@@ -173,7 +173,7 @@
                 {{submit.ShippingAddress.xp.Street3}}<br>
                 {{submit.ShippingAddress.City}}<br>
                 {{submit.ShippingAddress.Zip}}<br>
-                {{submit.country(submit.ShippingAddress.Country)}}
+                {{submit.Quote.CountryName}}
             </div>
             <div ng-if="submit.ShippingAddress.Country!='GB' && submit.ShippingAddress.Country!='FR'">
                 <span ng-bind-html="submit.ShippingAddress.FirstName"></span> <span ng-bind-html="submit.ShippingAddress.LastName"></span><br>
@@ -182,7 +182,7 @@
                 {{submit.ShippingAddress.Street2}}<br>
                 {{submit.ShippingAddress.xp.Street3}}<br>
                 {{submit.ShippingAddress.City}}, {{submit.ShippingAddress.State}} {{submit.ShippingAddress.Zip}}<br>
-                {{submit.country(submit.ShippingAddress.Country)}}
+                {{submit.Quote.CountryName}}
             </div>
             <hr>
             <div class="row">

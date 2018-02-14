@@ -186,7 +186,11 @@ function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrd
             Register: $sce.trustAsHtml("Inscription / Connexion"),
             Logout: $sce.trustAsHtml("Se déconnecter"),
             TooltipSarasin: $sce.trustAsHtml("Your enquiries will be managed by your existing Sarasin-RSBD<sup>TM</sup> aftermarket spares team"),
-            TooltipBBH: "Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
+            TooltipBBH: "Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team",
+            BrandsUK1: $sce.trustAsHtml("Batley<sup>®</sup>"),
+            BrandsUK2: $sce.trustAsHtml("Blakeborough<sup>®</sup>"),
+            BrandsUK3: $sce.trustAsHtml("Hopkinsons<sup>®</sup>"),
+            BrandsFR: $sce.trustAsHtml("Sarasin - RSBD<sup>TM</sup>")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);

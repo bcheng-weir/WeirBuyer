@@ -78,7 +78,7 @@ function QuoteCommentsService(OrderCloudSDK, QuoteShareService, Me, $q) {
 		QuoteShareService.Quote.xp.CommentsToWeir.push(comment);
 		OrderCloudSDK.Orders.Patch("Outgoing", QuoteShareService.Quote.ID, {xp: {CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
 			.then(function (quote) {
-				QuoteShareService.Quote = quote;
+				//QuoteShareService.Quote = quote;
 				QuoteShareService.Comments = quote.xp.CommentsToWeir;
 				dfd.resolve(quote);
 			})
@@ -225,7 +225,10 @@ function MyQuoteConfig($stateProvider) {
                     else{
                         return Quote.Subtotal.toFixed(2);
                     }
-                }
+                },
+				Countries: function(OCGeography) {
+			    	return OCGeography.Countries();
+				}
 		    }
 		})
 		.state('myquote.detail', {
@@ -392,6 +395,9 @@ function MyQuoteConfig($stateProvider) {
 				},
                 Buyer : function(OrderCloudSDK, Me){
                     return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
+                },
+                Countries: function(OCGeography) {
+                    return OCGeography.Countries();
                 }
 			}
 		})
@@ -509,7 +515,10 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Buyer : function(OrderCloudSDK, Me){
 					return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
-				}
+				},
+                Countries: function(OCGeography) {
+                    return OCGeography.Countries();
+                }
 			}
 		})
 		.state('submit', {
@@ -626,15 +635,18 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Buyer : function(OrderCloudSDK, Me){
 					return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
-				}
+				},
+                Countries: function(OCGeography) {
+                    return OCGeography.Countries();
+                }
 			}
 		})
     ;
 }
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
-                           Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope, $exceptionHandler) {
+                           Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer, Underscore,
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope, $exceptionHandler, Countries) {
     var vm = this;
 	QuoteShareService.Quote = Quote;
     vm.currentState = $state.$current.name;
@@ -650,6 +662,10 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.Customer = Customer;
 	vm.buyer = Me.Org; //For the print directive.
 	vm.ShippingAddress = ShippingAddress;
+	if(ShippingAddress && ShippingAddress.Country) {
+        QuoteShareService.Quote.CountryName = Underscore.findWhere(Countries, {code: ShippingAddress.Country}).name;
+        vm.Quote.CountryName = Underscore.findWhere(Countries, {code: ShippingAddress.Country}).name;
+    }
 	vm.ImageBaseUrl = imageRoot;
 	vm.SaveableStatuses = [
 		WeirService.OrderStatus.Draft.id,
@@ -700,7 +716,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    }
 	    return "";
 	}
-	function save() {
+	function save(optionalComment) {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) { /*TODO: FAIL if no line items*/ }
 		var mods = {
 		    Comments: vm.Quote.Comments,
@@ -1009,8 +1025,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		if (CommentToBeAdded) {
 			QuoteCommentsService.AddComment(CommentToBeAdded)
 				.then(function(result) {
-					QuoteShareService.Quote = result;
-					vm.Quote = result;
+					//QuoteShareService.Quote = result;
+					//vm.Quote = result;
 					dfd.resolve(result);
 				})
 		} else {
@@ -1254,9 +1270,13 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
         _setShippingAddress(QuoteShareService.Quote.ID, vm.addresses[0]);
     }
 
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.country = function (c) {
-        var result = Underscore.findWhere(OCGeography.Countries, {value: c});
-        return result ? result.label : '';
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        return result ? result.name : '';
     };
 
 	var currencySymbol = Me.Org.xp.WeirGroup.id == 2 ? "€" : "£";
@@ -1399,7 +1419,6 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal,
     OrderCloudSDK, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, fileStore, FilesService,
 	$scope, FileSaver, UITotal, Catalog) {
-	//CheckStateChangeService.checkFormOnStateChange($scope);
 	var vm = this;
 	vm.currentState = $state.$current.name;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
@@ -1411,9 +1430,14 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
     if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.country = function (c) {
-        var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-        return result ? result.label : '';
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        vm.Quote.CountryName = result ? result.name : '';
+        return result ? result.name : '';
     };
     vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown");
     vm.SubmittingToReview = false;
@@ -1983,7 +2007,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
 function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloudSDK,  Underscore, OCGeography,
                                 Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me,
                                 fileStore, FilesService, FileSaver, QuoteToCsvService, Catalog, Buyer, $uibModal, $document,
-								$exceptionHandler) {
+								$exceptionHandler, Countries) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
@@ -2105,6 +2129,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
+
+    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
+
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
 	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
@@ -2112,11 +2139,18 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.Payments = Payments.Items;
 	var payment = (vm.Payments.length > 0) ? vm.Payments[0] : null;
 	if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
-	vm.country = function (c) {
-		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-		return result ? result.label : '';
-	};
-	vm.ShowCommentBox = false;
+	OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
+
+    vm.country = function (c) {
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        vm.Quote.CountryName = result ? result.name : '';
+        return result ? result.name : '';
+    };
+
+    vm.ShowCommentBox = false;
 	vm.CommentToWeir = "";
 	vm.fileStore = fileStore;
     vm.ShowUpdatedShipping = function () {
@@ -2432,7 +2466,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, FilesService, FileSaver, Catalog, Me) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, FilesService, FileSaver, Catalog, Me, Countries) {
     var vm = this;
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
@@ -2444,6 +2478,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
     vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
     vm.ShippingAddress = ShippingAddress;
+    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
     vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {
@@ -2458,10 +2493,16 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		vm.PreviousLineItems = [];
 	}
     vm.Payments = Payments.Items;
-	vm.country = function (c) {
-		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-		return result ? result.label : '';
-	};
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
+
+    vm.country = function (c) {
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        vm.Quote.CountryName = result ? result.name : '';
+        return result ? result.name : '';
+    };
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -2613,7 +2654,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 }
 
 function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
-                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me, FilesService, FileSaver, Catalog) {
+                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me, FilesService, FileSaver, Catalog, Countries) {
 	var vm = this;
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
@@ -2626,6 +2667,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
+    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
 	vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {
@@ -2642,10 +2684,16 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Payments = Payments.Items;
 	var payment = (vm.Payments.length > 0) ? vm.Payments[0] : null;
 	if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
-	vm.country = function (c) {
-		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-		return result ? result.label : '';
-	};
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
+
+    vm.country = function (c) {
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        vm.Quote.CountryName = result ? result.name : '';
+        return result ? result.name : '';
+    };
 	var labels = {
 		en: {
 			Customer: "Customer; ",

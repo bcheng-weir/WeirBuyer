@@ -78,7 +78,7 @@ function QuoteCommentsService(OrderCloudSDK, QuoteShareService, Me, $q) {
 		QuoteShareService.Quote.xp.CommentsToWeir.push(comment);
 		OrderCloudSDK.Orders.Patch("Outgoing", QuoteShareService.Quote.ID, {xp: {CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
 			.then(function (quote) {
-				QuoteShareService.Quote = quote;
+				//QuoteShareService.Quote = quote;
 				QuoteShareService.Comments = quote.xp.CommentsToWeir;
 				dfd.resolve(quote);
 			})
@@ -716,7 +716,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    }
 	    return "";
 	}
-	function save() {
+	function save(optionalComment) {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) { /*TODO: FAIL if no line items*/ }
 		var mods = {
 		    Comments: vm.Quote.Comments,
@@ -1025,8 +1025,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		if (CommentToBeAdded) {
 			QuoteCommentsService.AddComment(CommentToBeAdded)
 				.then(function(result) {
-					QuoteShareService.Quote = result;
-					vm.Quote = result;
+					//QuoteShareService.Quote = result;
+					//vm.Quote = result;
 					dfd.resolve(result);
 				})
 		} else {

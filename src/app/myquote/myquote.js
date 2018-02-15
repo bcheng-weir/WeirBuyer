@@ -2130,7 +2130,13 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
 
-    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
+    if(ShippingAddress && ShippingAddress.Country) {
+        var temp;
+        temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
 
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
 	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
@@ -2478,7 +2484,15 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
     vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
     vm.ShippingAddress = ShippingAddress;
-    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
+
+    if(ShippingAddress && ShippingAddress.Country) {
+    	var temp;
+    	temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
+
     vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {
@@ -2667,7 +2681,15 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
-    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
+
+    if(ShippingAddress && ShippingAddress.Country) {
+        var temp;
+        temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
+
 	vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {

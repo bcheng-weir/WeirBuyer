@@ -1468,7 +1468,6 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
         var data = {
             ID: newQuoteId,
             Type: "Standard",
-            // "FromUserID": "",
             "ShippingAddressID": enq.Shipping.ID,
             xp: {
                 "BuyerID": buyerId,

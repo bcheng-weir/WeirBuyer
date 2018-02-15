@@ -2038,20 +2038,20 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
             notUpdated(current.xp.SN, previous.xp.SN) &&
             (
                 notUpdated(current.xp.LeadTime, previous.xp.LeadTime) == false
-                ||  notUpdated(current.Product.xp.LeadTime, previous.Product.xp.LeadTime) == false ? false : true
+                || (current.Product && current.Product.xp && notUpdated(current.Product.xp.LeadTime, previous.Product.xp.LeadTime) == false ? false : true)
             ) &&
             (
-                notUpdated(current.Product.xp.ReplacementSchedule, previous.Product.xp.ReplacementSchedule) == false
+				(current.Product && current.Product.xp && notUpdated(current.Product.xp.ReplacementSchedule, previous.Product.xp.ReplacementSchedule) == false)
                 || notUpdated(current.xp.ReplacementSchedule , previous.xp.ReplacementSchedule) == false ? false : true
             ) &&
             (
-                notUpdated(current.Product.Description , previous.Product.Description) == false ||
-                notUpdated(current.xp.Description , previous.xp.Description) == false ? false : true
+				(current.Product && current.Product.xp && notUpdated(current.Product.Description , previous.Product.Description) == false)
+                || notUpdated(current.xp.Description , previous.xp.Description) == false ? false : true
             )
             &&
             (
-                notUpdated(current.Product.Name , previous.Product.Name) == false ||
-                notUpdated(current.xp.ProductName , previous.xp.ProductName) == false ? false : true
+				(current.Product && current.Product.xp && notUpdated(current.Product.Name , previous.Product.Name) == false)
+                || notUpdated(current.xp.ProductName , previous.xp.ProductName) == false ? false : true
             )
         )
         {

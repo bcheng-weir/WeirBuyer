@@ -1358,9 +1358,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	        })
             .then(function (address) {
             	QuoteShareService.ShippingAddress = address;
+            })
+			.then(function() {
                 $state.go($state.current, {}, {reload: true});
                 toastr.success(vm.labels.ShippingAddress, vm.labels.Success);
-            })
+			})
             .catch(function (ex) {
                 $exceptionHandler(ex);
             });

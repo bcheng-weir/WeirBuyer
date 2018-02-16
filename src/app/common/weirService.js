@@ -1661,7 +1661,7 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                     impersonation.Roles.push("Shopper");
                                     var userNameToQuery = "";
                                     if (value == true) {
-                                        userNameToQuery = identity.ID.substring(identity.Username.lastIndexOf("-")+1,identity.ID.length);
+                                        userNameToQuery = identity.Username.substring(identity.Username.lastIndexOf("-")+1,identity.Username.length);
                                     }
                                     else {
                                         userNameToQuery = key + "-" + identity.Username;

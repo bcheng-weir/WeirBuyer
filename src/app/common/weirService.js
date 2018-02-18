@@ -1583,7 +1583,6 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                 var currentBuyer = buyers.Items[0];
                 if (currentBuyer.xp && currentBuyer.xp.AKA) {
                     deferred.resolve(currentBuyer.xp.AKA);
-
                 }
                 else {
                     deferred.resolve([]);
@@ -1614,18 +1613,10 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
         var dfd = $q.defer();
         UserBuyerArray()
             .then(function (buyersAvailable) {
-                if (selectedDivision == 'WVCUK') {
-                    mapToBuyer(buyersAvailable, selectedDivision).then(function () {
-                        console.log("UK");
+                mapToBuyer(buyersAvailable, selectedDivision)
+                    .then(function () {
                         dfd.resolve();
                     });
-                }
-                if (selectedDivision == 'WPIFR') {
-                    mapToBuyer(buyersAvailable, selectedDivision).then(function () {
-                        console.log("FR");
-                        dfd.resolve();
-                    });
-                }
             })
             .catch(function (err) {
                 console.log(err);
@@ -1642,39 +1633,48 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             ClientID: clientid,
             Roles: []
         };
-        CurrentOrder.GetCurrentCustomer().then(function (currentBuyer) {
-            var continueLooping = true;
-            angular.forEach(arrOfBuyer, function (value, key) {
-                if(continueLooping) {
-                    if(currentBuyer.id.indexOf(divisionSelected) !== -1){
-                        $window.location.href = '/';
-                        continueLooping = false;
-                        dfd.resolve();
-                    }
-                    //toDo for future support of multiple buyers, need to add property to differentiate.
-                    if (key != 'Active') {
+        CurrentOrder.GetCurrentCustomer()
+            .then(function (currentBuyer) {
+                var continueLooping = true;
+                angular.forEach(arrOfBuyer, function (value, key) {
+                    if(continueLooping) {
+                        if(currentBuyer.id.indexOf(divisionSelected) !== -1){
+                            $window.location.href = '/';
+                            continueLooping = false;
+                            dfd.resolve();
+                        }
+                        //toDo for future support of multiple buyers, need to add property to differentiate.
+                        if (key != 'Active') {
                             //logic check required
+                            var _identity;
                             OrderCloudSDK.Me.Get()
-                                .then(function (identity) {
-                                    console.log(identity);
-                                    impersonation.Roles = identity.AvailableRoles;
-                                    impersonation.Roles.push("Shopper");
-                                    var userNameToQuery = "";
-                                    if (value == true) {
-                                        userNameToQuery = identity.Username.substring(identity.Username.lastIndexOf("-")+1,identity.Username.length);
+                                .then(function(identity) {
+                                    _identity = identity;
+                                    var opts = {};
+                                    opts.filters = {};
+
+                                    if (value) {
+                                        opts.filters['ImpersonationBuyerID'] = identity.Buyer.ID;
+                                        opts.filters['ImpersonationUserID'] = identity.ID;
+                                    } else {
+                                        opts.filters['BuyerID'] = identity.Buyer.ID;
+                                        opts.filters['UserID'] = identity.ID;
                                     }
-                                    else {
-                                        userNameToQuery = key + "-" + identity.Username;
+
+                                    return OrderCloudSDK.ImpersonationConfigs.List(opts);
+                                })
+                                .then(function (impConfig) {
+                                    impersonation.Roles = _identity.AvailableRoles;
+                                    if (impersonation.Roles.length == 0) {
+                                        impersonation.Roles.push("BuyerAdmin");
                                     }
-                                    return OrderCloudSDK.Users.GetAccessToken(key, userNameToQuery, impersonation);
+                                    return OrderCloudSDK.Users.GetAccessToken(key, value ? impConfig.Items[0].UserID : impConfig.Items[0].ImpersonationUserID, impersonation);
                                 })
                                 .then(function (token) {
-                                    console.log(token);
                                     OrderCloudSDK.SetToken(token.access_token);
                                     return OrderCloudSDK.Buyers.List()
                                 })
                                 .then(function (buyers) {
-
                                     if (buyers && buyers.Items.length > 0) {
                                         var buyer = buyers.Items[0];
                                         CurrentOrder.Remove();
@@ -1702,8 +1702,6 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                             name: buyer.Name
                                         });
                                         continueLooping = false;
-                                        //if no division equals the aka buyers, then proceed to default.
-
                                     }
                                 })
                                 .then(function () {
@@ -1714,14 +1712,13 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                     dfd.resolve();
                                 })
                                 .catch(function (err) {
-                                    console.log(err);
                                     toastr.error("Please logout and try again.");
                                     dfd.reject();
                                 });
 
+                        }
                     }
-                }
-            });
+                });
         });
         if (arrOfBuyer.length <= 1) {
             $state.go('home');

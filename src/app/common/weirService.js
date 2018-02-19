@@ -1672,7 +1672,7 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                 })
                                 .then(function (token) {
                                     OrderCloudSDK.SetToken(token.access_token);
-                                    return OrderCloudSDK.Buyers.List()
+                                    return OrderCloudSDK.Buyers.List();
                                 })
                                 .then(function (buyers) {
                                     if (buyers && buyers.Items.length > 0) {

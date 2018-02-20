@@ -37,8 +37,8 @@
                 </th>
 
                 <th ng-bind-html='orders.labels.ConfirmedBy'></th>
-                <th ng-bind-html='orders.labels.DateDespatched'></th>
                 <th ng-bind-html='orders.labels.EstDelivery'></th>
+                <th ng-bind-html='orders.labels.DateDespatched'></th>
                 <th></th>
             </tr>
             </thead>
@@ -68,8 +68,8 @@
                 </td>
 
                 <td>{{order.xp.ReviewerName}}</td>
-                <td>{{order.xp.DateDespatched | weirdate}}</td>
                 <td>{{order.xp.DeliveryDate | weirdate}}</td>
+                <td>{{order.xp.DateDespatched | weirdate}}</td>
                 <td>
                     <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
                 </td>

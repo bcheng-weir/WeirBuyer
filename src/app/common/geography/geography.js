@@ -2,7 +2,7 @@ angular.module('ordercloud-geography', [])
     .factory('OCGeography', OCGeography)
 ;
 
-function OCGeography($q, OrderCloudSDK) {
+function OCGeography($q, OrderCloudSDK, Underscore) {
     var _weirCountries = [];
     var _countries = [
         { "label": "United States of America", "value": "US"},
@@ -361,6 +361,7 @@ function OCGeography($q, OrderCloudSDK) {
         $q.all(queue)
             .then(function(results){
                 angular.forEach(results, function(val,key) {
+                    val.Items[0].xp.countries = Underscore.reject(val.Items[0].xp.countries, function(record) { return record.enable == false });
                     _weirCountries = _weirCountries.concat(val.Items[0].xp.countries);
                 });
                 deferred.resolve(_weirCountries);

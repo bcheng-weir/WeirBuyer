@@ -37,7 +37,10 @@ function EnquiryConfig($stateProvider) {
 		    resolve: {
 		        CurrentCustomer: function (CurrentOrder) {
 		            return CurrentOrder.GetCurrentCustomer();
-		        }
+		        },
+                Countries: function(OCGeography) {
+		            return OCGeography.Countries();
+                }
 		    }
 		})
 	    .state('enquiry.filter', {
@@ -243,7 +246,7 @@ function EnquirySelectController($state, $sce, WeirService, PartList, EnquirySer
     };
 }
 
-function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore, toastr, Addresses, OCGeography, Me) {
+function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore, toastr, Addresses, OCGeography, Countries, Me) {
     var vm = this;
     vm.enq = EnquiryService;
     if (vm.enq.Step < 3) vm.enq.Step = 3;
@@ -269,8 +272,8 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
     }
 
     vm.country = function (c) {
-        var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-        return result ? result.label : '';
+        var result = Underscore.findWhere(Countries, { code: c });
+        return result ? result.name : '';
     };
     vm.setShippingAddress = function(addr) {
         vm.enq.Shipping = addr;

@@ -49,7 +49,7 @@
                     <span ng-bind-html="item.Street1"></span><br>
                     <span ng-bind-html="item.Street2" ng-if="item.Street2"></span><br ng-if="item.Street2">
                     <span ng-bind-html="item.xp.Street3" ng-if="item.xp.Street3"></span><br ng-if="item.xp.Street3">
-                    <p><span ng-bind-html="item.City"></span>, <span ng-bind-html="item.State"></span>, <span ng-bind-html="item.Zip"></span></p><br>
+                    <span ng-bind-html="item.City"></span>, <span ng-bind-html="item.State"></span>, <span ng-bind-html="item.Zip"></span><br>
                     <span ng-bind-html="delivery.country(item.Country)"></span><br><br><br>
                     <div class="address-cell-btn">
                         <button ng-class="(myquote.Quote.ShippingAddressID==item.ID ? 'btn btn-warning' : 'btn btn-primary')" ng-bind-html='delivery.labels.DeliverHere' ng-click="delivery.setShippingAddress(myquote.Quote.ID,item)"></button>

@@ -263,13 +263,11 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
                     }
                 }
             })
-            //end seperate function for dry
             .then(function () {
-                return WeirService.UserBuyers()
+                return WeirService.UserBuyers();
             })
             .then(function (buyers) {
                 if (buyers.length > 0) {
-                    //vm.setForm('chooseDivision');
                     $state.go('loginDivisions');
                 } else {
                     LoginService.RouteAfterLogin();
@@ -355,9 +353,6 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
                 vm.credentials.ConfirmPassword = null;
             });
     };
-
-
-
 
     vm.DivisionSelection = function (selectedDivision) {
         var dfd = $q.defer();

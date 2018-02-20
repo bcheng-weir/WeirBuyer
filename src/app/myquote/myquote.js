@@ -1358,9 +1358,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	        })
             .then(function (address) {
             	QuoteShareService.ShippingAddress = address;
+            })
+			.then(function() {
                 $state.go($state.current, {}, {reload: true});
                 toastr.success(vm.labels.ShippingAddress, vm.labels.Success);
-            })
+			})
             .catch(function (ex) {
                 $exceptionHandler(ex);
             });
@@ -1815,7 +1817,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 
 	var labels = {
 		en: {
-			Title: "Thank you. Your order has submitted for review.​",
+			Title: "Thank you. Your order has been submitted for review.​",
 			MessageText1: "We have sent you a confirmation email.​",
 			MessageText2: "We will be in touch with you to discuss the items you have requested to be reviewed.",
 			MessageText3: "If your order needs to be revised we will send you an updated quote.",
@@ -2038,20 +2040,20 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
             notUpdated(current.xp.SN, previous.xp.SN) &&
             (
                 notUpdated(current.xp.LeadTime, previous.xp.LeadTime) == false
-                ||  notUpdated(current.Product.xp.LeadTime, previous.Product.xp.LeadTime) == false ? false : true
+                || (current.Product && current.Product.xp && notUpdated(current.Product.xp.LeadTime, previous.Product.xp.LeadTime) == false ? false : true)
             ) &&
             (
-                notUpdated(current.Product.xp.ReplacementSchedule, previous.Product.xp.ReplacementSchedule) == false
+				(current.Product && current.Product.xp && notUpdated(current.Product.xp.ReplacementSchedule, previous.Product.xp.ReplacementSchedule) == false)
                 || notUpdated(current.xp.ReplacementSchedule , previous.xp.ReplacementSchedule) == false ? false : true
             ) &&
             (
-                notUpdated(current.Product.Description , previous.Product.Description) == false ||
-                notUpdated(current.xp.Description , previous.xp.Description) == false ? false : true
+				(current.Product && current.Product.xp && notUpdated(current.Product.Description , previous.Product.Description) == false)
+                || notUpdated(current.xp.Description , previous.xp.Description) == false ? false : true
             )
             &&
             (
-                notUpdated(current.Product.Name , previous.Product.Name) == false ||
-                notUpdated(current.xp.ProductName , previous.xp.ProductName) == false ? false : true
+				(current.Product && current.Product.xp && notUpdated(current.Product.Name , previous.Product.Name) == false)
+                || notUpdated(current.xp.ProductName , previous.xp.ProductName) == false ? false : true
             )
         )
         {
@@ -2130,7 +2132,13 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
 
-    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
+    if(ShippingAddress && ShippingAddress.Country) {
+        var temp;
+        temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
 
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
 	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
@@ -2478,7 +2486,15 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
     vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
     vm.ShippingAddress = ShippingAddress;
-    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
+
+    if(ShippingAddress && ShippingAddress.Country) {
+    	var temp;
+    	temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
+
     vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {
@@ -2667,7 +2683,15 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
-    vm.Quote.CountryName = Underscore.findWhere(Countries, { code: ShippingAddress.Country }).name;
+
+    if(ShippingAddress && ShippingAddress.Country) {
+        var temp;
+        temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
+
 	vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {

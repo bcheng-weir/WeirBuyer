@@ -1817,7 +1817,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 
 	var labels = {
 		en: {
-			Title: "Thank you. Your order has submitted for review.​",
+			Title: "Thank you. Your order has been submitted for review.​",
 			MessageText1: "We have sent you a confirmation email.​",
 			MessageText2: "We will be in touch with you to discuss the items you have requested to be reviewed.",
 			MessageText3: "If your order needs to be revised we will send you an updated quote.",

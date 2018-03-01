@@ -73,7 +73,7 @@ function EnquiryConfig($stateProvider) {
 	        resolve: {
 	            Addresses: function (OrderCloudSDK, Me) {
                     var f = {
-                        "xp.active":"true"
+                        "xp.active":true
                     };
                     var opts = {
                         filters: f

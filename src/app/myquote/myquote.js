@@ -244,7 +244,13 @@ function MyQuoteConfig($stateProvider) {
 			controllerAs: 'delivery',
 			resolve: {
 				Addresses: function(OrderCloudSDK, Me) {
-					return OrderCloudSDK.Addresses.List(Me.GetBuyerID());
+                    var f = {
+                        "xp.active":"true"
+                    };
+                    var opts = {
+                        filters: f
+                    };
+					return OrderCloudSDK.Addresses.List(Me.GetBuyerID(), opts);
 				}
 			}
 		})

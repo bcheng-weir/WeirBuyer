@@ -134,7 +134,7 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 		var filter = {
 			"xp.SN": lookForThisPartialSerialNumber + "*"
 		};
-		if (Me.Org.xp.WeirGroup.id == "1") { // No global search for UK.
+		if (Me.Org.xp.WeirGroup.id === "1") { // No global search for UK.
 			filter.ParentID = Me.Org.ID;
 		}
 
@@ -258,11 +258,11 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 		};
 
 		//If a UK user, OR not a global search, and a serial search: set a ParentID filter
-		if(SearchTypeService.GetLastSearchType() == "s" || SearchTypeService.GetLastSearchType() == "t" && (Me.Org.xp.WeirGroup.id=="1" || !SearchTypeService.IsGlobalSearch())) {
+		if((SearchTypeService.GetLastSearchType() === "s" || SearchTypeService.GetLastSearchType() === "t") && (Me.Org.xp.WeirGroup.id==="1")) {
 			filter[SearchTypeService.GetLastSearchType()].ParentID = forThisCustomer.id;
 		}
 
-		if(SearchTypeService.GetLastSearchType() == "p") {
+		if(SearchTypeService.GetLastSearchType() === "p") {
 			//return
 			OrderCloudSDK.Me.ListProducts({
 					'search':forThisCustomer.id.substring(0,5),
@@ -272,7 +272,7 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
                 	'sortBy': "Name",
 					'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary} )
 				.then(function(response) {
-					if(Me.Org.xp.WeirGroup.label == "WVCUK") {
+					if(Me.Org.xp.WeirGroup.label === "WVCUK") {
 						partResults = response.Items;
 						OrderCloudSDK.Me.ListProducts({
                             	'search':forThisCustomer.id.substring(0,5),
@@ -292,7 +292,7 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirSer
 					}
 				});
 		} else {
-            if(SearchTypeService.GetLastSearchType() == "s") {
+            if(SearchTypeService.GetLastSearchType() === "s") {
                 //return
 				OrderCloudSDK.Me.ListCategories({
 						'page':1,

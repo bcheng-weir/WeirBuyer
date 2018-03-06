@@ -3,7 +3,7 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteShareService,OCGeography,Underscore) {
+function PrintOrderController(printData,$timeout,$window,$uibModalInstance,WeirService,$sce,QuoteShareService) {
 	//ToDo use the QuoteShareService
 	var vm = this;
 	vm.catalog = printData.catalog;
@@ -72,6 +72,11 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];
+
+    vm.close = function() {
+        $uibModalInstance.dismiss();
+    };
+
 	$timeout($window.print,10);
 }
 

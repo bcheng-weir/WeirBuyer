@@ -266,12 +266,14 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
         }
         return newArray;
     }
+
     var activeAddress = function (address) {
         return address.xp.active == true;
     };
+
     vm.addresses = Underscore.sortBy(Addresses.Items, function (address) {
         return address.xp.primary;
-    }).filter(activeAddress).reverse();
+    });
 
     if (!vm.enq.Shipping.ID && vm.addresses.length > 0) {
         vm.enq.Shipping = vm.addresses[0];

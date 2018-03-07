@@ -38,7 +38,7 @@ function CustomerConfig($stateProvider) {
                 },
                 AddressList: function(OrderCloudSDK, $stateParams, Parameters) {
                     var f = {
-                        "xp.active":"true"
+                        "xp.active":true
                     };
                     return OrderCloudSDK.Addresses.List($stateParams.buyerid, {'filters':f});
                 }

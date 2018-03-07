@@ -1272,7 +1272,6 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 
     //if the QuoteShareService.Quote.ShippingAddressID is null, set it to the vm.addresses[0] if the vm.addresses.length > 0
     if (QuoteShareService.Quote.ShippingAddressID == null && vm.addresses.length > 0) {
-        //function _setShippingAddress(QuoteID, Address) {
         _setShippingAddress(QuoteShareService.Quote.ID, vm.addresses[0]);
     }
 

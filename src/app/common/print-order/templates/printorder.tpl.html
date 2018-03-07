@@ -1,18 +1,24 @@
 <div class="printable" id="PRINTORDER">
     <div class="modal-header">
         <div width="100%">
-
-            <span class="pull-right" ng-click="printctrl.close()">
-                X
-            </span>
-
-            <span class="pull-left">
-                <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
-            </span>
-
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="pull-left">
+                                <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
+                            </span>
+                        </td>
+                        <td align="right">
+                            <span class="pull-right" ng-click="printctrl.close()">
+                                X
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
-        <br><br>
+        <br>
         <pre ng-bind-html="printctrl.pocontent.Address"></pre>
     </div>
     <br>

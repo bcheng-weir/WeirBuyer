@@ -3,6 +3,7 @@ angular.module('orderCloud')
     .controller('BaseCtrl', BaseController)
     .controller('NewQuoteCtrl', NewQuoteModalController)
     .controller('FeedbackCtrl', FeedbackController)
+    .controller('DivisionCtrl', DivisionSelectorController)
     .filter('occomponents', occomponents)
 ;
 
@@ -140,7 +141,7 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, base, Me) {
+function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, $window, base, Me) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
@@ -165,9 +166,16 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             Batley: "About Batley",
             Blakeborough: "About Blakeborough",
             Hopkinsons: "About Hopkinsons",
+            Sarasin: "About Sarasin",
             Feedback: "Beta feedback",
             Register: "Register/Login",
-            Logout: "Logout"
+            Logout: "Logout",
+            BrandsUK1: $sce.trustAsHtml("Batley<sup>®</sup>"),
+            BrandsUK2: $sce.trustAsHtml("Blakeborough<sup>®</sup>"),
+            BrandsUK3: $sce.trustAsHtml("Hopkinsons<sup>®</sup>"),
+            BrandsFR: $sce.trustAsHtml("Sarasin - RSBD<sup>TM</sup>"),
+            TooltipSarasin: $sce.trustAsHtml("Your enquiries will be managed by your existing Sarasin-RSBD<sup>TM</sup> aftermarket spares team"),
+            TooltipBBH: "Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team"
         },
         fr: {
             title: $sce.trustAsHtml("Envoyez-nous vos commentaires et suggestions"),
@@ -176,7 +184,13 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             suggestion: $sce.trustAsHtml("Suggestion"),
             Sarasin: $sce.trustAsHtml("À propos de Sarasin"),
             Register: $sce.trustAsHtml("Inscription / Connexion"),
-            Logout: $sce.trustAsHtml("Se déconnecter")
+            Logout: $sce.trustAsHtml("Se déconnecter"),
+            TooltipSarasin: $sce.trustAsHtml("Your enquiries will be managed by your existing Sarasin-RSBD<sup>TM</sup> aftermarket spares team"),
+            TooltipBBH: "Your enquiries will be managed by your existing Weir Valves & Controls UK aftermarket spares team",
+            BrandsUK1: $sce.trustAsHtml("Batley<sup>®</sup>"),
+            BrandsUK2: $sce.trustAsHtml("Blakeborough<sup>®</sup>"),
+            BrandsUK3: $sce.trustAsHtml("Hopkinsons<sup>®</sup>"),
+            BrandsFR: $sce.trustAsHtml("Sarasin - RSBD<sup>TM</sup>")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -251,6 +265,26 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
             }
         });
         modalInstance.result;
+    };
+
+    vm.showAppNavigation = function() {
+        //Can the user swap between FR and EN.
+        var show = false;
+        if(Me.Org && Me.Org.xp && Me.Org.xp.AKA) {
+            angular.forEach(Me.Org.xp.AKA, function(value, key) {
+                if(Me.Org.xp.WeirGroup.Label != key.substring(0,5)) {
+                    show = true;
+                }
+            });
+        }
+        return show;
+    };
+
+    vm.AppLocale = function() {
+        if (Me.Org && Me.Org.xp && Me.Org.xp.WeirGroup) {
+            return Me.Org.xp.WeirGroup.label;
+        }
+        return false;
     };
 
     function _isMobile() {
@@ -379,6 +413,52 @@ function BaseController($state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $
                 $state.go('search', {}, {reload: true});
             });
     };
+
+    /*vm.selectBrand = function() { //deprecated TODO delete
+        //var parentElem = angular.element($document[0].querySelector('body'));
+        $uibModal.open({
+            animation:true,
+            size:'lg',
+            templateUrl:'brands/templates/brands.select.tpl.html',
+            controller: 'DivisionCtrl',
+            controllerAs: 'division'
+            //appendTo: parentElem
+        });
+    };*/
+
+    var brandTemplate = {
+        'WPIFR':'base/templates/base.brandspopoverFR.tpl.html',
+        'WVCUK':'base/templates/base.brandspopoverUK.tpl.html'
+    };
+    vm.brandsPopover = {
+        templateUrl: Me.Org.ID.substring(0,5)=='WVCUK' ? brandTemplate['WPIFR'] : brandTemplate['WVCUK']
+    };
+
+    vm.selectBrand = function(selectedDivision) {
+        var dfd = $q.defer();
+        WeirService.DivisionSelection(selectedDivision)
+            .then(function () {
+                //due to cache reset- reload window.
+                dfd.resolve();
+            })
+            .catch(function (err) {
+                //what should be the error handling?
+                console.log(err);
+                dfd.reject();
+            });
+        return dfd.promise;
+    }
+
+    vm.currentImage = "../../../assets/images/MaterialIcon1.svg";
+    vm.toggleImage = function() {
+        if(vm.currentImage == "../../../assets/images/MaterialIcon1.svg") {
+            vm.currentImage = "../../../assets/images/MaterialIcon2.svg";
+            vm.brandIcon={'background-color':'#425563'};
+        } else {
+            vm.currentImage = "../../../assets/images/MaterialIcon1.svg";
+            vm.brandIcon={'background-color':'#e9e9e9'};
+        }
+    }
 }
 
 function NewQuoteModalController($uibModalInstance, WeirService, $sce) {
@@ -419,6 +499,28 @@ function occomponents() {
         });
 
         return result;
+    }
+}
+
+function DivisionSelectorController($uibModalInstance, $window, $q, WeirService) {
+    var vm = this;
+    vm.BrandSelected = function (selectedDivision) {
+        var dfd = $q.defer();
+        WeirService.DivisionSelection(selectedDivision)
+            .then(function () {
+                $uibModalInstance.close();
+            })
+            .then(function () {
+                //$state.reload();
+                dfd.resolve();
+            })
+            .catch(function (err) {
+                //what should be the error handling?
+                console.log(err);
+                dfd.reject();
+            });
+
+        return dfd.promise;
     }
 }
 

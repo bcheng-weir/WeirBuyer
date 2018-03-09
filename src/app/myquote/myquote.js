@@ -78,7 +78,7 @@ function QuoteCommentsService(OrderCloudSDK, QuoteShareService, Me, $q) {
 		QuoteShareService.Quote.xp.CommentsToWeir.push(comment);
 		OrderCloudSDK.Orders.Patch("Outgoing", QuoteShareService.Quote.ID, {xp: {CommentsToWeir: QuoteShareService.Quote.xp.CommentsToWeir}})
 			.then(function (quote) {
-				QuoteShareService.Quote = quote;
+				//QuoteShareService.Quote = quote;
 				QuoteShareService.Comments = quote.xp.CommentsToWeir;
 				dfd.resolve(quote);
 			})
@@ -123,6 +123,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 		            var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 		            CurrentOrder.GetID()
                         .then(function (id) {
 	                        OrderCloudSDK.LineItems.List("Outgoing",id, { 'page':1, 'pageSize':100 })
@@ -133,7 +134,18 @@ function MyQuoteConfig($stateProvider) {
                                     } else {
 	                                    LineItemHelpers.GetBlankProductInfo(data.Items, Customer);
                                         LineItemHelpers.GetProductInfo(data.Items)
-                                            .then(function () { dfd.resolve(data); });
+                                            .then(function () {
+                                                if (lang && data.Items) {
+                                                    for (var i = 0; i < data.Items.length; i++) {
+                                                        var tmp = data.Items[i];
+                                                        //Might need to look through the apps and other sections and make this the item.xp.Description or wherever is appropriate to put it.
+                                                        if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                            tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                        }
+                                                    }
+                                                }
+                                            	dfd.resolve(data);
+                                            });
                                     }
                                 })
 		                        .catch(function(ex) {
@@ -213,7 +225,10 @@ function MyQuoteConfig($stateProvider) {
                     else{
                         return Quote.Subtotal.toFixed(2);
                     }
-                }
+                },
+				Countries: function(OCGeography) {
+			    	return OCGeography.Countries();
+				}
 		    }
 		})
 		.state('myquote.detail', {
@@ -229,7 +244,13 @@ function MyQuoteConfig($stateProvider) {
 			controllerAs: 'delivery',
 			resolve: {
 				Addresses: function(OrderCloudSDK, Me) {
-					return OrderCloudSDK.Addresses.List(Me.GetBuyerID());
+                    var f = {
+                        "xp.active":true
+                    };
+                    var opts = {
+                        filters: f
+                    };
+					return OrderCloudSDK.Addresses.List(Me.GetBuyerID(), opts);
 				}
 			}
 		})
@@ -293,6 +314,7 @@ function MyQuoteConfig($stateProvider) {
                         errorTitle = "Error";
                     }
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -301,7 +323,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -327,6 +359,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -335,7 +368,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -358,6 +401,9 @@ function MyQuoteConfig($stateProvider) {
 				},
                 Buyer : function(OrderCloudSDK, Me){
                     return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
+                },
+                Countries: function(OCGeography) {
+                    return OCGeography.Countries();
                 }
 			}
 		})
@@ -388,6 +434,7 @@ function MyQuoteConfig($stateProvider) {
 						errorTitle = "Error";
 					}
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -396,7 +443,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -422,6 +479,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -430,7 +488,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -453,7 +521,10 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Buyer : function(OrderCloudSDK, Me){
 					return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
-				}
+				},
+                Countries: function(OCGeography) {
+                    return OCGeography.Countries();
+                }
 			}
 		})
 		.state('submit', {
@@ -483,6 +554,7 @@ function MyQuoteConfig($stateProvider) {
 						errorTitle = "Error";
 					}
 					var dfd = $q.defer();
+                    var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 					OrderCloudSDK.LineItems.List("Outgoing", Quote.ID)
 						.then(function (data) {
 							if (!data.Items.length) {
@@ -491,7 +563,17 @@ function MyQuoteConfig($stateProvider) {
 							} else {
 								LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 								LineItemHelpers.GetProductInfo(data.Items)
-									.then(function () { dfd.resolve(data); });
+									.then(function () {
+                                        if (lang && data.Items) {
+                                            for (var i = 0; i < data.Items.length; i++) {
+                                                var tmp = data.Items[i];
+                                                if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                    tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                }
+                                            }
+                                        }
+										dfd.resolve(data);
+									});
 							}
 						})
 						.catch(function () {
@@ -517,6 +599,7 @@ function MyQuoteConfig($stateProvider) {
 					if(pieces.length > 1) {
 						var prevId = pieces[0] + "-Rev" + (pieces[1] - 1).toString();
 						var dfd = $q.defer();
+                        var lang = Me.Org.xp.Lang ? Me.Org.xp.Lang.id : "";
 						OrderCloudSDK.LineItems.List("Outgoing", prevId)
 							.then(function(data) {
 								if (!data.Items.length) {
@@ -525,7 +608,17 @@ function MyQuoteConfig($stateProvider) {
 								} else {
 									LineItemHelpers.GetBlankProductInfo(data.Items,{"id":Me.Org.ID});
 									LineItemHelpers.GetProductInfo(data.Items)
-										.then(function () { dfd.resolve(data); });
+										.then(function () {
+                                            if (lang && data.Items) {
+                                                for (var i = 0; i < data.Items.length; i++) {
+                                                    var tmp = data.Items[i];
+                                                    if (tmp.Product && tmp.Product.xp && tmp.Product.xp[lang]) {
+                                                        tmp.Product.Description = tmp.Product.xp["en"].Description || tmp.Product.Description;
+                                                    }
+                                                }
+                                            }
+											dfd.resolve(data);
+										});
 								}
 							})
 							.catch(function () {
@@ -548,21 +641,26 @@ function MyQuoteConfig($stateProvider) {
 				},
 				Buyer : function(OrderCloudSDK, Me){
 					return OrderCloudSDK.Buyers.Get(Me.GetBuyerID());
-				}
+				},
+                Countries: function(OCGeography) {
+                    return OCGeography.Countries();
+                }
 			}
 		})
     ;
 }
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
-                           Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope, $exceptionHandler) {
+                           Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer, Underscore,
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope, $exceptionHandler, Countries) {
     var vm = this;
 	QuoteShareService.Quote = Quote;
     vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
     vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
     vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	vm.Quote = QuoteShareService.Quote;
@@ -570,6 +668,10 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	vm.Customer = Customer;
 	vm.buyer = Me.Org; //For the print directive.
 	vm.ShippingAddress = ShippingAddress;
+	if(ShippingAddress && ShippingAddress.Country) {
+        QuoteShareService.Quote.CountryName = Underscore.findWhere(Countries, {code: ShippingAddress.Country}).name;
+        vm.Quote.CountryName = Underscore.findWhere(Countries, {code: ShippingAddress.Country}).name;
+    }
 	vm.ImageBaseUrl = imageRoot;
 	vm.SaveableStatuses = [
 		WeirService.OrderStatus.Draft.id,
@@ -620,7 +722,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    }
 	    return "";
 	}
-	function save() {
+	function save(optionalComment) {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) { /*TODO: FAIL if no line items*/ }
 		var mods = {
 		    Comments: vm.Quote.Comments,
@@ -862,10 +964,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	        ApprovedMessage: "The revised quote has been accepted",
 	        ApprovedTitle: "Quote Updated",
 	        SubmitWithPO: "Submit Order",
-	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-		    ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-		    POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-		    LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 		    Currency: "Currency",
 			Search: "Search",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
@@ -916,10 +1014,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
 			ApprovedTitle: $sce.trustAsHtml("Cotation mise à jour"),
 			SubmitWithPO: $sce.trustAsHtml("Commander avec bon de commande"),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
-			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			Currency: $sce.trustAsHtml("Devise"),
             Search: $sce.trustAsHtml("Rechercher"),
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
@@ -937,8 +1031,8 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		if (CommentToBeAdded) {
 			QuoteCommentsService.AddComment(CommentToBeAdded)
 				.then(function(result) {
-					QuoteShareService.Quote = result;
-					vm.Quote = result;
+					//QuoteShareService.Quote = result;
+					//vm.Quote = result;
 					dfd.resolve(result);
 				})
 		} else {
@@ -1085,7 +1179,6 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Cancel: "Cancel",
 			Comments: "Comments",
 			AddedComment: " added a comment - ",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			SaveToContinue: "*Save to Continue",
 			POA: "POA"
 		},
@@ -1115,7 +1208,6 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 			Cancel: $sce.trustAsHtml("Annuler"),
 			Comments: $sce.trustAsHtml("Commentaires"),
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la livraison ni la TVA."),
 			SaveToContinue: $sce.trustAsHtml("*Veuillez enregistrer afin de continuer"),
             POA: $sce.trustAsHtml("POA")
 		}
@@ -1167,8 +1259,10 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me, Catalog) {
     var vm = this;
+    vm.Comments = QuoteShareService.Comments;
+    vm.NewComment = null;
     var activeAddress = function (address) {
         return address.xp.active == true;
     };
@@ -1178,14 +1272,26 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 
     //if the QuoteShareService.Quote.ShippingAddressID is null, set it to the vm.addresses[0] if the vm.addresses.length > 0
     if (QuoteShareService.Quote.ShippingAddressID == null && vm.addresses.length > 0) {
-        //function _setShippingAddress(QuoteID, Address) {
         _setShippingAddress(QuoteShareService.Quote.ID, vm.addresses[0]);
     }
 
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.country = function (c) {
-        var result = Underscore.findWhere(OCGeography.Countries, {value: c});
-        return result ? result.label : '';
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        return result ? result.name : '';
     };
+
+	var currencySymbol = Me.Org.xp.WeirGroup.id == 2 ? "€" : "£";
+
+	vm.exWorksOnly = function() {
+		//WPIFR EN lang users only see Ex Works for now.
+		return Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en";
+    };
+
+    vm.deliveryInformation = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.DeliveryInformationFR_EN : Catalog.xp.DeliveryInformation;
 
     var labels = {
         en: {
@@ -1197,20 +1303,20 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             BackToQuote: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quote",
             InfoText1: "Delivery costs will be confirmed on Order.",
             InfoText2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
-            InfoText3: "Lead time for all orders will be based on the longest lead time from the list of spares requested.",
             ShippingAddress: "Shipping address successfully selected.",
             ShippingAddressSet: "Shipping address set to ",
             Success: "Success",
             ShippingAddressTitle: "Shipping Address Set",
             //carriage labels
             CarriageOptionsMsg: "Carriage Options",
-            CarriageStandardPrice: "£ " +  $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
+            CarriageStandardPrice: currencySymbol + " " + $scope.$parent.myquote.CarriageRateForBuyer + " UK delivery",
             CarriageExWorks: "Ex works",
             SelectOption: "*please select your carriage option",
             CarriageInfo: "Delivery Information",
-            CarriageInfoP1: "For spares orders placed on this platform, we offer a flat rate carriage charge of £"+ $scope.$parent.myquote.CarriageRateForBuyer +  " per order to one UK address.",
-            CarriageInfoP2: "Deliveries will be prepared for shipping based on your standard delivery instructions.",
-            CarriageInfoP3: "Lead time for all orders will be based on the longest lead time from the list of spares requested."
+            Add: "Add",
+            Cancel: "Cancel",
+            Comments: "Comments",
+            AddedComment: " added a comment - "
         },
         fr: {
             DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
@@ -1228,14 +1334,14 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
             ShippingAddressTitle: "Adresse de livraison",
             //carriage labels
             CarriageOptionsMsg: "Options de transport",
-            CarriageStandardPrice: $scope.$parent.myquote.CarriageRateForBuyer + " € livraison",
+            CarriageStandardPrice: $scope.$parent.myquote.CarriageRateForBuyer + " " + currencySymbol + " livraison",
             CarriageExWorks: "Départ Usine",
             SelectOption: "Veuillez sélectionner votre option de transport",
             CarriageInfo: "Informations de livraison",
-            CarriageInfoP1: "Pour les commandes de pièces de rechange effectuées sur cette plate-forme, le prix forfaitaire est de "+ $scope.$parent.myquote.CarriageRateForBuyer +  "  €  par commande.",
-            CarriageInfoP2: "La livraison sera préparé en fonction de vos instructions.",
-            CarriageInfoP3: "Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"
-
+            Add: $sce.trustAsHtml("Ajouter"),
+            Cancel: $sce.trustAsHtml("Annuler"),
+            Comments: $sce.trustAsHtml("Commentaires"),
+            AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - ")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -1257,9 +1363,11 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
 	        })
             .then(function (address) {
             	QuoteShareService.ShippingAddress = address;
+            })
+			.then(function() {
                 $state.go($state.current, {}, {reload: true});
                 toastr.success(vm.labels.ShippingAddress, vm.labels.Success);
-            })
+			})
             .catch(function (ex) {
                 $exceptionHandler(ex);
             });
@@ -1303,12 +1411,21 @@ function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $ex
                 }
             });
     }
+
+    vm.AddComment = function() {
+        $scope.$parent.myquote.AddNewComment(vm.NewComment)
+            .then(function(result) {
+                if(result) {
+                    vm.Comments = result.xp.CommentsToWeir;
+                }
+            });
+        vm.NewComment = null;
+    }
 }
 
 function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $rootScope, $uibModal,
-    OrderCloudSDK, QuoteShareService, Underscore, OCGeography, CurrentOrder, Customer, fileStore, FilesService,
-	$scope, FileSaver, UITotal) {
-	//CheckStateChangeService.checkFormOnStateChange($scope);
+    OrderCloudSDK, QuoteShareService, Underscore, OCGeography, CurrentOrder, Me, fileStore, FilesService,
+	$scope, FileSaver, UITotal, Catalog) {
 	var vm = this;
 	vm.currentState = $state.$current.name;
 	if( (typeof(QuoteShareService.Quote.xp) == 'undefined') || QuoteShareService.Quote.xp == null) QuoteShareService.Quote.xp = {};
@@ -1320,9 +1437,14 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     vm.PONumber = "";
     var payment = (QuoteShareService.Payments.length > 0) ? QuoteShareService.Payments[0] : null;
     if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.country = function (c) {
-        var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-        return result ? result.label : '';
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        vm.Quote.CountryName = result ? result.name : '';
+        return result ? result.name : '';
     };
     vm.Step = $state.is('myquote.review') ? "Review" : ($state.is('myquote.submitquote') ? "Submit" : "Unknown");
     vm.SubmittingToReview = false;
@@ -1339,7 +1461,8 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 					//(QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
                             //((vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) ||
                             //(vm.Quote.FromUserID == QuoteShareService.Me.ID && (allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1)));
-	vm.fileStore = fileStore;
+    vm.fileStore = fileStore;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -1699,7 +1822,7 @@ function SubmitConfirmOrderController($sce, WeirService, Quote, $uibModalInstanc
 
 	var labels = {
 		en: {
-			Title: "Thank you. Your order has submitted for review.​",
+			Title: "Thank you. Your order has been submitted for review.​",
 			MessageText1: "We have sent you a confirmation email.​",
 			MessageText2: "We will be in touch with you to discuss the items you have requested to be reviewed.",
 			MessageText3: "If your order needs to be revised we will send you an updated quote.",
@@ -1891,48 +2014,60 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
 function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, OrderCloudSDK,  Underscore, OCGeography,
                                 Quote, ShippingAddress, LineItems, PreviousLineItems, Payments, imageRoot, toastr, Me,
                                 fileStore, FilesService, FileSaver, QuoteToCsvService, Catalog, Buyer, $uibModal, $document,
-								$exceptionHandler) {
+								$exceptionHandler, Countries) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
 
+    function notUpdated(newObj, oldObj)
+    {
+        if(typeof newObj !== "undefined" && typeof oldObj !== "undefined" && newObj === oldObj)
+        {
+            return true;
+        }
+        else
+        {
+            if(newObj == oldObj || (!newObj || newObj == 0) && (typeof oldObj === "undefined" || oldObj == null))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 	//Part of the label comparison
-	function compare(current,previous) {
-		if(current.Quantity === previous.Quantity &&
-			current.UnitPrice === previous.UnitPrice &&
-			current.xp.TagNumber === previous.xp.TagNumber &&
-			current.xp.SN === previous.xp.SN &&
-			(
-				(typeof current.Product.xp.LeadTime !== "undefined" && typeof previous.Product.xp.LeadTime !== "undefined" &&
-					current.Product.xp.LeadTime === previous.Product.xp.LeadTime) ||
-				(typeof current.xp.LeadTime !== "undefined" && typeof previous.xp.LeadTime !== "undefined" &&
-					current.xp.LeadTime === previous.xp.LeadTime)
-			) &&
-			(
-				(typeof current.Product.xp.ReplacementSchedule !== "undefined" && typeof previous.Product.xp.ReplacementSchedule !== "undefined" &&
-					current.Product.xp.ReplacementSchedule === previous.Product.xp.ReplacementSchedule) ||
-				(typeof current.xp.ReplacementSchedule !== "undefined" && typeof previous.xp.ReplacementSchedule !== "undefined" &&
-					current.xp.ReplacementSchedule === previous.xp.ReplacementSchedule)
-			) &&
-			(
-				(typeof current.Product.Description !== "undefined" && typeof previous.Product.Description !== "undefined" &&
-					current.Product.Description === previous.Product.Description) ||
-				(typeof current.xp.Description !== "undefined" && typeof previous.xp.Description !== "undefined" &&
-					current.xp.Description === previous.xp.Description)
-			)
-			&&
-			(
-				(typeof current.Product.Name !== "undefined" && typeof previous.Product.Name !== "undefined" &&
-					current.Product.Name === previous.Product.Name) ||
-				(typeof current.xp.ProductName !== "undefined" && typeof previous.xp.ProductName !== "undefined" &&
-					current.xp.ProductName === previous.xp.ProductName)
-			)
-		) {
-			return null;
-		} else {
-			return "UPDATED"
-		}
-	}
+    function compare(current,previous) {
+        if (notUpdated(current.Quantity, previous.Quantity) &&
+            notUpdated(current.UnitPrice, previous.UnitPrice) &&
+            notUpdated(current.xp.TagNumber, previous.xp.TagNumber) &&
+            notUpdated(current.xp.SN, previous.xp.SN) &&
+            (
+                notUpdated(current.xp.LeadTime, previous.xp.LeadTime) == false
+                || (current.Product && current.Product.xp && notUpdated(current.Product.xp.LeadTime, previous.Product.xp.LeadTime) == false ? false : true)
+            ) &&
+            (
+				(current.Product && current.Product.xp && notUpdated(current.Product.xp.ReplacementSchedule, previous.Product.xp.ReplacementSchedule) == false)
+                || notUpdated(current.xp.ReplacementSchedule , previous.xp.ReplacementSchedule) == false ? false : true
+            ) &&
+            (
+				(current.Product && current.Product.xp && notUpdated(current.Product.Description , previous.Product.Description) == false)
+                || notUpdated(current.xp.Description , previous.xp.Description) == false ? false : true
+            )
+            &&
+            (
+				(current.Product && current.Product.xp && notUpdated(current.Product.Name , previous.Product.Name) == false)
+                || notUpdated(current.xp.ProductName , previous.xp.ProductName) == false ? false : true
+            )
+        )
+        {
+            return null;
+        }
+        else {
+            return "UPDATED";
+        }
+    }
 	if(LineItems) { //hopefully an easier way to set labels.
 		// For each line item, does it exist in previous line items?  If NO then NEW, else are the fields different between the two? If YES then updated.
 		vm.LineItems = Underscore.filter(LineItems.Items, function(item) {
@@ -1966,6 +2101,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 
 	vm.BuyerID = Me.GetBuyerID();
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 
 	if(PreviousLineItems) {
 		vm.PreviousLineItems = Underscore.filter(PreviousLineItems.Items, function (item) {
@@ -1999,6 +2136,15 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
+
+    if(ShippingAddress && ShippingAddress.Country) {
+        var temp;
+        temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
+
 	vm.CommentsToWeir = Quote.xp.CommentsToWeir;
 	vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
 	vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
@@ -2006,17 +2152,30 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.Payments = Payments.Items;
 	var payment = (vm.Payments.length > 0) ? vm.Payments[0] : null;
 	if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
-	vm.country = function (c) {
-		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-		return result ? result.label : '';
-	};
-	vm.ShowCommentBox = false;
+	OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
+
+    vm.country = function (c) {
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        vm.Quote.CountryName = result ? result.name : '';
+        return result ? result.name : '';
+    };
+
+    vm.ShowCommentBox = false;
 	vm.CommentToWeir = "";
 	vm.fileStore = fileStore;
     vm.ShowUpdatedShipping = function () {
         if(vm.Quote.xp.OldShippingData) {
             if (vm.Quote.ShippingCost != vm.Quote.xp.OldShippingData.ShippingCost || vm.Quote.xp.ShippingDescription != vm.Quote.xp.OldShippingData.ShippingDescription) {
-                return true;
+            	if(vm.Quote.xp.WasEnquiry  == true && vm.Quote.xp.OldShippingData.ShippingCost === 0 && vm.Quote.ShippingCost > 0
+					&& vm.Quote.xp.OldShippingData.ShippingDescription == null)
+            	{
+
+					return false;
+				}
+                else return true;
             } else {
                 return false;
             }
@@ -2069,10 +2228,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			AddedComment: " added a comment - ",
 			Add: "Add",
 			Cancel: "Cancel",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
-			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			PONumber: "PO Number;",
 			POA: "POA",
 			DescriptionOfShipping: {
@@ -2124,10 +2279,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			AddedComment: $sce.trustAsHtml(" A ajouté un commentaire - "),
 			Add: $sce.trustAsHtml("Ajouter"),
 			Cancel: $sce.trustAsHtml("Annuler"),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
-			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 			DescriptionOfShipping: {
@@ -2328,9 +2479,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, OrderCloudSDK, FilesService, FileSaver, Catalog, Me) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, FilesService, FileSaver, Catalog, Me, Countries) {
     var vm = this;
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 	vm.buyer = Me.Org;
 	vm.fileStore = fileStore;
 	vm.ImageBaseUrl = imageRoot;
@@ -2338,6 +2491,15 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
     vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
     vm.ShippingAddress = ShippingAddress;
+
+    if(ShippingAddress && ShippingAddress.Country) {
+    	var temp;
+    	temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
+
     vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {
@@ -2352,10 +2514,16 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		vm.PreviousLineItems = [];
 	}
     vm.Payments = Payments.Items;
-	vm.country = function (c) {
-		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-		return result ? result.label : '';
-	};
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
+
+    vm.country = function (c) {
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        vm.Quote.CountryName = result ? result.name : '';
+        return result ? result.name : '';
+    };
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -2388,11 +2556,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Currency: "Currency",
 	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order",
-	        PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 	        ViewRevisions: "View Previous Revisions",
-	        ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-	        POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-	        LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 	        PONumber: "PO Number;",
             POA: "POA",
 	        PartTypes: "Part types for;",
@@ -2435,11 +2599,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Currency: $sce.trustAsHtml("Devise"),
 	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos cotations"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
-	        PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande"),
-	        ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-	        POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-	        LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
 	        PartTypes: $sce.trustAsHtml("Pièces pour:"),
@@ -2515,9 +2675,11 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 }
 
 function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
-                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me, FilesService, FileSaver, Catalog) {
+                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me, FilesService, FileSaver, Catalog, Countries) {
 	var vm = this;
 	vm.Catalog = Catalog;
+    vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
+    vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 	vm.buyer = Me.Org;
 	vm.NewComment = null;
 	vm.ImageBaseUrl = imageRoot;
@@ -2526,6 +2688,15 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Quote = Quote;
 	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
 	vm.ShippingAddress = ShippingAddress;
+
+    if(ShippingAddress && ShippingAddress.Country) {
+        var temp;
+        temp = Underscore.findWhere(Countries, {code: ShippingAddress.Country});
+        vm.Quote.CountryName = temp ? temp.name : "";
+    } else {
+        vm.Quote.CountryName = "";
+    }
+
 	vm.LineItems = LineItems ? LineItems.Items : [];
 	vm.BuyerID = Me.GetBuyerID();
 	if(PreviousLineItems) {
@@ -2542,10 +2713,16 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Payments = Payments.Items;
 	var payment = (vm.Payments.length > 0) ? vm.Payments[0] : null;
 	if (payment && payment.xp && payment.xp.PONumber) vm.PONumber = payment.xp.PONumber;
-	vm.country = function (c) {
-		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-		return result ? result.label : '';
-	};
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
+
+    vm.country = function (c) {
+        var result = Underscore.findWhere(vm.countries, { code: c });
+        vm.Quote.CountryName = result ? result.name : '';
+        return result ? result.name : '';
+    };
 	var labels = {
 		en: {
 			Customer: "Customer; ",
@@ -2582,13 +2759,9 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			SubmitOrderWithPO: "Submit Order",
 			EmailPoMessage: "*Your order will be confirmed<br class='message-break'>following receipt of your PO.",
 			POEntry: "Enter PO Number",
-			PriceDisclaimer: "All prices stated do not include UK VAT or delivery",
 			DragAndDrop: "Drag and drop Files Here to Upload",
 			PONeededHeader: "Please Provide a Purchase Order to Finalise your Order",
 			POUpload: "Upload PO Document",
-			ReplacementGuidance: "Recommended replacement guidance; If ordering 5 year spares you should also order all 2 year spares. If ordering 10 year spares, you should also order all 5 year and 2 year spares.",
-			POAGuidance: "POA; You can add POA items to your quote and submit your quote for review. We will endeavour to respond with a price for POA items within two days of receipt of your quote request.",
-			LeadTimeNotice: "Lead time for all orders will be based on the longest lead time from the list of spares requested",
 			Add: "Add",
 			Cancel: "Cancel",
 			AddedComment: " added a comment - ",
@@ -2637,13 +2810,9 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			SubmitOrderWithPO: $sce.trustAsHtml("Commander avec bon<br>de commande"),
 			EmailPoMessage: $sce.trustAsHtml("Votre commande sera confirmée<br class='message-break'>après réception de votre bon de commande."),
 			POEntry: $sce.trustAsHtml("Entrer une r&eacute;f&eacute;rence de commande"),
-			PriceDisclaimer: $sce.trustAsHtml("Tous les prix indiqués ne comprennent pas la TVA ni la livraison en France"),
 			DragAndDrop: $sce.trustAsHtml("Faites glisser vos documents ici pour les t&eacute;l&eacute;charger"),
 			PONeededHeader: $sce.trustAsHtml("Veuillez fournir un bon de commande pour finaliser votre commande"),
 			POUpload: $sce.trustAsHtml("T&eacute;l&eacute;charger le bon de commande"),
-			ReplacementGuidance: $sce.trustAsHtml("Remplacement recommandé: Si vous commandez les pièces recommandées à 5 ans, vous devriez également commander toutes les pièces recommandées à 2 ans. Si vous commandez des pièces recommandées à 10 ans , vous devez également commander toutes les pièces recommandées à 5 et 2 ans."),
-			POAGuidance: $sce.trustAsHtml("Prix à confirmer: Vous pouvez ajouter des articles dont les prix ne sont pas renseignés à votre cotation et soumettre à révision. Nous les renseignerons sur la révision."),
-			LeadTimeNotice: $sce.trustAsHtml("Le délai de livraison pour toutes les commandes sera basé sur le délai le plus long de la liste des pièces de rechanges demandées"),
 			Add: $sce.trustAsHtml("Ajouter"),
 			Cancel: $sce.trustAsHtml("Annule"),
 			AddedComment: $sce.trustAsHtml("A ajouté un commentaire "),

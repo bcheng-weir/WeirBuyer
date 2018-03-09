@@ -1,6 +1,23 @@
 <div class="printable" id="PRINTORDER">
     <div class="modal-header">
-        <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
+        <div width="100%">
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td>
+                            <span class="pull-left">
+                                <img style="height: 2.0em" src="https://www.global.weir/assets/template/img/logo.jpg">
+                            </span>
+                        </td>
+                        <td align="right">
+                            <span class="pull-right" ng-click="printctrl.close()">
+                                X
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <br>
         <pre ng-bind-html="printctrl.pocontent.Address"></pre>
     </div>
@@ -47,12 +64,21 @@
                 <tr ng-repeat="item in printctrl.items track by $index">
                     <td><span ng-bind-html="item.xp.SN"></span></td>
                     <td><span ng-bind-html="item.xp.TagNumber"></span></td>
-                    <td><span ng-bind-html="item.Product.Name"></span></td>
-                    <td><span ng-bind-html="item.Product.Description"></span></td>
-                    <td><span ng-bind-html="item.Product.xp.ReplacementSchedule"></span></td>
                     <td>
-                        <span ng-show="item.xp.LeadTime==null" ng-bind-html="item.Product.xp.LeadTime"></span>
-                        <span ng-show="item.xp.LeadTime!=null" ng-bind-html="item.xp.LeadTime"></span>
+                        <!--<span ng-if="!item.xp.ProductName" ng-bind-html="item.Product.Name"></span>-->
+                        <span ng-bind-html="item.xp.ProductName"></span>
+                    </td>
+                    <td>
+                        <!--<span ng-if="!item.xp.Description" ng-bind-html="item.Product.Description"></span>-->
+                        <span ng-bind-html="item.xp.Description"></span>
+                    </td>
+                    <td>
+                        <!--<span ng-if="!item.xp.ReplacementSchedule" ng-bind-html="item.Product.xp.ReplacementSchedule"></span>-->
+                        <span ng-bind-html="item.xp.ReplacementSchedule"></span>
+                    </td>
+                    <td>
+                        <!--<span ng-show="item.xp.LeadTime==null" ng-bind-html="item.Product.xp.LeadTime"></span>-->
+                        <span ng-bind-html="item.xp.LeadTime"></span>
                     </td>
                     <td ng-if="!item.UnitPrice||item.UnitPrice=='0'">POA</td>
                     <td ng-if="item.UnitPrice">
@@ -93,8 +119,9 @@
             <span ng-bind-html='printctrl.address.CompanyName'></span><br>
             <span ng-bind-html='printctrl.address.Street1'></span><br>
             <span ng-bind-html='printctrl.address.Street2' ng-if="printctrl.address.Street2"></span><br ng-if="printctrl.address.Street2">
+            <span ng-bind-html='printctrl.address.xp.Street3' ng-if="printctrl.address.xp.Street3"></span><br ng-if="printctrl.address.xp.Street3">
             <span><span ng-bind-html='printctrl.address.Zip'></span> <span ng-bind-html='printctrl.address.City'></span></span><br>
-            <span ng-bind-html='printctrl.country(printctrl.address.Country)'></span><br>
+            <span ng-bind-html="printctrl.order.CountryName"></span><br>
         </div>
         <div>
             <br>

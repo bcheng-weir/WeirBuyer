@@ -204,7 +204,7 @@ function QuotesConfig($stateProvider) {
 			controller: 'RouteToQuoteCtrl',
 			resolve: {
 			    Quote: function ($q, appname, $localForage, $stateParams, OrderCloudSDK) {
-			        var storageName = appname + '.routeto';
+			        /*var storageName = appname + '.routeto';
 			        var d = $q.defer();
 			        $localForage.setItem(storageName, { state: 'quotes', id: $stateParams.quoteID })
                         .then(function () {
@@ -214,7 +214,8 @@ function QuotesConfig($stateProvider) {
                                     d.resolve(quote);
                                 });
                         });
-			        return d.promise;
+			        return d.promise;*/
+			        return OrderCloudSDK.Orders.Get("Outgoing", $stateParams.quoteID);
 			    }
 			}
 		});
@@ -307,6 +308,10 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			});
 	};
 
+    vm.dateOf = function(utcDate) {
+        return new Date(utcDate);
+    };
+
 	var labels = {
         en: {
             All: "All Quotes",
@@ -323,7 +328,9 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			LoadMore: "Load More",
             Search: "Search",
             SearchPlaceholder: "Search by Weir quote or order number",
-            Clear: "Clear Search"
+            Clear: "Clear Search",
+			statusDate: "Date Updated",
+			submittedDate: "Submitted Date"
 		},
         fr: {
             All: $sce.trustAsHtml("Tous les devis"),
@@ -340,7 +347,9 @@ function QuotesController($sce, $state, $ocMedia, WeirService, Me, CurrentCustom
 			LoadMore: $sce.trustAsHtml("Afficher plus"),
             Search: $sce.trustAsHtml("Rechercher"),
             SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
-            Clear: $sce.trustAsHtml("Effacer le rechercher")
+            Clear: $sce.trustAsHtml("Effacer le rechercher"),
+            statusDate: $sce.trustAsHtml("Date de mise à jour"),
+            submittedDate: $sce.trustAsHtml("Date d’envoi")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

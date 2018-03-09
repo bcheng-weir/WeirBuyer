@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" id="MyEnquiry">
         <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-4" style="padding:8px 12px">
@@ -89,6 +89,7 @@
                     <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">
+                    <span ng-bind-html="review.enq.Shipping.xp.Street3" ng-if="review.enq.Shipping.xp.Street3"></span><br ng-if="review.enq.Shipping.xp.Street3">
                     <span><span ng-bind-html="review.enq.Shipping.Zip"></span>, <span ng-bind-html="review.enq.Shipping.City"></span></span><br />
                     <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br><br>
                 </div>
@@ -96,6 +97,7 @@
                     <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">
+                    <span ng-bind-html="review.enq.Shipping.xp.Street3" ng-if="review.enq.Shipping.xp.Street3"></span><br ng-if="review.enq.Shipping.xp.Street3">
                     <span ng-bind-html="review.enq.Shipping.City"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Zip"></span><br>
                     <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br>
@@ -104,6 +106,7 @@
                     <span ng-bind-html="review.enq.Shipping.CompanyName"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street1"></span><br>
                     <span ng-bind-html="review.enq.Shipping.Street2" ng-if="review.enq.Shipping.Street2"></span><br ng-if="review.enq.Shipping.Street2">
+                    <span ng-bind-html="review.enq.Shipping.xp.Street3" ng-if="review.enq.Shipping.xp.Street3"></span><br ng-if="review.enq.Shipping.xp.Street3">
                     <p><span ng-bind-html="review.enq.Shipping.City"></span>, <span ng-bind-html="review.enq.Shipping.State"></span>, <span ng-bind-html="review.enq.Shipping.Zip"></span></p><br>
                     <span ng-bind-html="review.country(review.enq.Shipping.Country)"></span><br><br>
                 </div>

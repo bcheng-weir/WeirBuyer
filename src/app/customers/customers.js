@@ -38,7 +38,7 @@ function CustomerConfig($stateProvider) {
                 },
                 AddressList: function(OrderCloudSDK, $stateParams, Parameters) {
                     var f = {
-                        "xp.active":"true"
+                        "xp.active":true
                     };
                     return OrderCloudSDK.Addresses.List($stateParams.buyerid, {'filters':f});
                 }
@@ -243,11 +243,12 @@ function CustomerCtrl($state, $ocMedia, OrderCloudSDK, OrderCloudParameters, Par
             CompanyName:"Company Name",
             FirstName:"First Name",
             LastName:"Last Name",
-            StreetOne: "Street 1",
-            StreetTwo: "Street 2",
+            StreetOne: "Address line 1",
+            StreetTwo: "Address line 2",
+            StreetThree: "Address line 3",
             City: "City",
-            County: "County",
-            PostCode: "Post Code",
+            County: "State / Province / Region",
+            PostCode: "Postal code / Zip code",
             Country: "Country",
             PhoneNumber: "Phone Number",
             Primary: "Primary",
@@ -287,11 +288,12 @@ function CustomerCtrl($state, $ocMedia, OrderCloudSDK, OrderCloudParameters, Par
             CompanyName: $sce.trustAsHtml("Nom de l'entreprise"),
             FirstName: $sce.trustAsHtml("Prénom"),
             LastName: $sce.trustAsHtml("Nom"),
-            StreetOne: $sce.trustAsHtml("Rue 1"),
-            StreetTwo: $sce.trustAsHtml("Rue 2"),
+            StreetOne: $sce.trustAsHtml("Adresse ligne 1"),
+            StreetTwo: $sce.trustAsHtml("Adresse ligne 2"),
+            StreetThree: $sce.trustAsHtml("Adresse ligne 3"),
             City: $sce.trustAsHtml("Ville"),
-            County: $sce.trustAsHtml("Région"),
-            PostCode: $sce.trustAsHtml("Code postal"),
+            County: $sce.trustAsHtml("Departement / Province / Région"),
+            PostCode: $sce.trustAsHtml("Code Postal / Zip code"),
             Country: $sce.trustAsHtml("Pays"),
             PhoneNumber: $sce.trustAsHtml("Numéro de télephone"),
             Primary: $sce.trustAsHtml("Primaire"),
@@ -493,9 +495,11 @@ function CustomerCreateCtrl($q, $state, toastr, CustomerService, OCGeography) {
     var vm = this;
     vm.WeirGroups = CustomerService.WeirGroups;
     vm.types = CustomerService.CustomerTypes;
-    vm.countries = OCGeography.Countries;
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.states = OCGeography.States;
-    //vm.labels = CustomerService.Labels[WeirService.Locale()];
     vm.Submit = _submit;
 
     function _submit() {
@@ -531,7 +535,10 @@ function CustomerAddressEditCtrl($exceptionHandler, $state, $scope, toastr, Orde
         addressID = SelectedAddress.ID;
     vm.addressName = SelectedAddress.AddressName;
     vm.address = SelectedAddress;
-    vm.countries = OCGeography.Countries;
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.states = OCGeography.States;
     //vm.labels = CustomerService.Labels[WeirService.Locale()];
     var original = angular.copy(vm.address); //use this to make the copy if there are dirty items. Set the active to false and primary to false if versioning.
@@ -649,7 +656,10 @@ function CustomerAddressEditCtrl($exceptionHandler, $state, $scope, toastr, Orde
 
 function CustomerAddressCreateCtrl($exceptionHandler, $state, toastr, OrderCloudSDK, OCGeography, CustomerService, SelectedBuyer, Underscore, WeirService) {
     var vm = this;
-    vm.countries = OCGeography.Countries;
+    OCGeography.Countries()
+        .then(function(countries) {
+            vm.countries = countries;
+        });
     vm.states = OCGeography.States;
     vm.address = {Country: null};
     //vm.labels = CustomerService.Labels[WeirService.Locale()];

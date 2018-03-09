@@ -2,11 +2,8 @@ angular.module('ordercloud-geography', [])
     .factory('OCGeography', OCGeography)
 ;
 
-function OCGeography() {
-    var _weirCountries = [
-        { "label": "France", "value": "FR"},
-        { "label": "United Kingdom", "value": "GB"}
-    ];
+function OCGeography($q, OrderCloudSDK, Underscore) {
+    var _weirCountries = [];
     var _countries = [
         { "label": "United States of America", "value": "US"},
         { "label": "Afghanistan", "value": "AF"},
@@ -344,8 +341,40 @@ function OCGeography() {
         { "label": "Yukon", "value": "YT", "country": "CA" }
     ];
 
+    function getCountries() {
+        _weirCountries = [];
+        var queue = [];
+        var deferred = $q.defer();
+        //var _weirCountries = [];
+        var opts1 = {
+            'search': 'CountryList1',
+            'searchOn': 'ID'
+        };
+        var opts2 = {
+            'search': 'CountryList2',
+            'searchOn': 'ID'
+        };
+
+        queue.push(OrderCloudSDK.Specs.List(opts1));
+        queue.push(OrderCloudSDK.Specs.List(opts2));
+
+        $q.all(queue)
+            .then(function(results){
+                angular.forEach(results, function(val,key) {
+                    val.Items[0].xp.countries = Underscore.reject(val.Items[0].xp.countries, function(record) { return record.enable == false });
+                    _weirCountries = _weirCountries.concat(val.Items[0].xp.countries);
+                });
+                deferred.resolve(_weirCountries);
+            })
+            .catch(function (ex) {
+                deferred.resolve(_weirCountries);
+            });
+
+        return deferred.promise;
+    }
+
     return {
-        Countries:  _weirCountries,
+        Countries: getCountries,
         States: _states
     };
 }

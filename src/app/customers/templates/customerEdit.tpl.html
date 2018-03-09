@@ -55,7 +55,7 @@
                 </td>
                 <td data-title="Name">{{address.AddressName || '---'}}</td>
                 <td scope="row">{{address.CompanyName}}</td>
-                <td data-title="Address">{{address.Street1 + (address.Street2 ? (' ' + address.Street2) : '')}} <br
+                <td data-title="Address">{{address.Street1 + (address.Street2 ? (' ' + address.Street2) : '') + (address.xp.Street3 ? (' ' + address.xp.Street3) : '')}} <br
                         ng-if="application.$ocMedia('max-width:767px')"> {{address.City + ', ' + address.State + ' ' +
                     address.Zip}}
                 </td>

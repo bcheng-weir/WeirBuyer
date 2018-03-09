@@ -1,43 +1,90 @@
 <div class="mce-container-body">
     <div class="container-fluid">
         <div class="row">
-            <nav class="navbar navbar-default">
-                <div class="container-fluid topNavBar">
-                    <!-- Collect the nav links, forms, and other content for toggling -->
-                    <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
-                        <ul class="nav navbar-nav navbar-right brand-top-fix">
-                            <!-- TODO: Put the brands here. -->
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})" ng-bind-html="base.labels.Batley"></a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})" ng-bind-html="base.labels.Blakeborough"></a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})" ng-bind-html="base.labels.Hopkinsons"></a>
-                            </li>
-                            <li>
-                                <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})" ng-bind-html="base.labels.Sarasin"></a>
-                            </li>
-                            <li uib-dropdown ng-if="!base.currentUser.Anonymous">
-                                <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
-                                <ul uib-dropdown-menu>
-                                    <li class="dropdown-header" ng-bind-html="base.currentUser.FirstName + ' ' + base.currentUser.LastName"></li>
-                                    <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
-                                    <li class="divider"></li>
-                                    <li><a ng-click="application.logout()" ng-bind-html="base.labels.Logout"></a></li>
+            <div class="col-md-12">
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid topNavBar">
+                        <div class="row">
+                            <div class="col-md-4" style="margin: 0; padding: 0;">
+                                <ul style="margin: 0px; padding: 0px; list-style-type: none; " ng-show="base.OrganizationUsed.xp.AKA.Active==true">
+                                    <li>
+                                        <div class="collapse navbar-collapse pull-left" style="margin: 0; padding: 0;" id="BASE_TOP_COLLAPSE" ng-show="base.showAppNavigation()">
+                                            <ul class="nav navbar-nav navbar-left brand-top-fix" style="border: 1px solid #005EB8;margin-top: 0;margin-bottom: 0;">
+                                                <li class="brand-icon" ng-style="base.brandIcon"
+                                                    >
+                                                    <img ng-src="{{base.currentImage}}"
+                                                         popover-placement="bottom"
+                                                         uib-popover-template="base.brandsPopover.templateUrl"
+                                                         class="material-icon"
+                                                         ng-click="base.toggleImage();"
+                                                         tooltip-placement="bottom"
+                                                         uib-tooltip="Open to search, view and order valves spares by brand."
+                                                         tooltip-class="customClass"/>
+                                                </li>
+                                                <li class="pull-right" style="border-left: 1px solid #005EB8;  padding-right: 20px; padding-left: 5px;" ng-if="base.AppLocale()=='WVCUK'"> <!-- If WVCUK -->
+                                                    <div style="padding-right: 20px; padding-left: 5px; margin: 1px; padding: 1px;">
+                                                        <a class="brands-uk-upper-left" href="#">
+                                                            <ul style="margin: 0px; padding: 0px; list-style-type: none;">
+                                                                <li ng-bind-html="base.labels.BrandsUK1"></li>
+                                                                <li ng-bind-html="base.labels.BrandsUK2"></li>
+                                                                <li ng-bind-html="base.labels.BrandsUK3"></li>
+                                                            </ul>
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                                <li class="pull-right" style="margin:auto; border-left: 1px solid #005EB8; " ng-if="base.AppLocale()=='WPIFR'"> <!-- if WPIFR_EN -->
+                                                    <div style="padding-right: 20px; padding-left: 5px;">
+                                                        <a class="brands-fr-upper-left" ng-bind-html="base.labels.BrandsFR" href="#"></a>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
                                 </ul>
-                            </li>
-                            <li ng-if="base.currentUser.Anonymous && base.registrationAvailable">
-                                <a href="" ui-sref="registration" ui-sref-active="active">{{base.labels.Register}}</a>
-                            </li>
-                            <li>
-                                <ordercloud-minicart order="catalog.currentOrder"></ordercloud-minicart>
-                            </li>
-                        </ul>
-                    </div><!-- /.navbar-collapse -->
-                </div>
-            </nav>
+                            </div>
+                            <div class="col-md-8">
+                                <!-- Collect the nav links, forms, and other content for toggling -->
+                                <div class="collapse navbar-collapse pull-right" id="BASE_TOP_COLLAPSE">
+                                    <ul class="nav navbar-nav navbar-right brand-top-fix">
+                                        <li>
+                                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:0})" ng-bind-html="base.labels.Batley"></a>
+                                        </li>
+                                        <li>
+                                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:1})" ng-bind-html="base.labels.Blakeborough"></a>
+                                        </li>
+                                        <li>
+                                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==1" ui-sref="brands({brandId:2})" ng-bind-html="base.labels.Hopkinsons"></a>
+                                        </li>
+                                        <li>
+                                            <a ng-if="base.OrganizationUsed.xp.WeirGroup.id ==2" ui-sref="brands({brandId:3})" ng-bind-html="base.labels.Sarasin"></a>
+                                        </li>
+                                        <li uib-dropdown ng-if="!base.currentUser.Anonymous">
+                                            <a href="#" uib-dropdown-toggle role="button"><span ng-bind-html="base.navlabels.YourAccount"></span> <span class="caret"></span></a>
+                                            <ul uib-dropdown-menu>
+                                                <li class="dropdown-header" ng-bind-html="base.currentUser.FirstName + ' ' + base.currentUser.LastName"></li>
+                                                <li><a href="" ui-sref="account" ng-bind-html="base.navlabels.Account"></a></li>
+                                                <li class="divider"></li>
+                                                <li><a ng-click="application.logout()" ng-bind-html="base.labels.Logout"></a></li>
+                                            </ul>
+                                        </li>
+                                        <li ng-if="base.currentUser.Anonymous && base.registrationAvailable">
+                                            <a href="" ui-sref="registration" ui-sref-active="active">{{base.labels.Register}}</a>
+                                        </li>
+                                        <li>
+                                            <ordercloud-minicart order="catalog.currentOrder"></ordercloud-minicart>
+                                        </li>
+                                    </ul>
+                                </div><!-- /.navbar-collapse -->
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div>
+                <ul style="list-style-type: none; margin: 0; padding: 0;">
+                     <!-- ToDo put the overflow menu in here. When the button is clicked, ng-show will display these items and fill in the menu -->
+                </ul>
+            </div>
         </div>
         <div class="row">
             <div class="pull-left" style="margin-top: 0.5em; margin-bottom: 0.5em; margin-left: 2em;">
@@ -46,7 +93,7 @@
                 </a>
             </div>
             <div class="pull-right" style="margin-top: 0.5em; margin-bottom: 0.5em; margin-right: 2em;">
-                    <span class="glyphicon glyphicon-envelope feedbackBaseImage" aria-hidden="true"></span><a ng-click="base.showFeedbackForm()" href="" ng-bind-html="base.labels.Feedback"></a>
+                <span class="glyphicon glyphicon-envelope feedbackBaseImage" aria-hidden="true"></span><a ng-click="base.showFeedbackForm()" href="" ng-bind-html="base.labels.Feedback"></a>
             </div>
         </div>
         <div class="row spacingTop">

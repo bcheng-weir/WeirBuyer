@@ -24,16 +24,21 @@
                         <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!Total'"></i>
                     </a>
                 </th>
-                <th>
-                    <a href="#" role="button" ng-click="orders.updateSort('DateSubmitted')">
-                        {{orders.labels.OrderDate}}
-                        <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'DateSubmitted'"></i>
-                        <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!DateSubmitted'"></i>
+
+                <th scope="col">
+                    <a href="#" role="button" ng-click="orders.updateSort('DateCreated')">
+                        {{orders.labels.submittedDate}}
+                        <i class="fa fa-caret-down" ng-show="orders.parameters.sortBy == 'DateCreated'"></i>
+                        <i class="fa fa-caret-up" ng-show="orders.parameters.sortBy == '!DateCreated'"></i>
                     </a>
                 </th>
+                <th>
+                    {{orders.labels.statusDate}}
+                </th>
+
                 <th ng-bind-html='orders.labels.ConfirmedBy'></th>
-                <th ng-bind-html='orders.labels.DateDespatched'></th>
                 <th ng-bind-html='orders.labels.EstDelivery'></th>
+                <th ng-bind-html='orders.labels.DateDespatched'></th>
                 <th></th>
             </tr>
             </thead>
@@ -52,10 +57,19 @@
                     <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
                     <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
                 </td>
-                <td>{{order.DateSubmitted | weirdate}}</td>
+
+                <td>
+                    <span ng-if="order.DateCreated" ng-bind-html="orders.dateOf(order.DateCreated) | weirdate : orders.WeirGroup"></span>
+                    <span ng-if="!order.DateCreated"></span>
+                </td>
+                <td>
+                    <span ng-if="order.xp.StatusDate" ng-bind-html="orders.dateOf(order.xp.StatusDate) | weirdate : orders.WeirGroup"></span>
+                    <span ng-if="!order.xp.StatusDate"></span>
+                </td>
+
                 <td>{{order.xp.ReviewerName}}</td>
-                <td>{{order.xp.DateDespatched | weirdate}}</td>
                 <td>{{order.xp.DeliveryDate | weirdate}}</td>
+                <td>{{order.xp.DateDespatched | weirdate}}</td>
                 <td>
                     <button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
                 </td>

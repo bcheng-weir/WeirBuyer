@@ -33,12 +33,12 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 
 		angular.forEach(LineItems, function (item) {
 			var line = [];
-			line.push((item.xp.SN) ? item.xp.SN : "");
-			line.push((item.xp.TagNumber) ? item.xp.TagNumber : "");
-			line.push((item.xp.ProductName) ? item.xp.ProductName : item.Product.Name);
-			line.push((item.xp.Description) ? item.xp.Description : item.Product.Description);
-			line.push((item.xp.ReplacementSchedule) ? item.xp.ReplacementSchedule : item.Product.xp.ReplacementSchedule);
-			line.push((item.xp.LeadTime) ? item.xp.LeadTime : item.Product.xp.LeadTime);
+			line.push(item.xp.SN);
+			line.push(item.xp.TagNumber);
+			line.push(item.xp.ProductName);
+			line.push(item.xp.Description);
+			line.push(item.xp.ReplacementSchedule);
+			line.push(item.xp.LeadTime);
 			line.push(currency);
 			line.push(item.UnitPrice);
 			line.push(item.Quantity);
@@ -55,17 +55,21 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 				data.push([DeliveryAddress.FirstName + " " + DeliveryAddress.LastName, ""]);
 				data.push([DeliveryAddress.CompanyName]);
 				data.push([DeliveryAddress.Street1]);
-				DeliveryAddress.Street2 ? data.push([DeliveryAddress.Street2]) : null;
+                DeliveryAddress.Street2 ? data.push([DeliveryAddress.Street2]) : null;
+                DeliveryAddress.xp.Street3 ? data.push([DeliveryAddress.xp.Street3]) : null;
 				data.push([DeliveryAddress.City]);
 				data.push([DeliveryAddress.Zip]);
-				data.push([country(DeliveryAddress.Country)]);
+				data.push([Quote.CountryName]);
 			} else if (DeliveryAddress.Country=="FR") {
 				data.push([DeliveryAddress.FirstName + " " + DeliveryAddress.LastName, ""]);
 				data.push([DeliveryAddress.CompanyName]);
-				data.push([DeliveryAddress.Street1]);
-				DeliveryAddress.Street2 ? data.push([DeliveryAddress.Street2]) : null;
-				data.push([DeliveryAddress.Zip, "", DeliveryAddress.City]);
-				data.push([country(DeliveryAddress.Country)]);
+                DeliveryAddress.Street1 ? data.push([DeliveryAddress.Street1]) : null;
+                DeliveryAddress.Street2 ? data.push([DeliveryAddress.Street2]) : null;
+                DeliveryAddress.xp.Street3 ? data.push([DeliveryAddress.xp.Street3]) : null;
+                DeliveryAddress.City ? data.push([DeliveryAddress.City]) : null;
+                DeliveryAddress.State ? data.push([DeliveryAddress.State]) : null;
+                DeliveryAddress.Zip ? data.push([DeliveryAddress.Zip]) : null;
+                DeliveryAddress.Country ? data.push([Quote.CountryName]) : null;
 			}
 		}
 		data.push(["", ""]);

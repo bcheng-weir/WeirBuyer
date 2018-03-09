@@ -184,7 +184,7 @@
                                 <div class="number">
                                     2
                                 </div>
-                                <h4 ng-bind-html="serial.labels.IdentifySNTitle" style="font-weight: bold; font-size: 14px;" class="text-left"></h4>
+                                <p ng-bind-html="serial.labels.IdentifySNTitle" style="font-weight: bold; font-size: 14px;" class="text-left"></p>
                                 <ul>
                                     <li ng-bind-html="serial.labels.IdentifySNDescriptionLine1" style="font-size: 13px;" class="text-left"></li>
                                     <li ng-bind-html="serial.labels.IdentifySNDescriptionLine2" style="font-size: 13px;" class="text-left"></li>
@@ -202,11 +202,11 @@
                                 <div class="number">
                                     3
                                 </div>
-                                <h4 ng-bind-html="serial.labels.TypeSNTitle" style="font-weight: bold; font-size: 14px;" class="text-left"></h4>
+                                <p ng-bind-html="serial.labels.TypeSNTitle" style="font-weight: bold; font-size: 14px;" class="text-left"></p>
                                 <ul>
                                     <li ng-bind-html="serial.labels.TypeSNTitleDescriptionLine1" style="font-size: 13px" class="text-left"></li>
                                     <li ng-bind-html="serial.labels.TypeSNTitleDescriptionLine2" style="font-size: 13px" class="text-left"></li>
-                                    <li ng-bind-html="serial.labels.TypeSNTitleDescriptionLine3" style="font-size: 13px" class="text-left"></li>
+                                    <li ng-if="serial.labels.TypeSNTitleDescriptionLine3" ng-bind-html="serial.labels.TypeSNTitleDescriptionLine3" style="font-size: 13px" class="text-left"></li>
                                 </ul>
                                 <div id="imgDiv3">
                                     <figure id="imgPic3">

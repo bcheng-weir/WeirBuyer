@@ -3,7 +3,7 @@
         <div class="col-md-12 container">
             <div class="pull-left">
                 <ul class="menu">
-                    <li><a href="" ng-bind-html="login.labels.WorldWide"></a></li>
+                    <li><a href="https://www.global.weir" ng-bind-html="login.labels.WorldWide"></a></li>
                 </ul>
             </div>
             <!--TODO: From Four51: This is how you will link from your HTML templates, be sure to update any other img[src] in your app-->
@@ -24,6 +24,7 @@
                         <div class="col-sm-6 col-lg-5 col-lg-offset-1 login-index">
                             <div class="login-block">
 
+                                <!-- Login -->
                                 <div class="account-wall" ng-switch-when="login">
                                     <div class="login-header">
                                         <p class="text-center login-title" ng-bind-html="login.labels.LoginLabel"></p>
@@ -50,6 +51,7 @@
                                     </form>
                                 </div>
 
+                                <!-- Forgot Password -->
                                 <div class="account-wall" ng-switch-when="forgot">
                                     <div class="login-header">
                                         <p class="text-center login-title" ng-bind-html="login.labels.ForgotLabel"></p>
@@ -107,6 +109,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Reset was successful -->
                                 <div class="account-wall" ng-switch-when="resetSuccess">
                                     <div class="alert alert-success text-center" ng-bind-html="login.labels.ResetPasswordMessage"></div>
                                     <div class="text-center">
@@ -114,8 +117,24 @@
                                     </div>
                                 </div>
 
+                                <!-- Choose Division -->
+                                <div class="account-wall" ng-switch-when="chooseDivision">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    Choose WPIFR
+                                                </div>
+                                                <div class="col-md-6">
+                                                    Choose WVCUK
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="col-sm-6 col-lg-5 welcome-index">
                             <!--TODO: This is how you will reference templates that live in component folders, you always start from the component folder and go up from there.-->
                             <div class="welcome-block"  ng-if="login.languageOfUser == 'en'" ng-include="'login/templates/englishWelcomeMessage.tpl.html'"></div>

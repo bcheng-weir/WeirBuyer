@@ -4,7 +4,7 @@ angular.module( 'orderCloud' )
     .factory('WeirService', WeirService)
 ;
 function SearchTypeService() {
-    var searchglobal = false;
+    var searchglobal = false; //We are not using SetGlobalSearchFlag. Is it deprecated?
     var lastSearchType = 's';
     var svc = {
         IsGlobalSearch: function () { return searchglobal; },
@@ -49,24 +49,76 @@ function UserGroupsService($q, OrderCloudSDK) {
     }
 }
 
-function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, SearchTypeService, Me) {
+function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService, $window, Underscore) {
     var orderStatuses = {
-        Enquiry: { id: "EN", label: { en: "Enquiry Submitted", fr: "Demande envoyée" }, desc: "An enquiry for parts not found" },
-	    EnquiryReview: {id: "ER", label:{ en: "Enquiry Submitted", fr: "Demande envoyée" },desc: "An enquiry under administrator review."},
-        Draft: { id: "DR", label: { en: "Draft", fr: "Brouillon" }, desc: "This is the current quote under construction" },
-        Saved: { id: "SV", label: { en: "Saved", fr: "Cotation(s) enregistrée(s)" }, desc: "Quote has been saved but not yet submitted to weir as quote or order" },
-        Submitted: { id: "SB", label: { en: "Quote Submitted for Review", fr: "Cotation(s) soumise(s) à révision" }, desc: "Customer has selected to request review OR review status is conditional based on POA items being included in quote" },
-        RevisedQuote: { id: "RV", label: { en: "Revised Quote", fr: "Cotation révisée" }, desc: "Weir have reviewed the quote and updated items as required. When the update is saved and ‘shared with the customer this becomes a ‘Revised quote’" },
-        RejectedQuote: { id: "RQ", label: { en: "Rejected Quote", fr: "Cotation rejetée" }, desc: "Weir have shared Revised quote with buyer has rejected revision (this would display as a status in the list view of quotes rather than in the navigation)" },
-        ConfirmedQuote: { id: "CQ", label: { en: "Confirmed Quote", fr: "Cotation confirmée" }, desc: "1. Customer has approved revised quote – assumes that if Weir have updated a revised quote the new /revised items are ‘pre-approved’ by Weir. 2. Weir admin has  confirmed a quote submitted for review by the customer." },
-        SubmittedWithPO: { id: "SP", label: { en: "Order submitted with PO", fr: "Commande avec Bon de Commande" }, desc: "Order has been submitted to Weir with a PO" },
-        SubmittedPendingPO: { id: "SE", label: { en: "Order submitted pending PO", fr: "Commande sans Bon de Commande" }, desc: "Order has been submitted to Weir with the expectation of a PO to be sent via email" },
-        RevisedOrder: { id: "RO", label: { en: "Revised Order", fr: "Commande révisée" }, desc: "1. Weir have reviewed the order and updated items as required. When the update is saved and ‘shared with the customer this becomes a ‘Revised Order’." },
-        RejectedRevisedOrder: { id: "RR", label: { en: "Rejected Revised Order", fr: "Commande révisée rejetée" }, desc: "Weir have shared revised order and customer has rejected revision (this would display as a status in the list view of quotes rather than in the navigation)" },
-        ConfirmedOrder: { id: "CO", label: { en: "Confirmed Order", fr: "Commande confimée" }, desc: "1, Weir have reviewed order and confirmed all details are OK 2, Customer has accepted revised order" },
-        Despatched: { id: "DP", label: { en: "Despatched", fr: "Expédiée" }, desc: "Order marked as despatched" },
-        Invoiced: { id: "IV", label: { en: "Invoiced", fr: "Facturée" }, desc: "Order marked as invoiced" },
-        Review: { id: "RE", label: { en: "Under review", fr: "En révision" }, desc: "Order or Quote has been submitted to Weir, but a change or additional information is needed" }
+        Enquiry: {
+            id: "EN",
+            label: {en: "Enquiry Submitted", fr: "Demande envoyée"},
+            desc: "An enquiry for parts not found"
+        },
+        EnquiryReview: {
+            id: "ER",
+            label: {en: "Enquiry Submitted", fr: "Demande envoyée"},
+            desc: "An enquiry under administrator review."
+        },
+        Draft: {id: "DR", label: {en: "Draft", fr: "Brouillon"}, desc: "This is the current quote under construction"},
+        Saved: {
+            id: "SV",
+            label: {en: "Saved", fr: "Cotation(s) enregistrée(s)"},
+            desc: "Quote has been saved but not yet submitted to weir as quote or order"
+        },
+        Submitted: {
+            id: "SB",
+            label: {en: "Quote Submitted for Review", fr: "Cotation(s) soumise(s) à révision"},
+            desc: "Customer has selected to request review OR review status is conditional based on POA items being included in quote"
+        },
+        RevisedQuote: {
+            id: "RV",
+            label: {en: "Revised Quote", fr: "Cotation révisée"},
+            desc: "Weir have reviewed the quote and updated items as required. When the update is saved and ‘shared with the customer this becomes a ‘Revised quote’"
+        },
+        RejectedQuote: {
+            id: "RQ",
+            label: {en: "Rejected Quote", fr: "Cotation rejetée"},
+            desc: "Weir have shared Revised quote with buyer has rejected revision (this would display as a status in the list view of quotes rather than in the navigation)"
+        },
+        ConfirmedQuote: {
+            id: "CQ",
+            label: {en: "Confirmed Quote", fr: "Cotation confirmée"},
+            desc: "1. Customer has approved revised quote – assumes that if Weir have updated a revised quote the new /revised items are ‘pre-approved’ by Weir. 2. Weir admin has  confirmed a quote submitted for review by the customer."
+        },
+        SubmittedWithPO: {
+            id: "SP",
+            label: {en: "Order submitted with PO", fr: "Commande avec Bon de Commande"},
+            desc: "Order has been submitted to Weir with a PO"
+        },
+        SubmittedPendingPO: {
+            id: "SE",
+            label: {en: "Order submitted pending PO", fr: "Commande sans Bon de Commande"},
+            desc: "Order has been submitted to Weir with the expectation of a PO to be sent via email"
+        },
+        RevisedOrder: {
+            id: "RO",
+            label: {en: "Revised Order", fr: "Commande révisée"},
+            desc: "1. Weir have reviewed the order and updated items as required. When the update is saved and ‘shared with the customer this becomes a ‘Revised Order’."
+        },
+        RejectedRevisedOrder: {
+            id: "RR",
+            label: {en: "Rejected Revised Order", fr: "Commande révisée rejetée"},
+            desc: "Weir have shared revised order and customer has rejected revision (this would display as a status in the list view of quotes rather than in the navigation)"
+        },
+        ConfirmedOrder: {
+            id: "CO",
+            label: {en: "Confirmed Order", fr: "Commande confimée"},
+            desc: "1, Weir have reviewed order and confirmed all details are OK 2, Customer has accepted revised order"
+        },
+        Despatched: {id: "DP", label: {en: "Despatched", fr: "Expédiée"}, desc: "Order marked as despatched"},
+        Invoiced: {id: "IV", label: {en: "Invoiced", fr: "Facturée"}, desc: "Order marked as invoiced"},
+        Review: {
+            id: "RE",
+            label: {en: "Under review", fr: "En révision"},
+            desc: "Order or Quote has been submitted to Weir, but a change or additional information is needed"
+        }
         /*Shared: {id: "SH", label: "Shared", desc: "Shopper quote has been shared with a buyer"}, //Should this be an XP?
 		 Approved: {id: "AP", label: "Approved", desc: "Shopper quote has been shared with a buyer and approved"},
 		 Rejected: {id: "RJ", label: "Rejected", desc: "Shopper quote has been shared with a buyer and then rejected"},
@@ -77,9 +129,9 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 		 Cancelled: {id: "CX", label: "Cancelled", desc: "Order cancelled after submission"},*/
     };
     var orderStatusList = [
-		orderStatuses.Draft, orderStatuses.Saved, orderStatuses.Submitted, orderStatuses.RevisedQuote,
-		orderStatuses.RejectedQuote, orderStatuses.ConfirmedQuote, orderStatuses.SubmittedWithPO, orderStatuses.RevisedOrder,
-		orderStatuses.RejectedRevisedOrder, orderStatuses.ConfirmedOrder, orderStatuses.Despatched, orderStatuses.Invoiced,
+        orderStatuses.Draft, orderStatuses.Saved, orderStatuses.Submitted, orderStatuses.RevisedQuote,
+        orderStatuses.RejectedQuote, orderStatuses.ConfirmedQuote, orderStatuses.SubmittedWithPO, orderStatuses.RevisedOrder,
+        orderStatuses.RejectedRevisedOrder, orderStatuses.ConfirmedOrder, orderStatuses.Despatched, orderStatuses.Invoiced,
         orderStatuses.SubmittedPendingPO, orderStatuses.Review, orderStatuses.Enquiry, orderStatuses.EnquiryReview
     ];
 
@@ -109,7 +161,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         navBarLabels: navlabels,
         SetLastSearchType: SearchTypeService.SetLastSearchType,
         GetLastSearchType: SearchTypeService.GetLastSearchType,
-        SearchType: { Serial: "s", Part: "p", Tag: "t" },
+        SearchType: {Serial: "s", Part: "p", Tag: "t"},
         OrderStatus: orderStatuses,
         OrderStatusList: orderStatusList,
         LookupStatus: getStatus,
@@ -122,7 +174,11 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         GetValve: getValve,
         GetEnquiryParts: getEnquiryParts,
         GetEnquiryCategories: getEnquiryCategories,
-        SubmitEnquiry: submitEnquiry
+        SubmitEnquiry: submitEnquiry,
+        SetEnglishTranslationValve: _setEnglishTranslationValve,
+        SetEnglishTranslationParts: _setEnglishTranslationParts,
+        UserBuyers: userBuyers,
+        DivisionSelection: DivisionSelection
     };
 
     function assignAddressToGroups(addressId) {
@@ -147,33 +203,38 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             IsShipping: true,
             IsBilling: true
         };
-        return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(),buyerAssignment)
-           .then(function () {
-               return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(),shopperAssignment);
-           })
-           .then(function () {
-               return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(),adminAssignment);
-           })
-           .catch(function (ex) {
-               return ex;
-           });
+        return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(), buyerAssignment)
+            .then(function () {
+                return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(), shopperAssignment);
+            })
+            .then(function () {
+                return OrderCloudSDK.Addresses.SaveAssignment(Me.GetBuyerID(), adminAssignment);
+            })
+            .catch(function (ex) {
+                return ex;
+            });
     }
 
     function getLocale() {
         var localeOfUser = $cookieStore.get('language');
-        if (localeOfUser == null || localeOfUser == false) {
-            //set the expiration date of the cookie.
-            var now = new Date();
-            var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+
+        //set the expiration date of the cookie.
+        var now = new Date();
+        var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+
+        if (Me && Me.Org && Me.Org.xp && Me.Org.xp.Lang) {
+            localeOfUser = Me.Org.xp.Lang.id;
+        } else if (localeOfUser == null || localeOfUser == false) {
             //getting the language of the user's browser
             localeOfUser = navigator.language;
             localeOfUser = localeOfUser.substr(0, 2);
-            //setting the cookie.
-            $cookieStore.put('language', localeOfUser, {
-                expires: exp
-            });
-
         }
+
+        //setting the cookie.
+        $cookieStore.put('language', localeOfUser, {
+            expires: exp
+        });
+
         return localeOfUser;
     }
 
@@ -195,7 +256,6 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 ReviewQuotes: "Submitted for review",
                 RevisedQuotes: "Revised",
                 ConfirmedQuotes: "Confirmed",
-                language: true,
                 submitted: "Submitted with PO",
                 pending: "Submitted pending PO",
                 revised: "Revised",
@@ -221,7 +281,6 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 ReviewQuotes: $sce.trustAsHtml("Cotation(s) soumise(s) pour r&eacute;vision"),
                 RevisedQuotes: $sce.trustAsHtml("Cotation(s) r&eacute;vis&eacute;e(s)"),
                 ConfirmedQuotes: $sce.trustAsHtml("Cotation(s) confirm&eacute;e(s)"),
-                language: false,
                 submitted: $sce.trustAsHtml("Soumise(s) avec bon de commande"),
                 pending: $sce.trustAsHtml("Soumise(s) sans bon de commande"),
                 revised: $sce.trustAsHtml("Commande(s) r&eacute;vis&eacute;e(s)"),
@@ -245,54 +304,75 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         var result;
 
         CurrentOrder.GetCurrentCustomer()
-		.then(function (cust) {
-		    if (cust) {
-		        if (SearchTypeService.IsGlobalSearch()) {
-			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
-		                "xp.SN": serialNumber
-		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
-                        .then(function (matches) {
-                            if (matches.Items.length == 1) {
-                                result = matches.Items[0];
-                                getParts(result.ID, deferred, result);
-                            } else if (matches.Items.length == 0) {
-                                return deferred.resolve("No matches found for serial number " + serialNumber);
-                            } else {
-                                return deferred.resolve("No matches found for serial number " + serialNumber);
-                            }
-                        })
-                        .catch(function(ex) {
-                            console.log(ex);
-	                        return deferred.reject(ex);
-                        });
-		        } else {
-			        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters': {
-		                "xp.SN": serialNumber,
-		                "ParentID": cust.id
-		            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
-                        .then(function (matches) {
-                            if (matches.Items.length == 1) {
-                                result = matches.Items[0];
-                                getParts(result.ID, deferred, result);
-                            } else if (matches.Items.length == 0) {
-                                return deferred.resolve("No matches found for serial number " + serialNumber);
-                            } else {
-                                return deferred.resolve("No matches found for serial number " + serialNumber);
-                            }
-                        })
-				        .catch(function(ex) {
-				        	console.log(OrderCloudSDK.GetToken());
-					        console.log(ex.response.body.Errors["0"].Message);
-					        return deferred.reject(ex);
-				        });
-		        }
-		    } else {
-		        throw { message: "Customer for quote / search not set" };
-		    }
-		})
-        .catch(function (ex) {
-            return deferred.reject(ex);
-        });
+            .then(function (cust) {
+                var opts = {};
+                if (cust) {
+                    if (SearchTypeService.IsGlobalSearch()) {
+                        opts = {
+                            'page': 1,
+                            'pageSize': 50,
+                            'sortBy': "Name",
+                            'filters': {
+                                "xp.SN": serialNumber
+                            },
+                            'depth': "all",
+                            'catalogID': Me.Org.xp.WeirGroup.label
+                        };
+                        OrderCloudSDK.Me.ListCategories(opts)
+                            .then(function (matches) {
+                                if (matches.Items.length == 1) {
+                                    result = matches.Items[0];
+                                    getParts(result.ID, deferred, result);
+                                } else if (matches.Items.length == 0) {
+                                    return deferred.resolve("No matches found for serial number " + serialNumber);
+                                } else {
+                                    return deferred.resolve("No matches found for serial number " + serialNumber);
+                                }
+                            })
+                            .catch(function (ex) {
+                                console.log(ex);
+                                return deferred.reject(ex);
+                            });
+                    } else {
+                        var filters = {
+                            "xp.SN": serialNumber
+                        };
+
+                        if (Me.Org.xp.WeirGroup.label == "WVCUK") { //FR users will still search globally.
+                            filters.ParentID = cust.id;
+                        }
+
+                        opts = {
+                            'page': 1,
+                            'pageSize': 50,
+                            'filters': filters,
+                            'depth': "all",
+                            'catalogID': Me.Org.xp.WeirGroup.label
+                        };
+                        OrderCloudSDK.Me.ListCategories(opts)
+                            .then(function (matches) {
+                                if (matches.Items.length == 1) {
+                                    result = matches.Items[0];
+                                    getParts(result.ID, deferred, result);
+                                } else if (matches.Items.length == 0) {
+                                    return deferred.resolve("No matches found for serial number " + serialNumber);
+                                } else {
+                                    return deferred.resolve("No matches found for serial number " + serialNumber);
+                                }
+                            })
+                            .catch(function (ex) {
+                                console.log(OrderCloudSDK.GetToken());
+                                console.log(ex.response.body.Errors["0"].Message);
+                                return deferred.reject(ex);
+                            });
+                    }
+                } else {
+                    throw {message: "Customer for quote / search not set"};
+                }
+            })
+            .catch(function (ex) {
+                return deferred.reject(ex);
+            });
 
         return deferred.promise;
     }
@@ -301,12 +381,14 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         var deferred = $q.defer();
         var result;
         CurrentOrder.GetCurrentCustomer()
-			.then(function (cust) {
-			    if (cust) {
-			        if (SearchTypeService.IsGlobalSearch()) {
-				        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
-			                "TagNumber": tagNumber
-			            }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
+            .then(function (cust) {
+                if (cust) {
+                    if (SearchTypeService.IsGlobalSearch()) {
+                        OrderCloudSDK.Me.ListCategories({
+                            'page': 1, 'pageSize': 50, 'sortBy': "Name", 'filters': {
+                                "TagNumber": tagNumber
+                            }, 'depth': "all", 'catalogID': Me.Org.xp.WeirGroup.label
+                        })
                             .then(function (matches) {
                                 if (matches.Items.length == 1) {
                                     result = matches.Items[0];
@@ -317,26 +399,28 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                                     return deferred.resolve("Data error: Tag number " + tagNumber + " is not unique");
                                 }
                             });
-			        } else {
-				        OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"ParentID",'filters':{
-			                "xp.TagNumber": tagNumber,
-			                "ParentID": cust.id
-			            }, 'catalogID':Me.Org.xp.WeirGroup.label})
-                        .then(function (matches) {
-                            if (matches.Items.length == 1) {
-                                result = matches.Items[0];
-                                getParts(result.ID, deferred, result);
-                            } else if (matches.Items.length == 0) {
-                                return deferred.resolve("No matches found for tag number " + tagNumber);
-                            } else {
-                                return deferred.resolve("Data error: Tag number " + tagNumber + " is not unique");
-                            }
-                        });
-			        }
-			    } else {
-			        throw { message: "Customer for quote / search not set" };
-			    }
-			})
+                    } else {
+                        OrderCloudSDK.Me.ListCategories({
+                            'page': 1, 'pageSize': 50, 'sortBy': "ParentID", 'filters': {
+                                "xp.TagNumber": tagNumber,
+                                "ParentID": cust.id
+                            }, 'catalogID': Me.Org.xp.WeirGroup.label
+                        })
+                            .then(function (matches) {
+                                if (matches.Items.length == 1) {
+                                    result = matches.Items[0];
+                                    getParts(result.ID, deferred, result);
+                                } else if (matches.Items.length == 0) {
+                                    return deferred.resolve("No matches found for tag number " + tagNumber);
+                                } else {
+                                    return deferred.resolve("Data error: Tag number " + tagNumber + " is not unique");
+                                }
+                            });
+                    }
+                } else {
+                    throw {message: "Customer for quote / search not set"};
+                }
+            })
             .catch(function (ex) {
                 deferred.reject(ex);
             });
@@ -347,42 +431,54 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         var deferred = $q.defer();
         var result;
         CurrentOrder.GetCurrentCustomer()
-			.then(function (cust) {
-			    if (cust) {
-				    OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters':{ "ID": id }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
-            .then(function (matches) {
-                if (matches.Items.length == 1) {
-                    result = matches.Items[0];
-                    getParts(result.ID, deferred, result);
-                } else if (matches.Items.length == 0) {
-                    return deferred.resolve("No matches found for valve id " + id);
+            .then(function (cust) {
+                if (cust) {
+                    OrderCloudSDK.Me.ListCategories({
+                        'page': 1,
+                        'pageSize': 50,
+                        'filters': {"ID": id},
+                        'depth': "all",
+                        'catalogID': Me.Org.xp.WeirGroup.label
+                    })
+                        .then(function (matches) {
+                            if (matches.Items.length == 1) {
+                                result = matches.Items[0];
+                                getParts(result.ID, deferred, result);
+                            } else if (matches.Items.length == 0) {
+                                return deferred.resolve("No matches found for valve id " + id);
+                            } else {
+                                return deferred.resolve("Data error: Valve id " + id + " is not unique");
+                            }
+                        });
                 } else {
-                    return deferred.resolve("Data error: Valve id " + id + " is not unique");
+                    deferred.resolve("No customer context was set");
                 }
             });
-			    } else {
-			        deferred.resolve("No customer context was set");
-			    }
-			});
         return deferred.promise;
     }
 
     function getParts(catId, deferred, result) {
-	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':100, 'categoryID':catId, 'catalogID':result.ParentID.substring(0, 5), 'sortBy': 'Name' }) //why was UpdatePart here?
+        OrderCloudSDK.Me.ListProducts({
+            'page': 1,
+            'pageSize': 100,
+            'categoryID': catId,
+            'catalogID': result.ParentID.substring(0, 5),
+            'sortBy': 'Name'
+        }) //why was UpdatePart here?
             .then(function (products) {
                 result.Parts = [];
                 var hasPrices = [];
                 var noPrices = [];
                 angular.forEach(products.Items, function (product) {
                     if (product.PriceSchedule && product.PriceSchedule.PriceBreaks && product.PriceSchedule.PriceBreaks.length > 0 && product.PriceSchedule.PriceBreaks[0].Price) {
-                        hasPrices.push({ Number: product.ID, Detail: product });
+                        hasPrices.push({Number: product.ID, Detail: product});
                     } else {
-                        noPrices.push({ Number: product.ID, Detail: product });
+                        noPrices.push({Number: product.ID, Detail: product});
                     }
                 });
                 result.Parts.push.apply(result.Parts, hasPrices);
                 result.Parts.push.apply(result.Parts, noPrices);
-                deferred.resolve(result);
+                deferred.resolve(_setEnglishTranslationValve(result));
             })
             .catch(function (ex) {
                 deferred.reject(ex);
@@ -401,26 +497,45 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             if (number) {
                                 queue.push((function () {
                                     var d = $q.defer();
-	                                OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
-                                        "xp.SN": number
-                                    }, 'depth':"all", 'catalogID':cust.id.substring(0, 5)})
+                                    OrderCloudSDK.Me.ListCategories({
+                                        'page': 1,
+                                        'pageSize': 50,
+                                        'sortBy': "Name",
+                                        'filters': {
+                                            "xp.SN": number
+                                        },
+                                        'depth': "all",
+                                        'catalogID': cust.id.substring(0, 5)
+                                    })
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
                                             }
-	                                        OrderCloudSDK.Me.ListCategories({'search':number, 'page':1, 'pageSize':50, 'searchOn':"Description", 'depth':"all", 'catalogID':cust.id.substring(0, 5)})
+                                            OrderCloudSDK.Me.ListCategories({
+                                                'search': number,
+                                                'page': 1,
+                                                'pageSize': 50,
+                                                'searchOn': "Description",
+                                                'depth': "all",
+                                                'catalogID': cust.id.substring(0, 5)
+                                            })
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
-                                                        results.push({Number:  matchesDescription.Items[0].xp.SN, Detail: matchesSN.Items[0]});
+                                                        results.push({
+                                                            Number: matchesDescription.Items[0].xp.SN,
+                                                            Detail: matchesSN.Items[0]
+                                                        });
                                                     } else {
-                                                        for (var i = 0; i <= matchesDescription.Items.length - 1 ; i++) {
+                                                        for (var i = 0; i <= matchesDescription.Items.length - 1; i++) {
                                                             results.push({
                                                                 Number: matchesDescription.Items[i].xp.SN,
                                                                 Detail: matchesDescription.Items[i]
                                                             });
                                                         }
                                                     }
-                                                    results = _.uniq(results, false, function(cat){return cat.Number});
+                                                    results = _.uniq(results, false, function (cat) {
+                                                        return cat.Number
+                                                    });
                                                     d.resolve();
                                                 })
                                                 .catch(function (ex) {
@@ -437,13 +552,31 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             if (number) {
                                 queue.push((function () {
                                     var d = $q.defer();
-	                                OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{ "xp.SN": number }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
+                                    var filters = {"xp.SN": number};
+                                    if (Me.Org.xp.WeirGroup.label == "WVCUK") { //FR users will still search globally.
+                                        filters.ParentID = cust.id;
+                                    }
+
+                                    OrderCloudSDK.Me.ListCategories({
+                                        'page': 1,
+                                        'pageSize': 50,
+                                        'sortBy': "Name",
+                                        'filters': filters,
+                                        'depth': "all",
+                                        'catalogID': Me.Org.xp.WeirGroup.label
+                                    })
                                         .then(function (matchesSN) {
                                             if (matchesSN.Items.length == 1) {
                                                 results.push({Number: number, Detail: matchesSN.Items[0]});
                                             }
-	                                        OrderCloudSDK.Me.ListCategories({'search':number, 'page':1, 'pageSize':50, 'searchOn':"Description",
-                                                'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
+                                            OrderCloudSDK.Me.ListCategories({
+                                                'search': number,
+                                                'page': 1,
+                                                'pageSize': 50,
+                                                'searchOn': "Description",
+                                                'depth': "all",
+                                                'catalogID': Me.Org.xp.WeirGroup.label
+                                            })
                                                 .then(function (matchesDescription) {
                                                     if (matchesDescription.Items.length == 1) {
                                                         results.push({
@@ -451,7 +584,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                                                             Detail: matchesDescription.Items[0]
                                                         });
                                                     } else {
-                                                        for(var i = 0; i <= matchesDescription.Items.length-1; i++){
+                                                        for (var i = 0; i <= matchesDescription.Items.length - 1; i++) {
                                                             results.push({
                                                                 Number: matchesDescription.Items[i].xp.SN,
                                                                 Detail: matchesDescription.Items[i]
@@ -465,7 +598,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                                                 });
                                         })
                                         .catch(function (ex) {
-                                            results.push({ Number: number, Detail: null });
+                                            results.push({Number: number, Detail: null});
                                             d.resolve();
                                         });
                                     return d.promise;
@@ -493,62 +626,75 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         var results = [];
         var queue = [];
         CurrentOrder.GetCurrentCustomer()
-        .then(function (cust) {
-            if (cust) {
-                angular.forEach(tagNumbers, function (number) {
-                    if (number) {
-                        queue.push((function () {
-                            var d = $q.defer();
-                            if (SearchTypeService.IsGlobalSearch()) {
-	                            OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'sortBy':"Name", 'filters':{
-                                    "xp.TagNumber": number
-                                }, 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label})
-                                    .then(function (matches) {
-                                        if (matches.Items.length > 0) {
-                                            for (var i = 0; i < matches.Items.length; i++) {
-                                                results.push({ Number: number, Detail: matches.Items[i] });
+            .then(function (cust) {
+                if (cust) {
+                    angular.forEach(tagNumbers, function (number) {
+                        if (number) {
+                            queue.push((function () {
+                                var d = $q.defer();
+                                if (SearchTypeService.IsGlobalSearch()) {
+                                    OrderCloudSDK.Me.ListCategories({
+                                        'page': 1,
+                                        'pageSize': 50,
+                                        'sortBy': "Name",
+                                        'filters': {
+                                            "xp.TagNumber": number
+                                        },
+                                        'depth': "all",
+                                        'catalogID': Me.Org.xp.WeirGroup.label
+                                    })
+                                        .then(function (matches) {
+                                            if (matches.Items.length > 0) {
+                                                for (var i = 0; i < matches.Items.length; i++) {
+                                                    results.push({Number: number, Detail: matches.Items[i]});
+                                                }
+                                            } else {
+                                                results.push({Number: number, Detail: null});
                                             }
-                                        } else {
-                                            results.push({ Number: number, Detail: null });
-                                        }
-                                        d.resolve();
+                                            d.resolve();
+                                        })
+                                        .catch(function (ex) {
+                                            results.push({Number: number, Detail: null});
+                                            d.resolve();
+                                        });
+                                } else {
+                                    OrderCloudSDK.Me.ListCategories({
+                                        'page': 1,
+                                        'pageSize': 50,
+                                        'filters': {
+                                            "xp.TagNumber": number,
+                                            "ParentID": cust.id
+                                        },
+                                        'catalogID': Me.Org.xp.WeirGroup.label
                                     })
-                                    .catch(function (ex) {
-                                        results.push({ Number: number, Detail: null });
-                                        d.resolve();
-                                    });
-                            } else {
-	                            OrderCloudSDK.Me.ListCategories({'page':1, 'pageSize':50, 'filters':{
-                                    "xp.TagNumber": number,
-                                    "ParentID": cust.id
-                                }, 'catalogID':Me.Org.xp.WeirGroup.label})
-                                    .then(function (matches) {
-                                        if (matches.Items.length > 0) {
-                                            angular.forEach(matches.Items, function (match, key) {
-                                                results.push({ Number: number, Detail: match });
-                                            });
-                                        } else {
-                                            results.push({ Number: number, Detail: null });
-                                        }
-                                        d.resolve();
-                                    })
-                                    .catch(function (ex) {
-                                        results.push({ Number: number, Detail: null });
-                                        d.resolve();
-                                    });
-                            }
-                            return d.promise;
-                        })());
-                    }
-                });
-                $q.all(queue).then(function () {
+                                        .then(function (matches) {
+                                            if (matches.Items.length > 0) {
+                                                angular.forEach(matches.Items, function (match, key) {
+                                                    results.push({Number: number, Detail: match});
+                                                });
+                                            } else {
+                                                results.push({Number: number, Detail: null});
+                                            }
+                                            d.resolve();
+                                        })
+                                        .catch(function (ex) {
+                                            results.push({Number: number, Detail: null});
+                                            d.resolve();
+                                        });
+                                }
+                                return d.promise;
+                            })());
+                        }
+                    });
+                    $q.all(queue).then(function () {
+                        deferred.resolve(results);
+                    });
+                } else {
                     deferred.resolve(results);
-                });
-            } else {
-                deferred.resolve(results);
-            }
-        })
-        .catch(function (ex) { });
+                }
+            })
+            .catch(function (ex) {
+            });
 
         return deferred.promise;
     }
@@ -563,12 +709,12 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 
         getParts(weirGroup, partNumbers);
         $q.all(queue)
-	    .then(function () {
-	        deferred.resolve(results);
-	    })
-		.catch(function (ex) {
-		    deferred.resolve(results);
-		});
+            .then(function () {
+                deferred.resolve(results);
+            })
+            .catch(function (ex) {
+                deferred.resolve(results);
+            });
         return deferred.promise;
 
         function getParts(weirGroup, partNumbers) {
@@ -577,40 +723,55 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                     queue.push((function () {
                         var d = $q.defer();
 
-	                    OrderCloudSDK.Me.ListProducts({'search':weirGroup, 'page':1, 'pageSize':50, 'searchOn':"ID", 'sortBy':"Name", 'filters':{ "Name": number }})
+                        OrderCloudSDK.Me.ListProducts({
+                            'search': weirGroup,
+                            'page': 1,
+                            'pageSize': 50,
+                            'searchOn': "ID",
+                            'sortBy': "Name",
+                            'filters': {"Name": number}
+                        })
                             .then(function (products) {
                                 if (products.Items.length == 0) {
                                     if (weirGroup = "WVCUK") {
-	                                    OrderCloudSDK.Me.ListProducts({'search':weirGroup, 'page':1, 'pageSize':50, 'searchOn':"ID", 'sortBy':"Name", 'filters':{ "xp.AlternatePartNumber": number }})
+                                        OrderCloudSDK.Me.ListProducts({
+                                            'search': weirGroup,
+                                            'page': 1,
+                                            'pageSize': 50,
+                                            'searchOn': "ID",
+                                            'sortBy': "Name",
+                                            'filters': {"xp.AlternatePartNumber": number}
+                                        })
                                             .then(function (products) {
                                                 if (products.Items.length == 0) {
-                                                    results.Parts.push({ Number: number, Detail: null });
+                                                    results.Parts.push({Number: number, Detail: null});
                                                 } else {
                                                     angular.forEach(products.Items, function (product) {
-                                                        var result = { Number: number, Detail: product };
+                                                        var result = {Number: number, Detail: product};
                                                         results.Parts.push(result);
                                                     });
                                                 }
                                                 d.resolve();
                                             })
                                             .catch(function (ex) {
-                                                results.Parts.push({ Number: number, Detail: null });
+                                                results.Parts.push({Number: number, Detail: null});
                                                 d.resolve();
                                             });
                                     } else {
-                                        results.Parts.push({ Number: number, Detail: null });
+                                        results.Parts.push({Number: number, Detail: null});
                                         d.resolve();
                                     }
                                 } else {
+                                    _setEnglishTranslationParts(products.Items);
                                     angular.forEach(products.Items, function (product) {
-                                        var result = { Number: number, Detail: product };
+                                        var result = {Number: number, Detail: product};
                                         results.Parts.push(result);
                                     });
                                     d.resolve();
                                 }
                             })
                             .catch(function (ex) {
-                                results.Parts.push({ Number: number, Detail: null });
+                                results.Parts.push({Number: number, Detail: null});
                                 d.resolve();
                             });
                         return d.promise;
@@ -620,50 +781,86 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         }
     }
 
+    function _setEnglishTranslationValve(valve) {
+        if (getLocale() == "en") {
+            //ToDO Move the translated xp vals to the standard places.
+            if (valve.xp && valve.xp.en) {
+                valve.Description = valve.xp.en.Description;
+                if (valve.xp.Specs) {
+                    valve.xp.Specs.Inlet = valve.xp.en.xpInlet;
+                    valve.xp.Specs.Outlet = valve.xp.en.xpOutlet;
+                }
+            }
+            if (valve.Parts && valve.Parts.length > 0) {
+                _setEnglishTranslationParts(valve.Parts);
+            }
+        }
+
+        return valve;
+    }
+
+    function _setEnglishTranslationParts(searchResults) {
+        if (getLocale() == "en") {
+            //ToDO Move the translated xp vals to the standard places.
+            angular.forEach(searchResults, function (value, key) {
+                if (value.Product && value.Product.xp && value.Product.xp.en)
+                    value.Product.Description = value.Product.xp.en.Description || value.Product.Description;
+                else if (value.xp && value.xp.en) {
+                    value.Description = value.xp.en.Description || value.Description;
+                } else if (value.Detail && value.Detail.xp && value.Detail.xp.en) {
+                    value.Detail.Description = value.Detail.xp.en.Description || value.Detail.Description;
+                }
+            });
+        }
+        return searchResults;
+    }
+
     function addPartToQuote(part) {
         var deferred = $q.defer();
         var currentOrder = {};
         var customer = null; //CurrentOrder.GetCurrentCustomer(); // Will this appropriately change?
 
         CurrentOrder.GetCurrentCustomer()
-		    .then(function (cust) {
-		        customer = cust;
-		        return CurrentOrder.Get();
-		    })
-		    .then(function (order) {
-		        // order is the localforge order.
-		        currentOrder = order;
-		        return OrderCloudSDK.LineItems.List("Outgoing", currentOrder.ID);
-		    })
-		    .then(function (lineItems) {
-		        // If the line items contains the current part, then update.
-		        var elementPosition = lineItems.Items.map(function (x) { return x.ProductID; }).indexOf(part.Detail.ID);
-		        if (elementPosition == -1) {
-		            addLineItem(currentOrder);
-		        } else {
-		            updateLineItem(currentOrder, lineItems.Items[elementPosition]);
-		        }
-		    })
-		    .catch(function () {
-		        console.log(customer);
-		        var cart = {
-		            "ID": randomQuoteID(),
-		            "Type": "Standard",
-		            xp: {
-		                "BuyerID": Me.GetBuyerID(),
-		                "Type": "Quote",
-		                "CustomerID": customer.id,
-		                "CustomerName": customer.name,
-		                "Status": "DR",
-		                "Active": true
-		            }
-		        };
-			    OrderCloudSDK.Orders.Create("Outgoing",cart)
-				    .then(function (order) {
-				        CurrentOrder.Set(order.ID);
-				        addLineItem(order);
-				    })
-		    });
+            .then(function (cust) {
+                customer = cust;
+                return CurrentOrder.Get();
+            })
+            .then(function (order) {
+                // order is the localforge order.
+                currentOrder = order;
+                return OrderCloudSDK.LineItems.List("Outgoing", currentOrder.ID);
+            })
+            .then(function (lineItems) {
+                // If the line items contains the current part, then update.
+                var elementPosition = lineItems.Items.map(function (x) {
+                    return x.ProductID;
+                }).indexOf(part.Detail.ID);
+                if (elementPosition == -1) {
+                    addLineItem(currentOrder);
+                } else {
+                    updateLineItem(currentOrder, lineItems.Items[elementPosition]);
+                }
+            })
+            .catch(function () {
+                console.log(customer);
+                var cart = {
+                    "ID": randomQuoteID(),
+                    "Type": "Standard",
+                    xp: {
+                        "BuyerID": Me.GetBuyerID(),
+                        "Type": "Quote",
+                        "CustomerID": customer.id,
+                        "CustomerName": customer.name,
+                        "Status": "DR",
+                        "Active": true
+                    }
+                };
+                OrderCloudSDK.Orders.Create("Outgoing", cart)
+                    .then(function (order) {
+                        CurrentOrder.Set(order.ID);
+                        addLineItem(order);
+                    })
+            });
 
         function updateLineItem(order, lineItem) {
             // find the line item and update the quantity of the current order.
@@ -672,9 +869,9 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 ProductID: lineItem.ProductID,
                 Quantity: qty
             };
-	        OrderCloudSDK.LineItems.Patch("Outgoing", order.ID, lineItem.ID, li)
+            OrderCloudSDK.LineItems.Patch("Outgoing", order.ID, lineItem.ID, li)
                 .then(function (lineItem) {
-                    deferred.resolve({ Order: order, LineItem: lineItem });
+                    deferred.resolve({Order: order, LineItem: lineItem});
                 });
         }
 
@@ -684,17 +881,21 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 Quantity: part.Quantity,
                 xp: {
                     SN: part.xp.SN,
-                    TagNumber: part.xp.TagNumber
+                    TagNumber: part.xp.TagNumber,
+                    LeadTime: part.Detail.xp.LeadTime,
+                    ReplacementSchedule: part.Detail.xp.ReplacementSchedule,
+                    Description: part.Detail.Description,
+                    ProductName: part.Detail.Name
                 }
             };
 
-	        OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
+            OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
                 .then(function (lineItem) {
-                    deferred.resolve({ Order: order, LineItem: lineItem });
+                    deferred.resolve({Order: order, LineItem: lineItem});
                 })
-	            .catch(function (ex) {
-	                console.log(ex);
-	            });
+                .catch(function (ex) {
+                    console.log(ex);
+                });
         }
 
         return deferred.promise;
@@ -708,7 +909,10 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 addLineItems(order);
             })
             .catch(function () {
-	            OrderCloudSDK.Orders.Create( "Outgoing", { ID: randomQuoteID(), xp: { Type: "Quote", Status: "DR", BuyerID: Me.GetBuyerID() } })
+                OrderCloudSDK.Orders.Create("Outgoing", {
+                    ID: randomQuoteID(),
+                    xp: {Type: "Quote", Status: "DR", BuyerID: Me.GetBuyerID()}
+                })
                     .then(function (order) {
                         CurrentOrder.Set(order.ID);
                         addLineItems(order);
@@ -728,7 +932,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             Quantity: part.Quantity
                         };
 
-	                    OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
+                        OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
                             .then(function (lineItem) {
                                 d.resolve(lineItem);
                             });
@@ -756,9 +960,12 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             })
             .catch(function () {
                 CurrentOrder.GetCurrentCustomer()
-		            .then(function (customer) {
-		                return OrderCloudSDK.Orders.Create("Outgoing", { ID: randomQuoteID(), xp: { CustomerID: customer.id, CustomerName: customer.name, BuyerID: Me.GetBuyerID() } })
-		            })
+                    .then(function (customer) {
+                        return OrderCloudSDK.Orders.Create("Outgoing", {
+                            ID: randomQuoteID(),
+                            xp: {CustomerID: customer.id, CustomerName: customer.name, BuyerID: Me.GetBuyerID()}
+                        })
+                    })
                     .then(function (order) {
                         CurrentOrder.Set(order.ID);
                         addLineItems(order);
@@ -778,7 +985,7 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                             Quantity: part.Quantity
                         };
 
-	                    OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
+                        OrderCloudSDK.LineItems.Create("Outgoing", order.ID, li)
                             .then(function (lineItem) {
                                 d.resolve(lineItem);
                             });
@@ -808,38 +1015,40 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 
     // Resolve user
     var users = {};
+
     function getUser(userId) {
         var deferred = $q.defer();
         if (users[userId]) {
             deferred.resolve(users[userId]);
         } else {
-	        OrderCloudSDK.Users.Get(Me.GetBuyerID(), userId)
-			.then(function (usr) {
-			    users[userId] = usr;
-			    deferred.resolve(usr);
-			})
-			.catch(function (ex) {
-			    deferred.resolve({});
-			});
+            OrderCloudSDK.Users.Get(Me.GetBuyerID(), userId)
+                .then(function (usr) {
+                    users[userId] = usr;
+                    deferred.resolve(usr);
+                })
+                .catch(function (ex) {
+                    deferred.resolve({});
+                });
         }
         return deferred.promise;
     }
 
     // Resolve customer
     var customers = {};
+
     function getCustomerCategory(orgId) {
         var deferred = $q.defer();
         if (customers[orgId]) {
             deferred.resolve(customers[orgId]);
         } else {
-	        OrderCloudSDK.Categories.Get(Me.Org.xp.WeirGroup.label, orgId)
-			.then(function (org) {
-			    customers[orgId] = org;
-			    deferred.resolve(org);
-			})
-			.catch(function (ex) {
-			    deferred.resolve({});
-			});
+            OrderCloudSDK.Categories.Get(Me.Org.xp.WeirGroup.label, orgId)
+                .then(function (org) {
+                    customers[orgId] = org;
+                    deferred.resolve(org);
+                })
+                .catch(function (ex) {
+                    deferred.resolve({});
+                });
         }
         return deferred.promise;
     }
@@ -850,47 +1059,47 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 
     function findCart(customer) {
         var deferred = $q.defer();
-	    OrderCloudSDK.Me.Get()
-	        .then(function (user) {
-	            var filter = {
-	                "FromUserId": user.ID,
-	                "xp.Type": "Quote",
-	                "xp.CustomerID": customer.id,
-	                "xp.CustomerName": customer.name,
-	                "xp.Status": "DR"
-	            };
-		        OrderCloudSDK.Orders.List("Outgoing", {'page':1, 'pageSize':100, 'filters':filter}) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
-					.then(function (results) {
-					    if (results.Items.length > 0) {
-					        var ct = results.Items[0];
-					        CurrentOrder.Set(ct.ID);
-					        deferred.resolve(ct);
-					    } else {
-					        var cart = {
-					            "Type": "Standard",
-					            xp: {
-					                "BuyerID": Me.GetBuyerID(),
-					                "Type": "Quote",
-					                "CustomerID": customer.id,
-					                "CustomerName": customer.name,
-					                "Status": "DR",
-					                "Active": true
-					            }
-					        };
-						    OrderCloudSDK.Orders.Create("Outgoing",cart)
-								.then(function (ct) {
-								    CurrentOrder.Set(ct.ID);
-								    deferred.resolve(ct);
-								})
-								.catch(function (ex) {
-								    deferred.reject(ex);
-								});
-					    }
-					});
-	        })
-			.catch(function (ex) {
-			    d.reject(ex);
-			});
+        OrderCloudSDK.Me.Get()
+            .then(function (user) {
+                var filter = {
+                    "FromUserId": user.ID,
+                    "xp.Type": "Quote",
+                    "xp.CustomerID": customer.id,
+                    "xp.CustomerName": customer.name,
+                    "xp.Status": "DR"
+                };
+                OrderCloudSDK.Orders.List("Outgoing", {'page': 1, 'pageSize': 100, 'filters': filter}) //(from, to, search, page, pageSize, searchOn, sortBy, filters, buyerID)
+                    .then(function (results) {
+                        if (results.Items.length > 0) {
+                            var ct = results.Items[0];
+                            CurrentOrder.Set(ct.ID);
+                            deferred.resolve(ct);
+                        } else {
+                            var cart = {
+                                "Type": "Standard",
+                                xp: {
+                                    "BuyerID": Me.GetBuyerID(),
+                                    "Type": "Quote",
+                                    "CustomerID": customer.id,
+                                    "CustomerName": customer.name,
+                                    "Status": "DR",
+                                    "Active": true
+                                }
+                            };
+                            OrderCloudSDK.Orders.Create("Outgoing", cart)
+                                .then(function (ct) {
+                                    CurrentOrder.Set(ct.ID);
+                                    deferred.resolve(ct);
+                                })
+                                .catch(function (ex) {
+                                    deferred.reject(ex);
+                                });
+                        }
+                    });
+            })
+            .catch(function (ex) {
+                d.reject(ex);
+            });
         return deferred.promise;
     }
 
@@ -909,16 +1118,26 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
 			filter["xp.Status"] = statusFilter;*/
 
             var d = $q.defer();
-	        OrderCloudSDK.Orders.List("Outgoing", {'from':urlParams.from, 'to':urlParams.to, 'search':urlParams.search, 'page':urlParams.page, 'pageSize':urlParams.pageSize || 100, 'searchOn':urlParams.searchOn, 'sortBy':urlParams.sortBy, 'filers':urlParams.filters, 'buyerID':Me.GetBuyerID()})
-				.then(function (results) {
-				    angular.forEach(results.Items, function (quote) {
-				        quotes.push(quote);
-				    });
-				    d.resolve();
-				})
-				.catch(function (ex) {
-				    d.resolve();
-				});
+            OrderCloudSDK.Orders.List("Outgoing", {
+                'from': urlParams.from,
+                'to': urlParams.to,
+                'search': urlParams.search,
+                'page': urlParams.page,
+                'pageSize': urlParams.pageSize || 100,
+                'searchOn': urlParams.searchOn,
+                'sortBy': urlParams.sortBy,
+                'filers': urlParams.filters,
+                'buyerID': Me.GetBuyerID()
+            })
+                .then(function (results) {
+                    angular.forEach(results.Items, function (quote) {
+                        quotes.push(quote);
+                    });
+                    d.resolve();
+                })
+                .catch(function (ex) {
+                    d.resolve();
+                });
 
             d.promise.then(function () {
                 // resolveCustomers(quotes).then( function() {
@@ -937,7 +1156,15 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     function findQuotes(statuses, resolveSharedId, urlParams) {
         var quotes = [];
         var queue = [];
-        var params = urlParams ? urlParams : { from: null, to: null, search: null, page: null, pageSize: null, searchOn: null, sortBy: null };
+        var params = urlParams ? urlParams : {
+            from: null,
+            to: null,
+            search: null,
+            page: null,
+            pageSize: null,
+            searchOn: null,
+            sortBy: null
+        };
         var deferred = $q.defer();
 
         if (statuses && statuses.length) {
@@ -950,7 +1177,17 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             filter["xp.Status"] = statusFilter;
 
             var d = $q.defer();
-	        OrderCloudSDK.Orders.List("Outgoing", {'from':params.from, 'to':params.to, 'search':params.search, 'page':params.page || 1, 'pageSize':params.pageSize || 100, 'searchOn':params.searchOn, 'sortBy':params.sortBy, 'filters':params.filters, 'buyerID':Me.GetBuyerID()})
+            OrderCloudSDK.Orders.List("Outgoing", {
+                'from': params.from,
+                'to': params.to,
+                'search': params.search,
+                'page': params.page || 1,
+                'pageSize': params.pageSize || 100,
+                'searchOn': params.searchOn,
+                'sortBy': params.sortBy,
+                'filters': params.filters,
+                'buyerID': Me.GetBuyerID()
+            })
                 .then(function (results) {
                     angular.forEach(results.Items, function (quote) {
                         quotes.push(quote);
@@ -986,8 +1223,12 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 queue2.push((function () {
                     var d = $q.defer();
                     getUser(id)
-	                .then(function (usr) { d.resolve(); })
-	                .catch(function (ex) { d.resolve(); });
+                        .then(function (usr) {
+                            d.resolve();
+                        })
+                        .catch(function (ex) {
+                            d.resolve();
+                        });
                     return d.promise;
                 })());
             });
@@ -1020,8 +1261,12 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             queue.push((function () {
                 var d = $q.defer();
                 getCustomerCategory(id).then(
-		            function (org) { d.resolve(); }
-		        ).catch(function (ex) { d.resolve(); });
+                    function (org) {
+                        d.resolve();
+                    }
+                ).catch(function (ex) {
+                    d.resolve();
+                });
                 return d.promise;
             })());
         });
@@ -1044,13 +1289,17 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         var deferred = $q.defer();
         if (assignQuoteNumber) {
             OrderCloudSDK.Buyers.Get(Me.GetBuyerID())
-            .then(function (buyer) {
-                tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, 0, buyer);
-            });
+                .then(function (buyer) {
+                    tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, 0, buyer);
+                });
         } else {
-	        OrderCloudSDK.Orders.Patch("OutGoing", quote.ID, data)
-				.then(function (quote) { deferred.resolve(quote) })
-				.catch(function (ex) { deferred.reject(ex); });
+            OrderCloudSDK.Orders.Patch("OutGoing", quote.ID, data)
+                .then(function (quote) {
+                    deferred.resolve(quote)
+                })
+                .catch(function (ex) {
+                    deferred.reject(ex);
+                });
         }
         return deferred.promise;
     }
@@ -1058,21 +1307,26 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
     function tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount, buyer) {
         var newQuoteId = createQuoteNumber(prefix, trycount, buyer);
         data.ID = newQuoteId;
-	    OrderCloudSDK.Orders.Patch("Outgoing", quote.ID, data)
-			.then(function (quote) { CurrentOrder.Set(newQuoteId); return quote; })
-            .then(function(quote) { 
-                var data = { xp: { NextOrderNumber: (buyer.xp.NextOrderNumber || 1) + trycount + 1 } };
+        OrderCloudSDK.Orders.Patch("Outgoing", quote.ID, data)
+            .then(function (quote) {
+                CurrentOrder.Set(newQuoteId);
+                return quote;
+            })
+            .then(function (quote) {
+                var data = {xp: {NextOrderNumber: (buyer.xp.NextOrderNumber || 1) + trycount + 1}};
                 OrderCloudSDK.Buyers.Patch(buyer.ID, data);
                 return quote;
             })
-			.then(function (quote) { deferred.resolve(quote) })
-			.catch(function (ex) {
-			    if (trycount > 20) {
-			        deferred.reject(ex);
-			    } else {
-			        tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount + 1, buyer);
-			    }
-			});
+            .then(function (quote) {
+                deferred.resolve(quote)
+            })
+            .catch(function (ex) {
+                if (trycount > 20) {
+                    deferred.reject(ex);
+                } else {
+                    tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount + 1, buyer);
+                }
+            });
     }
 
     function createQuoteNumber(prefix, trycount, buyer) {
@@ -1093,88 +1347,127 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
         var deferred = $q.defer();
 
         CurrentOrder.Set(quoteId)
-		    .then(function () {
-		        return CurrentOrder.Get();
-		    })
-		    .then(function (quote) {
-		        return CurrentOrder.SetCurrentCustomer({
-		            id: quote.xp.CustomerID,
-		            name: quote.xp.CustomerName
-		        });
-		    })
-		    .then(function () {
-		        deferred.resolve();
-		    })
-		    .catch(function (ex) {
-		        deferred.reject(ex);
-		    });
+            .then(function () {
+                return CurrentOrder.Get();
+            })
+            .then(function (quote) {
+                return CurrentOrder.SetCurrentCustomer({
+                    id: quote.xp.CustomerID,
+                    name: quote.xp.CustomerName
+                });
+            })
+            .then(function () {
+                deferred.resolve();
+            })
+            .catch(function (ex) {
+                deferred.reject(ex);
+            });
 
         return deferred.promise;
     }
 
-	function sortEnquiryCategories(valveType) {
-		var items = {
-			"Soupape de sûreté conventionnelle - Type Série P Starflow":1,
-			"Soupape d'expansion thermique - Type Série 9":2,
-			"Soupape pilotées - Type Série 76, Série 78 et Stareco":3,
-			"Soupape vapeur basse/moyenne pression - ASME I - Type Starflow V":4,
-			"Soupape vapeur haute pression - ASME I - Type Starsteam":5,
-			"Soupape pilotées basse pression - API2000 - Type Série 74LP":6
-		};
+    function sortEnquiryCategories(valveType) {
+        /*var items = {
+            "Soupape de sûreté conventionnelle - Type Série P Starflow": 1,
+            "Soupape d'expansion thermique - Type Série 9": 2,
+            "Soupape pilotées - Type Série 76, Série 78 et Stareco": 3,
+            "Soupape vapeur basse/moyenne pression - ASME I - Type Starflow V": 4,
+            "Soupape vapeur haute pression - ASME I - Type Starsteam": 5,
+            "Soupape pilotées basse pression - API2000 - Type Série 74LP": 6
+        };*/
 
-		console.log(valveType);
-		var result = Underscore.sortBy(valveType, function(valve) {
-			return items[valve.Name];
-		});
-		return result;
-	}
+        var items = {
+            "74LP - API2000 Low pressure piloted safety relief valve":1,
+            "Pilot Operated Pressure Relief Valve (POPRV) - 76, 78, 86 & Stareco Type":2,
+            "Pressure Safety Valve (PSV) - Starflow type":3,
+            "Starflow V - ASME I Pressure relief valve":4,
+            "Thermal Safety Valve (TSV) - 9 Series Type":5,
+            "Other valve model (please add description to your enquiry)":6
+        };
+
+        var result = Underscore.sortBy(valveType, function (valve) {
+            return items[valve.xp.en.Name];
+        });
+        return result;
+    }
 
     function getEnquiryCategories() {
         var enqCat = "";
         var deferred = $q.defer();
-	    OrderCloudSDK.Buyers.Get(Me.GetBuyerID())
-        .then(function (b) {
-            if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
-                enqCat = b.xp.WeirGroup.label + "_ENQ";
-                return OrderCloudSDK.Me.ListCategories({ 'page': 1, 'pageSize': 100, 'sortBy': "Name", 'depth': "2", 'catalogID': enqCat, filters: {"ID": "<>Parts"}});
-            } else {
-                deferred.resolve([]);
-            }
-        })
-        .then(function (brands) {
-            var matches = { manufacturers: [], valvetypes: {}, catalog: enqCat };
-            for (var i = 0; i < brands.Items.length; i++) {
-                var tmp = brands.Items[i];
-                if (tmp.ParentID) {
-                    matches.valvetypes[tmp.ParentID] = matches.valvetypes[tmp.ParentID] || [];
-                    matches.valvetypes[tmp.ParentID].push(tmp);
+        OrderCloudSDK.Buyers.Get(Me.GetBuyerID())
+            .then(function (b) {
+                if (b.xp.WeirGroup && b.xp.WeirGroup.label) {
+                    enqCat = b.xp.WeirGroup.label + "_ENQ";
+                    return OrderCloudSDK.Me.ListCategories({
+                        'page': 1,
+                        'pageSize': 100,
+                        'sortBy': "Name",
+                        'depth': "2",
+                        'catalogID': enqCat,
+                        filters: {"ID": "<>Parts"}
+                    });
                 } else {
-                    matches.manufacturers.push(tmp);
+                    deferred.resolve([]);
                 }
-            }
-	        //matches.valvetypes["WPIFR-Sarasin-SAR"] = sortEnquiryCategories(matches.valvetypes["WPIFR-Sarasin-SAR"]); now sorted in console.
+            })
+            .then(function (brands) {
+                var lang = getLocale();
+                var matches = {manufacturers: [], valvetypes: {}, catalog: enqCat};
+                for (var i = 0; i < brands.Items.length; i++) {
+                    var tmp = brands.Items[i];
+                    if (lang && tmp.xp && tmp.xp[lang] && tmp.xp[lang].Name) tmp.Name = tmp.xp[lang].Name;
+                    if (tmp.ParentID) {
+                        matches.valvetypes[tmp.ParentID] = matches.valvetypes[tmp.ParentID] || [];
+                        matches.valvetypes[tmp.ParentID].push(tmp);
+                    } else {
+                        matches.manufacturers.push(tmp);
+                    }
+                }
+                if (lang == 'en') {
+                    matches.valvetypes["WPIFR-Sarasin-SAR"] = sortEnquiryCategories(matches.valvetypes["WPIFR-Sarasin-SAR"]); //now sorted in console.
+                }
 
-            deferred.resolve(matches);
-        })
-        .catch(function (ex) {
-            deferred.reject(ex);
-        });
+                deferred.resolve(matches);
+            })
+            .catch(function (ex) {
+                deferred.reject(ex);
+            });
         return deferred.promise;
     }
 
     function getEnquiryParts(catalogID, valveType) {
-        return OrderCloudSDK.Me.ListProducts({'page':1, 'pageSize':50, 'sortBy':"Name", 'categoryID':valveType.ID, 'catalogID':catalogID});
+        var deferred = $q.defer();
+        OrderCloudSDK.Me.ListProducts({
+            'page': 1,
+            'pageSize': 50,
+            'sortBy': "Name",
+            'categoryID': valveType.ID,
+            'catalogID': catalogID
+        })
+            .then(function (parts) {
+                var lang = getLocale();
+                if (lang) {
+                    for (var i = 0; i < parts.Items.length; i++) {
+                        var tmp = parts.Items[i];
+                        if (tmp.xp && tmp.xp[lang] && tmp.xp[lang].Description) tmp.Description = tmp.xp[lang].Description;
+                    }
+                }
+                deferred.resolve(_setEnglishTranslationParts(parts)); //_setEnglishTranslationParts
+            })
+            .catch(function (ex) {
+                deferred.reject(ex);
+            });
+        return deferred.promise;
     }
 
     function submitEnquiry(enq) {
         var deferred = $q.defer();
-	    var buyerId = Me.GetBuyerID();
+        var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
         var newQuoteId = createQuoteNumber(buyerId, 0, Me.Org);
         var data = {
             ID: newQuoteId,
             Type: "Standard",
-            // "FromUserID": "",
             "ShippingAddressID": enq.Shipping.ID,
             xp: {
                 "BuyerID": buyerId,
@@ -1186,52 +1479,64 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                 "Active": true,
                 "StatusDate": new Date(),
                 "WasEnquiry": true,
-                "SN":enq.SerialNumber,
-                "Brand":enq.Manufacturer.Name,
-                "ValveType":enq.ValveType.Name
+                "SN": enq.SerialNumber,
+                "Brand": enq.Manufacturer.Name,
+                "ValveType": enq.ValveType.Name
             }
         };
 
-        if(enq.Quote && enq.Quote.xp) {
-			data.xp.Name = enq.Quote.xp.Name;
-			data.xp.RefNum = enq.Quote.xp.RefNum;
+        if (enq.Quote && enq.Quote.xp) {
+            data.xp.Name = enq.Quote.xp.Name;
+            data.xp.RefNum = enq.Quote.xp.RefNum;
         }
 
         if (enq.Comment.val) {
             data.xp.CommentsToWeir.push(enq.Comment);
         }
-        function addLineItem(sernum, itemId, qty) {
+
+        function addLineItem(sernum, itemId, qty, PartDetails) {
             var defer = $q.defer();
+
             var li = {
                 ProductID: itemId,
                 Quantity: qty,
                 xp: {
-                    SN: sernum
+                    SN: sernum,
+                    TagNumber: "",
+                    ProductName: PartDetails.Name,
+                    Description: PartDetails.Description,
+                    ReplacementSchedule: "",
+                    LeadTime: ""
                 }
             };
-	        OrderCloudSDK.LineItems.Create("Outgoing",data.ID, li)
+            OrderCloudSDK.LineItems.Create("Outgoing", data.ID, li)
                 .then(function (lineItem) {
-                    defer.resolve({ Order: data, LineItem: lineItem });
+                    defer.resolve({Order: data, LineItem: lineItem});
                 })
                 .catch(function (ex) {
                     defer.reject(ex);
                 });
             return defer.promise;
         }
+
         var queue = [];
         //TODO - Complete quote creation process with ascending trycount if necessary.
         //TODO - Patch the buyers quote id.
         OrderCloudSDK.Buyers.Get(Me.Org.ID)
-            .then(function(buyer) {
+            .then(function (buyer) {
                 Me.Org = buyer;
-                return OrderCloudSDK.Orders.Create("Outgoing",data)
+                return OrderCloudSDK.Orders.Create("Outgoing", data)
             })
             .then(function (quote) {
                 for (var p in enq.Parts) {
                     if (enq.Parts[p]) {
-                        queue.push(
-                            addLineItem(enq.SerialNumber, p, enq.Parts[p])
-                        );
+                        angular.forEach(enq.PartList, function(val, key) {
+                            if(val.ID === p) {
+                                queue.push(
+                                    addLineItem(enq.SerialNumber, p, enq.Parts[p], val)
+                                );
+                            }
+                        });
                     }
                 }
                 $q.all(queue)
@@ -1239,8 +1544,8 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
                         deferred.resolve(data);
                     });
             })
-            .then(function() {
-                var data = { xp: { NextOrderNumber: (Me.Org.xp.NextOrderNumber || 1) + 1 } };
+            .then(function () {
+                var data = {xp: {NextOrderNumber: (Me.Org.xp.NextOrderNumber || 1) + 1}};
                 return OrderCloudSDK.Buyers.Patch(Me.Org.ID, data);
             })
             .catch(function (ex) {
@@ -1248,5 +1553,178 @@ function WeirService($q, $cookieStore, $sce, OrderCloudSDK, CurrentOrder, Search
             });
         return deferred.promise;
     }
+
+    //check if the user has other buyer's associated to their account.
+    //Note has not been tested with proposed data structure.
+    function userBuyers() {
+        var deferred = $q.defer();
+        var multiBuyer = [];
+        OrderCloudSDK.Buyers.List()
+            .then(function (buyers) {
+                var currentBuyer = buyers.Items[0];
+                if (currentBuyer.xp && currentBuyer.xp.AKA) {
+                    for (var buyer in currentBuyer.xp.AKA) {
+                        multiBuyer.push(buyer);
+                    }
+                }
+                deferred.resolve(multiBuyer);
+            })
+            .catch(function (ex) {
+                deferred.reject([]);
+            });
+
+        return deferred.promise;
+    }
+
+    function userBuyersObj() {
+        var deferred = $q.defer();
+        OrderCloudSDK.Buyers.List()
+            .then(function (buyers) {
+                var currentBuyer = buyers.Items[0];
+                if (currentBuyer.xp && currentBuyer.xp.AKA) {
+                    deferred.resolve(currentBuyer.xp.AKA);
+                }
+                else {
+                    deferred.resolve([]);
+                }
+            })
+            .catch(function (ex) {
+                deferred.reject([]);
+            });
+
+        return deferred.promise;
+    }
+
+    function UserBuyerArray() {
+        var dfd = $q.defer();
+        userBuyersObj()
+            .then(function (buyers) {
+                dfd.resolve(buyers);
+            })
+            .catch(function (err) {
+                console.log(err);
+                dfd.reject("Please confirm login information.");
+
+            });
+        return dfd.promise;
+    }
+
+    function DivisionSelection(selectedDivision) {
+        var dfd = $q.defer();
+        UserBuyerArray()
+            .then(function (buyersAvailable) {
+                mapToBuyer(buyersAvailable, selectedDivision)
+                    .then(function () {
+                        dfd.resolve();
+                    });
+            })
+            .catch(function (err) {
+                console.log(err);
+                dfd.reject(err);
+            });
+
+        return dfd.promise;
+    }
+
+    //params is an array of available buyers, and division wished to map to
+    function mapToBuyer(arrOfBuyer, divisionSelected) {
+        var dfd = $q.defer();
+        var impersonation = {
+            ClientID: clientid,
+            Roles: []
+        };
+        CurrentOrder.GetCurrentCustomer()
+            .then(function (currentBuyer) {
+                var continueLooping = true;
+                angular.forEach(arrOfBuyer, function (value, key) {
+                    if(continueLooping) {
+                        if(currentBuyer.id.indexOf(divisionSelected) !== -1){
+                            $window.location.href = '/';
+                            continueLooping = false;
+                            dfd.resolve();
+                        }
+                        //toDo for future support of multiple buyers, need to add property to differentiate.
+                        if (key != 'Active') {
+                            //logic check required
+                            var _identity;
+                            OrderCloudSDK.Me.Get()
+                                .then(function(identity) {
+                                    _identity = identity;
+                                    var opts = {};
+                                    opts.filters = {};
+
+                                    if (value) {
+                                        opts.filters['ImpersonationBuyerID'] = identity.Buyer.ID;
+                                        opts.filters['ImpersonationUserID'] = identity.ID;
+                                    } else {
+                                        opts.filters['BuyerID'] = identity.Buyer.ID;
+                                        opts.filters['UserID'] = identity.ID;
+                                    }
+
+                                    return OrderCloudSDK.ImpersonationConfigs.List(opts);
+                                })
+                                .then(function (impConfig) {
+                                    impersonation.Roles = _identity.AvailableRoles;
+                                    if (impersonation.Roles.length == 0) {
+                                        impersonation.Roles.push("BuyerAdmin");
+                                    }
+                                    return OrderCloudSDK.Users.GetAccessToken(key, value ? impConfig.Items[0].UserID : impConfig.Items[0].ImpersonationUserID, impersonation);
+                                })
+                                .then(function (token) {
+                                    OrderCloudSDK.SetToken(token.access_token);
+                                    return OrderCloudSDK.Buyers.List();
+                                })
+                                .then(function (buyers) {
+                                    if (buyers && buyers.Items.length > 0) {
+                                        var buyer = buyers.Items[0];
+                                        CurrentOrder.Remove();
+                                        //set the expiration date of the cookie.
+                                        var now = new Date();
+                                        var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+                                        var lang = getLocale();
+                                        if (buyer.xp.WeirGroup.id == 2) {
+                                            //make it fr
+                                            lang = "fr";
+                                            $cookieStore.put('language', 'fr', {
+                                                expires: exp
+                                            });
+                                        }
+                                        if (buyer.xp.WeirGroup.id == 1) {
+                                            //make it en
+                                            lang = "en";
+                                            $cookieStore.put('language', 'en', {
+                                                expires: exp
+                                            });
+                                        }
+                                        Me.SetBuyerID(buyer.ID);
+                                        CurrentOrder.SetCurrentCustomer({
+                                            id: buyer.ID,
+                                            name: buyer.Name
+                                        });
+                                        continueLooping = false;
+                                    }
+                                })
+                                .then(function () {
+                                    //$state.go('home');
+                                    $window.location.href = '/';
+                                })
+                                .then(function () {
+                                    dfd.resolve();
+                                })
+                                .catch(function (err) {
+                                    toastr.error("Please logout and try again.");
+                                    dfd.reject();
+                                });
+
+                        }
+                    }
+                });
+        });
+        if (arrOfBuyer.length <= 1) {
+            $state.go('home');
+        }
+        return dfd.promise;
+    }
+
     return service;
 }

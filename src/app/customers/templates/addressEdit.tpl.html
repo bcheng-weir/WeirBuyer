@@ -1,66 +1,82 @@
 <h3 class="page-header">
-	<b>{{customers.labels.EditAddress}}:</b> {{customerAddressEdit.addressName}}
+    <b>{{customers.labels.EditAddress}}:</b> {{customerAddressEdit.addressName}}
 </h3>
 <form name="AddressEditForm" ng-submit="customerAddressEdit.Submit()" novalidate>
-	<div class="row">
-		<div class="col-sm-6 form-group">
-			<label for="addressNameInput">{{customers.labels.AddressName}}</label>
-			<input id="addressNameInput" name="addressNameInput" type="text" class="form-control"  ng-model="customerAddressEdit.address.AddressName" required/>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-6 form-group">
-			<label for="addressCompanyNameInput">{{customers.labels.CompanyName}}</label>
-			<input id="addressCompanyNameInput" name="addressCompanyNameInput" type="text" class="form-control" ng-model="customerAddressEdit.address.CompanyName"/>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-6 form-group">
-			<label for="addressFirstNameInput">{{customers.labels.FirstName}}</label>
-			<input id="addressFirstNameInput" name="addressFirstNameInput" type="text" class="form-control" ng-model="customerAddressEdit.address.FirstName"/>
-		</div>
-		<div class="col-sm-6 form-group">
-			<label for="addressLastNameInput">{{customers.labels.LastName}}</label>
-			<input id="addressLastNameInput" name="addressLastNameInput" type="text" class="form-control" ng-model="customerAddressEdit.address.LastName"/>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-6 form-group">
-			<label for="addressStreet1Input">{{customers.labels.StreetOne}}</label>
-			<input id="addressStreet1Input" name="addressStreet1Input" type="text" class="form-control" ng-model="customerAddressEdit.address.Street1" required/>
-		</div>
-		<div class="col-sm-6 form-group">
-			<label for="addressStreet2Input">{{customers.labels.StreetTwo}}</label>
-			<input id="addressStreet2Input" name="addressStreet2Input" type="text" class="form-control" ng-model="customerAddressEdit.address.Street2"/>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-6 form-group">
-			<label for="addressCityInput">{{customers.labels.City}}</label>
-			<input id="addressCityInput" name="addressCityInput" type="text" class="form-control" ng-model="customerAddressEdit.address.City" required/>
-		</div>
-		<div class="col-sm-3 form-group">
-			<label for="addressStateInput">{{customers.labels.County}}</label>
-			<input id="addressStateInput" name="addressStateInput" class="form-control" ng-model="customerAddressEdit.address.State"/>
-		</div>
-		<div class="col-sm-3 form-group">
-			<label for="addressZipInput">{{customers.labels.PostCode}}</label>
-			<input id="addressZipInput" name="addressZipInput" type="text" class="form-control" ng-model="customerAddressEdit.address.Zip" maxlength="10" minlength="5" required/>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-6 form-group">
-			<label for="addressCountryInput">{{customers.labels.Country}}</label>
-			<select id="addressCountryInput" name="addressCountryInput" class="form-control" ng-options="country.value as country.label for country in customerAddressEdit.countries" ng-model="customerAddressEdit.address.Country" required>
-				</select>
-		</div>
-		<div class="col-sm-6 form-group">
-			<label for="addressPhoneInput">{{customers.labels.PhoneNumber}}</label>
-			<input id="addressPhoneInput" name="addressPhoneInput" type="text" class="form-control" ng-model="customerAddressEdit.address.Phone"/>
-		</div>
-	</div>
-	<div class="form-group">
-		<button type="submit" class="btn btn-primary" ng-disabled="AddressEditForm.$invalid">{{customers.labels.Save}}</button>
-		<button type="button" class="btn btn-default" ui-sref="^">{{customers.labels.Cancel}}</button>
-	</div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressNameInput">{{customers.labels.AddressName}}</label>
+            <input id="addressNameInput" name="addressNameInput" type="text" class="form-control"  ng-model="customerAddressEdit.address.AddressName" required/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressCompanyNameInput">{{customers.labels.CompanyName}}</label>
+            <input id="addressCompanyNameInput" name="addressCompanyNameInput" type="text" class="form-control" ng-model="customerAddressEdit.address.CompanyName"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressFirstNameInput">{{customers.labels.FirstName}}</label>
+            <input id="addressFirstNameInput" name="addressFirstNameInput" type="text" class="form-control" ng-model="customerAddressEdit.address.FirstName"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressLastNameInput">{{customers.labels.LastName}}</label>
+            <input id="addressLastNameInput" name="addressLastNameInput" type="text" class="form-control" ng-model="customerAddressEdit.address.LastName"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressStreet1Input">{{customers.labels.StreetOne}}</label>
+            <input id="addressStreet1Input" name="addressStreet1Input" type="text" class="form-control" ng-model="customerAddressEdit.address.Street1" required/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressStreet2Input">{{customers.labels.StreetTwo}}</label>
+            <input id="addressStreet2Input" name="addressStreet2Input" type="text" class="form-control" ng-model="customerAddressEdit.address.Street2"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressStreet3Input">{{customers.labels.StreetThree}}</label>
+            <input id="addressStreet3Input" name="addressStreet3Input" type="text" class="form-control" ng-model="customerAddressEdit.address.xp.Street3" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressCityInput">{{customers.labels.City}}</label>
+            <input id="addressCityInput" name="addressCityInput" type="text" class="form-control" ng-model="customerAddressEdit.address.City" required/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3 form-group">
+            <label for="addressStateInput">{{customers.labels.County}}</label>
+            <input id="addressStateInput" name="addressStateInput" class="form-control" ng-model="customerAddressEdit.address.State"/>
+        </div>
+        <div class="col-sm-3 form-group">
+            <label for="addressZipInput">{{customers.labels.PostCode}}</label>
+            <input id="addressZipInput" name="addressZipInput" type="text" class="form-control" ng-model="customerAddressEdit.address.Zip" maxlength="10" minlength="5" required/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressCountryInput">{{customers.labels.Country}}</label>
+            <select id="addressCountryInput" name="addressCountryInput" class="form-control"
+                    ng-options="country.code as country.name for country in customerAddressEdit.countries"
+                    ng-model="customerAddressEdit.address.Country" required>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 form-group">
+            <label for="addressPhoneInput">{{customers.labels.PhoneNumber}}</label>
+            <input id="addressPhoneInput" name="addressPhoneInput" type="text" class="form-control" ng-model="customerAddressEdit.address.Phone"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" ng-disabled="AddressEditForm.$invalid">{{customers.labels.Save}}</button>
+        <button type="button" class="btn btn-default" ui-sref="^">{{customers.labels.Cancel}}</button>
+    </div>
 </form>

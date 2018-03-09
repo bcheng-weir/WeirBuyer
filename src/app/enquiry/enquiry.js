@@ -37,7 +37,10 @@ function EnquiryConfig($stateProvider) {
 		    resolve: {
 		        CurrentCustomer: function (CurrentOrder) {
 		            return CurrentOrder.GetCurrentCustomer();
-		        }
+		        },
+                Countries: function(OCGeography) {
+		            return OCGeography.Countries();
+                }
 		    }
 		})
 	    .state('enquiry.filter', {
@@ -69,7 +72,13 @@ function EnquiryConfig($stateProvider) {
 	        controllerAs: 'delivery',
 	        resolve: {
 	            Addresses: function (OrderCloudSDK, Me) {
-	                return OrderCloudSDK.Addresses.List(Me.GetBuyerID());
+                    var f = {
+                        "xp.active":true
+                    };
+                    var opts = {
+                        filters: f
+                    };
+	                return OrderCloudSDK.Addresses.List(Me.GetBuyerID(), opts);
 	            }
 	        }
 	    })
@@ -86,6 +95,7 @@ function EnquiryController($state, $sce, WeirService, EnquiryService, toastr, Me
     vm.info = EnquiryService;
     vm.locale = WeirService.Locale();
     vm.info = EnquiryService;
+    vm.WeirGroup = Me.Org.xp.WeirGroup.label;
     vm.searchAgain = function () {
         var searchType = WeirService.GetLastSearchType();
         searchType = searchType || WeirService.SearchType.Serial;
@@ -241,11 +251,20 @@ function EnquirySelectController($state, $sce, WeirService, PartList, EnquirySer
         return false;
     };
 }
-function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore, toastr, Addresses, OCGeography, Me) {
+
+function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore, toastr, Addresses, OCGeography, Countries, Me) {
     var vm = this;
     vm.enq = EnquiryService;
     if (vm.enq.Step < 3) vm.enq.Step = 3;
     vm.addresses = Addresses.Items;
+
+    var activeAddress = function (address) {
+        return address.xp.active == true;
+    };
+
+    vm.addresses = Underscore.sortBy(Addresses.Items, function (address) {
+        return address.xp.primary;
+    }).filter(activeAddress).reverse();
 
     vm.ChunkedData = _chunkData(vm.addresses, 2);
     function _chunkData(arr, size) {
@@ -255,20 +274,14 @@ function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCl
         }
         return newArray;
     }
-    var activeAddress = function (address) {
-        return address.xp.active == true;
-    };
-    vm.addresses = Underscore.sortBy(Addresses.Items, function (address) {
-        return address.xp.primary;
-    }).filter(activeAddress).reverse();
 
     if (!vm.enq.Shipping.ID && vm.addresses.length > 0) {
         vm.enq.Shipping = vm.addresses[0];
     }
 
     vm.country = function (c) {
-        var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-        return result ? result.label : '';
+        var result = Underscore.findWhere(Countries, { code: c });
+        return result ? result.name : '';
     };
     vm.setShippingAddress = function(addr) {
         vm.enq.Shipping = addr;
@@ -363,9 +376,14 @@ function NewEnquiryAddressModalController($uibModalInstance, $sce, WeirService) 
     };
 }
 
-function EnquiryReviewController($state, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography) {
+function EnquiryReviewController($state, $location, $anchorScroll, $window, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography) {
     var vm = this;
     vm.enq = EnquiryService;
+    vm.ScrollTo = function () {
+        $location.hash('MyEnquiry');
+        $anchorScroll();
+    };
+    vm.ScrollTo();
     vm.finalParts = _.filter(vm.enq.PartList, function(part) {
     	return part.quantity > 0;
     });

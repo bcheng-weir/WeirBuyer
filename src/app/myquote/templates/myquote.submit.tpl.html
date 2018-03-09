@@ -11,7 +11,7 @@
                         <span style="font-weight:bold;">{{(submit.Quote.DateSubmitted | weirdate)}}</span>
                     </div>
                     <div class="panelButton">
-                        <print-order-button buyer="submit.buyer" order="submit.Quote" items="submit.LineItems" address="submit.ShippingAddress" pocontent="submit.Catalog.xp.POContent"></print-order-button>
+                        <print-order-button buyer="submit.buyer" order="submit.Quote" items="submit.LineItems" address="submit.ShippingAddress" pocontent="submit.POContent"></print-order-button>
                     </div>
                 </div>
             </div>
@@ -74,20 +74,29 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="line in submit.LineItems">
-                    <td>{{line.xp.SN}}</td>
-                    <td>{{line.xp.TagNumber}}</td>
-                    <td>{{line.Product.Name}}</td>
-                    <td>{{line.Product.Description}}</td>
-                    <td>{{line.Product.xp.ReplacementSchedule}}</td>
+                    <td ng-bind-html="line.xp.SN" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                    <td ng-bind-html="line.xp.TagNumber" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                    <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                        <span ng-if="!line.xp.ProductName" ng-bind-html="line.Product.Name"></span>
+                        <!--<span ng-if="line.xp.ProductName" ng-bind-html="line.xp.ProductName"></span>-->
+                    </td>
                     <td>
-                        <span ng-show="line.xp.LeadTime==null">{{line.Product.xp.LeadTime}}</span>
-                        <span ng-show="line.xp.LeadTime!=null">{{line.xp.LeadTime}}</span>
+                        <span ng-if="!line.xp.Description" ng-bind-html="line.Product.Description"></span>
+                        <span ng-if="line.xp.Description" ng-bind-html="line.xp.Description"></span>
                     </td>
-                    <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="submit.labels.POA"></td>
-                    <td ng-if="line.UnitPrice">
-                        <span>{{line.UnitPrice | currency:submit.currency}}</span>
+                    <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                        <span ng-if="!line.xp.ReplacementSchedule" ng-bind-html="line.Product.xp.ReplacementSchedule"></span>
+                        <span ng-if="line.xp.ReplacementSchedule" ng-bind-html="line.xp.ReplacementSchedule"></span>
                     </td>
-                    <td class="text-right">{{line.Quantity}}</td>
+                    <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                        <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
+                        <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
+                    </td>
+                    <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="readonly.labels.POA"></td>
+                    <td ng-if="line.UnitPrice>0">
+                        <span ng-bind-html="line.UnitPrice | currency:submit.currency"></span>
+                    </td>
+                    <td class="text-right" ng-bind-html="line.Quantity"></td>
                 </tr>
                 <tr ng-if="submit.Quote.xp.ShippingDescription != null">
                     <!-- Filler to keep formatting -->
@@ -152,33 +161,36 @@
                 {{submit.ShippingAddress.CompanyName}}<br>
                 {{submit.ShippingAddress.Street1}}<br>
                 {{submit.ShippingAddress.Street2}}<br>
+                {{submit.ShippingAddress.xp.Street3}}<br>
                 {{submit.ShippingAddress.Zip}} {{submit.ShippingAddress.City}}<br>
-                {{submit.country(submit.ShippingAddress.Country)}}
+                {{submit.Quote.CountryName}}
             </div>
             <div ng-if="submit.ShippingAddress.Country=='GB'">
                 <span ng-bind-html="submit.ShippingAddress.FirstName"></span> <span ng-bind-html="submit.ShippingAddress.LastName"></span><br>
                 {{submit.ShippingAddress.CompanyName}}<br>
                 {{submit.ShippingAddress.Street1}}<br>
                 {{submit.ShippingAddress.Street2}}<br>
+                {{submit.ShippingAddress.xp.Street3}}<br>
                 {{submit.ShippingAddress.City}}<br>
                 {{submit.ShippingAddress.Zip}}<br>
-                {{submit.country(submit.ShippingAddress.Country)}}
+                {{submit.Quote.CountryName}}
             </div>
             <div ng-if="submit.ShippingAddress.Country!='GB' && submit.ShippingAddress.Country!='FR'">
                 <span ng-bind-html="submit.ShippingAddress.FirstName"></span> <span ng-bind-html="submit.ShippingAddress.LastName"></span><br>
                 {{submit.ShippingAddress.CompanyName}}<br>
                 {{submit.ShippingAddress.Street1}}<br>
                 {{submit.ShippingAddress.Street2}}<br>
+                {{submit.ShippingAddress.xp.Street3}}<br>
                 {{submit.ShippingAddress.City}}, {{submit.ShippingAddress.State}} {{submit.ShippingAddress.Zip}}<br>
-                {{submit.country(submit.ShippingAddress.Country)}}
+                {{submit.Quote.CountryName}}
             </div>
             <hr>
             <div class="row">
                 <div class="col-xs-8">
-                    <p><span ng-bind-html='submit.labels.ReplacementGuidance'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='submit.labels.POAGuidance'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='submit.labels.LeadTimeNotice'></span></p>
-                    <p><span style="font-style:italic;" ng-bind-html='submit.labels.PriceDisclaimer'></span></p>
+                    <p><span ng-bind-html='submit.SharedContent.ReplacementGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='submit.SharedContent.POAGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='submit.SharedContent.LeadTimeNotice'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='submit.SharedContent.PriceDisclaimer'></span></p>
                 </div>
             </div>
         </div>

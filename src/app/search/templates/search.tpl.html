@@ -22,7 +22,7 @@
             </div>
 	</div>
     <div ng-if="search.WeirGroup=='WPIFR' && ['search.serial', 'search.tag'].indexOf(application.$state.current.name) > -1" class="row" style="margin-left: 1em; margin-bottom: 1em;">
-        <div ng-if="!search.SelectingCustomer">
+        <div ng-if="!search.SelectingCustomer && search.WeirGroup!='WPIFR'">
             <div class="row" style="font-weight: bold;">
                 <span ng-bind-html='search.labels.CustomerFilter'></span>
                 <span ng-if="search.searchall" ng-bind-html="search.labels.AllValves"></span>

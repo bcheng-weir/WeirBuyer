@@ -3,7 +3,7 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteShareService,OCGeography,Underscore) {
+function PrintOrderController(printData,$timeout,$window,$uibModalInstance,WeirService,$sce,QuoteShareService) {
 	//ToDo use the QuoteShareService
 	var vm = this;
 	vm.catalog = printData.catalog;
@@ -26,11 +26,6 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 		vm.CarriageRateForBuyer = vm.order.ShippingCost;
 		vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	}
-
-	vm.country = function (c) {
-		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
-		return result ? result.label : '';
-	};
 
 	var labels = {
 		en: {
@@ -77,10 +72,15 @@ function PrintOrderController(printData,$timeout,$window,WeirService,$sce,QuoteS
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];
-	$timeout($window.print,1);
+
+    vm.close = function() {
+        $uibModalInstance.dismiss();
+    };
+
+	$timeout($window.print,10);
 }
 
-function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$document) {
+function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$document,Me) {
 	var vm = this;
 	var labels = {
 		en: {
@@ -106,14 +106,14 @@ function PrintOrderButtonControl($scope,imageRoot,WeirService,$uibModal,$sce,$do
 			uitotal:$scope.uitotal
 		};
 		var templates = {
-			en:'common/print-order/templates/printorder.tpl.html',
-			fr:'common/print-order/templates/printorderfr.tpl.html'
+			WVCUK:'common/print-order/templates/printorder.tpl.html',
+			WPIFR:'common/print-order/templates/printorderfr.tpl.html'
 		};
 		var parentElem = angular.element($document[0].querySelector('body'));
 		$uibModal.open({
 			animation:true,
 			size:'lg',
-			templateUrl:templates[WeirService.Locale()],
+			templateUrl:templates[Me.Org.xp.WeirGroup.label],
 			controller:'printOrderCtrl',
 			controllerAs:'printctrl',
 			appendTo: parentElem,

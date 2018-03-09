@@ -119,7 +119,7 @@ function TrackSearchService() {
 	return service;
 }
 
-function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
+function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService, WeirService) {
 	//This service handles type ahead. for app/search and app/home.
 	var service = {
 		GetAllSerialNumbers: _getAllSerialNumbers,
@@ -134,15 +134,17 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 		var filter = {
 			"xp.SN": lookForThisPartialSerialNumber + "*"
 		};
-		if (Me.Org.xp.WeirGroup.id == "1") { // No global search for UK.
+		if (Me.Org.xp.WeirGroup.id === "1") { // No global search for UK.
 			filter.ParentID = Me.Org.ID;
 		}
 
+		//depth:Me.Org.xp.WeirGroup.id == "1" ? null:"all",
 		OrderCloudSDK.Me.ListCategories({
 				page:1,
 				pageSize:20,
+            	sortBy: "Name",
 				filters:filter,
-				depth:Me.Org.xp.WeirGroup.id == "1" ? null:"all",
+            	depth:"all",
 				catalogID:Me.Org.xp.WeirGroup.label})
 			.then(function(response) {
 				OrderCloudSDK.Me.ListCategories({
@@ -156,7 +158,7 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 						var returnResults = response.Items.concat(responseDescription.Items);
 						returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
 						returnResults = _.uniq(returnResults, false, function (cat) { return cat.xp.SN; });
-						dfd.resolve(returnResults);
+						dfd.resolve(WeirService.SetEnglishTranslationParts(returnResults));
 					})
 					.catch(function(ex) {
 						console.log(ex);
@@ -176,31 +178,53 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 		    "xp.TagNumber":lookForThisPartialTagNumber+"*"
 	    };
 	    if(Me.Org.xp.WeirGroup.id=="1") { //No global search for UK
-		    filter.ParentID = Me.Org.ID;
+		    filter.ParentID = Me.Org.ID; //Not on tag number.
 	    }
 
-	    OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter, 'depth':Me.Org.xp.WeirGroup.id=="1" ? null : "all", 'catalogID':Me.Org.xp.WeirGroup.label })
+	    OrderCloudSDK.Me.ListCategories({
+				'page':1,
+				'pageSize':20,
+            	'sortBy': "Name",
+				'filters':filter,
+				'depth':"all",
+				'catalogID':Me.Org.xp.WeirGroup.label })
             .then(function(response) {
-            	dfd.resolve(response.Items);
+            	dfd.resolve(WeirService.SetEnglishTranslationParts(response.Items));
             });
 	    return dfd.promise;
     }
 
     function _getAllPartNumbers(lookForThisPartialPartNumber) {
     	var dfd = $q.defer();
-	    OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':{"Name": lookForThisPartialPartNumber+"*"} })
+	    OrderCloudSDK.Me.ListProducts({
+				'page':1,
+				'pageSize':20,
+            	'sortBy': "Name",
+            	'search': Me.Org.xp.WeirGroup.label,
+            	'searchOn': "ID",
+				'filters':{
+					"Name": lookForThisPartialPartNumber+"*"
+				}})
             .then(function(response) {
 	            if(Me.Org.xp.WeirGroup.label == "WVCUK") {
 		            partResults = response.Items;
-		            return OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':{"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"} })
+		            return OrderCloudSDK.Me.ListProducts({
+							'page':1,
+							'pageSize':20,
+                        	'sortBy': "Name",
+                        	'search': Me.Org.xp.WeirGroup.label,
+                        	'searchOn': "ID",
+							'filters':{
+								"xp.AlternatePartNumber":lookForThisPartialPartNumber+"*"
+							}})
 			            .then(function(altResponse) {
 				            partResults.push.apply(altResponse.Items);
 				            //return partResults;
-				            dfd.resolve(partResults);
+				            dfd.resolve(WeirService.SetEnglishTranslationParts(partResults));
 			            });
 	            } else {
 	            	//response.Items;
-		            dfd.resolve(response.Items);
+		            dfd.resolve(WeirService.SetEnglishTranslationParts(response.Items));
 	            }
             });
 	    return dfd.promise;
@@ -208,7 +232,7 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 
     //This method is used in the main search that is NOT the home page.
 	function _getPart(lookForThisProduct, forThisCustomer) {
-
+        var dfd = $q.defer();
 		var filter = {
 			"s":{
 				"xp.SN":lookForThisProduct+"*"
@@ -233,45 +257,84 @@ function SearchProductsService($q, OrderCloudSDK, Me, SearchTypeService) {
 			}
 		};
 
-		//If a UK user, OR not a global search, and not a part search: set a ParentID filter
-		if(SearchTypeService.GetLastSearchType() != "p" && (Me.Org.xp.WeirGroup.id=="1" || !SearchTypeService.IsGlobalSearch())) {
+		//If a UK user, OR not a global search, and a serial search: set a ParentID filter
+		if((SearchTypeService.GetLastSearchType() === "s" || SearchTypeService.GetLastSearchType() === "t") && (Me.Org.xp.WeirGroup.id==="1")) {
 			filter[SearchTypeService.GetLastSearchType()].ParentID = forThisCustomer.id;
 		}
 
-		if(SearchTypeService.GetLastSearchType() == "p") {
-			return OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary} )
+		if(SearchTypeService.GetLastSearchType() === "p") {
+			//return
+			OrderCloudSDK.Me.ListProducts({
+					'search':forThisCustomer.id.substring(0,5),
+                	'searchOn': "ID",
+					'page':1,
+					'pageSize':20,
+                	'sortBy': "Name",
+					'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].primary} )
 				.then(function(response) {
-					if(Me.Org.xp.WeirGroup.label == "WVCUK") {
+					if(Me.Org.xp.WeirGroup.label === "WVCUK") {
 						partResults = response.Items;
-						return OrderCloudSDK.Me.ListProducts({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].secondary })
+						OrderCloudSDK.Me.ListProducts({
+                            	'search':forThisCustomer.id.substring(0,5),
+                            	'searchOn': "ID",
+								'page':1,
+								'pageSize':20,
+                            	'sortBy': "Name",
+								'filters':filter[SearchTypeService.GetLastSearchType()][Me.Org.xp.WeirGroup.label].secondary })
 							.then(function(altResponse) {
 								partResults.push.apply(altResponse.Items);
-								return partResults;
+								//return
+                                dfd.resolve(partResults);
 							});
 					} else {
-						return response.Items;
+						//return
+					    dfd.resolve(WeirService.SetEnglishTranslationParts(response.Items));
 					}
 				});
 		} else {
-            if(SearchTypeService.GetLastSearchType() == "s") {
-                return OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.xp.WeirGroup.label })
+            if(SearchTypeService.GetLastSearchType() === "s") {
+                //return
+				OrderCloudSDK.Me.ListCategories({
+						'page':1,
+						'pageSize':20,
+                    	'sortBy': "Name",
+						'filters':filter[SearchTypeService.GetLastSearchType()],
+						'depth':"all",
+						'catalogID':Me.Org.xp.WeirGroup.label })
                     .then(function (response) {
-                        return  OrderCloudSDK.Me.ListCategories({ 'search':lookForThisProduct, 'page':1, 'pageSize':20, 'searchOn':"Description", 'depth':"all", 'catalogID':Me.Org.xp.WeirGroup.label })
+                        //return
+						OrderCloudSDK.Me.ListCategories({
+								'search':lookForThisProduct,
+								'page':1,
+								'pageSize':20,
+								'searchOn':"Description",
+								'depth':"all",
+								'catalogID':Me.Org.xp.WeirGroup.label })
                             .then(function(responseDescription){
                                 var returnResults = response.Items.concat(responseDescription.Items);
 	                            returnResults = _.filter(returnResults, function(item) { return item.ParentID != null; }); //We do this to get rid of the top level category descriptions.
                                 returnResults = _.uniq(returnResults, false, function(cat){return cat.xp.SN});
-                                return returnResults;
+                                //return
+                                dfd.resolve(WeirService.SetEnglishTranslationParts(returnResults));
                             });
                     });
-            }
-		    else {
-                return OrderCloudSDK.Me.ListCategories({ 'page':1, 'pageSize':20, 'filters':filter[SearchTypeService.GetLastSearchType()], 'depth':SearchTypeService.IsGlobalSearch() ? Me.Org.xp.WeirGroup.id == "1" ? null : "all" : null, 'catalogID':Me.Org.xp.WeirGroup.label })
+            } else {
+                //return
+				OrderCloudSDK.Me.ListCategories({
+						'page':1,
+						'pageSize':20,
+						'filters':filter[SearchTypeService.GetLastSearchType()],
+						'depth':"all",
+                    	'sortBy': "Name",
+						'catalogID':Me.Org.xp.WeirGroup.label })
                     .then(function (response) {
-                        return response.Items;
+                        //return
+                        dfd.resolve(WeirService.SetEnglishTranslationParts(response.Items));
                     });
             }
 		}
+
+        return dfd.promise;
 	}
 
 	return service;

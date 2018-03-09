@@ -1,0 +1,121 @@
+<main id="COMPONENT_Login" class="login container-fluid">
+    <div class="row header">
+        <div class="col-md-12 container">
+            <div class="pull-left">
+                <ul class="menu">
+                    <li><a href="" ng-bind-html="login.labels.WorldWide"></a></li>
+                </ul>
+            </div>
+            <!--TODO: From Four51: This is how you will link from your HTML templates, be sure to update any other img[src] in your app-->
+            <a class="logo" href="/"><img src="assets/images/logo.jpg"></a>
+            <div class="language pull-right">
+                <ul class="menu">
+                    <li><a ng-click="login.setCookie('en')">English</a></li>
+                    <li><a ng-click="login.setCookie('fr')">Francais</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="login-wrapper">
+        <div class="login-panel">
+            <section class="login-area">
+                <div class="container brands-container text-center">
+                    <div class="row">
+                        <div class="col-md-3"><!-- White space --></div>
+                        <div class="col-md-6 login-brand-header login-brand-data">
+                            <br>Select one of the areas below to search, view<br>
+                            and order your valve spares by brand:<br>&nbsp;
+                        </div>
+                        <div class="col-md-3"><!-- White space --></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3"><!-- White space --></div>
+                        <div class="col-md-2 brand-blue login-brand-data">
+                            <img class="login-brand" src="assets/images/valve-1.png">
+                        </div>
+                        <div class="col-md-2"><!-- Center white area --></div>
+                        <div class="col-md-2 brand-blue login-brand-data">
+                            <img class="login-brand" src="assets/images/valve-1.png">
+                        </div>
+                        <div class="col-md-3"><!-- White space --></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3"><!-- White space --></div>
+                        <div class="col-md-2 brand-blue login-brand-data">
+                            Batley<sup>®</sup><br>
+                            Blakeborough<sup>®</sup><br>
+                            Hopkinsons<sup>®</sup>
+                        </div>
+                        <div class="col-md-2"><!-- Center white area --></div>
+                        <div class="col-md-2 brand-blue login-brand-data">
+                            <br>
+                            Sarasin-RSBD<sup>&trade;</sup><br>
+                            &nbsp;
+                        </div>
+                        <div class="col-md-3"><!-- White space --></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3"><!-- White space --></div>
+                        <div class="col-md-2 login-brand-data brand-gray">
+                            Search, view and order spares for your Batley<sup>®</sup>, Blakeborough<sup>®</sup>, and Hopkinsons<sup>®</sup> valves.
+                        </div>
+                        <div class="col-md-2"><!-- Center white area --></div>
+                        <div class="col-md-2 login-brand-data brand-gray">
+                            <br>Search, view and order spares for your Sarasin-RSBD<sup>&trade;</sup> valves.
+                        </div>
+                        <div class="col-md-3"><!-- White space --></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3"><!-- White space --></div>
+                        <div class="col-md-2 login-brand-data brand-gray">
+                            <button class="btn btn-default login-brand-btn btn-uk" ng-click="login.DivisionSelection('WVCUK')" style="width:100%;"
+                                    ng-mouseover="txtUK={'background-color':'#425563','color':'#FFFFFF'}"
+                                    ng-mouseleave="txtUK={'background-color':'#FFFFFF','color':'#FFFFFF'}">
+                                Go <span class="to-the-right"><i class='fa fa-angle-right' aria-hidden='true'></i></span>
+                            </button>
+                        </div>
+                        <div class="col-md-2"><!-- Center white area --></div>
+                        <div class="col-md-2 login-brand-data brand-gray">
+                            <button class="btn btn-default  login-brand-btn btn-fr" ng-click="login.DivisionSelection('WPIFR')" style="width:100%;"
+                                    ng-mouseover="txtFR={'background-color':'#425563','color':'#FFFFFF'}"
+                                    ng-mouseleave="txtFR={'background-color':'#FFFFFF','color':'#FFFFFF'}">
+                                Go <span class="to-the-right"><i class='fa fa-angle-right' aria-hidden='true'></i></span>
+                            </button>
+                        </div>
+                        <div class="col-md-3"><!-- White space --></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3"><!-- White space --></div>
+                        <div class="col-md-2 login-brand-data txt-uk" ng-style="txtUK">
+                            Your enquiries will be managed by your existing<br>
+                            Weir Valves & Controls UK aftermarket spares team.
+                        </div>
+                        <div class="col-md-2"><!-- Center white area --></div>
+                        <div class="col-md-2 login-brand-data txt-fr" ng-style="txtFR">
+                            Your enquiries will be managed by your existing Sarasin-RSBD<sup>&trade;</sup> aftermarket spares team.
+                        </div>
+                        <div class="col-md-3"><!-- White space --></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">&nbsp;<br></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <nav class="navbar navbar-fixed-bottom">
+        <div class="container">
+            <ul class="menu">
+                <li><a  ui-sref="terms-of-use" ng-bind-html="login.navlabels.termsTitle"></a></li>
+                <li><a  ui-sref="cookie-policy" ng-bind-html="login.navlabels.cookieTitle"></a></li>
+                <li><a ui-sref="privacy-statement" ng-bind-html="login.navlabels.privacyTitle"></a></li>
+                <li><a ui-sref="contact-us" ng-bind-html="login.navlabels.contactTitle"></a></li>
+            </ul>
+        </div>
+    </nav>
+</main>

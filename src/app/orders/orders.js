@@ -364,7 +364,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             Clear: $sce.trustAsHtml("Effacer le rechercher"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres"),
             statusDate: $sce.trustAsHtml("Date de mise à jour"),
-            submittedDate: $sce.trustAsHtml("Submitted Date")
+            submittedDate: $sce.trustAsHtml("Date d’envoi")
 	    }
     };
     vm.labels = labels[WeirService.Locale()];

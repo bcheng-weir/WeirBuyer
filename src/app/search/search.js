@@ -129,7 +129,8 @@ function SearchController($sce, $state, $rootScope, CurrentOrder, WeirService, C
 	    Me.Org.xp.Customers = [];
 	}
     vm.AvailableCustomers = Me.Org.xp.Customers;
-    vm.FrAppEnLang = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? true : false;
+    //vm.FrAppEnLang = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? true : false;
+    vm.FrAppEnLang = Me.Org.xp.WeirGroup.id == 2 ? true : false;
     vm.SharedContent = vm.FrAppEnLang ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
 
     vm.ImageBaseUrl = imageRoot;

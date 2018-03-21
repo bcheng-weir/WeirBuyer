@@ -14,11 +14,20 @@
 
         </div>
         <div class="col-md-8">
-            <div class="results"><p></p>
+            <div class="results">
+                <p></p>
                 <div ng-bind-html='tagDetail.labels.ResultsHeader'>></div><div class="serial-no">{{tagDetail.tagNumber.Name}}</div><p></p><p></p>
                 <div class="results-heading" ng-bind-html='tagDetail.labels.Tag'></div><div class="serial-no">{{tagDetail.tagNumber.xp.TagNumber}}</div><p></p><p></p>
-                <div ng-if="!search.searchall"><div class="results-heading" ng-bind-html='tagDetail.labels.Customer'></div><div class="serial-no">{{tagDetail.tagNumber.xp.Customer}}</div></div><p></p>
-                <div ng-if="search.searchall"><div class="results-heading" ng-bind-html='tagDetail.labels.Customer'></div><div class="serial-no" ng-bind-html="search.labels.NotAvailable"></div></div><p></p>
+                <div ng-if="!search.searchall">
+                    <div class="results-heading" ng-bind-html='tagDetail.labels.Customer'></div>
+                    <div class="serial-no">{{tagDetail.tagNumber.xp.Customer}}</div>
+                </div>
+                <p></p>
+                <div ng-if="search.searchall">
+                    <div class="results-heading" ng-bind-html='tagDetail.labels.Customer'></div>
+                    <div class="serial-no" ng-bind-html="search.labels.NotAvailable"></div>
+                </div>
+                <p></p>
                 <div class="results-heading" ng-bind-html='tagDetail.labels.DeliveryDate'></div><div class="serial-no">{{tagDetail.tagNumber.xp.DeliveredDate | weirfulldate}}</div><p></p>
             </div>
             <h4 ng-bind-html='tagDetail.labels.SpecHeader'></h4>

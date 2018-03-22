@@ -1721,21 +1721,38 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                                         var now = new Date();
                                         var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
                                         var lang = getLocale();
+                                        var curr = null;
                                         if (buyer.xp.WeirGroup.id == 2) {
                                             //make it fr
                                             lang = "fr";
                                             $cookieStore.put('language', 'fr', {
                                                 expires: exp
                                             });
-                                        }
-                                        if (buyer.xp.WeirGroup.id == 1) {
+                                            curr = buyer.xp.Curr || 'EUR';
+                                        } else if (buyer.xp.WeirGroup.id == 1) {
                                             //make it en
                                             lang = "en";
                                             $cookieStore.put('language', 'en', {
                                                 expires: exp
                                             });
+                                            curr = buyer.xp.Curr || 'GBP';
                                         }
+                                        $cookieStore.put('curr', curr, {
+                                            expires: exp
+                                        });
                                         Me.SetBuyerID(buyer.ID);
+                                        $cookieStore.remove('rate');
+                                        if (buyer.xp.Curr) {
+                                            getConversionRate(buyer.xp.WeirGroup.label, curr)
+                                            .then(function (rte) {
+                                                $cookieStore.put('rate', rte, {
+                                                    expires: exp
+                                                });
+                                            })
+                                            .catch(function (ex) {
+                                                $exceptionHandler(ex);
+                                            });
+                                        }
                                         CurrentOrder.SetCurrentCustomer({
                                             id: buyer.ID,
                                             name: buyer.Name

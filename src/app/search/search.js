@@ -475,6 +475,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, Wei
 	        $state.go('search.noresults', {}, { reload: true });
 	    }
 	}
+	vm.currency = Me.Org.xp.Curr;
 	var labels = {
 		en: {
 			ResultsHeader: "Showing results for serial number; ",
@@ -641,6 +642,7 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 	        //console.log(entry.Detail.StandardPriceSchedule.PriceBreaks[0].Price);
 	    }
 	});
+	vm.currency = Me.Org.xp.Curr;
 
 	var labels = {
 		en: {
@@ -838,7 +840,9 @@ function TagDetailController( $stateParams, $rootScope, $sce, $state, WeirServic
 		} else {
 		    $state.go('search.noresults', {}, { reload: true });
 		}
-    }
+	}
+	vm.currency = Me.Org.xp.Curr;
+
 	vm.PartQuantity = function(partId) {
 		return TagNumberDetail.xp.Parts[partId];
 	};

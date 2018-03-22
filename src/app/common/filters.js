@@ -6,6 +6,7 @@ angular.module('orderCloud')
     .filter('serialnumber', serialnumber)
     .filter('searchresults', searchresults)
     .filter('weirdate', weirdate)
+    .filter('conversion', conversion)
     .filter('weirfulldate', weirfulldate)
 	.filter('weirGroupFromBuyersID', weirGroupFromBuyersID)
 	.filter('reverseComments',reverseComments)
@@ -156,6 +157,12 @@ function weirfulldate() {
             result = "--";
         }
         return result;
+    };
+}
+function conversion($cookieStore) {
+    return function (amt) {
+        var rte = $cookieStore.get('rate');
+        return (rte) ? amt * rte : amt;
     };
 }
 

@@ -124,11 +124,11 @@
                             <td>{{part.Detail.xp.ReplacementSchedule}}</td>
                             <td>{{part.Detail.xp.LeadTime}}</td>
                             <td ng-if="part.Detail.PriceSchedule.PriceBreaks[0].Price<='0' || !part.Detail.PriceSchedule" ng-bind-html="serialDetail.labels.POA"></td>
-                            <td ng-if="part.Detail.PriceSchedule.PriceBreaks[0].Price>'0'" ng-switch on="part.Detail.PriceSchedule.xp.Currency">
-                                <span ng-switch-when="USD">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | currency:'&#36;'}}</span>
-                                <span ng-switch-when="GBP">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span>
-                                <span ng-switch-when="EUR">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | currency:'&#128;'}}</span>
-                                <span ng-switch-default>{{part.Detail.PriceSchedule.PriceBreaks[0].Price | currency:'&#163;'}}</span>
+                            <td ng-if="part.Detail.PriceSchedule.PriceBreaks[0].Price>'0'" ng-switch on="serialDetail.currency || part.Detail.PriceSchedule.xp.Currency">
+                                <span ng-switch-when="USD">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion | currency:'&#36;'}}</span>
+                                <span ng-switch-when="GBP">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion | currency:'&#163;'}}</span>
+                                <span ng-switch-when="EUR">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion | currency:'&#128;'}}</span>
+                                <span ng-switch-default>{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion | currency:'&#163;'}}</span>
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-qty" ng-model="part.Quantity" ng-min="0"

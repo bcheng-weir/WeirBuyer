@@ -247,18 +247,35 @@ function LoginController($stateParams, $exceptionHandler, $sce, $cookieStore, Or
                     //set the expiration date of the cookie.
                     var now = new Date();
                     var exp = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
+                    var curr = null;
                     if (buyer.xp.WeirGroup.id == 2) {
                         //make it fr
                         lang = "fr";
                         $cookieStore.put('language', 'fr', {
                             expires: exp
                         });
-                    }
-                    if (buyer.xp.WeirGroup.id == 1) {
+                        curr = buyer.xp.Curr || 'EUR';
+                    } else if (buyer.xp.WeirGroup.id == 1) {
                         //make it en
                         lang = "en";
                         $cookieStore.put('language', 'en', {
                             expires: exp
+                        });
+                        curr = buyer.xp.Curr || 'GBP';
+                    }
+                    $cookieStore.put('curr', curr, {
+                        expires: exp
+                    });
+                    $cookieStore.remove('rate');
+                    if (buyer.xp.Curr) {
+                        WeirService.GetExchangeRate(buyer.xp.WeirGroup.label, curr)
+                        .then(function (rte) {
+                            $cookieStore.put('rate', rte, {
+                                expires: exp
+                            });
+                        })
+                        .catch(function (ex) {
+                            $exceptionHandler(ex);
                         });
                     }
                 }

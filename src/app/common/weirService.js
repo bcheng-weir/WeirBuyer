@@ -178,7 +178,8 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
         SetEnglishTranslationValve: _setEnglishTranslationValve,
         SetEnglishTranslationParts: _setEnglishTranslationParts,
         UserBuyers: userBuyers,
-        DivisionSelection: DivisionSelection
+        DivisionSelection: DivisionSelection,
+        GetExchangeRate: getConversionRate
     };
 
     function assignAddressToGroups(addressId) {
@@ -1624,6 +1625,44 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             });
 
         return dfd.promise;
+    }
+
+    function getConversionRate(group, targetCurrency) {
+        function todate(num) {
+            if (num) {
+                var year = num / 10000;
+                var month = (num / 100) % 100 - 1;
+                var day = (num % 100);
+                return new Date(year, month, day);
+            }
+            return null;
+        }
+
+        var today = new Date();
+        today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        var specId = ((group === "WPIFR") ? "WPIFR-EUR" : "WVCUK-GBP") + "-" + targetCurrency;
+        var deferred = $q.defer();
+        OrderCloudSDK.Specs.Get(specId)
+        .then(function (res) {
+            if (res && res.xp && res.xp.rates) {
+                var tmp = res.xp.rates;
+                for (var i = 0; i < tmp.length; i++) {
+                    var rte = tmp[i];
+                    var start = todate(rte.Start);
+                    var end = todate(rte.End);
+                    if (start <= today && (!end || end >= today)) {
+                        deferred.resolve(rte.Rate);
+                        return;
+                    }
+                }
+            }
+            deferred.reject({ message: "No rate for " + targetCurrency + " found for " + group });
+        })
+        .catch(function (ex) {
+            deferred.reject(ex);
+        });
+        return deferred.promise;
     }
 
     //params is an array of available buyers, and division wished to map to

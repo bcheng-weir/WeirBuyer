@@ -4,7 +4,7 @@
         <div class="col-md-12">
             <div class="panel-heading">
                 <div style="display:inline-block; float:left; text-align:left;margin-top: 10px;">
-                    <span ng-bind-html="readonly.labels.Status"/>:&nbsp;<span style="font-weight:bold;" ng-bind-html="readonly.GetStatusLabel() + ' ' + (readonly.Quote.xp.StatusDate | weirdate)"></span>
+                    <span ng-bind-html="readonly.labels.Status"/>:&nbsp;<span style="font-weight:bold;" ng-bind-html="readonly.GetStatusLabel() + ' ' + ((readonly.Quote.xp.DateDeleted || readonly.Quote.xp.StatusDate) | weirdate)"></span>
                 </div>
                 <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em;margin-top: 10px;">
                     <span ng-bind-html="readonly.labels.OrderDate" />&nbsp;<span style="font-weight:bold;" ng-bind-html="(readonly.Quote.DateSubmitted | weirdate)"></span>

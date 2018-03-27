@@ -656,7 +656,17 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 			Price: "Price per item or set",
 			Qty: "Quantity",
 			AddToQuote: "Add to Quote",
-			POA: "POA"
+		    ShowCompatibility: "View compatibility",
+		    POA: "POA",
+		    CompatibilityHeader: "Showing compatibility for part number ",
+            SerialNumber: "Serial Number",
+            TagNumber: "Tag Number",
+            Type: "Type",
+            Description: "Description",
+            Size: "Size (in.)",
+            ValveForm: "Valve Form",
+            BodyRating: "Body Rating",
+            QtyPerValve: "Part quantity per valve"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client"),
@@ -670,8 +680,8 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 			Price: $sce.trustAsHtml("Prix par item ou par kit"),
 			Qty: $sce.trustAsHtml("Quantit&eacute;"),
 			AddToQuote: $sce.trustAsHtml("Ajouter &agrave; la cotation"),
-			POA: $sce.trustAsHtml("POA")
-		}
+			POA: $sce.trustAsHtml("POA"),
+	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
 	if (numFound == 0) {
@@ -695,6 +705,24 @@ function PartResultsController( $rootScope, $sce, $state, WeirService, PartNumbe
 				part.Quantity = null;
 			});
 	};
+	vm.compatibilityPart = null;
+	vm.compatHeader = "";
+	vm.ValveList = [];
+	vm.showCompatibility = function (part, $index) {
+	    vm.ValveList = [];
+	    if (!part || !part.Detail) {
+	        vm.compatibilityPart = null;
+	        return;
+	    }
+	    vm.compatibilityPart = part.Detail.ID;
+	    vm.compatHeader = vm.labels.CompatibilityHeader + part.Detail.ID;
+	    if (part.Detail.xp && part.Detail.xp.AlternatePartNumber) vm.compatHeader += "(" + part.Detail.xp.AlternatePartNumber + ")";
+	    WeirService.ValvesForPart(part.Detail.ID)
+        .then(function (results) {
+            var tmp = results.Items;
+            vm.ValveList = results.Items; //.push.apply(vm.ValveList, results.Items);
+        });
+	}
 }
 
 function TagController(WeirService, $state, $sce, $scope, toastr, SearchProducts) {

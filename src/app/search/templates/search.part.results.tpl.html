@@ -25,6 +25,7 @@
                         <th class="em-six" ng-bind-html='partResults.labels.Price'></th>
                         <th class="em-six" ng-bind-html='partResults.labels.Qty'></th>
                         <th class="em-eight button-th"></th>
+                        <th class="em-eight button-th"  ng-if="(1==0) && search.WeirGroup == 'WVCUK'"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,17 +52,60 @@
                             <!--<button class="btn btn-warning" ng-click="partResults.addPartToQuote(part)" ng-bind-html='partResults.labels.AddToQuote'></button>-->
                             <button ng-model="partResults.addButtons[$index]" ng-class="{true:'btn btn-success ng-binding','undefined':'btn btn-primary ng-binding'}[partResults.addButtons[$index]]" ng-click="partResults.addPartToQuote(part, $index)" ng-bind-html='partResults.labels.AddToQuote'></button>
                         </td>
+                        <td class="button-td" ng-if="(1==0) && search.WeirGroup == 'WVCUK'">
+                            <!--<button class="btn btn-warning" ng-click="partResults.addPartToQuote(part)" ng-bind-html='partResults.labels.AddToQuote'></button>-->
+                            <button ng-model="partResults.addButtons[$index]" ng-class="{true:'btn btn-success ng-binding','undefined':'btn btn-primary ng-binding'}[partResults.addButtons[$index]]" ng-click="partResults.showCompatibility(part, $index)" ng-bind-html='partResults.labels.ShowCompatibility'></button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-8">
-            <p><span ng-bind-html='search.SharedContent.ReplacementGuidance'></span></p>
-            <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.POAGuidance'></span></p>
-            <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.LeadTimeNotice'></span></p>
-            <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.PriceDisclaimer'></span></p>
+    <div ng-if="partResults.compatibilityPart">
+        <hr />
+        <div class="row">
+            <div class="col-md-8">
+                 <p style="font-weight: bold;" ng-bind-html='partResults.compatHeader'></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered oc-table-responsive weir-results-table">
+                    <thead>
+                        <tr>
+                            <th ng-bind-html='partResults.labels.SerialNumber'></th>
+                            <th ng-bind-html='partResults.labels.TagNumber'></th>
+                            <th ng-bind-html='partResults.labels.Type'></th>
+                            <th ng-bind-html='partResults.labels.Description'></th>
+                            <th ng-bind-html='partResults.labels.Size'></th>
+                            <th ng-bind-html='partResults.labels.ValveForm'></th>
+                            <th ng-bind-html='partResults.labels.BodyRating'></th>
+                            <th ng-bind-html='partResults.labels.QtyPerValve'></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="valve in partResults.ValveList">
+                            <td >{{valve.xp.SN}}</td>
+                            <td >{{valve.xp.TagNumber}}</td>
+                            <td >{{valve.xp.Specs.ValveType}}</td>
+                            <td>{{valve.Description}}</td>
+                            <td>{{valve.xp.Specs.Size}}</td>
+                            <td>{{valve.xp.Specs.ValveForm}}</td>
+                            <td>{{valve.xp.Specs.BodyRating}}</td>
+                            <td>{{valve.xp[partResults.compatibilityPart] || "0"}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <p><span ng-bind-html='search.SharedContent.ReplacementGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.POAGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.LeadTimeNotice'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.PriceDisclaimer'></span></p>
+                </div>
+            </div>
 </article>

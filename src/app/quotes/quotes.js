@@ -448,7 +448,7 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
                     fr: {
                         DeleteQuote: $sce.trustAsHtml("FR: Delete quote?"),
                         ConfirmDelete: $sce.trustAsHtml("FR: Delete quote number " + id + "?"),
-                        CancelDelete: $sce.trustAsHtml("FR: Cancel"),
+                        CancelDelete: $sce.trustAsHtml("Annuler"),
                         DeletedTitle: "Success",
                         DeletedMessage: "Your quote has been deleted"
                     }
@@ -460,7 +460,7 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
                 vm.deleteQuote = function () {
                     var mods = {
                         xp: {
-                            StatusDate: new Date(),
+                            DateDeleted: new Date(),
                             Status: WeirService.OrderStatus.Deleted.id
                         }
                     };

@@ -30,7 +30,8 @@ function OrdersConfig($stateProvider) {
                     if(!Parameters.filters){
 	                    Parameters.filters = {};
                     }
-		            //return WeirService.FindOrders(Parameters, false);
+                    if (!Parameters.filters["xp.Status"]) Parameters.filters["xp.Status"] = "!DEL";
+	                //return WeirService.FindOrders(Parameters, false);
 		            if (Parameters.search) {
 		                Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //FromUserID and Total were throwing errors
 	                }
@@ -454,7 +455,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
                     fr: {
                         DeleteOrder: $sce.trustAsHtml("FR: Delete order?"),
                         ConfirmDelete: $sce.trustAsHtml("FR: Delete order number " + id + "?"),
-                        CancelDelete: $sce.trustAsHtml("FR: Cancel"),
+                        CancelDelete: $sce.trustAsHtml("Annuler"),
                         DeletedTitle: "Success",
                         DeletedMessage: "Your order has been deleted"
                     }
@@ -466,7 +467,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
                 vm.deleteOrder = function () {
                     var mods = {
                         xp: {
-                            StatusDate: new Date(),
+                            DateDeleted: new Date(),
                             Status: WeirService.OrderStatus.Deleted.id
                         }
                     };

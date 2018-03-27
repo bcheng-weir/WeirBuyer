@@ -184,7 +184,8 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
         SetEnglishTranslationParts: _setEnglishTranslationParts,
         UserBuyers: userBuyers,
         DivisionSelection: DivisionSelection,
-        GetExchangeRate: getConversionRate
+        GetExchangeRate: getConversionRate,
+        ValvesForPart: getValvesForPart
     };
 
     function assignAddressToGroups(addressId) {
@@ -1784,6 +1785,36 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
         if (arrOfBuyer.length <= 1) {
             $state.go('home');
         }
+        return dfd.promise;
+    }
+
+    function getValvesForPart(partID) {
+        var dfd = $q.defer();
+        CurrentOrder.GetCurrentCustomer()
+       .then(function (cust) {
+           if (cust) {
+               var opts = {
+                   'page': 1,
+                   'pageSize': 50,
+                   'filters': {
+                       'ParentID': cust.id
+                   },
+                   'depth': "all",
+                   'catalogID': Me.Org.xp.WeirGroup.label
+               };
+               OrderCloudSDK.Me.ListCategories(opts)
+                .then(function (results) {
+                    dfd.resolve(results);
+                });
+           } else {
+               console.log("Current customer not found.");
+               dfd.resolve([]);
+           }
+       })
+       .catch(function (ex) {
+           console.log("Unable to resolve current customer: " + JSON.stringify(ex));
+           dfd.resolve([]);
+       });
         return dfd.promise;
     }
 

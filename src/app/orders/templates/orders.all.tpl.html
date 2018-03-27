@@ -41,6 +41,7 @@
                     <th ng-bind-html='orders.labels.EstDelivery'></th>
                     <th ng-bind-html='orders.labels.DateDespatched'></th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -73,6 +74,9 @@
                     <td>{{order.xp.DateDespatched | weirdate}}</td>
                     <td>
                         <button class="btn btn-primary btn-review" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button>
+                    </td>
+                    <td>
+                        <a class="glyphicon glyphicon-trash" href="#" ng-click="orders.delete(order.ID, orders.list.Items, $index);" ng-if="order.xp.Status=='SE'" />
                     </td>
                 </tr>
             </tbody>

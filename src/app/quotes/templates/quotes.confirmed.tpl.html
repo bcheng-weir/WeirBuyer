@@ -36,7 +36,8 @@
 					</th>
 
 					<th ng-bind-html='saved.labels.Status'></th>
-					<th></th>
+                    <th></th>
+                    <th></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -67,6 +68,9 @@
 
                     <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{CQ:'btn-status btn-quote-CQ'}[quote.xp.Status]"></span></td>
                     <td><button class="btn btn-primary" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button></td>
+                    <td>
+                        <a class="glyphicon glyphicon-trash" href="#" ng-click="quotes.delete(quote.ID, quotes.list.Items, $index);"/>
+                    </td>
 				</tr>
 				</tbody>
 			</table>

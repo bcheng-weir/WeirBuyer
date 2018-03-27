@@ -9,6 +9,7 @@
                 <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.revised({filters:orders.FilterActions('orders.revised')})"><a href="#" ng-bind-html='orders.labels.revisedCount'></a></li>
                 <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.confirmed({filters:orders.FilterActions('orders.confirmed')})"><a href="#" ng-bind-html='orders.labels.confirmedCount'></a></li>
                 <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.despatched({filters:orders.FilterActions('orders.despatched')})"><a href="#" ng-bind-html='orders.labels.despatchedCount'></a></li>
+                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.deleted({filters:orders.FilterActions('orders.deleted')})"><a href="#" ng-bind-html='orders.labels.deletedCount'></a></li>
             </ul>
         </div>
         <!--<hr>-->
@@ -19,6 +20,7 @@
             <h2 ng-if="['orders.revised'].indexOf(application.$state.current.name) > -1">{{orders.labels.revised}}</h2>
             <h2 ng-if="['orders.confirmed'].indexOf(application.$state.current.name) > -1">{{orders.labels.confirmed}}</h2>
             <h2 ng-if="['orders.despatched'].indexOf(application.$state.current.name) > -1">{{orders.labels.despatched}}</h2>
+            <h2 ng-if="['orders.deleted'].indexOf(application.$state.current.name) > -1">{{orders.labels.deleted}}</h2>
             <!--====== SEARCH/FILTERS ======-->
             <form name="OrderSearchForm" class="form-inline" ng-submit="orders.search()">
                 <fieldset class="form-group">

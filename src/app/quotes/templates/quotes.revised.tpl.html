@@ -35,7 +35,8 @@
 					</th>
 
 					<th ng-bind-html='saved.labels.Status'></th>
-					<th></th>
+                    <th></th>
+                    <th></th>
 				</tr>
 				</thead>
 				<tbody>
@@ -69,6 +70,9 @@
 						<button class="btn btn-primary btn-md" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
 						<!--<a ui-sref="revisions({quoteID:quote.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="saved.labels.Revisions" ng-if="quote.xp.Status!='SV'"></a>-->
 					</td>
+                    <td>
+                        <a class="glyphicon glyphicon-trash" href="#" ng-click="quotes.delete(quote.ID, quotes.list.Items, $index);" />
+                    </td>
 				</tr>
 				</tbody>
 			</table>

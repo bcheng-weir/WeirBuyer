@@ -8,6 +8,7 @@
                 <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.inreview({filters:quotes.FilterActions('quotes.inreview')})"><a href="#" ng-bind-html='quotes.labels.InReviewCount'></a></li>
                 <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.revised({filters:quotes.FilterActions('quotes.revised')})"><a href="#" ng-bind-html='quotes.labels.RevisedCount'></a></li>
                 <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.confirmed({filters:quotes.FilterActions('quotes.confirmed')})"><a href="#" ng-bind-html='quotes.labels.ConfirmedCount'></a></li>
+                <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.deleted({filters:quotes.FilterActions('quotes.deleted')})"><a href="#" ng-bind-html='quotes.labels.DeletedCount'></a></li>
             </ul>
         </div>
         <!--<hr>-->
@@ -18,6 +19,7 @@
             <h2 ng-if="['quotes.inreview'].indexOf(application.$state.current.name) > -1">{{quotes.labels.InReview}}</h2>
             <h2 ng-if="['quotes.revised'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Revised}}</h2>
             <h2 ng-if="['quotes.confirmed'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Confirmed}}</h2>
+            <h2 ng-if="['quotes.deleted'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Deleted}}</h2>
             <!--====== SEARCH/FILTERS ======-->
             <form name="QuoteSearchForm" class="form-inline" ng-submit="quotes.search()">
                 <fieldset class="form-group">

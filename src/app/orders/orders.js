@@ -67,7 +67,7 @@ function OrdersConfig($stateProvider) {
                     if(!CountParameters.filters){
                         CountParameters.filters = {};
                     }
-                    CountParameters.filters = { "xp.Type": "Order", "xp.PendingPO": true, "xp.Active": true };
+                    CountParameters.filters = { "xp.Type": "Order", "xp.PendingPO": true, "xp.Active": true , "xp.Status": "!DEL"};
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
@@ -110,7 +110,24 @@ function OrdersConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                DespatchedCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
+                DeletedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
+                    if (!Me.Profile || !Me.Org) {
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if (!CountParameters.filters) {
+                        CountParameters.filters = {};
+                    }
+                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Deleted.id};
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
+                    var opts = {
+                        'pageSize': 10,
+                        'filters': CountParameters.filters,
+                        'buyerID': Me.GetBuyerID()
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing", opts);
+                },
+                DespatchedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
                     if(!Me.Profile || !Me.Org){
                         Me.Profile = CurrentUser;
                         Me.Org = CurrentOrg;
@@ -159,6 +176,11 @@ function OrdersConfig($stateProvider) {
 		    templateUrl: 'orders/templates/orders.despatched.tpl.html',
 		    parent: 'orders'
 	    })
+	    .state('orders.deleted', {
+	        url: '/deleted',
+	        templateUrl: 'orders/templates/orders.deleted.tpl.html',
+	        parent: 'orders'
+	    })
 		.state('orders.goto', {
 		    url: '/:orderID',
 		    controller: 'RouteToOrderCtrl',
@@ -181,7 +203,7 @@ function OrdersConfig($stateProvider) {
     ;
 }
 
-function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, OrderCloudParameters, Orders, Parameters, Me, WeirService, CurrentCustomer, SubmittedCount, PendingCount, RevisedCount, ConfirmedCount, DespatchedCount) {
+function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibModal, OrderCloudSDK, OrderCloudParameters, Orders, Parameters, Me, WeirService, CurrentCustomer, SubmittedCount, PendingCount, RevisedCount, ConfirmedCount, DespatchedCount, DeletedCount) {
     var vm = this;
     vm.list = Orders;
     vm.parameters = Parameters;
@@ -275,8 +297,9 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    PendingNotice: "Orders submitted pending PO will not be confirmed until Weir have received a Purchase Order",
 		    RevisedHeader: vm.list.Meta.TotalCount.toString() + " Revised Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    ConfirmedHeader: vm.list.Meta.TotalCount.toString() + " Confirmed Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-		    DespatchedHeader: vm.list.Meta.TotalCount.toString() + " Despatched Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-            InvoicedHeader: vm.list.Meta.TotalCount.toString() + " Invoiced Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+		    DespatchedHeader: vm.list.Meta.TotalCount.toString() + " Despatched Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+		    DespatchedHeader: vm.list.Meta.TotalCount.toString() + " Deleted Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+		    InvoicedHeader: vm.list.Meta.TotalCount.toString() + " Invoiced Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
             SortText: "You can sort orders by Order No, Total, Date",
             View: "View",
             all: "All Orders",
@@ -290,7 +313,9 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             confirmedCount: ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmed (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmed",
             despatched: "Despatched",
             despatchedCount: DespatchedCount.Meta.TotalCount.toString() > 0 ? "Despatched (" + DespatchedCount.Meta.TotalCount.toString() + ")" : "Despatched",
-		    invoiced: "Invoiced",
+            deleted: "Deleted",
+            deletedCount: DeletedCount.Meta.TotalCount.toString() > 0 ? "Deleted (" + DeletedCount.Meta.TotalCount.toString() + ")" : "Deleted",
+            invoiced: "Invoiced",
 	        OrderNum: "Weir Order No.",
 		    OrderName: "Your Order Name",
 		    OrderRef: "Your Order ref;",
@@ -307,6 +332,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    ConfirmedBy: "Confirmed By",
 		    DateConfirmed: "Date Confirmed",
 		    DateDespatched: "Date Despatched",
+		    DateDeleted: "Date Deleted",
 		    DateInvoiced: "Date Invoiced",
 		    EstDelivery: "Estimated Delivery Date",
 			NoMatches: "No Matches Found.",
@@ -325,7 +351,8 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    RevisedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " cotations révisée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    ConfirmedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes confirmée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    DespatchedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes expédiée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-            InvoicedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes facturée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+		    DespatchedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + "  commandes deleted" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+		    InvoicedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes facturée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
             SortText: $sce.trustAsHtml("Vous pouvez filtrer par numéro de devis, montant, et date"),
             View: $sce.trustAsHtml("Voir"),
             all: $sce.trustAsHtml("Toutes les commandes"),
@@ -339,7 +366,9 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
             confirmedCount: $sce.trustAsHtml(ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmée (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmée"),
             despatched: $sce.trustAsHtml("Expédiée"),
             despatchedCount: $sce.trustAsHtml(DespatchedCount.Meta.TotalCount.toString() > 0 ? "Expédiée (" + DespatchedCount.Meta.TotalCount.toString() + ")" : "Expédiée"),
-		    invoiced: $sce.trustAsHtml("Facturée"),
+            deleted: $sce.trustAsHtml("FR: Deleted"),
+            deletedCount: $sce.trustAsHtml("FR: " + DeletedCount.Meta.TotalCount.toString() > 0 ? "Deleted (" + DeletedCount.Meta.TotalCount.toString() + ")" : "Deleted"),
+            invoiced: $sce.trustAsHtml("Facturée"),
 		    OrderNum: $sce.trustAsHtml("Numéro de commande WEIR"),
 		    OrderName: $sce.trustAsHtml("Votre libellé de commande"),
 		    OrderRef: $sce.trustAsHtml("Votre référence de commande"),
@@ -356,6 +385,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
 		    ConfirmedBy: $sce.trustAsHtml("Confirmée par"),
 		    DateConfirmed: $sce.trustAsHtml("Date confirmé"),
 		    DateDespatched: $sce.trustAsHtml("Date d'envoi"),
+		    DateDeleted: $sce.trustAsHtml("Date Deleted"),
 		    DateInvoiced: $sce.trustAsHtml("Date de facturation"),
 		    EstDelivery: $sce.trustAsHtml("Délai de livraison estimé"),
             NoMatches: $sce.trustAsHtml("Aucun résultat"),
@@ -374,17 +404,18 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
         var filter = {
             "orders.all": { "xp.Type": "Order", "xp.Active": true },
 			"orders.submitted":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true},
-			"orders.pending":{"xp.Type":"Order", "xp.PendingPO":true, "xp.Active":true},
+			"orders.pending":{"xp.Type":"Order", "xp.PendingPO":true, "xp.Active":true, "xp.Status": "!DEL"},
 			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id+"|"+WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active":true},
 			"orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":true},
-			"orders.despatched":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.Despatched.id, "xp.Active":true}
+			"orders.despatched": { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Despatched.id, "xp.Active": true },
+			"orders.deleted": { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Deleted.id, "xp.Active": true }
 		};
 		return JSON.stringify(filter[action]);
 	}
 
 	vm.ReviewOrder = _reviewOrder;
 	function _reviewOrder(orderId, status, buyerId) {
-		if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id || status == WeirService.OrderStatus.RejectedRevisedOrder.id) {
+	    if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id || status == WeirService.OrderStatus.RejectedRevisedOrder.id || status == WeirService.OrderStatus.Deleted.id) {
 			$state.transitionTo('readonly', {quoteID: orderId, buyerID: buyerId});
 		} else if(status == WeirService.OrderStatus.RevisedOrder.id) {
 			$state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });
@@ -403,6 +434,62 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, OrderCloudSDK, Ord
     vm.GoToOrder = function (orderId) {
         $state.go("orders.goto", { orderID: orderId });
     };
+
+    vm.delete = function (id, orderList, indx) {
+        var parentElem = angular.element($document[0].querySelector('body'));
+        $uibModal.open({
+            animation: true,
+            size: 'md',
+            templateUrl: 'orders/templates/deleteordermodal.tpl.html',
+            controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+                var vm = this;
+                labels = {
+                    en: {
+                        DeleteOrder: "Delete order?",
+                        ConfirmDelete: "Delete order number " + id + "?",
+                        CancelDelete: "Cancel",
+                        DeletedTitle: "Success",
+                        DeletedMessage: "Your order has been deleted"
+                    },
+                    fr: {
+                        DeleteOrder: $sce.trustAsHtml("FR: Delete order?"),
+                        ConfirmDelete: $sce.trustAsHtml("FR: Delete order number " + id + "?"),
+                        CancelDelete: $sce.trustAsHtml("FR: Cancel"),
+                        DeletedTitle: "Success",
+                        DeletedMessage: "Your order has been deleted"
+                    }
+                };
+                vm.labels = WeirService.LocaleResources(labels);
+                vm.close = function () {
+                    $uibModalInstance.dismiss();
+                };
+                vm.deleteOrder = function () {
+                    var mods = {
+                        xp: {
+                            StatusDate: new Date(),
+                            Status: WeirService.OrderStatus.Deleted.id
+                        }
+                    };
+                    var qte = {
+                        ID: id
+                    };
+                    console.log("Would mark order " + id + " as deleted now");
+                    WeirService.UpdateQuote(qte, mods)
+                        .then(function (qte) {
+                            orderList.splice(indx, 1);
+                            $uibModalInstance.close();
+                            toastr.success(vm.labels.DeletedMessage, vm.labels.DeletedTitle);
+                        })
+                        .catch(function (ex) {
+                            $exceptionHandler(ex);
+                        });
+                };
+            },
+            controllerAs: 'deleteModal',
+            appendTo: parentElem
+        });
+    };
+
 }
 function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, Me) {
     if (Order) {

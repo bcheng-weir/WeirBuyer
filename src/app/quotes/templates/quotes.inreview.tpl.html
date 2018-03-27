@@ -35,6 +35,7 @@
 
                         <th ng-bind-html='inreview.labels.Status'></th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,6 +66,9 @@
                         <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SB:'btn-status btn-quote-SB',RE:'btn-status btn-quote-RE'}[quote.xp.Status]"></span></td>
                         <td>
                             <a ui-sref="readonly({quoteID: quote.ID, buyerID: quote.xp.BuyerID})" role="button" class="btn btn-primary" ng-bind-html="inreview.labels.View"></a>
+                        </td>
+                        <td>
+                            <a class="glyphicon glyphicon-trash" href="#" ng-click="quotes.delete(quote.ID, quotes.list.Items, $index);"  ng-if="quote.xp.Status!='RE'"  />
                         </td>
                     </tr>
                 </tbody>

@@ -1,0 +1,19 @@
+<div id="DELETEORDERMODAL">
+    <div class="modal-header">
+        <span ng-click="deleteModal.close()" class="pull-right">X</span>
+        <H3 ng-bind-html="deleteModal.labels.DeleteOrder" class="pull-left"></H3>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12" ng-bind-html="deleteModal.labels.ConfirmDelete" ng-click="deleteModal.deleteOrder()"></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <H3 ng-bind-html="deleteModal.labels.CancelDelete" ng-click="deleteModal.close()"></H3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

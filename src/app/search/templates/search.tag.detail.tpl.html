@@ -126,6 +126,8 @@
                             <span ng-switch-when="USD">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion | currency:'&#36;'}}</span>
                             <span ng-switch-when="GBP">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion| currency:'&#163;'}}</span>
                             <span ng-switch-when="EUR">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion| currency:'&#128;'}}</span>
+                            <span ng-switch-when="AUD">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion | currency:'&#36;'}}</span>
+                            <span ng-switch-when="ZAR">{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion | currency:'R'}}</span>
                             <span ng-switch-default>{{part.Detail.PriceSchedule.PriceBreaks[0].Price | conversion | currency:'&#163;'}}</span>
                         </td>
                         <td>

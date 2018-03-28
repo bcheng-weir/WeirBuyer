@@ -49,7 +49,7 @@ function UserGroupsService($q, OrderCloudSDK) {
     }
 }
 
-function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService, $window, Underscore) {
+function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService, $window, Underscore) {
     var orderStatuses = {
         Enquiry: {
             id: "EN",
@@ -185,7 +185,8 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
         UserBuyers: userBuyers,
         DivisionSelection: DivisionSelection,
         GetExchangeRate: getConversionRate,
-        ValvesForPart: getValvesForPart
+        ValvesForPart: getValvesForPart,
+        CurrentCurrency: getCurrentCurrency
     };
 
     function assignAddressToGroups(addressId) {
@@ -256,6 +257,7 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                 YourQuotes: "Your Quotes",
                 YourOrders: "Your Orders",
                 YourAccount: "Your Account",
+                Currency: "Currency",
                 Account: "Account",
                 Search: "Search",
                 Current: "Current",
@@ -280,6 +282,7 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
                 contactTitle: $sce.trustAsHtml("Contact"),
                 YourQuotes: $sce.trustAsHtml("Vos cotations"),
                 YourOrders: $sce.trustAsHtml("Vos commandes"),
+                Currency: $sce.trustAsHtml("FR: Currency"),
                 YourAccount: $sce.trustAsHtml("Votre compte"),
                 Account: $sce.trustAsHtml("Compte"),
                 Search: $sce.trustAsHtml("Rechercher"),
@@ -1631,6 +1634,20 @@ function WeirService($q, $cookieStore, $sce, $state, OrderCloudSDK, CurrentOrder
             });
 
         return dfd.promise;
+    }
+
+    function getCurrentCurrency() {
+        var info = {};
+        info.curr = $cookies.get('curr').replace(/^"(.+(?="$))"$/, '$1');
+        switch(info.curr) {
+            case "USD": info.symbol = $sce.trustAsHtml('&#36;'); return info;
+            case "AUD": info.symbol = $sce.trustAsHtml('&#36;'); return info;
+            case "EUR": info.symbol = $sce.trustAsHtml('&#128;'); return info;
+            case "ZAR": info.symbol = 'R'; return info;
+            case "GBP":
+            default:
+                info.symbol = $sce.trustAsHtml('&#163;'); return info;
+        }
     }
 
     function getConversionRate(group, targetCurrency) {

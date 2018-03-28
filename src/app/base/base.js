@@ -204,6 +204,8 @@ function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrd
             vm.navlabels = navlabels.en;
             break;
     }
+    var tmpCurr = WeirService.CurrentCurrency();
+    vm.navlabels.CurrencyLabel = $sce.trustAsHtml(vm.navlabels.Currency + ": " + tmpCurr.curr + " (" + tmpCurr.symbol + ")");
     if (WeirService.Locale() == "fr") {
         // defaultErrorMessageResolver.setI18nFileRootPath('/bower_components/angular-auto-validate/dist/lang');
         // defaultErrorMessageResolver.setCulture('fr-FR');

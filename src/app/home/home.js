@@ -18,7 +18,8 @@ function HomeConfig($stateProvider) {
                         'sortBy':'!DateCreated',
                         'filters':{
                             'xp.Type':'Quote',
-                            'xp.Active':true
+                            'xp.Active': true,
+                            'xp.Status': '!DEL'
                         }
                     };
                     if (!Me.Profile || !Me.Org) {
@@ -36,7 +37,8 @@ function HomeConfig($stateProvider) {
                         'sortBy':'!DateCreated',
                         'filters':{
 			                'xp.Type':'Order',
-                            'xp.Active':true
+			                'xp.Active': true,
+                            'xp.Status': '!DEL'
                         }
                     };
                     if (!Me.Profile || !Me.Org) {

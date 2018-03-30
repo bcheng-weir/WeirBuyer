@@ -397,11 +397,11 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
 				"xp.Status": WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,
 				"xp.Active":true
 			},
-			"quotes.saved": {
-			    "xp.Type": "Quote",
-			    "xp.Status": WeirService.OrderStatus.Saved.id + "|" + WeirService.OrderStatus.Draft.id,
-			    "xp.Active": true
-			},
+            "quotes.enquiry": {
+                "xp.Type": "Quote",
+                "xp.Status": WeirService.OrderStatus.Enquiry.id+"|"+WeirService.OrderStatus.EnquiryReview.id,
+                "xp.Active":true
+            },
 			"quotes.deleted": {
 				"xp.Type": "Quote",
 				"xp.Status": WeirService.OrderStatus.Deleted.id
@@ -491,14 +491,14 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
     vm.locale = WeirService.Locale;
 	
 	function _reviewQuote(quoteId, status, buyerId) {
-	    if (status == WeirService.OrderStatus.RejectedQuote.id) {
+	    if (status === WeirService.OrderStatus.RejectedQuote.id) {
             $state.go('readonly', {quoteID: quoteId, buyerID: buyerId});
-        } else if(status == WeirService.OrderStatus.ConfirmedQuote.id) {
+        } else if(status === WeirService.OrderStatus.ConfirmedQuote.id) {
 	    	$state.go('submit', {quoteID: quoteId, buyerID: buyerId})
-	    } else if(status == WeirService.OrderStatus.RevisedQuote.id) {
+	    } else if(status === WeirService.OrderStatus.RevisedQuote.id) {
 		    $state.go('revised', { quoteID: quoteId, buyerID: buyerId });
 		} else {
-	        var gotoReview = (vm.CurrentOrderId != quoteId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
+	        var gotoReview = (vm.CurrentOrderId !== quoteId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
 	        if (gotoReview) {
 	            WeirService.SetQuoteAsCurrentOrder(quoteId)
                     .then(function () {
@@ -511,7 +511,7 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 
 	var labels = {
 		en: {
-            Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " saved Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s"),
+            Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " saved Quote" + ($scope.$parent.quotes.list.Meta.TotalCount === 1 ? "" : "s"),
             SortText: "You can sort quotes by Quote Number, Total",
 		    QuoteNum: "Weir Quote Number",
 			QuoteName: "Quote Name",
@@ -579,7 +579,7 @@ function DeletedQuotesController(WeirService, $state, $sce, $rootScope, $scope, 
 
     var labels = {
         en: {
-            Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " deleted Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s"),
+            Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " deleted Quote" + ($scope.$parent.quotes.list.Meta.TotalCount === 1 ? "" : "s"),
             SortText: "You can sort quotes by Quote Number, Total",
             QuoteNum: "Weir Quote Number",
             QuoteName: "Quote Name",
@@ -621,14 +621,14 @@ function DeletedQuotesController(WeirService, $state, $sce, $rootScope, $scope, 
         }
     };
     if ($state.is('quotes.revised')) {
-        labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " revised Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-        labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation révisée" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
+        labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " revised Quote" + ($scope.$parent.quotes.list.Meta.TotalCount === 1 ? "" : "s");
+        labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation révisée" + ($scope.$parent.quotes.list.Meta.TotalCount === 1 ? "" : "s");
     } else if ($state.is('quotes.confirmed')) {
-        labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " confirmed Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-        labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation confirmée" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
+        labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " confirmed Quote" + ($scope.$parent.quotes.list.Meta.TotalCount === 1 ? "" : "s");
+        labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation confirmée" + ($scope.$parent.quotes.list.Meta.TotalCount === 1 ? "" : "s");
     } else if ($state.is('quotes.all')) {
-        labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-        labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
+        labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Quote" + ($scope.$parent.quotes.list.Meta.TotalCount === 1 ? "" : "s");
+        labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation" + ($scope.$parent.quotes.list.Meta.TotalCount === 1 ? "" : "s");
     }
     vm.labels = WeirService.LocaleResources(labels);
     vm.ReviewQuote = _reviewQuote;
@@ -638,13 +638,13 @@ function EnquiryQuotesController (WeirService,$scope,$sce) {
 	var vm = this;
 	var labels = {
 		en: {
-			Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length == 1 ? " Enquiry" : " Enquiries"),
+			Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length === 1 ? " Enquiry" : " Enquiries"),
 			QuoteNum: "Weir Quote Number",
 			Status: "Status",
 			View: "View"
 		},
 		fr: {
-			Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length == 1 ? " Demande" : " Demandes")),
+			Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length === 1 ? " Demande" : " Demandes")),
 			QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
 			Status: $sce.trustAsHtml("Statut"),
 			View: $sce.trustAsHtml("Voir")
@@ -658,7 +658,7 @@ function InReviewQuotesController(WeirService, $sce, $scope) {
 	
 	var labels = {
 		en: {
-		    Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Quote" +  ($scope.$parent.quotes.list.Meta.TotalCount.length == 1 ? "" : "s under review"),
+		    Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Quote" +  ($scope.$parent.quotes.list.Meta.TotalCount.length === 1 ? "" : "s under review"),
 		    QuoteNum: "Weir Quote Number",
 		    QuoteRef: "Your Quote Ref;",
             Total: "Total",
@@ -693,9 +693,9 @@ function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote, 
     if (Quote) {
         var status = Quote.xp.Status;
         var type = Quote.xp.Type;
-        if (type == "Order") {
+        if (type === "Order") {
             $state.go('orders.goto', { orderID: Quote.ID });
-        } else if (status == WeirService.OrderStatus.RevisedQuote.id) {
+        } else if (status === WeirService.OrderStatus.RevisedQuote.id) {
             if (Quote.xp.Active) {
                 $state.go('revised', { quoteID: Quote.ID });
             } else {
@@ -714,7 +714,7 @@ function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote, 
         }
 	} else {
         var errorMsg="";
-        if(WeirService.Locale()=="fr"){
+        if(WeirService.Locale()==="fr"){
             errorMsg="Cotation non trouvée";
         }
         else{

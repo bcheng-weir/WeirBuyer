@@ -378,7 +378,7 @@ function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrd
         //check if the current order status is unsubmitted/draft mode
         CurrentOrder.Get()
             .then(function (resultOrder) {
-                if (resultOrder.Status == "Unsubmitted" && resultOrder.xp.Status == WeirService.OrderStatus.Draft.id) {
+                if (resultOrder.Status === "Unsubmitted" && resultOrder.xp.Status === WeirService.OrderStatus.Draft.id) {
                     var modalInstance = $uibModal.open({
                         animation: true,
                         ariaDescribedBy: 'modal-body',
@@ -389,7 +389,7 @@ function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrd
                     });
                     modalInstance.result.then(
                         function (val) {
-                            if (val == "Unsubmitted") {
+                            if (val === "Unsubmitted") {
                                 $rootScope.$broadcast('search.ClearFilter');
                                 $rootScope.$broadcast('search.selfsearch', false);
                                 $rootScope.$broadcast('search.searchall', false);

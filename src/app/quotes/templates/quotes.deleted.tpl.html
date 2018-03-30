@@ -48,7 +48,7 @@
                             <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
                             <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
                         </td>
-                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" class="btn-status btn-quote-SV"></span></td>
+                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" class="btn-status btn-DEL"></span></td>
 
                         <td>
                             <span ng-if="quote.xp.StatusDate" ng-bind-html="quotes.dateOf(quote.xp.StatusDate) | weirdate : quotes.WeirGroup"></span>

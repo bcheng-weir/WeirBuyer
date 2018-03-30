@@ -299,7 +299,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 		    RevisedHeader: vm.list.Meta.TotalCount.toString() + " Revised Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    ConfirmedHeader: vm.list.Meta.TotalCount.toString() + " Confirmed Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    DespatchedHeader: vm.list.Meta.TotalCount.toString() + " Despatched Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-		    DespatchedHeader: vm.list.Meta.TotalCount.toString() + " Deleted Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+		    DeletedHeader: vm.list.Meta.TotalCount.toString() + " Deleted Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    InvoicedHeader: vm.list.Meta.TotalCount.toString() + " Invoiced Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
             SortText: "You can sort orders by Order No, Total, Date",
             View: "View",
@@ -352,7 +352,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 		    RevisedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " cotations révisée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    ConfirmedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes confirmée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    DespatchedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes expédiée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-		    DespatchedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + "  commandes deleted" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+		    DeletedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + "  commandes deleted" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    InvoicedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes facturée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
             SortText: $sce.trustAsHtml("Vous pouvez filtrer par numéro de devis, montant, et date"),
             View: $sce.trustAsHtml("Voir"),
@@ -416,12 +416,12 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 
 	vm.ReviewOrder = _reviewOrder;
 	function _reviewOrder(orderId, status, buyerId) {
-	    if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id || status == WeirService.OrderStatus.RejectedRevisedOrder.id || status == WeirService.OrderStatus.Deleted.id) {
+	    if (status === WeirService.OrderStatus.ConfirmedOrder.id || status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.RejectedRevisedOrder.id || status === WeirService.OrderStatus.Deleted.id) {
 			$state.transitionTo('readonly', {quoteID: orderId, buyerID: buyerId});
-		} else if(status == WeirService.OrderStatus.RevisedOrder.id) {
+		} else if(status === WeirService.OrderStatus.RevisedOrder.id) {
 			$state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });
 		} else {
-			var gotoReview = (vm.CurrentOrderId != orderId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
+			var gotoReview = (vm.CurrentOrderId !== orderId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
 			if (gotoReview) {
 				WeirService.SetQuoteAsCurrentOrder(orderId)
 					.then(function () {
@@ -495,14 +495,14 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, Me) {
     if (Order) {
         var type = Order.xp.Type;
-        if (type == "Order") {
+        if (type === "Order") {
             reviewOrder(Order.ID, Order.xp.Status, Me.GetBuyerID());
         } else {
             $state.go('quotes.goto', { quoteID: Order.ID });
         }
     } else {
         var errorMsg="";
-        if(WeirService.Locale()=="fr"){
+        if(WeirService.Locale()==="fr"){
             errorMsg="Commande non trouvée";
         }
         else{
@@ -512,9 +512,9 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
         $state.go('orders.submitted');
     }
     function reviewOrder(orderId, status, buyerId) {
-        if (status == WeirService.OrderStatus.ConfirmedOrder.id || status == WeirService.OrderStatus.Despatched.id || status == WeirService.OrderStatus.Invoiced.id || status == WeirService.OrderStatus.SubmittedWithPO.id || status == WeirService.OrderStatus.SubmittedPendingPO.id || status == WeirService.OrderStatus.Review.id || status == WeirService.OrderStatus.Submitted.id) {
+        if (status === WeirService.OrderStatus.ConfirmedOrder.id || status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.Submitted.id) {
             $state.transitionTo('readonly', { quoteID: orderId, buyerID: buyerId });
-        } else if (status == WeirService.OrderStatus.RevisedOrder.id) {
+        } else if (status === WeirService.OrderStatus.RevisedOrder.id) {
             $state.transitionTo('revised', {quoteID: orderId, buyerID: buyerId});
         } else {
             WeirService.SetQuoteAsCurrentOrder(orderId)

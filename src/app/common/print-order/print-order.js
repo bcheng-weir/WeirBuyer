@@ -3,7 +3,7 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData,$timeout,$window,$uibModalInstance,WeirService,$sce,QuoteShareService) {
+function PrintOrderController(printData,$timeout,$window,$uibModalInstance,WeirService,$sce,QuoteShareService, $filter) {
 	//ToDo use the QuoteShareService
 	var vm = this;
 	vm.catalog = printData.catalog;
@@ -12,18 +12,23 @@ function PrintOrderController(printData,$timeout,$window,$uibModalInstance,WeirS
 	vm.items = printData.items;
 	vm.address = printData.address;
 	vm.pocontent = printData.pocontent;
-	vm.currency = (vm.order.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.order.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+    // vm.currency = (vm.order.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.order.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+	var curr = WeirService.CurrentCurrency(vm.Quote);
+	vm.currency = curr.symbol;
+
 	if(printData.uitotal == -1) { // We are in myquote and using the exworks or standard (whether buyer or catalog)
-		vm.uitotal = QuoteShareService.UiTotal;
+	    vm.uitotal = $filter('OrderConversion')(QuoteShareService.UiTotal, QuoteShareService.Quote);
 		if(QuoteShareService.Quote.xp.CarriageRateType == 'standard') {
-			vm.CarriageRateForBuyer = (vm.buyer.xp.UseCustomCarriageRate && vm.buyer.xp.UseCustomCarriageRate == true) ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;
+		    vm.CarriageRateForBuyer = (vm.buyer.xp.UseCustomCarriageRate && vm.buyer.xp.UseCustomCarriageRate == true) ? vm.buyer.xp.CustomCarriageRate : vm.catalog.xp.StandardCarriage;
+		    vm.CarriageRateForBuyer = $filter('OrderConversion')(vm.CarriageRateForBuyer, QuoteShareService.Quote);
 			vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 		} else {
 			vm.CarriageRateForBuyer = 'POA';
 		}
 	} else {
-		vm.uitotal = printData.order.Total;
+	    vm.uitotal = $filter('OrderConversion')(printData.order.Total, printData.order);
 		vm.CarriageRateForBuyer = vm.order.ShippingCost;
+		vm.CarriageRateForBuyer = $filter('OrderConversion')(vm.CarriageRateForBuyer, printData.order);
 		vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
 	}
 

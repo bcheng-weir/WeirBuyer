@@ -79,7 +79,7 @@
                     </td>
                     <td ng-if="!item.UnitPrice||item.UnitPrice=='0'">POA</td>
                     <td ng-if="item.UnitPrice">
-                        <span ng-bind-html="item.UnitPrice | currency:printctrl.currency"></span>
+                        <span ng-bind-html="item.UnitPrice  | OrderConversion: printctrl.order | currency:printctrl.currency"></span>
                     </td>
                     <td><span ng-bind-html="item.Quantity"></span></td>
                 </tr>
@@ -91,6 +91,7 @@
                     <td></td>
                     <td></td>
                     <td>
+                        <!-- No rate conversion here - it is in the controller since applying fixed(2) to the output -->
                         <span ng-if="printctrl.CarriageRateForBuyer!='POA'" ng-bind-html="printctrl.CarriageRateForBuyer | currency:printctrl.currency"></span>
                         <span ng-if="printctrl.CarriageRateForBuyer=='POA'" ng-bind-html="printctrl.labels.POAShipping"></span>
                     </td>
@@ -100,6 +101,7 @@
                     <td colspan="5"></td>
                     <td>Total</td>
                     <td class='text-right' style="font-weight:bold;">
+                        <!-- No rate conversion here - it is in the controller since applying fixed(2) to the output -->
                         <span ng-bind-html="printctrl.uitotal | currency:printctrl.currency"></span>
                     </td>
                     <td></td>

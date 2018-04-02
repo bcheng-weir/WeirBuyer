@@ -1,7 +1,7 @@
 angular.module('orderCloud')
 	.service('QuoteToCsvService', QuoteToCsvService);
 
-function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
+function QuoteToCsvService($filter, $sce, OCGeography, Underscore, WeirService, $cookies) {
 	function country (c) {
 		var result = Underscore.findWhere(OCGeography.Countries, { value: c });
 		return result ? result.label : '';
@@ -29,7 +29,29 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 			[Labels.SerialNum, Labels.TagNum, Labels.PartNum, Labels.PartDesc, Labels.RecRepl, Labels.LeadTime, Labels.Currency, Labels.PricePer, Labels.Quantity]
 		];
 
-		var currency = (Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+		function getCurrentCurrency(qte) {
+		    var curr = (qte && qte.xp && qte.xp.Currency) ? qte.xp.Currency.ConvertTo : null;
+		    curr = curr || $cookies.get('curr').replace(/^"(.+(?="$))"$/, '$1');
+		    switch (curr) {
+		        case "USD":
+		        case "AUD":
+		            return '$';
+		        case "EUR": return "€";
+		        case "ZAR": return 'R';
+		        case "GBP":
+		        default:
+		            return "£";
+		    }
+		}
+		var currency = getCurrentCurrency(Quote); //(Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+		function roundHalfEven(x) {
+		    return (Math.floor(100 * x + 0.5)) / 100;
+		}
+		function orderconversion(amt, order) {
+		    var orderRate = (order.xp && order.xp.Currency && order.xp.Currency.Rate) ? order.xp.Currency.Rate : 0;
+		    var rte = orderRate || $cookies.get('rate');
+		    return (rte) ? roundHalfEven(amt * rte) : amt;
+		}
 
 		angular.forEach(LineItems, function (item) {
 			var line = [];
@@ -40,14 +62,14 @@ function QuoteToCsvService($filter,$sce,OCGeography,Underscore) {
 			line.push(item.xp.ReplacementSchedule);
 			line.push(item.xp.LeadTime);
 			line.push(currency);
-			line.push(item.UnitPrice);
+			line.push(orderconversion(item.UnitPrice, Quote));
 			line.push(item.Quantity);
 			data.push(line);
 		});
 		if(Quote.xp.ShippingDescription) {
-			data.push(["", "", "", Quote.xp.ShippingDescription, "", "", currency, Quote.ShippingCost, ""]);
+		    data.push(["", "", "", Quote.xp.ShippingDescription, "", "", currency, orderconversion(Quote.ShippingCost, Quote), ""]);
 		}
-		data.push(["", "", "", "", "", Labels.Total, currency, Quote.Total]);
+		data.push(["", "", "", "", "", Labels.Total, currency, orderconversion(Quote.Total, Quote)]);
 		data.push(["", ""]);
 		data.push([Labels.DeliveryAddress]);
 		if (DeliveryAddress) {

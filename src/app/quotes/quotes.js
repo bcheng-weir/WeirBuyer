@@ -529,7 +529,8 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 			Revisions: "Revisions",
             Search: "Search",
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters"),
-            Reviewer: "Reviewer"
+            Reviewer: "Reviewer",
+            ValidityPeriod: "All quotes are valid for 30 days"
 		},
 		fr: {
 		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) --DELETED--"),
@@ -550,7 +551,8 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
 			Revisions: $sce.trustAsHtml("Révisions"),
             Search: $sce.trustAsHtml("Rechercher"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres"),
-            Reviewer: $sce.trustAsHtml("Révisé par")
+            Reviewer: $sce.trustAsHtml("Révisé par"),
+            ValidityPeriod: $sce.trustAsHtml("All quotes are valid for 30 days")
 		}
 	};
 	//if ($state.is('quotes.revised')) {
@@ -596,7 +598,8 @@ function DeletedQuotesController(WeirService, $state, $sce, $rootScope, $scope, 
             Revisions: "Revisions",
             Search: "Search",
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i>Filters"),
-            Reviewer: "Reviewer"
+            Reviewer: "Reviewer",
+            ValidityPeriod: "All quotes are valid for 30 days"
         },
         fr: {
             Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " cotation(s) sauvée(s)"),
@@ -617,7 +620,8 @@ function DeletedQuotesController(WeirService, $state, $sce, $rootScope, $scope, 
             Revisions: $sce.trustAsHtml("Révisions"),
             Search: $sce.trustAsHtml("Rechercher"),
             Filters: $sce.trustAsHtml("<i class='fa fa-filter'></i> Filtres"),
-            Reviewer: $sce.trustAsHtml("Révisé par")
+            Reviewer: $sce.trustAsHtml("Révisé par"),
+            ValidityPeriod: $sce.trustAsHtml("All quotes are valid for 30 days")
         }
     };
     if ($state.is('quotes.revised')) {
@@ -641,13 +645,15 @@ function EnquiryQuotesController (WeirService,$scope,$sce) {
 			Header: $scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length === 1 ? " Enquiry" : " Enquiries"),
 			QuoteNum: "Weir Quote Number",
 			Status: "Status",
-			View: "View"
+			View: "View",
+            ValidityPeriod: "All quotes are valid for 30 days"
 		},
 		fr: {
 			Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + ($scope.$parent.quotes.list.Meta.TotalCount.length === 1 ? " Demande" : " Demandes")),
 			QuoteNum: $sce.trustAsHtml("Référence de cotation chez WEIR"),
 			Status: $sce.trustAsHtml("Statut"),
-			View: $sce.trustAsHtml("Voir")
+			View: $sce.trustAsHtml("Voir"),
+            ValidityPeriod: $sce.trustAsHtml("All quotes are valid for 30 days")
 		}
 	};
 	vm.labels = labels[WeirService.Locale()];
@@ -669,7 +675,8 @@ function InReviewQuotesController(WeirService, $sce, $scope) {
             Status: "Status",
             Date: "Date",
             ValidTo: "Valid Until",
-			View: "View"
+			View: "View",
+            ValidityPeriod: "All quotes are valid for 30 days"
 		},
 		fr: {
 		    Header: $sce.trustAsHtml($scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation soumise à révision"),
@@ -683,7 +690,8 @@ function InReviewQuotesController(WeirService, $sce, $scope) {
             Status: $sce.trustAsHtml("Statut"),
             Date: $sce.trustAsHtml("Date"),
             ValidTo: $sce.trustAsHtml("Valide jusqu'&agrave;"),
-			View: $sce.trustAsHtml("Voir")
+			View: $sce.trustAsHtml("Voir"),
+            ValidityPeriod: $sce.trustAsHtml("All quotes are valid for 30 days")
 	}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

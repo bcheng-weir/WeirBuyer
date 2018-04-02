@@ -398,7 +398,7 @@ function SerialController(WeirService, $scope, $state, $sce, toastr, SearchProdu
     };
 }
 
-function SerialResultsController(WeirService, $stateParams, $state, SerialNumberResults, $sce, Me ) {
+function SerialResultsController(WeirService, $stateParams, $state,SerialNumberResults, $sce, Me ) {
 	var vm = this;
 	vm.serialNumberResults = SerialNumberResults;
 	vm.searchNumbers = $stateParams.numbers;
@@ -461,7 +461,7 @@ function SerialResultsController(WeirService, $stateParams, $state, SerialNumber
 	vm.labels = WeirService.LocaleResources(labels);
 }
 
-function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, WeirService, SerialNumberDetail ) {
+function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModal, $document, Me, WeirService, SerialNumberDetail) {
 	var vm = this;
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
@@ -478,7 +478,8 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, Wei
 	vm.currency = Me.Org.xp.Curr;
 	var labels = {
 		en: {
-			ResultsHeader: "Showing results for serial number; ",
+		    ResultsHeader: "Showing results for serial number; ",
+		    RequestReplacement: "Request Quote for replacement valve",
 			Tag: "Tag number (if available); ",
 			Customer: "Customer; ",
 			DeliveryDate: "Date delivered; ",
@@ -501,6 +502,7 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, Wei
 		},
 		fr: {
 		    ResultsHeader: $sce.trustAsHtml("Affichage des r&eacute;sultats pour les Num&eacute;ros de s&eacute;rie: "),
+		    RequestReplacement: $sce.trustAsHtml("FR: Request Quote for replacement valve"),
 		    Tag: $sce.trustAsHtml("Num&eacute;ro de Tag (si disponible): "),
 			Customer: $sce.trustAsHtml("Client: "),
 			DeliveryDate: $sce.trustAsHtml("Date de livraison: "),
@@ -564,6 +566,115 @@ function SerialDetailController( $stateParams, $rootScope, $state, $sce, Me, Wei
 			});
 	};
 
+	vm.requestReplacement = function () {
+	    var parentElem = angular.element($document[0].querySelector('body'));
+	    var modalInstance = $uibModal.open({
+	        animation: true,
+	        size: 'md',
+	        templateUrl: 'search/templates/requestquotemodal.tpl.html',
+	        controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+	            var vm = this;
+	            labels = {
+	                en: {
+                        Title: "Request quote for replacement valve",
+	                    SerialNumber: "Serial Number",
+	                    QuantityRequired: "Quantity required",
+	                    DateRequired: "Date required",
+	                    YourReference: "Your reference",
+	                    Comments: "Comments",
+	                    Upload: "Upload documentation or images relevant to your order",
+	                    SubmitRequest: "Submit request"
+	                },
+	                fr: {
+	                    Title: $sce.trustAsHtml("FR: Request quote for replacement valve"),
+	                    SerialNumber: $sce.trustAsHtml("FR: Serial Number"),
+	                    QuantityRequired: $sce.trustAsHtml("FR: Quantity required"),
+	                    DateRequired: $sce.trustAsHtml("FR: Date required"),
+	                    YourReference: $sce.trustAsHtml("FR: Your reference"),
+	                    Comments: $sce.trustAsHtml("FR: Comments"),
+	                    Upload: $sce.trustAsHtml("FR: Upload documentation or images relevant to your order"),
+	                    SubmitRequest: $sce.trustAsHtml("FR: Submit request")
+	                }
+	            };
+	            vm.serial = null;
+	            vm.quantity = 1;
+	            var now = new Date();
+	            vm.requiredon = new Date(now.getFullYear(), now.getMonth(), now.getDay() + 30, 0, 0, 0, 0);
+	            vm.reference = null;
+	            vm.comments = null;
+
+	            vm.labels = WeirService.LocaleResources(labels);
+
+	            vm.popupStart = {
+	                opened: false
+	            }; //For the date picker.
+	            vm.openStart = function () {
+	                vm.popupStart.opened = true;
+	            };
+
+	            vm.close = function () {
+	                $uibModalInstance.dismiss();
+	            };
+	            vm.SubmitRequest = function () {
+	                var enq = {
+	                    SerialNumber: vm.serial,
+	                    Name: "Request for quote for replacement valve",
+	                    RefNum: vm.reference,
+	                    Quantity: vm.quantity,
+	                    RequiredOn: vm.requiredon
+	                }
+	                if (vm.comments) {
+	                    enq.Comment = {
+	                        by: Me.Profile.FirstName + " " + Me.Profile.LastName,
+	                        date: new Date(),
+	                        val: vm.comments,
+	                        IsWeirComment: false
+	                    };
+	                }
+	                WeirService.SubmitEnquiry(enq)
+                    .then(function (x) {
+                        $uibModalInstance.close(x.ID);
+                    })
+                    .catch(function (ex) {
+                        $exceptionHandler(ex);
+                    });
+	            };
+	        },
+	        controllerAs: 'quotereq',
+	        appendTo: parentElem
+	    });
+	    modalInstance.result.then(function (val) {
+	        var parentElem = angular.element($document[0].querySelector('body'));
+	        var modalInstance = $uibModal.open({
+	            animation: true,
+	            size: 'md',
+	            templateUrl: 'search/templates/rfqthankyou.tpl.html',
+	            controller: function ($uibModalInstance, $state, WeirService) {
+	                var vm = this;
+	                labels = {
+	                    en: {
+	                        Line1: "Thank you. Your request has been submitted",
+	                        Line2: "We have sent you a confirmation email.",
+	                        Line3: "Request for quote number; " + val,
+	                        Line4: "We will respond with an estimate for the replacement valve as soon as possible."
+	                    },
+	                    fr: {
+	                        Line1: $sce.trustAsHtml("FR: Thank you. Your request has been submitted"),
+	                        Line2: $sce.trustAsHtml("FR: We have sent you a confirmation email."),
+	                        Line3: $sce.trustAsHtml("FR: Request for quote number; " + val),
+	                        Line4: $sce.trustAsHtml("FR: We will respond with an estimate for the replacement valve as soon as possible.")
+	                    }
+	                };
+	                vm.labels = WeirService.LocaleResources(labels);
+	                vm.close = function () {
+	                    $uibModalInstance.dismiss();
+	                };
+	            },
+	            controllerAs: 'rfqthanks',
+	            appendTo: parentElem
+	        });
+	    });
+	};
 }
 
 function PartController( $state, $sce , WeirService, Me, $scope, SearchProducts ) {

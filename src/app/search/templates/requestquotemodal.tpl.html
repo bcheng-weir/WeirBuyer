@@ -1,0 +1,81 @@
+<div class="REQUESTQUOTEMODAL">
+    <div class="modal-header">
+        <span ng-click="quotereq.close()" class="pull-right">X</span>
+        <H3 ng-bind-html="quotereq.labels.Title"></H3>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <form name="QuotereqForm" novalidate>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <label for="serial" ng-bind-html="quotereq.labels.SerialNumber"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <input id="serial" type="text" ng-model="quotereq.serial" required/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <label for="quantity" ng-bind-html="quotereq.labels.QuantityRequired"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <input id="quantity" type="number" min="0" ng-model="quotereq.quantity" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <label for="requiredon" ng-bind-html="quotereq.labels.DateRequired"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <p class="input-group">
+                            <input name="requiredon" type="text" class="form-control text-calendar" uib-datepicker-popup="dd/MM/yyyy" ng-model="quotereq.requiredon"
+                                   is-open="quotereq.popupStart.opened" datepicker-options="quotereq.dateOptions" close-text="Close" alt-input-formats="quotereq.altInputFormats" width="20" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default btn-calendar" ng-click="quotereq.openStart()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <label for="reference" ng-bind-html="quotereq.labels.YourReference"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <input id="reference" type="text" ng-model="quotereq.reference" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <label for="comments" ng-bind-html="quotereq.labels.Comments"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <textarea id="comments" rows="6" cols="40" ng-model="quotereq.comments" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <label for="upload" ng-bind-html="quotereq.labels.Upload"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="md-12 form-group">
+                        <textarea id="upload" rows="6" cols="40">TODO: Make this an asset upload area</textarea>
+                    </div>
+                </div>
+                <h2 class="pull-right form-group">
+                    <button class="btn btn-primary" ng-click="quotereq.SubmitRequest()" ng-bind-html='quotereq.labels.SubmitRequest' ng-disabled="QuotereqForm.$invalid"></button>
+                </h2>
+                </form>
+</div>
+    </div>
+</div>

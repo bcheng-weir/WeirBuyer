@@ -1478,7 +1478,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         var data = {
             ID: newQuoteId,
             Type: "Standard",
-            "ShippingAddressID": enq.Shipping.ID,
+            "ShippingAddressID": (enq.Shipping && enq.Shipping.ID) ? enq.Shipping.ID : null,
             xp: {
                 "BuyerID": buyerId,
                 "Type": "Quote",
@@ -1490,14 +1490,19 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 "StatusDate": new Date(),
                 "WasEnquiry": true,
                 "SN": enq.SerialNumber,
-                "Brand": enq.Manufacturer.Name,
-                "ValveType": enq.ValveType.Name
+                "Brand": (enq.Manufacturer && enq.Manufacturer.Name) ? enq.Manufacturer.Name : "",
+                "ValveType": (enq.ValveType && enq.ValveType.Name) ? enq.ValveType.Name : ""
             }
         };
 
         if (enq.Quote && enq.Quote.xp) {
             data.xp.Name = enq.Quote.xp.Name;
             data.xp.RefNum = enq.Quote.xp.RefNum;
+        } else {
+            data.xp.Name = enq.Name;
+            data.xp.RefNum = enq.RefNum;
+            data.xp.Quantity = enq.quantity,
+            data.xp.RequiredOn = enq.requiredon
         }
 
         if (enq.Comment.val) {
@@ -1538,15 +1543,17 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 return OrderCloudSDK.Orders.Create("Outgoing", data)
             })
             .then(function (quote) {
-                for (var p in enq.Parts) {
-                    if (enq.Parts[p]) {
-                        angular.forEach(enq.PartList, function(val, key) {
-                            if(val.ID === p) {
-                                queue.push(
-                                    addLineItem(enq.SerialNumber, p, enq.Parts[p], val)
-                                );
-                            }
-                        });
+                if (enq.Parts) {
+                    for (var p in enq.Parts) {
+                        if (enq.Parts[p]) {
+                            angular.forEach(enq.PartList, function (val, key) {
+                                if (val.ID === p) {
+                                    queue.push(
+                                        addLineItem(enq.SerialNumber, p, enq.Parts[p], val)
+                                    );
+                                }
+                            });
+                        }
                     }
                 }
                 $q.all(queue)

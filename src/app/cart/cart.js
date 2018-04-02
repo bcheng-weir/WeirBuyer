@@ -127,11 +127,11 @@ function CartController($q, $rootScope, $timeout, OrderCloudSDK, LineItemHelpers
     });
 }
 
-function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, OrderCloudSDK, LineItemHelpers, CurrentOrder, Underscore, WeirService, Me) {
+function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, OrderCloudSDK, LineItemHelpers, CurrentOrder, Underscore, WeirService) {
     var vm = this;
+    vm.Order = {}; //TODO: currency sumbol does not display on initial load.
     vm.LineItems = {};
     vm.currency = "";
-
 
     vm.showLineItems = false;
     vm.$ocMedia = $ocMedia;
@@ -141,9 +141,11 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
         CurrentOrder.Get()
         .then(function(data) {
             vm.Order = data;
-            if (data) vm.lineItemCall(data);
-            var curr = WeirService.CurrentCurrency(data);
-            vm.currency = curr.symbol;
+            if (data) {
+                var curr = WeirService.CurrentCurrency(data);
+                vm.currency = curr.symbol;
+                vm.lineItemCall(data);
+            }
         });
     };
 

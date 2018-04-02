@@ -391,7 +391,7 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
             Clear: $sce.trustAsHtml("Effacer le rechercher"),
             statusDate: $sce.trustAsHtml("Date de mise à jour"),
             submittedDate: $sce.trustAsHtml("Date d’envoi"),
-            validUntil: $sce.trustAsHtml("Valid Until")
+            validUntil: $sce.trustAsHtml("Valide jusqu'&agrave;")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

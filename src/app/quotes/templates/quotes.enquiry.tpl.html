@@ -13,6 +13,9 @@
                             <i class="fa fa-caret-up" ng-show="quotes.parameters.sortBy == '!ID'"></i>
                         </a>
                     </th>
+                    <th>
+                        {{quotes.labels.validUntil}}
+                    </th>
                     <th ng-bind-html='enquiry.labels.Status'></th>
                     <th></th>
                 </tr>
@@ -24,6 +27,10 @@
                             {{quote.ID | MaskedQuoteID}}
                         </a>
                         <br />
+                    </td>
+                    <td>
+                        <span ng-if="quote.DateCreated" ng-bind-html="quotes.dateOfValidity(quote.DateCreated) | weirdate : quotes.WeirGroup"></span>
+                        <span ng-if="!quote.DateCreated"></span>
                     </td>
                     <!--<td>{{quotes.getStatusLabel(quote.xp.Status) + "; " + (quote.xp.StatusDate | weirdate)}}</td>-->
                     <td>

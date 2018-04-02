@@ -343,6 +343,11 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
         return new Date(utcDate);
     };
 
+    vm.dateOfValidity = function (utcDate) {
+        var date = new Date(utcDate);
+        return date.setDate(date.getDate() + 30);
+    };
+
 	var labels = {
         en: {
             All: "All Quotes",
@@ -363,7 +368,8 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
             SearchPlaceholder: "Search by Weir quote or order number",
             Clear: "Clear Search",
 			statusDate: "Date Updated",
-			submittedDate: "Submitted Date"
+			submittedDate: "Submitted Date",
+            validUntil: "Valid Until"
 		},
         fr: {
             All: $sce.trustAsHtml("Tous les devis"),
@@ -384,7 +390,8 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
             SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
             Clear: $sce.trustAsHtml("Effacer le rechercher"),
             statusDate: $sce.trustAsHtml("Date de mise à jour"),
-            submittedDate: $sce.trustAsHtml("Date d’envoi")
+            submittedDate: $sce.trustAsHtml("Date d’envoi"),
+            validUntil: $sce.trustAsHtml("Valid Until")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

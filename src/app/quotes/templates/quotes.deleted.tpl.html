@@ -31,6 +31,9 @@
                         <th>
                             {{deleted.labels.deletedDate}}
                         </th>
+                        <th>
+                            {{quotes.labels.validUntil}}
+                        </th>
                         <th></th>
                     </tr>
                 </thead>
@@ -61,6 +64,10 @@
                         <td>
                             <span ng-if="quote.xp.DateDeleted" ng-bind-html="quotes.dateOf(quote.xp.DateDeleted) | weirdate : quotes.WeirGroup"></span>
                             <span ng-if="!quote.xp.DateDeleted"></span>
+                        </td>
+                        <td>
+                            <span ng-if="quote.DateCreated" ng-bind-html="quotes.dateOfValidity(quote.DateCreated) | weirdate : quotes.WeirGroup"></span>
+                            <span ng-if="!quote.DateCreated"></span>
                         </td>
 
                         <td>

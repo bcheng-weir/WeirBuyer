@@ -34,6 +34,9 @@
                         <th>
                             {{quotes.labels.statusDate}}
                         </th>
+                        <th>
+                            {{quotes.labels.validUntil}}
+                        </th>
 
                         <th ng-bind-html='saved.labels.Status'></th>
                         <th></th>
@@ -66,6 +69,10 @@
                         <td>
                             <span ng-if="quote.xp.StatusDate" ng-bind-html="quotes.dateOf(quote.xp.StatusDate) | weirdate : quotes.WeirGroup"></span>
                             <span ng-if="!quote.xp.StatusDate"></span>
+                        </td>
+                        <td>
+                            <span ng-if="quote.DateCreated" ng-bind-html="quotes.dateOfValidity(quote.DateCreated) | weirdate : quotes.WeirGroup"></span>
+                            <span ng-if="!quote.DateCreated"></span>
                         </td>
 
                         <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN',ER:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>

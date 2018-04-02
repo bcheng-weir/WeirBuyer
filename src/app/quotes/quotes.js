@@ -254,6 +254,10 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
     vm.parameters = Parameters;
 	vm.Customer = CurrentCustomer;
 	vm.MyOrg = Me.Org;
+	vm.DefaultCurrency = WeirService.CurrentCurrency();
+	vm.QuoteCurrency = function (qte) {
+	    return WeirService.CurrentCurrency(qte).curr;
+	};
 	vm.EnquiryAllowed = function() {
 		return Me.Org.xp.WeirGroup.label == "WPIFR";
 	};

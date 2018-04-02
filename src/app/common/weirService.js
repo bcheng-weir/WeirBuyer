@@ -1636,9 +1636,10 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         return dfd.promise;
     }
 
-    function getCurrentCurrency() {
+    function getCurrentCurrency(qte) {
         var info = {};
-        info.curr = $cookies.get('curr').replace(/^"(.+(?="$))"$/, '$1');
+        if (qte && qte.xp && qte.xp.Currency) info.curr = qte.xp.Currency.ConvertTo;
+        info.curr = info.curr  || $cookies.get('curr').replace(/^"(.+(?="$))"$/, '$1');
         switch(info.curr) {
             case "USD": info.symbol = $sce.trustAsHtml('&#36;'); return info;
             case "AUD": info.symbol = $sce.trustAsHtml('&#36;'); return info;

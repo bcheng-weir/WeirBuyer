@@ -209,6 +209,10 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
     vm.list = Orders;
     vm.parameters = Parameters;
 	vm.MyOrg = Me.Org;
+	vm.DefaultCurrency = WeirService.CurrentCurrency();
+	vm.OrderCurrency = function (ord) {
+	    return WeirService.CurrentCurrency(ord).curr;
+	};
 	vm.Customer = CurrentCustomer;
 	vm.getStatusLabel = function(id) {
 		var status = WeirService.LookupStatus(id);

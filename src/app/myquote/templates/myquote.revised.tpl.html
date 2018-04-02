@@ -79,7 +79,7 @@
                         </td>
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="revised.labels.POA"></td>
                         <td ng-if="line.UnitPrice">
-                            <span ng-bind-html="line.UnitPrice | currency:revised.currency"></span>
+                            <span ng-bind-html="line.UnitPrice  | OrderConversion: revised.Quote | currency:revised.currency"></span>
                         </td>
                         <td class="form-inline">
                             <input  type="number" class="form-control" style="width:5em;" ng-model="line.Quantity" readonly />
@@ -110,7 +110,7 @@
                         <td ng-if="revised.Quote.xp.Status!='RE'" ng-bind-html="line.Product.xp.LeadTime"></td>
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="revised.labels.POA"></td>
                         <td ng-if="line.UnitPrice">
-                            <span ng-bind-html="line.UnitPrice | currency:revised.currency"></span>
+                            <span ng-bind-html="line.UnitPrice  | OrderConversion: revised.Quote| currency:revised.currency"></span>
                         </td>
                         <td ng-if="revised.Quote.xp.Status!='RE'" ng-bind-html="revised.Zero"></td>
                         <td ng-if="revised.Quote.xp.Status=='RE'">
@@ -138,7 +138,7 @@
                         <td></td>
                         <td></td>
                         <td ng-if="revised.Quote.ShippingCost != 0">
-                            <span ng-bind-html="revised.Quote.ShippingCost | currency:revised.currency"></span>
+                            <span ng-bind-html="revised.Quote.ShippingCost | OrderConversion: revised.Quote | currency:revised.currency"></span>
                         </td>
                         <td ng-if="revised.Quote.ShippingCost == 0" ng-bind="revised.labels.POAShipping"></td>
                         <td></td>
@@ -152,7 +152,7 @@
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='revised.labels.Total'></td>
                         <td class='text-right' style="font-weight:bold;">
-                            <span ng-bind-html="revised.Quote.Total | currency:revised.currency"></span>
+                            <span ng-bind-html="revised.Quote.Total  | OrderConversion: revised.Quote   | currency:revised.currency"></span>
                         </td>
                     </tr>
                 </tbody>

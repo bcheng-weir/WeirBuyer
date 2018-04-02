@@ -46,9 +46,12 @@
             <td>{{quote.xp.CustomerName}}</td>
             <td>{{quote.FromUser.FirstName}} {{quote.FromUser.LastName}}</td>
             <td class="text-right" ng-switch on="quote.xp.Currency">
-                <span ng-switch-when="EUR">{{quote.Total | currency: '&euro;'}}</span>
-                <span ng-switch-when="GBP">{{quote.Total | currency: '&#163;'}}</span>
-                <span ng-switch-default>{{quote.Total | currency:'&#163;'}}</span>
+                <span ng-switch-when="EUR">{{quote.Total | OrderConversion: quote | currency: '&euro;'}}</span>
+                <span ng-switch-when="GBP">{{quote.Total | OrderConversion: quote| currency: '&#163;'}}</span>
+                <span ng-switch-when="AUD">{{quote.Total | OrderConversion: quote | currency: '$;'}}</span>
+                <span ng-switch-when="ZAR">{{quote.Total | OrderConversion: quote| currency: 'R'}}</span>
+                <span ng-switch-when="USD">{{quote.Total | OrderConversion: quote| currency: '$'}}</span>
+                <span ng-switch-default>{{quote.Total | OrderConversion: quote | currency:'&#163;'}}</span>
             </td>
             <td>{{quote.xp.RevisedDate | weirdate}}</td>
             <td>{{quote.xp.ReviewerName}}</td>

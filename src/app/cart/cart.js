@@ -82,6 +82,9 @@ function CartController($q, $rootScope, $timeout, OrderCloudSDK, LineItemHelpers
     vm.removeItem = LineItemHelpers.RemoveItem;
     vm.pagingfunction = PagingFunction;
 
+    var curr = WeirService.CurrentCurrency(Order);
+    vm.currency = curr.symbol;
+
     vm.updateQuantity = function(cartOrder,lineItem) {
         $timeout.cancel();
         $timeout(function() {
@@ -127,7 +130,8 @@ function CartController($q, $rootScope, $timeout, OrderCloudSDK, LineItemHelpers
 function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, OrderCloudSDK, LineItemHelpers, CurrentOrder, Underscore, WeirService, Me) {
     var vm = this;
     vm.LineItems = {};
-    vm.currency = (Me.Org.xp.WeirGroup.label == "WVCUK") ? ("£") : ((Me.Org.xp.WeirGroup.label == "WPIFR") ? ("€") : (""));
+    vm.currency = "";
+
 
     vm.showLineItems = false;
     vm.$ocMedia = $ocMedia;
@@ -138,6 +142,8 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
         .then(function(data) {
             vm.Order = data;
             if (data) vm.lineItemCall(data);
+            var curr = WeirService.CurrentCurrency(data);
+            vm.currency = curr.symbol;
         });
     };
 
@@ -264,7 +270,9 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
             controller: 'MinicartModalController',
             controllerAs: 'minicartModal',
             resolve: {
-                LineItems: vm.lineItemCall(order)
+                LineItems: vm.lineItemCall(order),
+                Currency: vm.currency,
+                Order: vm.Order
             }
         });
     };
@@ -280,10 +288,12 @@ function OrderCloudMiniCartDirective() {
     };
 }
 
-function MinicartModalController($state, $uibModalInstance, LineItems) {
+function MinicartModalController($state, $uibModalInstance, LineItems, Currency, Order) {
     var vm = this;
     vm.lineItems = LineItems;
     vm.lineItemsLength = vm.lineItems.length;
+    vm.currency = Currency;
+    vm.Order = Order;
 
     vm.cancel = function() {
         $uibModalInstance.dismiss('cancel');

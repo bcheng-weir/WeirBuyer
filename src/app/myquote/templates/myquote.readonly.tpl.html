@@ -97,7 +97,7 @@
                         </td>
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="readonly.labels.POA"></td>
                         <td ng-if="line.UnitPrice>0">
-                            <span ng-bind-html="line.UnitPrice | currency:readonly.currency"></span>
+                            <span ng-bind-html="line.UnitPrice  | OrderConversion: readonly.Quote | currency:readonly.currency"></span>
                         </td>
                         <td class="text-right" ng-bind-html="line.Quantity"></td>
                     </tr>
@@ -112,7 +112,7 @@
                         <td></td>
                         <td></td>
                         <td ng-if="readonly.Quote.ShippingCost != 0">
-                            <span ng-bind-html="readonly.Quote.ShippingCost | currency:readonly.currency"></span>
+                            <span ng-bind-html="readonly.Quote.ShippingCost  | OrderConversion: readonly.Quote | currency:readonly.currency"></span>
                         </td>
                         <td ng-if="readonly.Quote.ShippingCost == 0" ng-bind="readonly.labels.POAShipping"></td>
                     </tr>
@@ -121,7 +121,7 @@
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight:bold;" ng-bind-html='readonly.labels.Total'></td>
                         <td class='text-right' style="font-weight:bold;">
-                            <span ng-bind-html="readonly.Quote.Total | currency:readonly.currency"></span>
+                            <span ng-bind-html="readonly.Quote.Total | OrderConversion: readonly.Quote  | currency:readonly.currency"></span>
                         </td>
                     </tr>
                 </tbody>

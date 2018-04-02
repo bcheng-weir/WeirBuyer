@@ -34,7 +34,7 @@
                     </td>
                     <td ng-if="lineItem.LineTotal<='0'">POA</td>
                     <td ng-if="lineItem.LineTotal!='0'">
-                        <span ng-bind-html="lineItem.UnitPrice | currency:minicart.currency"></span>
+                        <span ng-bind-html="lineItem.UnitPrice | OrderConversion: minicart.Order | currency:minicart.currency"></span>
                     </td>
                 </tr>
             </table>

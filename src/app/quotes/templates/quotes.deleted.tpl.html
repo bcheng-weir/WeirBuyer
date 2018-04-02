@@ -43,10 +43,13 @@
                         </td>
                         <td>{{quote.xp.Name}}</td>
                         <td>{{quote.xp.RefNum}}</td>
-                        <td ng-switch on="quotes.Customer.id | weirGroupFromBuyersID">
-                            <span ng-switch-when="WPIFR">{{quote.Total | currency:'&euro; '}}</span>
-                            <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
-                            <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
+                        <td ng-switch on="quotes.QuoteCurrency(quote)">
+                            <span ng-switch-when="USD">{{quote.Total | OrderConversion: quote | currency:'&#36;'}}</span>
+                            <span ng-switch-when="AUD">{{quote.Total | OrderConversion: quote | currency:'&#36;'}}</span>
+                            <span ng-switch-when="GBP">{{quote.Total | OrderConversion: quote| currency:'&#163;'}}</span>
+                            <span ng-switch-when="EUR">{{quote.Total | OrderConversion: quote| currency:'&#128;'}}</span>
+                            <span ng-switch-when="ZAR">{{quote.Total | OrderConversion: quote| currency:'R'}}</span>
+                            <span ng-switch-default>{{quote.Total | OrderConversion: quote | currency:'&#163;'}}</span>
                         </td>
                         <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" class="btn-status btn-DEL"></span></td>
 

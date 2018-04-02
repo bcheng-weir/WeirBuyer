@@ -88,10 +88,13 @@
                                 <tr ng-repeat="quote in home.quotes.Items">
                                     <td><a href="#" ng-click="home.GoToQuote(quote.ID)"><span ng-bind-html="quote.ID | MaskedQuoteID" class="weir-link"></span></a></td>
                                     <td><span ng-bind-html="quote.xp.RefNum"></span></td>
-                                    <td ng-switch on="home.CurrentUserOrg.ID | weirGroupFromBuyersID">
-                                        <span ng-switch-when="WPIFR">{{quote.Total | currency:'&euro; '}}</span>
-                                        <span ng-switch-when="WVCUK">{{quote.Total | currency:'&#163; '}}</span>
-                                        <span ng-switch-default>{{quote.Total | currency:'&#163; '}}</span>
+                                    <td ng-switch on="home.Currency(quote)">
+                                        <span ng-switch-when="USD">{{quote.Total | OrderConversion: quote | currency:'&#36;'}}</span>
+                                        <span ng-switch-when="AUD">{{quote.Total | OrderConversion: quote | currency:'&#36;'}}</span>
+                                        <span ng-switch-when="GBP">{{quote.Total | OrderConversion: quote| currency:'&#163;'}}</span>
+                                        <span ng-switch-when="EUR">{{quote.Total | OrderConversion: quote| currency:'&#128;'}}</span>
+                                        <span ng-switch-when="ZAR">{{quote.Total | OrderConversion: quote| currency:'R'}}</span>
+                                        <span ng-switch-default>{{quote.Total | OrderConversion: quote | currency:'&#163;'}}</span>
                                     </td>
                                     <td><span ng-bind-html="home.StatusLabel(quote.xp.Status)"
                                               ng-style="{height: ((home.CurrentUserOrg.ID | weirGroupFromBuyersID) == 'WPIFR') ? '42px' : ''}"
@@ -122,10 +125,13 @@
                                 <tr ng-repeat="order in home.orders.Items">
                                     <td><a href="#" ng-click="home.GoToOrder(order.ID)"><span ng-bind-html="order.ID | MaskedQuoteID" class="weir-link"></span></a></td>
                                     <td><span ng-bind-html="order.xp.RefNum"></span></td>
-                                    <td ng-switch on="home.CurrentUserOrg.ID | weirGroupFromBuyersID">
-                                        <span ng-switch-when="WPIFR">{{order.Total | currency:'&euro; '}}</span>
-                                        <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
-                                        <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
+                                    <td ng-switch on="home.Currency(quote)">
+                                        <span ng-switch-when="USD">{{order.Total | OrderConversion: order | currency:'&#36;'}}</span>
+                                        <span ng-switch-when="AUD">{{order.Total | OrderConversion: order | currency:'&#36;'}}</span>
+                                        <span ng-switch-when="GBP">{{order.Total | OrderConversion: order| currency:'&#163;'}}</span>
+                                        <span ng-switch-when="EUR">{{order.Total | OrderConversion: order| currency:'&#128;'}}</span>
+                                        <span ng-switch-when="ZAR">{{order.Total | OrderConversion: order| currency:'R'}}</span>
+                                        <span ng-switch-default>{{order.Total | OrderConversion: order | currency:'&#163;'}}</span>
                                     </td>
                                     <td><span ng-bind-html="home.StatusLabel(order.xp.Status)"
                                               ng-style="{height: ((home.CurrentUserOrg.ID | weirGroupFromBuyersID) == 'WPIFR') ? '42px' : ''}"

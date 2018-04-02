@@ -70,7 +70,11 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 	vm.StatusLabel = function(status) {
 	    var statusObj = WeirService.LookupStatus(status);
 	    return statusObj.label[WeirService.Locale()];
-    };
+	};
+	vm.Currency = function (qte) {
+	    return WeirService.CurrentCurrency(qte).curr;
+	};
+
 
     vm.OrderAction = _actions;
     function _actions(action) {

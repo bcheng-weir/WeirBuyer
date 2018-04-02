@@ -23,7 +23,7 @@
                         </br>
                     </td>
                     <td style="padding-right: 25px;">
-                        <b class="text-success">{{lineItem.LineTotal | currency}}</b>
+                        <b class="text-success">{{lineItem.LineTotal  | OrderConversion: minicartModal.Order | currency:minicartModal.currency}}</b>
                     </td>
                 </tr>
             </table>

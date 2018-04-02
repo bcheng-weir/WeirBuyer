@@ -52,10 +52,13 @@
                 </td>
                 <td>{{order.xp.Name}}</td>
                 <td>{{order.xp.RefNum}}</td>
-                <td ng-switch on="orders.Customer.id | weirGroupFromBuyersID">
-                    <span ng-switch-when="WPIFR">{{order.Total | currency:'&euro; '}}</span>
-                    <span ng-switch-when="WVCUK">{{order.Total | currency:'&#163; '}}</span>
-                    <span ng-switch-default>{{order.Total | currency:'&#163; '}}</span>
+                <td ng-switch on="orders.OrderCurrency(order)">
+                    <span ng-switch-when="USD">{{order.Total | OrderConversion: order | currency:'&#36;'}}</span>
+                    <span ng-switch-when="AUD">{{order.Total | OrderConversion: order | currency:'&#36;'}}</span>
+                    <span ng-switch-when="GBP">{{order.Total | OrderConversion: order| currency:'&#163;'}}</span>
+                    <span ng-switch-when="EUR">{{order.Total | OrderConversion: order| currency:'&#128;'}}</span>
+                    <span ng-switch-when="ZAR">{{order.Total | OrderConversion: order| currency:'R'}}</span>
+                    <span ng-switch-default>{{order.Total | OrderConversion: order | currency:'&#163;'}}</span>
                 </td>
 
                 <td>

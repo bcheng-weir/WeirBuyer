@@ -97,7 +97,7 @@
                         <td ng-bind-html="line.xp.LeadTime"></td>
                         <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="review.labels.POA"></td>
                         <td ng-if="line.UnitPrice">
-                            <span ng-bind-html="line.UnitPrice | currency:myquote.currency"></span>
+                            <span ng-bind-html="line.UnitPrice | OrderConversion: myquote.Quote | currency:myquote.currency"></span>
                         </td>
                         <td class="form-inline">
                             <input  type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:40%" ng-disabled="review.Step!='Review'" />
@@ -113,7 +113,7 @@
                         <td></td>
                         <td></td>
                         <td ng-if="myquote.Quote.xp.CarriageRateType == 'standard'">
-                            <span ng-bind-html="myquote.CarriageRateForBuyer | currency:myquote.currency"></span>
+                            <span ng-bind-html="myquote.CarriageRateForBuyer | OrderConversion: myquote.Quote | currency:myquote.currency"></span>
                         </td>
                         <td ng-if="myquote.Quote.xp.CarriageRateType != 'standard'">
                             <span ng-bind-html="review.labels.POAShipping"></span>
@@ -125,7 +125,7 @@
                         <td class="button-th" colspan="5"></td>
                         <td style="font-weight: bold;" ng-bind-html='review.labels.Total'></td>
                         <td class='text-right' style="font-weight:bold;">
-                            <span ng-bind-html="myquote.UiTotal | currency:myquote.currency"></span>
+                            <span ng-bind-html="myquote.UiTotal  | OrderConversion: myquote.Quote   | currency:myquote.currency"></span>
                         </td>
                         <td></td>
                         <td></td>

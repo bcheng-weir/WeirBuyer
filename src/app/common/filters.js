@@ -10,7 +10,8 @@ angular.module('orderCloud')
     .filter('weirfulldate', weirfulldate)
 	.filter('weirGroupFromBuyersID', weirGroupFromBuyersID)
 	.filter('reverseComments',reverseComments)
-    .filter('MaskedQuoteID',MaskedQuoteID)
+    .filter('MaskedQuoteID', MaskedQuoteID)
+    .filter('OrderConversion', orderconversion)
 ;
 
 function serialnumber() {
@@ -159,10 +160,20 @@ function weirfulldate() {
         return result;
     };
 }
+function roundHalfEven(x) {
+    return (Math.floor(100 * x + 0.5)) / 100;
+}
 function conversion($cookieStore) {
     return function (amt) {
         var rte = $cookieStore.get('rate');
-        return (rte) ? amt * rte : amt;
+        return (rte) ? roundHalfEven(amt * rte) : amt;
+    };
+}
+function orderconversion($cookieStore) {
+    return function (amt, order) {
+        var orderRate = (order.xp && order.xp.Currency && order.xp.Currency.Rate) ? order.xp.Currency.Rate : 0;
+        var rte = orderRate || $cookieStore.get('rate');
+        return (rte) ? roundHalfEven(amt * rte) : amt;
     };
 }
 

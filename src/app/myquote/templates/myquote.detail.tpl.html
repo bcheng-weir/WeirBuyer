@@ -50,7 +50,7 @@
                             <td ng-bind-html="line.xp.LeadTime"></td>
                             <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="detail.labels.POA"></td>
                             <td ng-if="line.UnitPrice">
-                                <span ng-bind-html="line.UnitPrice | currency:myquote.currency"></span>
+                                <span ng-bind-html="line.UnitPrice | OrderConversion: myquote.Quote | currency:myquote.currency"></span>
                             </td>
                             <td class="form-inline">
                                 <input type="number" class="form-control" ng-model="line.Quantity" ng-min="0" ng-enter="detail.updateLineItem(myquote.Quote.ID,line)"
@@ -64,7 +64,7 @@
                             <td class="button-th" colspan="5"></td>
                             <td style="font-weight:bold;" ng-bind-html='detail.labels.Total'></td>
                             <td class='text-right' style="font-weight:bold;">
-                                <span ng-bind-html="myquote.Quote.Subtotal | currency:myquote.currency"></span>
+                                <span ng-bind-html="myquote.Quote.Subtotal | OrderConversion: myquote.Quote  | currency:myquote.currency"></span>
                             </td>
                         </tr>
                     </tbody>

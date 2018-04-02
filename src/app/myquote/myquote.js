@@ -663,9 +663,15 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
     vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
     vm.CarriageRateForBuyer = Buyer.xp.UseCustomCarriageRate == true ? Buyer.xp.CustomCarriageRate : Catalog.xp.StandardCarriage;
     vm.CarriageRateForBuyer = vm.CarriageRateForBuyer.toFixed(2);
-	vm.Quote = QuoteShareService.Quote;
-	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+    vm.Quote = QuoteShareService.Quote;
+    var curr = WeirService.CurrentCurrency(vm.Quote);
+	vm.currency = curr.symbol;
 	vm.Customer = Customer;
+	vm.DefaultCurrency = WeirService.CurrentCurrency();
+	vm.OrderCurrency = function (ord) {
+	    return WeirService.CurrentCurrency(ord).curr;
+	};
+
 	vm.buyer = Me.Org; //For the print directive.
 	vm.ShippingAddress = ShippingAddress;
 	if(ShippingAddress && ShippingAddress.Country) {
@@ -2134,7 +2140,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 	vm.buyer = Me.Org;
 	vm.Quote = Quote;
-	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+	var curr = WeirService.CurrentCurrency(vm.Quote);
+	vm.currency = curr.symbol;
 	vm.ShippingAddress = ShippingAddress;
 
     if(ShippingAddress && ShippingAddress.Country) {
@@ -2489,7 +2496,8 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
     vm.Quote = Quote;
-	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+    var curr = WeirService.CurrentCurrency(vm.Quote);
+    vm.currency = curr.symbol;
     vm.ShippingAddress = ShippingAddress;
 
     if(ShippingAddress && ShippingAddress.Country) {
@@ -2686,7 +2694,8 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.Zero = 0;
 	vm.PONumber = "";
 	vm.Quote = Quote;
-	vm.currency = (vm.Quote.FromCompanyID.substr(0,5) == "WVCUK") ? ("£") : ((vm.Quote.FromCompanyID.substr(0,5) == "WPIFR") ? ("€") : (""));
+	var curr = WeirService.CurrentCurrency(vm.Quote);
+	vm.currency = curr.symbol;
 	vm.ShippingAddress = ShippingAddress;
 
     if(ShippingAddress && ShippingAddress.Country) {

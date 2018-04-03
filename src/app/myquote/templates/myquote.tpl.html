@@ -9,6 +9,9 @@
                     <div ng-if="application.$state.current.name=='revised'" style="display:inline-block; float:left; margin-left:1em; margin-top:10px;">
                         <span ng-bind-html="myquote.labels.OrderDate" />&nbsp;<span style="font-weight:bold;">{{(myquote.Quote.DateSubmitted | weirdate)}}</span>
                     </div>
+                    <div style="display:inline-block; float:left; margin-left:1em; margin-top:10px;">
+                        <span ng-bind-html="myquote.labels.ValidUntil"/>:&nbsp;<span style="font-weight:bold;">{{myquote.dateOfValidity(myquote.Quote.DateCreated) | weirdate}}</span>
+                    </div>
 
                     <div class="panelButton">
                         <print-order-button buyer="myquote.buyer" order="myquote.Quote" items="myquote.lineItems" address="myquote.ShippingAddress" pocontent="myquote.POContent" catalog="myquote.Catalog" uitotal="-1"></print-order-button>

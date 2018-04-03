@@ -728,6 +728,10 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 	    }
 	    return "";
 	}
+    vm.dateOfValidity = function (utcDate) {
+        var date = new Date(utcDate);
+        return date.setDate(date.getDate() + 30);
+    };
 	function save(optionalComment) {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) { /*TODO: FAIL if no line items*/ }
 		var mods = {
@@ -965,6 +969,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             CommentNotice: "Comments will not be received by Weir until your quote is submitted for review.",
             Status: "Status",
 	        OrderDate: "Order date;",
+            ValidUntil: "Valid Until",
 	        RejectedMessage: "The revised quote has been rejected.",
 	        RejectedTitle: "Quote Updated",
 	        ApprovedMessage: "The revised quote has been accepted",
@@ -1015,6 +1020,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             CommentNotice: "Les commentaires ne seront pas reçus par Weir jusqu'à ce que votre cotation soit soumis à révision.",
             Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande;"),
+            ValidUntil: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 			RejectedMessage: $sce.trustAsHtml("La cotation révisée a ét&eacute; rejetée."),
 			RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
 			ApprovedMessage: $sce.trustAsHtml("La cotation r&eacute;vis&eacute;e a &eacute;t&eacute; accept&eacute;e"),
@@ -2226,6 +2232,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Comments: "Comments",
 			Status: "Status",
 			OrderDate: "Order Date;",
+            ValidUntil: "Valid Until",
 			Currency: "Currency",
 			RejectedMessage: "The Revised Quote has been Rejected.",
 			RejectedTitle: "Quote Updated",
@@ -2277,6 +2284,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande"),
+            ValidUntil: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 			Currency: $sce.trustAsHtml("Devise"),
             RejectedMessage: $sce.trustAsHtml("La cotation révisée a ét&eacute; rejetée."),
 			RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour"),
@@ -2362,6 +2370,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		}
 		return "";
 	}
+    vm.dateOfValidity = function (utcDate) {
+        var date = new Date(utcDate);
+        return date.setDate(date.getDate() + 30);
+    };
 	function _approve() {
 		// Order skip the modal verification.
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id) {
@@ -2532,6 +2544,10 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
         vm.Quote.CountryName = result ? result.name : '';
         return result ? result.name : '';
     };
+    vm.dateOfValidity = function (utcDate) {
+        var date = new Date(utcDate);
+        return date.setDate(date.getDate() + 30);
+    };
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -2561,6 +2577,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Comments: "Comments",
 	        Status: "Status",
 	        OrderDate: "Order Date;",
+            ValidUntil: "Valid Until",
 	        Currency: "Currency",
 	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order",
@@ -2604,6 +2621,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        Comments: $sce.trustAsHtml("Commentaires"),
 	        Status: $sce.trustAsHtml("Statut"),
 	        OrderDate: $sce.trustAsHtml("Date de commande;"),
+            ValidUntil: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 	        Currency: $sce.trustAsHtml("Devise"),
 	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos cotations"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
@@ -2761,6 +2779,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Comments: "Comments",
 			Status: "Status",
 			OrderDate: "Order Date;",
+            ValidUntil: "Valid Until",
 			Currency: "Currency",
 			BackToQuotes: "Back to your Quotes",
 			SubmitWithPO: "Submit Order",
@@ -2812,6 +2831,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande;"),
+            ValidUntil: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 			Currency: $sce.trustAsHtml("Devise"),
 			BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
 			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
@@ -2894,6 +2914,10 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 		}
 		return "";
 	}
+    vm.dateOfValidity = function (utcDate) {
+        var date = new Date(utcDate);
+        return date.setDate(date.getDate() + 30);
+    };
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
 		var printQuote = angular.copy(vm.Quote);

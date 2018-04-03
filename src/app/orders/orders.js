@@ -483,6 +483,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
                         .then(function (qte) {
                             orderList.splice(indx, 1);
                             $uibModalInstance.close();
+                            $rootScope.$broadcast('OC:RemoveOrder');
                             toastr.success(vm.labels.DeletedMessage, vm.labels.DeletedTitle);
                         })
                         .catch(function (ex) {

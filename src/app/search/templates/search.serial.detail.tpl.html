@@ -4,7 +4,7 @@
             <h2 class="pull-right">
                 <button class="btn btn-default" ui-sref="search.serial" ng-bind-html='serialDetail.labels.SearchAgain'></button>
                 <button class="btn btn-primary" ng-if="serialDetail.searchNumbers" ui-sref="search.serial.results({numbers: serialDetail.searchNumbers})" ng-bind-html='serialDetail.labels.BackToResults'></button>
-                <button class="btn btn-primary" ng-click="serialDetail.requestReplacement()" ng-bind-html='serialDetail.labels.RequestReplacement'></button>
+                <button class="btn btn-primary" ng-click="serialDetail.requestReplacement(serialDetail.serialNumber)" ng-bind-html='serialDetail.labels.RequestReplacement'></button>
             </h2>
         </div>
         <div class="row">
@@ -103,7 +103,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <h4><span ng-bind-html='serialDetail.headers.PartList'></span>{{serialDetail.serialNumber.xp.SN}} <button class="pull-right btn btn-primary" ng-click="serialDetail.requestReplacement()" ng-bind-html='serialDetail.labels.RequestReplacement'></button></h4>
+                <h4><span ng-bind-html='serialDetail.headers.PartList'></span>{{serialDetail.serialNumber.xp.SN}} <button class="pull-right btn btn-primary" ng-click="serialDetail.requestReplacement(serialDetail.serialNumber)" ng-bind-html='serialDetail.labels.RequestReplacement'></button></h4>
                 <table class="table table-bordered oc-table-responsive weir-results-table">
                     <thead>
                         <tr>

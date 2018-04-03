@@ -566,13 +566,13 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 			});
 	};
 
-	vm.requestReplacement = function () {
+	vm.requestReplacement = function (sn) {
 	    var parentElem = angular.element($document[0].querySelector('body'));
 	    var modalInstance = $uibModal.open({
 	        animation: true,
 	        size: 'md',
 	        templateUrl: 'search/templates/requestquotemodal.tpl.html',
-	        controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+	        controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler, sn) {
 	            var vm = this;
 	            labels = {
 	                en: {
@@ -596,7 +596,7 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 	                    SubmitRequest: $sce.trustAsHtml("FR: Submit request")
 	                }
 	            };
-	            vm.serial = null;
+	            vm.serial = sn.Name; //null;
 	            vm.quantity = 1;
 	            var now = new Date();
 	            vm.requiredon = new Date(now.getFullYear(), now.getMonth(), now.getDay() + 30, 0, 0, 0, 0);
@@ -622,7 +622,7 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 	                    RefNum: vm.reference,
 	                    Quantity: vm.quantity,
 	                    RequiredOn: vm.requiredon
-	                }
+	                };
 	                if (vm.comments) {
 	                    enq.Comment = {
 	                        by: Me.Profile.FirstName + " " + Me.Profile.LastName,
@@ -632,17 +632,22 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 	                    };
 	                }
 	                WeirService.SubmitEnquiry(enq)
-                    .then(function (x) {
-                        $uibModalInstance.close(x.ID);
-                    })
-                    .catch(function (ex) {
-                        $exceptionHandler(ex);
-                    });
+						.then(function (x) {
+							$uibModalInstance.close(x.ID);
+							//TODO put another THEn and capture the uploaded documents since there is no order at this time.
+						})
+						.catch(function (ex) {
+							$exceptionHandler(ex);
+						});
 	            };
 	        },
 	        controllerAs: 'quotereq',
-	        appendTo: parentElem
+	        appendTo: parentElem,
+            resolve: {
+                sn:sn
+            }
 	    });
+
 	    modalInstance.result.then(function (val) {
 	        var parentElem = angular.element($document[0].querySelector('body'));
 	        var modalInstance = $uibModal.open({

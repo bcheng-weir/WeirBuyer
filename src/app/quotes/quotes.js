@@ -248,7 +248,7 @@ function QuotesConfig($stateProvider) {
 		});
 }
 
-function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudSDK, OrderCloudParameters, SavedCount, EnquiryCount, InReviewCount, RevisedCount, ConfirmedCount, DeletedCount) {
+function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootScope, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudSDK, OrderCloudParameters, SavedCount, EnquiryCount, InReviewCount, RevisedCount, ConfirmedCount, DeletedCount) {
 	var vm = this;
 	vm.list = Quotes;
     vm.parameters = Parameters;
@@ -482,6 +482,7 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, WeirServ
                         .then(function (qte) {
                             quoteList.splice(indx, 1);
                             $uibModalInstance.close();
+                            $rootScope.$broadcast('OC:RemoveOrder');
                             toastr.success(vm.labels.DeletedMessage, vm.labels.DeletedTitle);
                         })
                         .catch(function (ex) {

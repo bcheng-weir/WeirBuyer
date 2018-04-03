@@ -70,7 +70,7 @@
                     <span ng-if="!order.xp.StatusDate"></span>
                 </td>
 
-                <td><span ng-bind-html="orders.getStatusLabel(order.xp.Status)" ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>1
+                <td><span ng-bind-html="orders.getStatusLabel(order.xp.Status)" ng-class="{SP:'btn-status btn-order-SP',SE:'btn-status btn-order-SE',RO:'btn-status btn-order-RO',RR:'btn-status btn-order-RR',CO:'btn-status btn-order-CO',DP:'btn-status btn-order-DP',RE:'btn-status btn-order-RE'}[order.xp.Status]"></span></td>
                 <td><button class="btn btn-primary" ng-click="orders.ReviewOrder(order.ID, order.xp.Status, order.xp.BuyerID)" ng-bind-html="orders.labels.View"></button></td>
                 <td>
                     <a class="glyphicon glyphicon-trash" href="#" ng-click="orders.delete(order.ID, orders.list.Items, $index);" ng-if="order.xp.Status=='SE'" />

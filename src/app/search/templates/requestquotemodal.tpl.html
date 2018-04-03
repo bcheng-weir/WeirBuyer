@@ -37,7 +37,7 @@
                             <input name="requiredon" type="text" class="form-control text-calendar" uib-datepicker-popup="dd/MM/yyyy" ng-model="quotereq.requiredon"
                                    is-open="quotereq.popupStart.opened" datepicker-options="quotereq.dateOptions" close-text="Close" alt-input-formats="quotereq.altInputFormats" width="20" />
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-default btn-calendar" ng-click="quotereq.openStart()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                <button type="button" class="btn btn-default btn-calendar" ng-click="quotereq.openStart()" style="line-height:38px;"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
                         </p>
                     </div>
@@ -62,16 +62,27 @@
                         <textarea id="comments" rows="6" cols="40" ng-model="quotereq.comments" />
                     </div>
                 </div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="md-12 form-group">
                         <label for="upload" ng-bind-html="quotereq.labels.Upload"></label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="md-12 form-group">
-                        <textarea id="upload" rows="6" cols="40">TODO: Make this an asset upload area</textarea>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h4>
+                                    <span ng-bind-html='quotereq.Upload'></span>
+                                </h4>
+                                <p><span>Spot for Instructions</span></p>
+                                <div class="panel panel-default">
+                                    <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                                    <p><ordercloud-file-upload model="quotereq.Quote" keyname="Files" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </div>-->
                 <h2 class="pull-right form-group">
                     <button class="btn btn-primary" ng-click="quotereq.SubmitRequest()" ng-bind-html='quotereq.labels.SubmitRequest' ng-disabled="QuotereqForm.$invalid"></button>
                 </h2>

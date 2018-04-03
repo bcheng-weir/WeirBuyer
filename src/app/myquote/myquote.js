@@ -732,6 +732,11 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
         var date = new Date(utcDate);
         return date.setDate(date.getDate() + 30);
     };
+    vm.showUpdateFXRate = function (utcDate) {
+        var date = new Date(utcDate);
+        date.setDate(date.getDate() + 30);
+        return new Date() > date;
+    };
 	function save(optionalComment) {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) { /*TODO: FAIL if no line items*/ }
 		var mods = {
@@ -980,6 +985,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
             EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
 		    AddNew: "Add New Items",
+            UpdateFXRate: "Revise with current exchange rate",
 		    DescriptionOfShipping: {
 			    exworks:'Carriage - Ex Works',
 			    standard:'Carriage Charge'
@@ -1031,6 +1037,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
 			EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
 			AddNew: $sce.trustAsHtml("Ajouter un item"),
+            UpdateFXRate: $sce.trustAsHtml("Revise with current exchange rate"),
 			DescriptionOfShipping: {
 				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 				standard:$sce.trustAsHtml('Frais de livraison')
@@ -1118,6 +1125,36 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 			});
 		});
 	}
+
+    vm.updateFXRate = function () {
+        $uibModal.open({
+            animation: true,
+            size: 'lg',
+            templateUrl: 'myquote/templates/myquote.currentfxrateconfirm.tpl.html',
+            controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+                var vm = this;
+                labels = {
+		            en: {
+                        Title: "",
+                        MessageText1: "Thank you. Your request to revise this quote / order with the current exchange rate has been submitted",
+                        MessageText2: "We will respond with a revised quote / order as soon as possible.",
+			            Close: "Close"
+		            },
+		            fr: {
+                        Title: $sce.trustAsHtml(""),
+                        MessageText1: $sce.trustAsHtml("Thank you. Your request to revise this quote / order with the current exchange rate has been submitted"),
+                        MessageText2: $sce.trustAsHtml("We will respond with a revised quote / order as soon as possible."),
+                        Close: $sce.trustAsHtml("Fermer")
+		            }
+	            };
+                vm.labels = WeirService.LocaleResources(labels);
+                vm.close = function () {
+                    $uibModalInstance.dismiss();
+                };
+            },
+            controllerAs: 'fxrateconfirm'
+        });
+    };
 
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.GotoDelivery = gotoDelivery;
@@ -2244,6 +2281,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Cancel: "Cancel",
 			PONumber: "PO Number;",
 			POA: "POA",
+            UpdateFXRate: "Revise with current exchange rate",
 			DescriptionOfShipping: {
 				exworks:'Carriage - Ex Works',
 				standard:'Carriage Charge'
@@ -2296,6 +2334,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Cancel: $sce.trustAsHtml("Annuler"),
 			PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
             POA: $sce.trustAsHtml("POA"),
+            UpdateFXRate: $sce.trustAsHtml("Revise with current exchange rate"),
 			DescriptionOfShipping: {
 				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 				standard:$sce.trustAsHtml('Frais de livraison')
@@ -2373,6 +2412,11 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
     vm.dateOfValidity = function (utcDate) {
         var date = new Date(utcDate);
         return date.setDate(date.getDate() + 30);
+    };
+    vm.showUpdateFXRate = function (utcDate) {
+        var date = new Date(utcDate);
+        date.setDate(date.getDate() + 30);
+        return new Date() > date;
     };
 	function _approve() {
 		// Order skip the modal verification.
@@ -2487,6 +2531,36 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		return vm.ImageBaseUrl + img;
 	};
 
+    vm.updateFXRate = function () {
+        $uibModal.open({
+            animation: true,
+            size: 'lg',
+            templateUrl: 'myquote/templates/myquote.currentfxrateconfirm.tpl.html',
+            controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+                var vm = this;
+                labels = {
+		            en: {
+                        Title: "",
+                        MessageText1: "Thank you. Your request to revise this quote / order with the current exchange rate has been submitted",
+                        MessageText2: "We will respond with a revised quote / order as soon as possible.",
+			            Close: "Close"
+		            },
+		            fr: {
+                        Title: $sce.trustAsHtml(""),
+                        MessageText1: $sce.trustAsHtml("Thank you. Your request to revise this quote / order with the current exchange rate has been submitted"),
+                        MessageText2: $sce.trustAsHtml("We will respond with a revised quote / order as soon as possible."),
+                        Close: $sce.trustAsHtml("Fermer")
+		            }
+	            };
+                vm.labels = WeirService.LocaleResources(labels);
+                vm.close = function () {
+                    $uibModalInstance.dismiss();
+                };
+            },
+            controllerAs: 'fxrateconfirm'
+        });
+    };
+
 	vm.gotoQuotes = _gotoQuotes;
 	vm.gotoRevisions = _gotoRevisions;
 	vm.Download = download;
@@ -2498,7 +2572,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 }
 
 function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, FilesService, FileSaver, Catalog, Me, Countries) {
+                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, FilesService, FileSaver, Catalog, Me, Countries, $uibModal) {
     var vm = this;
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
@@ -2548,6 +2622,11 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
         var date = new Date(utcDate);
         return date.setDate(date.getDate() + 30);
     };
+    vm.showUpdateFXRate = function (utcDate) {
+        var date = new Date(utcDate);
+        date.setDate(date.getDate() + 30);
+        return new Date() > date;
+    };
     var labels = {
         en: {
             Customer: "Customer; ",
@@ -2587,6 +2666,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        PartTypes: "Part types for;",
 	        Brand: "Brand",
 	        ValveType: "Valve Type",
+            UpdateFXRate: "Revise with current exchange rate",
 	        DescriptionOfShipping: {
                 exworks:'Carriage - Ex Works',
 		        standard:'Carriage Charge'
@@ -2631,6 +2711,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        PartTypes: $sce.trustAsHtml("Pièces pour:"),
 	        Brand: $sce.trustAsHtml("Marque:"),
 	        ValveType: $sce.trustAsHtml("Type:"),
+            UpdateFXRate: $sce.trustAsHtml("Revise with current exchange rate"),
 	        DescriptionOfShipping: {
 		        exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 		        standard:$sce.trustAsHtml('Frais de livraison')
@@ -2692,6 +2773,36 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 			$state.go("revisions", { quoteID: vm.Quote.xp.OriginalOrderID });
 		}
 	}
+
+    vm.updateFXRate = function () {
+        $uibModal.open({
+            animation: true,
+            size: 'lg',
+            templateUrl: 'myquote/templates/myquote.currentfxrateconfirm.tpl.html',
+            controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+                var vm = this;
+                labels = {
+		            en: {
+                        Title: "",
+                        MessageText1: "Thank you. Your request to revise this quote / order with the current exchange rate has been submitted",
+                        MessageText2: "We will respond with a revised quote / order as soon as possible.",
+			            Close: "Close"
+		            },
+		            fr: {
+                        Title: $sce.trustAsHtml(""),
+                        MessageText1: $sce.trustAsHtml("Thank you. Your request to revise this quote / order with the current exchange rate has been submitted"),
+                        MessageText2: $sce.trustAsHtml("We will respond with a revised quote / order as soon as possible."),
+                        Close: $sce.trustAsHtml("Fermer")
+		            }
+	            };
+                vm.labels = WeirService.LocaleResources(labels);
+                vm.close = function () {
+                    $uibModalInstance.dismiss();
+                };
+            },
+            controllerAs: 'fxrateconfirm'
+        });
+    };
 
 	vm.Download = download;
 	vm.Print = print;
@@ -2797,6 +2908,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			POA: "POA",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
             EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+            UpdateFXRate: "Revise with current exchange rate",
 			DescriptionOfShipping: {
 				exworks:'Carriage - Ex Works',
 				standard:'Carriage Charge'
@@ -2849,6 +2961,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
             POA: $sce.trustAsHtml("POA"),
             EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
             EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+            UpdateFXRate: $sce.trustAsHtml("Revise with current exchange rate"),
 			DescriptionOfShipping: {
 				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 				standard:$sce.trustAsHtml('Frais de livraison')
@@ -2918,6 +3031,11 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
         var date = new Date(utcDate);
         return date.setDate(date.getDate() + 30);
     };
+    vm.showUpdateFXRate = function (utcDate) {
+        var date = new Date(utcDate);
+        date.setDate(date.getDate() + 30);
+        return new Date() > date;
+    };
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
 		var printQuote = angular.copy(vm.Quote);
@@ -2968,55 +3086,85 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			completeSubmit(withPO);
 		}
 	}
-	function completeSubmit(withPO) {
-		var data = {};
-		if(withPO) {
-			data = {
-				xp: {
-					Status: WeirService.OrderStatus.SubmittedWithPO.id,
-					StatusDate: new Date(),
-					Type: "Order",
-					Revised: false,
-					PONumber: vm.PONumber,
-					PendingPO: false,
+    function completeSubmit(withPO) {
+        var data = {};
+        if(withPO) {
+            data = {
+                xp: {
+                    Status: WeirService.OrderStatus.SubmittedWithPO.id,
+                    StatusDate: new Date(),
+                    Type: "Order",
+                    Revised: false,
+                    PONumber: vm.PONumber,
+                    PendingPO: false,
                     POEnteredByWeir: false
-				}
-			};
-		} else {
-			data = {
-				xp: {
-					Status: WeirService.OrderStatus.SubmittedPendingPO.id,
-					StatusDate: new Date(),
-					Type: "Order",
-					PendingPO: true,
-					PONumber: "Pending",
-					Revised: false
-				}
-			};
-		}
-		WeirService.UpdateQuote(vm.Quote, data)
-			.then(function (info) {
-				var modalInstance = $uibModal.open({
-					animation: true,
-					ariaLabelledBy: 'modal-title',
-					ariaDescribedBy: 'modal-body',
-					templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
-					size: 'lg',
-					controller: 'SubmitConfirmCtrl',
-					controllerAs: 'submitconfirm',
-					resolve: {
-						Quote: function () {
-							return vm.Quote;
-						},
-						WithPO: function() {
-							return withPO;
-						}
-					}
-				}).closed.then(function () {
-					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
-				});
-			});
-	}
+                }
+            };
+        } else {
+            data = {
+                xp: {
+                    Status: WeirService.OrderStatus.SubmittedPendingPO.id,
+                    StatusDate: new Date(),
+                    Type: "Order",
+                    PendingPO: true,
+                    PONumber: "Pending",
+                    Revised: false
+                }
+            };
+        }
+        WeirService.UpdateQuote(vm.Quote, data)
+            .then(function (info) {
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    ariaLabelledBy: 'modal-title',
+                    ariaDescribedBy: 'modal-body',
+                    templateUrl: 'myquote/templates/myquote.orderplacedconfirm.tpl.html',
+                    size: 'lg',
+                    controller: 'SubmitConfirmCtrl',
+                    controllerAs: 'submitconfirm',
+                    resolve: {
+                        Quote: function () {
+                            return vm.Quote;
+                        },
+                        WithPO: function() {
+                            return withPO;
+                        }
+                    }
+                }).closed.then(function () {
+                    $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
+                });
+            });
+        }
+
+        vm.updateFXRate = function () {
+            $uibModal.open({
+                animation: true,
+                size: 'lg',
+                templateUrl: 'myquote/templates/myquote.currentfxrateconfirm.tpl.html',
+                controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+                    var vm = this;
+                    labels = {
+		                en: {
+                            Title: "",
+                            MessageText1: "Thank you. Your request to revise this quote / order with the current exchange rate has been submitted",
+                            MessageText2: "We will respond with a revised quote / order as soon as possible.",
+			                Close: "Close"
+		                },
+		                fr: {
+                            Title: $sce.trustAsHtml(""),
+                            MessageText1: $sce.trustAsHtml("Thank you. Your request to revise this quote / order with the current exchange rate has been submitted"),
+                            MessageText2: $sce.trustAsHtml("We will respond with a revised quote / order as soon as possible."),
+                            Close: $sce.trustAsHtml("Fermer")
+		                }
+	                };
+                    vm.labels = WeirService.LocaleResources(labels);
+                    vm.close = function () {
+                        $uibModalInstance.dismiss();
+                    };
+                },
+                controllerAs: 'fxrateconfirm'
+            });
+        };
 
 	vm.Download = download;
 	vm.Print = print;

@@ -1471,6 +1471,8 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
         var newQuoteId = "E{ORDERID}"; //createQuoteNumber(buyerId, 0, Me.Org);
+        var _today = new Date();
+        var validUntil = _today.setDate(_today.getDate() + 30);
         var data = {
             ID: newQuoteId,
             Type: "Standard",
@@ -1487,9 +1489,17 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 "WasEnquiry": true,
                 "SN": enq.SerialNumber,
                 "Brand": (enq.Manufacturer && enq.Manufacturer.Name) ? enq.Manufacturer.Name : "",
-                "ValveType": (enq.ValveType && enq.ValveType.Name) ? enq.ValveType.Name : ""
+                "ValveType": (enq.ValveType && enq.ValveType.Name) ? enq.ValveType.Name : "",
+                "ValidUntil": validUntil
             }
         };
+
+        // No need to populate an FX object it is not needed for the buyer. Can alter if design change needed.
+        if(enq.FxRate) {
+            data.xp.currency = {};
+            data.xp.currency.ConvertTo = enq.FxRate.ConvertTo;
+            data.xp.currency.Rate = enq.FxRate.Rate;
+        }
 
         if (enq.Quote && enq.Quote.xp) {
             data.xp.Name = enq.Quote.xp.Name;

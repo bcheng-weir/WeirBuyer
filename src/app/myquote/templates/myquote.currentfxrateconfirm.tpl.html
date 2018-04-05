@@ -1,0 +1,14 @@
+<div class="source-list-modal" role="dialog">
+    <div class="modal-content">
+        <div class="modal-header" style="padding-bottom: 5px;">
+            <span style="font-weight: bold;" ng-bind-html="fxrateconfirm.labels.Title"></span>
+        </div>
+        <div class="modal-body" style="margin-top: -5px;">
+            <p ng-if="fxrateconfirm.labels.MessageText1" ng-bind-html="fxrateconfirm.labels.MessageText1" style="font-weight: bold;"></p>
+            <p ng-if="fxrateconfirm.labels.MessageText2" ng-bind-html="fxrateconfirm.labels.MessageText2"></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" ng-click="fxrateconfirm.close()" ng-bind-html="fxrateconfirm.labels.Close"></button>
+        </div>
+    </div>
+</div>

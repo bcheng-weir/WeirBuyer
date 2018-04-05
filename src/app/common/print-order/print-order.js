@@ -3,7 +3,7 @@ angular.module('orderCloud')
 	.controller('printOrderBtnCtrl',PrintOrderButtonControl)
 	.directive('printOrderButton',PrintOrderButtonDirective);
 
-function PrintOrderController(printData,$timeout,$window,$uibModalInstance,WeirService,$sce,QuoteShareService, $filter) {
+function PrintOrderController(printData,$timeout,$window,$uibModalInstance,WeirService,$sce,QuoteShareService,$filter) {
 	//ToDo use the QuoteShareService
 	var vm = this;
 	vm.catalog = printData.catalog;

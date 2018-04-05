@@ -80,7 +80,6 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
                         } else {
 	                        OrderCloudSDK.RemoveToken();
 	                        OrderCloudSDK.RemoveImpersonationToken();
-	                        //OrderCloudSDK.BuyerID.Set(null);
                             $state.go('login');
                             dfd.resolve();
                         }
@@ -97,8 +96,6 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
                         FS.identify(usr.ID, {
                             displayName: usr.FirstName + ' ' + usr.LastName,
                             email: usr.Email
-                            //group: (usr.xp.WeirGroup && usr.xp.WeirGroup.label) ? usr.xp.WeirGroup.label : "Not set",
-                            //buyer: buyerid
                         });
                     })
                     .catch(function (e) {
@@ -134,6 +131,17 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
                 });
                 deferred.resolve(components);
                 return deferred.promise;
+            },
+            FX: function(FxRate, CurrentOrg, $q) {
+                var deferred = $q.defer;
+                FxRate.SetFxSpec(CurrentOrg)
+                    .then(function() {
+                        deferred.resolve();
+                    })
+                    .catch(function(ex) {
+                        deferred.resolve();
+                    });
+                return deferred.promise;
             }
         }
     };
@@ -141,12 +149,15 @@ function BaseConfig($stateProvider, $injector, $sceDelegateProvider) {
     $stateProvider.state('base', baseState);
 }
 
-function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore, snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService, $window, base, Me) {
+function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrder, $ocMedia, $sce, Underscore,
+                        snapRemote, defaultErrorMessageResolver, CurrentUser, CurrentOrg, ComponentList, WeirService,
+                        $window, base, Me, FxRate) {
     var vm = this;
     vm.left = base.left;
     vm.right = base.right;
     Me.Profile = CurrentUser;
     Me.Org = CurrentOrg;
+    FxRate.SetCurrentFxRate(CurrentOrg);
     vm.EnquiryAllowed = function() {
         return Me.Org.xp.WeirGroup.label == "WPIFR";
     };

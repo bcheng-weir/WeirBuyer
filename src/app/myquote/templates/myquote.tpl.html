@@ -12,9 +12,6 @@
                     <div style="display:inline-block; float:left; margin-left:1em; margin-top:10px;">
                         <span ng-bind-html="myquote.labels.ValidUntil"/>:&nbsp;<span style="font-weight:bold;">{{myquote.dateOfValidity(myquote.Quote.DateCreated) | weirdate}}</span>
                     </div>
-                    <div class="panelButton" style="display:inline-block; float:left; margin-left:1em;">
-                        <button class="btn btn-default" ng-bind-html='myquote.labels.UpdateFXRate' ng-click="myquote.updateFXRate()" ng-if="myquote.showUpdateFXRate(myquote.Quote.DateCreated)"></button>
-                    </div>
 
                     <div class="panelButton">
                         <print-order-button buyer="myquote.buyer" order="myquote.Quote" items="myquote.lineItems" address="myquote.ShippingAddress" pocontent="myquote.POContent" catalog="myquote.Catalog" uitotal="-1"></print-order-button>

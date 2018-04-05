@@ -21,7 +21,8 @@ function EnquiryService() {
         Comment: null,
         PartList: null,
         Shipping: {},
-        Quote: null
+        Quote: null,
+        FxRate: null
     };
     return svc;
 }
@@ -376,9 +377,10 @@ function NewEnquiryAddressModalController($uibModalInstance, $sce, WeirService) 
     };
 }
 
-function EnquiryReviewController($state, $location, $anchorScroll, $window, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography) {
+function EnquiryReviewController($state, $location, $anchorScroll, $window, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography, FxRate) {
     var vm = this;
     vm.enq = EnquiryService;
+    vm.enq.FxRate = FxRate.GetCurrentFxRate();
     vm.ScrollTo = function () {
         $location.hash('MyEnquiry');
         $anchorScroll();

@@ -25,7 +25,8 @@ angular.module('orderCloud', [
     'ordercloud-lineitems',
     'ordercloud-geography',
     'ngCsv',
-    'ngFileSaver'
+    'ngFileSaver',
+    'angularFileUpload'
     ])
     .run(InitGA)
     .config(Routing)

@@ -228,7 +228,21 @@ function MyQuoteConfig($stateProvider) {
                 },
 				Countries: function(OCGeography) {
 			    	return OCGeography.Countries();
-				}
+				},
+				FXSpec: function(OrderCloudSDK, Buyer) {
+                    var specID;
+                    if(Buyer.xp.WeirGroup.label === "WPIFR" && Buyer.xp.Curr) {
+                        specID = "WPIFR-EUR-" + Buyer.xp.Curr;
+                    } else if (Buyer.xp.WeirGroup.label === "WVCUK" && Buyer.xp.Curr) {
+                        specID = "WVCUK-GBP-" + Buyer.xp.Curr;
+                    }
+
+                    if(specID) {
+                        return OrderCloudSDK.Specs.Get(specID);
+                    } else {
+                        return null;
+                    }
+                }
 		    }
 		})
 		.state('myquote.detail', {
@@ -1089,11 +1103,19 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 
 	// Moved from Review Controller.
 	function _submitForReview(dirty) {
+		var _today = new Date();
+		var validUntil = _today.setDate(_today.getDate() + 30);
+
 		var data = {
 			xp: {
 				Status: WeirService.OrderStatus.Submitted.id,
-				StatusDate: new Date(),
-				Revised: false
+				StatusDate: _today,
+				Revised: false,
+				ValidUntil: validUntil,
+				Currency: {
+					ConvertTo: null,
+					Rate: null
+				}
 			}
 		};
 
@@ -1131,7 +1153,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
             animation: true,
             size: 'lg',
             templateUrl: 'myquote/templates/myquote.currentfxrateconfirm.tpl.html',
-            controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+            controller: function ($uibModalInstance, $state, Me, WeirService) {
                 var vm = this;
                 labels = {
 		            en: {
@@ -1193,12 +1215,14 @@ function MissingCarriageDetailController(WeirService, $uibModalInstance, $sce) {
     };
 }
 
-function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $scope, $rootScope, OrderCloudSDK, QuoteShareService, Me) {
+function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $scope, $rootScope, OrderCloudSDK, QuoteShareService, Me, FxRate) {
     if ((QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedQuote.id) ||
         (QuoteShareService.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id)) {
         $state.go("revised", {quoteID: QuoteShareService.Quote.ID, buyerID: Me.GetBuyerID()});
     }
 	var vm = this;
+    FxRate.SetCurrentFxRate(Me.Org);
+    vm.FxRate = FxRate.GetCurrentFxRate();
 	vm.Quote = QuoteShareService.Quote;
 	vm.NewComment = null;
 	vm.LineItems = QuoteShareService.LineItems;
@@ -1665,7 +1689,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
         $state.go("myquote.review");
     }
 
-    // ToDo Accept a parameter withPO. It will be true or false.
     function _submitOrder(withPO) {
         if (payment == null) {
             if (vm.PONumber) {
@@ -2536,7 +2559,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
             animation: true,
             size: 'lg',
             templateUrl: 'myquote/templates/myquote.currentfxrateconfirm.tpl.html',
-            controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+            controller: function ($uibModalInstance, $state, Me, WeirService) {
                 var vm = this;
                 labels = {
 		            en: {
@@ -2779,7 +2802,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
             animation: true,
             size: 'lg',
             templateUrl: 'myquote/templates/myquote.currentfxrateconfirm.tpl.html',
-            controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+            controller: function ($uibModalInstance, $state, Me, WeirService) {
                 var vm = this;
                 labels = {
 		            en: {
@@ -3141,7 +3164,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
                 animation: true,
                 size: 'lg',
                 templateUrl: 'myquote/templates/myquote.currentfxrateconfirm.tpl.html',
-                controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler) {
+                controller: function ($uibModalInstance, $state, Me, WeirService) {
                     var vm = this;
                     labels = {
 		                en: {

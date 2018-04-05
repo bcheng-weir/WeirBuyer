@@ -62,7 +62,7 @@
                         <textarea id="comments" rows="6" cols="40" ng-model="quotereq.comments" />
                     </div>
                 </div>
-                <!--<div class="row">
+                <div class="row">
                     <div class="md-12 form-group">
                         <label for="upload" ng-bind-html="quotereq.labels.Upload"></label>
                     </div>
@@ -77,16 +77,22 @@
                                 <p><span>Spot for Instructions</span></p>
                                 <div class="panel panel-default">
                                     <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
-                                    <p><ordercloud-file-upload model="quotereq.Quote" keyname="Files" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p>
+                                    <input type="file" multiple nv-file-select uploader="quotereq.uploader"/><br/>
+                                    <ul>
+                                        <li ng-repeat="item in quotereq.uploader.queue">
+                                            Name: <span ng-bind="item.file.name"></span><br/>
+                                        </li>
+                                        <button ng-click="quotereq.upload()">upload</button>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>-->
+                </div>
                 <h2 class="pull-right form-group">
                     <button class="btn btn-primary" ng-click="quotereq.SubmitRequest()" ng-bind-html='quotereq.labels.SubmitRequest' ng-disabled="QuotereqForm.$invalid"></button>
                 </h2>
-                </form>
-</div>
+            </form>
+        </div>
     </div>
 </div>

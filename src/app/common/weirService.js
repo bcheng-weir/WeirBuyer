@@ -972,7 +972,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 CurrentOrder.GetCurrentCustomer()
                     .then(function (customer) {
                         return OrderCloudSDK.Orders.Create("Outgoing", {
-                            ID: randomQuoteID(),
+                            ID: "E{ORDERID}",
                             xp: {CustomerID: customer.id, CustomerName: customer.name, BuyerID: Me.GetBuyerID()}
                         })
                     })
@@ -1315,7 +1315,8 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
     }
 
     function tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount, buyer) {
-        var newQuoteId = createQuoteNumber(prefix, trycount, buyer);
+        //var newQuoteId = createQuoteNumber(prefix, trycount, buyer);
+        var newQuoteId = "E{ORDERID}";
         data.ID = newQuoteId;
         OrderCloudSDK.Orders.Patch("Outgoing", quote.ID, data)
             .then(function (quote) {
@@ -1323,15 +1324,10 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 return quote;
             })
             .then(function (quote) {
-                var data = {xp: {NextOrderNumber: (buyer.xp.NextOrderNumber || 1) + trycount + 1}};
-                OrderCloudSDK.Buyers.Patch(buyer.ID, data);
-                return quote;
-            })
-            .then(function (quote) {
                 deferred.resolve(quote)
             })
             .catch(function (ex) {
-                if (trycount > 20) {
+                if (trycount > 5) {
                     deferred.reject(ex);
                 } else {
                     tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount + 1, buyer);
@@ -1339,18 +1335,18 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
             });
     }
 
-    function createQuoteNumber(prefix, trycount, buyer) {
-        // var timeoffset = 1476673277652;
-        // var now = new Date();
-        var pfx = prefix + "-E";
-        var suffix = (buyer.xp.OrderSuffix) ? buyer.xp.OrderSuffix : "";
-        var orderNum = ((buyer.xp.NextOrderNumber) ? buyer.xp.NextOrderNumber : 1) + trycount;
-        // var testVal = (now.getTime().toString());
-        var testVal = "0000" + orderNum.toString();
-        testVal = testVal.substring(testVal.length - 5);
-        var quoteNum = pfx + testVal + suffix;
-        return quoteNum;
-    }
+    //function createQuoteNumber(prefix, trycount, buyer) {
+    //    // var timeoffset = 1476673277652;
+    //    // var now = new Date();
+    //    var pfx = prefix + "-E";
+    //    var suffix = (buyer.xp.OrderSuffix) ? buyer.xp.OrderSuffix : "";
+    //    var orderNum = ((buyer.xp.NextOrderNumber) ? buyer.xp.NextOrderNumber : 1) + trycount;
+    //    // var testVal = (now.getTime().toString());
+    //    var testVal = "0000" + orderNum.toString();
+    //    testVal = testVal.substring(testVal.length - 5);
+    //    var quoteNum = pfx + testVal + suffix;
+    //    return quoteNum;
+    //}
 
     //ToDo this may need to be udpated.
     function setQuoteAsCurrentOrder(quoteId) {
@@ -1474,7 +1470,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         var deferred = $q.defer();
         var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
-        var newQuoteId = createQuoteNumber(buyerId, 0, Me.Org);
+        var newQuoteId = "E{ORDERID}"; //createQuoteNumber(buyerId, 0, Me.Org);
         var data = {
             ID: newQuoteId,
             Type: "Standard",

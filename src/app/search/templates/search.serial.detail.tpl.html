@@ -116,7 +116,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input id="serial" type="text" ng-model="serialDetail.serial" required/>
+                                    <input id="serial" type="text" ng-model="serialDetail.serial" class="form-control" required/>
                                 </div>
                             </div>
                             <div class="row">
@@ -126,7 +126,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input id="quantity" type="number" min="0" ng-model="serialDetail.quantity" required />
+                                    <input id="quantity" type="number" min="0" ng-model="serialDetail.quantity" class="form-control" required />
                                 </div>
                             </div>
                             <div class="row">
@@ -155,7 +155,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input id="reference" type="text" ng-model="serialDetail.reference" />
+                                    <input id="reference" type="text" ng-model="serialDetail.reference" class="form-control" />
                                 </div>
                             </div>
                         </div>
@@ -169,7 +169,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <textarea id="comments" rows="6" cols="40" ng-model="serialDetail.comments" />
+                                    <textarea id="comments" rows="5" cols="40" ng-model="serialDetail.comments" class="form-control" />
                                 </div>
                             </div>
                             <div class="row">
@@ -197,10 +197,10 @@
                         </div>
                     </div>
                     <div class="row">
-
                         <!-- Address Selection -->
                         <div class="col-md-12">
-                            <!-- TODO pull from myquote or Enquiry -->
+                            <p ng-bind-html="serialDetail.address.ID"></p>
+                            <select-shipping-address countries="serialDetail.Countries" addresses="serialDetail.Addresses" address="serialDetail.address"></select-shipping-address>
                         </div>
                     </div>
                     <div class="row">

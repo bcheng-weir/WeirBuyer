@@ -63,7 +63,19 @@ function SearchConfig($stateProvider) {
 			resolve: {
 				SerialNumberDetail: function( $stateParams, WeirService ) {
 					return WeirService.SerialNumber($stateParams.number);
-				}
+				},
+                Countries: function(OCGeography) {
+                    return OCGeography.Countries();
+                },
+                Addresses: function(OrderCloudSDK, Me) {
+                    var f = {
+                        "xp.active":true
+                    };
+                    var opts = {
+                        filters: f
+                    };
+                    return OrderCloudSDK.Addresses.List(Me.GetBuyerID(), opts);
+                }
 			}
 		})
 		.state( 'search.part', {
@@ -462,8 +474,10 @@ function SerialResultsController(WeirService, $stateParams, $state,SerialNumberR
 }
 
 function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModal, $document, Me, WeirService,
-								SerialNumberDetail, FxRate, FileUploader) {
+								SerialNumberDetail, FxRate, FileUploader, Addresses, Countries) {
 	var vm = this;
+	vm.Countries = Countries;
+	vm.Addresses = Addresses;
     vm.RequestQuote = false; //show or hide the request quote form.
 	vm.serialNumber = SerialNumberDetail;
 	vm.searchNumbers = $stateParams.searchNumbers;
@@ -594,6 +608,7 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 		vm.requiredon = new Date(now.getFullYear(), now.getMonth(), now.getDay() + 30, 0, 0, 0, 0);
 		vm.reference = null;
 		vm.comments = null;
+		vm.address = null;
 
 		//For the date picker
 		vm.popupStart = {

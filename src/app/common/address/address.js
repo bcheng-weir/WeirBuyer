@@ -3,6 +3,8 @@ angular.module('ordercloud-address', [])
     .controller('AddressFrmCntrl',AddressFormController)
     .directive('ordercloudAddressInfo', AddressInfoDirective)
     .filter('address', AddressFilter)
+    .directive('selectShippingAddress',SelectShippingAddress)
+    .controller('SelectShippingController',SelectShippingController)
 ;
 
 function AddressFormController(OCGeography, $sce, WeirService) {
@@ -98,5 +100,104 @@ function AddressFilter() {
         else {
             return address.Street1 + (address.Street2 ? ', ' + address.Street2 : '');
         }
+    }
+}
+
+function SelectShippingController(Underscore, $scope, $sce, $uibModal, WeirService, OrderCloudSDK, Me) {
+    var vm = this;
+
+    var labels = {
+        en: {
+            DefaultAddress: "Your Default Address",
+            DeliverHere: "Deliver to this Address",
+            AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Add a New Address")
+        },
+        fr: {
+            DefaultAddress: $sce.trustAsHtml("Votre adresse par d&eacute;faut"),
+            DeliverHere: $sce.trustAsHtml("Livrer &agrave; cette adresse"),
+            AddNew: $sce.trustAsHtml("<i class='fa fa-plus-circle'></i> Ajouter une nouvelle adresse")
+        }
+    };
+
+    vm.labels = WeirService.LocaleResources(labels);
+
+    vm.setShippingAddress = function(address) {
+        $scope.address = address;
+        vm.address = address;
+    };
+
+    var activeAddress = function (address) {
+        return address.xp.active === true;
+    };
+
+    vm.addresses = Underscore.sortBy($scope.addresses.Items, function (address) {
+        return address.xp.primary;
+    }).filter(activeAddress).reverse();
+
+    for (var i in vm.addresses) {
+        if(vm.addresses[i].xp && vm.addresses[i].xp.primary === true) {
+            vm.setShippingAddress(vm.addresses[i]);
+        }
+    }
+
+    vm.country = function (c) {
+        var result = Underscore.findWhere($scope.countries, { code: c });
+        return result ? result.name : '';
+    };
+
+    vm.ChunkedData = _chunkData(vm.addresses, 2);
+    function _chunkData(arr, size) {
+        var newArray = [];
+        for (var i = 0; i < arr.length; i += size) {
+            newArray.push(arr.slice(i, i + size));
+        }
+        return newArray;
+    }
+
+    vm.CustomShipping = function () {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'newEnquiryAddress.html',
+            controller: 'NewEnquiryAddressModalCtrl',
+            controllerAs: 'NewEnquiryAddressModal',
+            size: 'lg'
+        });
+
+        var newAddressResults = {};
+        modalInstance.result
+            .then(function (address) {
+                return OrderCloudSDK.Addresses.Create(Me.GetBuyerID(), address);
+            })
+            .then(function (newAddress) {
+                newAddressResults.ID = newAddress.ID;
+                newAddressResults.Name = newAddress.AddressName;
+                //vm.setShippingAddress(newAddress); TODO
+                return WeirService.AssignAddressToGroups(newAddressResults.ID);
+            })
+            .then(function () {
+                $state.go($state.current, {}, {reload: true});
+                toastr.success(vm.labels.ShippingAddressSet + newAddressResults.Name, vm.labels.ShippingAddressTitle);
+            })
+            .catch(function (ex) {
+                if (ex !== 'cancel') {
+                    $exceptionHandler(ex);
+                }
+            });
+    };
+
+}
+
+function SelectShippingAddress() {
+    //Given any buyer, choose the selected shipping address.
+    return {
+        restrict: 'AEC',
+        scope: {
+            countries: '=',
+            addresses:'=addresses',
+            address:'=address'
+        },
+        templateUrl: 'common/address/templates/address.choose.shipping.tpl.html',
+        controller: 'SelectShippingController',
+        controllerAs: 'selectShipping'
     }
 }

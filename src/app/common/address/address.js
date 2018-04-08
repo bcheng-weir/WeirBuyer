@@ -103,7 +103,7 @@ function AddressFilter() {
     }
 }
 
-function SelectShippingController(Underscore, $scope, $sce, $uibModal, WeirService, OrderCloudSDK, Me) {
+function SelectShippingController(Underscore, $scope, $sce, $uibModal, WeirService, OrderCloudSDK, Me, toastr) {
     var vm = this;
 
     var labels = {
@@ -169,14 +169,15 @@ function SelectShippingController(Underscore, $scope, $sce, $uibModal, WeirServi
                 return OrderCloudSDK.Addresses.Create(Me.GetBuyerID(), address);
             })
             .then(function (newAddress) {
-                newAddressResults.ID = newAddress.ID;
-                newAddressResults.Name = newAddress.AddressName;
-                //vm.setShippingAddress(newAddress); TODO
+                vm.addresses.push(newAddress);
+                $scope.addresses.Items.push(newAddress);
+                vm.ChunkedData.push([newAddress]);
+                newAddressResults = newAddress;
                 return WeirService.AssignAddressToGroups(newAddressResults.ID);
             })
             .then(function () {
-                $state.go($state.current, {}, {reload: true});
-                toastr.success(vm.labels.ShippingAddressSet + newAddressResults.Name, vm.labels.ShippingAddressTitle);
+                //$state.go($state.current, {}, {reload: true});
+                toastr.success(vm.labels.ShippingAddressSet + newAddressResults.AddressName, vm.labels.ShippingAddressTitle);
             })
             .catch(function (ex) {
                 if (ex !== 'cancel') {
@@ -185,10 +186,13 @@ function SelectShippingController(Underscore, $scope, $sce, $uibModal, WeirServi
             });
     };
 
+
+
 }
 
 function SelectShippingAddress() {
     //Given any buyer, choose the selected shipping address.
+    //this is for the directive that presents all address, two to a line.
     return {
         restrict: 'AEC',
         scope: {

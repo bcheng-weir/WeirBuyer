@@ -474,7 +474,7 @@ function SerialResultsController(WeirService, $stateParams, $state,SerialNumberR
 }
 
 function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModal, $document, Me, WeirService,
-								SerialNumberDetail, FxRate, FileUploader, Addresses, Countries) {
+								SerialNumberDetail, FxRate, Addresses, Countries, toastr) {
 	var vm = this;
 	vm.Countries = Countries;
 	vm.Addresses = Addresses;
@@ -601,7 +601,7 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 	};
 
 	/*** Request Replacement - get this into a directive ***/
-		vm.uploader = new FileUploader();
+		vm.rsmFileUploader = {};
 		vm.serial = vm.serialNumber.Name; //null;
 		vm.quantity = 1;
 		var now = new Date();
@@ -618,25 +618,17 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 			vm.popupStart.opened = true;
 		};
 
-		//For file upload
-		vm.upload = function() {
-			//vm.uploader.queue has my files.
-			//TODO use the files.js and create a new service so that I can submit the items to S3.
-			console.log(vm.uploader);
-			vm.uploader.destroy();
-		};
-
 		vm.SubmitRequest = function () {
-			//ToDo I think this needs to be updated to have a Quote object and line items in order to submit the expected
-			// serial number. Otherwise how is the serial number maintained on the enquiry.
 			var enq = {
 				SerialNumber: vm.serial,
 				Name: "Request for quote for replacement valve",
 				RefNum: vm.reference,
 				Quantity: vm.quantity,
 				RequiredOn: vm.requiredon,
-				FxRate: FxRate.GetCurrentFxRate()
+				FxRate: FxRate.GetCurrentFxRate(),
+				Shipping: vm.address
 			};
+
 			if (vm.comments) {
 				enq.Comment = {
 					by: Me.Profile.FirstName + " " + Me.Profile.LastName,
@@ -645,12 +637,28 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 					IsWeirComment: false
 				};
 			}
+
+			//TODO Uncomment for prod
 			WeirService.SubmitEnquiry(enq)
+				.then(function(enquiry) {
+                    toastr.success("Your request has been submitted", "Submitted");
+                    return vm.rsmFileUploader.UploadFiles(enquiry.ID);
+				})
 				.then(function (x) {
-					//TODO when this is no longer a modal, kick off the
-					//$uibModalInstance.close(x.ID);
+                    toastr.success("We have sent you a confirmation email.", "Submitted");
+                    //clear the form.
+                    vm.quantity = 1;
+                    var now = new Date();
+                    vm.requiredon = new Date(now.getFullYear(), now.getMonth(), now.getDay() + 30, 0, 0, 0, 0);
+                    vm.reference = null;
+                    vm.comments = null;
+                    vm.address = null;
+                    //hide the form.
+                    vm.RequestQuote = false;
+
                     var parentElem = angular.element($document[0].querySelector('body'));
-                    var modalInstance = $uibModal.open({
+                    //TODO get this to work.
+                    /*$uibModal.open({
                         animation: true,
                         size: 'md',
                         templateUrl: 'search/templates/rfqthankyou.tpl.html',
@@ -677,8 +685,7 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
                         },
                         controllerAs: 'rfqthanks',
                         appendTo: parentElem
-                    });
-					//TODO put another THEn and capture the uploaded documents since there is no order at this time.
+                    });*/
 				})
 				.catch(function (ex) {
 					$exceptionHandler(ex);
@@ -686,109 +693,6 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
 		};
     /*** End Request Replacement ***/
 
-    vm.ToggleRequestQuote = function(show) {
-    	vm.RequestQuote = show;
-	};
-
-	/*vm.requestReplacement = function (sn) {
-	    var modalInstance = $uibModal.open({
-
-	        controller: function ($uibModalInstance, $state, Me, WeirService, toastr, $exceptionHandler, sn, FileUploader) {
-	            var vm = this;
-	            //vm.uploader = new FileUploader();
-
-	            /*labels = {
-	                en: {
-                        Title: "Request quote for replacement valve",
-	                    SerialNumber: "Serial Number",
-	                    QuantityRequired: "Quantity required",
-	                    DateRequired: "Date required",
-	                    YourReference: "Your reference",
-	                    Comments: "Comments",
-	                    Upload: "Upload documentation or images relevant to your order",
-	                    SubmitRequest: "Submit request"
-	                },
-	                fr: {
-	                    Title: $sce.trustAsHtml("FR: Request quote for replacement valve"),
-	                    SerialNumber: $sce.trustAsHtml("FR: Serial Number"),
-	                    QuantityRequired: $sce.trustAsHtml("FR: Quantity required"),
-	                    DateRequired: $sce.trustAsHtml("FR: Date required"),
-	                    YourReference: $sce.trustAsHtml("FR: Your reference"),
-	                    Comments: $sce.trustAsHtml("FR: Comments"),
-	                    Upload: $sce.trustAsHtml("FR: Upload documentation or images relevant to your order"),
-	                    SubmitRequest: $sce.trustAsHtml("FR: Submit request")
-	                }
-	            };
-	            vm.serial = sn.Name; //null;
-	            vm.quantity = 1;
-	            var now = new Date();
-	            vm.requiredon = new Date(now.getFullYear(), now.getMonth(), now.getDay() + 30, 0, 0, 0, 0);
-	            vm.reference = null;
-	            vm.comments = null;
-
-	            //vm.labels = WeirService.LocaleResources(labels);
-
-	            vm.popupStart = {
-	                opened: false
-	            }; //For the date picker.
-	            vm.openStart = function () {
-	                vm.popupStart.opened = true;
-	            };
-
-	            /*vm.upload = function() {
-	            	//vm.uploader.queue has my files.
-					//TODO use the files.js and create a new service so that I can submit the items to S3.
-	            	console.log(vm.uploader);
-	            	vm.uploader.destroy();
-				};
-
-	            vm.close = function () {
-	                $uibModalInstance.dismiss();
-	            };
-	            /*vm.SubmitRequest = function () {
-	                var enq = {
-
-	            };
-	        },
-	        controllerAs: 'quotereq',
-	        appendTo: parentElem,
-            resolve: {
-                sn:sn
-            }
-	    });
-
-	    modalInstance.result.then(function (val) {
-	        var parentElem = angular.element($document[0].querySelector('body'));
-	        var modalInstance = $uibModal.open({
-	            animation: true,
-	            size: 'md',
-	            templateUrl: 'search/templates/rfqthankyou.tpl.html',
-	            controller: function ($uibModalInstance, $state, WeirService) {
-	                var vm = this;
-	                labels = {
-	                    en: {
-	                        Line1: "Thank you. Your request has been submitted",
-	                        Line2: "We have sent you a confirmation email.",
-	                        Line3: "Request for quote number; " + val,
-	                        Line4: "We will respond with an estimate for the replacement valve as soon as possible."
-	                    },
-	                    fr: {
-	                        Line1: $sce.trustAsHtml("FR: Thank you. Your request has been submitted"),
-	                        Line2: $sce.trustAsHtml("FR: We have sent you a confirmation email."),
-	                        Line3: $sce.trustAsHtml("FR: Request for quote number; " + val),
-	                        Line4: $sce.trustAsHtml("FR: We will respond with an estimate for the replacement valve as soon as possible.")
-	                    }
-	                };
-	                vm.labels = WeirService.LocaleResources(labels);
-	                vm.close = function () {
-	                    $uibModalInstance.dismiss();
-	                };
-	            },
-	            controllerAs: 'rfqthanks',
-	            appendTo: parentElem
-	        });
-	    });
-	};*/
 }
 
 function PartController( $state, $sce , WeirService, Me, $scope, SearchProducts ) {

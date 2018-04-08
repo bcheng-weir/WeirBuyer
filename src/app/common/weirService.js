@@ -1467,6 +1467,8 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
     }
 
     function submitEnquiry(enq) {
+        var Enquiry = {};
+        var deferEnq = $q.defer();
         var deferred = $q.defer();
         var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
@@ -1511,7 +1513,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
             data.xp.RequiredOn = enq.requiredon
         }
 
-        if (enq.Comment.val) {
+        if (enq.Comment && enq.Comment.val) {
             data.xp.CommentsToWeir.push(enq.Comment);
         }
 
@@ -1549,6 +1551,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 return OrderCloudSDK.Orders.Create("Outgoing", data)
             })
             .then(function (quote) {
+                Enquiry = quote;
                 if (enq.Parts) {
                     for (var p in enq.Parts) {
                         if (enq.Parts[p]) {
@@ -1571,10 +1574,14 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 var data = {xp: {NextOrderNumber: (Me.Org.xp.NextOrderNumber || 1) + 1}};
                 return OrderCloudSDK.Buyers.Patch(Me.Org.ID, data);
             })
+            .then(function() {
+                deferEnq.resolve(Enquiry);
+            })
             .catch(function (ex) {
                 deferred.reject(ex);
             });
-        return deferred.promise;
+        //return deferred.promise;
+        return deferEnq.promise;
     }
 
     //check if the user has other buyer's associated to their account.

@@ -1,0 +1,4 @@
+<div class="form-group" ng-class="{'has-error': invalidExtension}">
+    <input name="upload" type="file" multiple id="rsmFileUpload" />
+    <span class="help-block error-msg" ng-show="invalidExtension" ng-bind-html="labels.Invalid"></span>
+</div>

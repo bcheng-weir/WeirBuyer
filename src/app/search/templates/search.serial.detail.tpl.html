@@ -1,4 +1,17 @@
 <article>
+    <script type="text/ng-template" id="newEnquiryAddress.html">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form ng-submit="NewEnquiryAddressModal.submit();" name="newAddress_modal_form">
+                    <ordercloud-address-form address="NewEnquiryAddressModal.address"></ordercloud-address-form>
+                    <div class="modal_buttons">
+                        <button ng-disabled="newAddress_modal_form.$invalid" type="submit" class="btn btn-success pull-left" ng-bind-html="NewEnquiryAddressModal.labels.Submit"></button>
+                        <button ng-click="NewEnquiryAddressModal.cancel();" type="button" class="btn btn-danger pull-right" ng-bind-html="NewEnquiryAddressModal.labels.Cancel"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </script>
     <form class="form-group">
         <div class="row">
             <div class="col-md-12 paddingBetweenElements">
@@ -103,116 +116,6 @@
                 <p></p>
             </div>
         </div>
-        <div class="row" ng-show="serialDetail.RequestQuote">
-            <form>
-                <div class="col-md-12">
-                    <div class="row">
-                        <!-- Primary Data -->
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="serial" ng-bind-html="serialDetail.labels.SerialNumber"></label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input id="serial" type="text" ng-model="serialDetail.serial" class="form-control" required/>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="quantity" ng-bind-html="serialDetail.labels.QuantityRequired"></label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input id="quantity" type="number" min="0" ng-model="serialDetail.quantity" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="requiredon" ng-bind-html="serialDetail.labels.DateRequired"></label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <p class="input-group">
-                                        <input name="requiredon" type="text" class="form-control text-calendar" uib-datepicker-popup="dd/MM/yyyy" ng-model="serialDetail.requiredon"
-                                               is-open="serialDetail.popupStart.opened" datepicker-options="serialDetail.dateOptions" close-text="Close"
-                                               alt-input-formats="serialDetail.altInputFormats" width="20" />
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default btn-calendar" ng-click="serialDetail.openStart()" style="line-height:38px;">
-                                                <i class="glyphicon glyphicon-calendar"></i>
-                                            </button>
-                                        </span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="reference" ng-bind-html="serialDetail.labels.YourReference"></label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input id="reference" type="text" ng-model="serialDetail.reference" class="form-control" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Comments and File Upload -->
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="comments" ng-bind-html="serialDetail.labels.Comments"></label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <textarea id="comments" rows="5" cols="40" ng-model="serialDetail.comments" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="upload" ng-bind-html="serialDetail.labels.Upload"></label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h4>
-                                        <span ng-bind-html='serialDetail.Upload'></span>
-                                    </h4>
-                                    <div class="panel panel-default">
-                                        <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
-                                        <input type="file" multiple nv-file-select uploader="serialDetail.uploader" ng-bind-html="serialDetail.labels.SelectFile" /><br/>
-                                        <ul>
-                                            <li ng-repeat="item in serialDetail.uploader.queue">
-                                                Name: <span ng-bind="item.file.name"></span><br/>
-                                            </li>
-                                            <button ng-click="serialDetail.upload()">upload</button>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <!-- Address Selection -->
-                        <div class="col-md-12">
-                            <p ng-bind-html="serialDetail.address.ID"></p>
-                            <select-shipping-address countries="serialDetail.Countries" addresses="serialDetail.Addresses" address="serialDetail.address"></select-shipping-address>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h2 class="pull-right form-group">
-                                <button class="btn btn-primary" ng-click="serialDetail.SubmitRequest()" ng-bind-html='serialDetail.labels.SubmitRequest' ng-disabled="serialDetail.$invalid"></button>
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
         <div class="row" ng-show="!serialDetail.RequestQuote">
             <div class="col-md-12">
                 <h4>
@@ -261,13 +164,112 @@
                 </table>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-8">
-                <p><span ng-bind-html='search.SharedContent.ReplacementGuidance'></span></p>
-                <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.POAGuidance'></span></p>
-                <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.LeadTimeNotice'></span></p>
-                <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.PriceDisclaimer'></span></p>
-            </div>
-        </div>
     </form>
+    <!-- Don't nest forms. -->
+    <div class="row" ng-show="serialDetail.RequestQuote">
+        <form name="serialDetail.valveEnquiry" ng-model="serialDetail.valveEnquiry">
+            <div class="col-md-12">
+                <div class="row">
+                    <!-- Primary Data -->
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="serial" ng-bind-html="serialDetail.labels.SerialNumber"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input id="serial" type="text" ng-model="serialDetail.serial" class="form-control" required/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="quantity" ng-bind-html="serialDetail.labels.QuantityRequired"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input id="quantity" type="number" min="0" ng-model="serialDetail.quantity" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="requiredon" ng-bind-html="serialDetail.labels.DateRequired"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="input-group">
+                                    <input name="requiredon" type="text" class="form-control text-calendar" uib-datepicker-popup="dd/MM/yyyy" ng-model="serialDetail.requiredon"
+                                           is-open="serialDetail.popupStart.opened" datepicker-options="serialDetail.dateOptions" close-text="Close"
+                                           alt-input-formats="serialDetail.altInputFormats" width="20" />
+                                    <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default btn-calendar" ng-click="serialDetail.openStart()" style="line-height:38px;">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                        </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="reference" ng-bind-html="serialDetail.labels.YourReference"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input id="reference" type="text" ng-model="serialDetail.reference" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comments and File Upload -->
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="comments" ng-bind-html="serialDetail.labels.Comments"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <textarea id="comments" rows="5" cols="40" ng-model="serialDetail.comments" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="upload" ng-bind-html="serialDetail.labels.Upload"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <rsm-file-uploader control="serialDetail.rsmFileUploader"></rsm-file-uploader>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Address Selection -->
+                    <div class="col-md-12">
+                        <!-- <p ng-bind-html="serialDetail.address.ID"></p> -->
+                        <select-shipping-address countries="serialDetail.Countries" addresses="serialDetail.Addresses" address="serialDetail.address"></select-shipping-address>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="pull-right form-group">
+                            <button class="btn btn-primary" ng-click="serialDetail.SubmitRequest()" ng-bind-html='serialDetail.labels.SubmitRequest' ng-disabled="serialDetail.valveEnquiry.$invalid"></button>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <p><span ng-bind-html='search.SharedContent.ReplacementGuidance'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.POAGuidance'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.LeadTimeNotice'></span></p>
+            <p><span style="font-style:italic;" ng-bind-html='search.SharedContent.PriceDisclaimer'></span></p>
+        </div>
+    </div>
 </article>

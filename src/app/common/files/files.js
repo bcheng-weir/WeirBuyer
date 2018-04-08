@@ -3,27 +3,28 @@ angular.module('orderCloud')
     .factory('FilesService', FilesService)
     .directive('ordercloudFileUpload', ordercloudFileUpload)
     .directive('ordercloudPoUpload', ordercloudPoUpload)
+    .directive('rsmFileUploader',rsmFileUploader)
 ;
 
 //TODO: update the New SDK to have a file Upload method similar to how this works.  Minus attaching the file info to any XP
-function fileReader($q) {
+function fileReader($q, $timeout) {
     var service = {
         ReadAsDataUrl: _readAsDataURL
     };
 
     function onLoad(reader, deferred, scope) {
         return function() {
-            scope.$apply(function() {
+            $timeout(function() {
                 deferred.resolve(reader);
-            });
+            }, 5000);
         };
     }
 
     function onError(reader, deferred, scope) {
         return function() {
-            scope.$apply(function() {
+            $timeout(function() {
                 deferred.reject(reader);
-            });
+            }, 5000);
         };
     }
 
@@ -229,7 +230,7 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
                     var valid = true;
                     if ((allowed.Extensions.length || allowed.Types.length) && fileName) {
                         var ext = fileName.split('.').pop().toLowerCase();
-                        valid = (allowed.Extensions.indexOf(ext) != -1 || allowed.Types.indexOf(event.target.files[0].type.split('/')[0]) > -1);
+                        valid = (allowed.Extensions.indexOf(ext) !== -1 || allowed.Types.indexOf(event.target.files[0].type.split('/')[0]) > -1);
                     }
                     if (valid) {
                         scope.invalidExtension = false;
@@ -240,16 +241,7 @@ function ordercloudFileUpload($parse, $sce, Underscore, FileReader, FilesService
                             });
                         file_input.assign(scope, event.target.files[0]);
 
-                        //scope.$apply();
-                        /*scope.$apply(function() {
-                            FileReader.ReadAsDataUrl(event.target.files[0], scope)
-                                .then(function(f) {
-                                    afterSelection(event.target.files[0], fileName);
-                                });
-                            file_input.assign(scope, event.target.files[0]);
-                        });*/
-                    }
-                    else {
+                    } else {
                         scope.$apply(function() {
                             scope.invalidExtension = true;
                             var input;
@@ -424,6 +416,106 @@ function ordercloudPoUpload($parse, $exceptionHandler, $sce, Underscore, FileRea
             }
         }
 
+        element.bind('change', updateModel);
+    }
+
+    return directive;
+}
+
+function rsmFileUploader($sce, WeirService, $q, FileReader, FilesService, OrderCloudSDK) {
+    //This file uploader operates after the quote is submitted. We need the quote number to identify the files in S3.
+    // this directive is used because i cannot find any other way to get access to the form element.
+    // the ordercloud file upload operates on the change event. I want this directive to have a means to operate when
+    // the other controller (parent item) wants it to kick off.
+
+    //model in this case is the quote number. I need to get that into here once the quoted is created by the OC,
+        // do a vm.quoteID = quote.ID <-- return from the OC SDK.
+        // control is the button click from the parent controller.
+        // keyname is xp property name: Files or PODocument.
+    var directive = {
+        scope: {
+            control: '='
+        },
+        restrict: 'E',
+        templateUrl: 'common/files/templates/rsm.files.tpl.html',
+        replace: true,
+        link: link
+    };
+
+    function link(scope, element, attrs) {
+        var allFileNames = [];
+        scope.internalControl = scope.control || {}; //rsmFileUploader in my parent control.
+        scope.internalControl.UploadFiles = function(OrderID) { //Called from the controller that uses this directive.
+            // I can expose what i need to the parent controller here.
+            var queue = [];
+            var deferred = $q.defer();
+            if(!scope.uploader.files) {
+                deferred.resolve();
+                return deferred.promise;
+            }
+
+            // populate the queue with the FileReader and FileService calls
+            Object.keys(scope.uploader.files).forEach(function(key) {
+                allFileNames.push(scope.uploader.files[key].name); //use this to patch the order with the file names.
+                queue.push(
+                    FileReader.ReadAsDataUrl(scope.uploader.files[key], scope)
+                        .then(function(f) {
+                            FilesService.Upload(scope.uploader.files[key], OrderID + scope.uploader.files[key].name); //taken from afterSelection.
+                        })
+                );
+            });
+
+            //upload the files to S3.
+            $q.all(queue)
+                .then(function(results) {
+                    scope.uploader.files = null; //This doesn't work, need to use jquery and set the value = "";
+                    //Patch the order with the file names.
+                    var xp = {
+                        "xp": {
+                            "Files": allFileNames
+                        }
+                    };
+                    return OrderCloudSDK.Orders.Patch("Outgoing", OrderID, xp);
+                })
+                .then(function(Order) {
+                    deferred.resolve(Order);
+                })
+                .catch(function(ex) {
+                    console.log(ex);
+                    deferred.reject(ex);
+                });
+
+            return deferred.promise;
+        };
+
+        var labels = {
+            en: {
+                SelectFiles: "Select files to upload",
+                Invalid: "Invalid File Type"
+            },
+            fr: {
+                SelectFiles: $sce.trustAsHtml("Sélectionner le fichier à importer"),
+                Invalid: $sce.trustAsHtml("Type de fichier invalide")
+            }
+        };
+        scope.labels = WeirService.LocaleResources(labels);
+
+        // this is the only way I have seen to get the form element for an angular change event.
+        // there is a listener on the entire rsm.files.upload div, and this looks to see if the html tag
+        // <input type="file" name="upload"> was the cause of the change. If so, then we have the dom element.
+        // in this case we populate the internal control with the files, and wait for the parent controller to initate
+        // the upload.
+        function updateModel(event) {
+            switch (event.target.name) {
+                case 'upload':
+                    //attach the file names to the internal control so the enquiry has the names for submission.
+                    //add the event.target to the scope so i can clear it after the file upload.
+                    scope.uploader = event.target;
+                    break;
+            }
+        }
+
+        // This attaches a jquery lite onchange listener to the entire div in rsm.files.tpl.html
         element.bind('change', updateModel);
     }
 

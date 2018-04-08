@@ -146,6 +146,7 @@ function weirdate() {
         return result;
     };
 }
+
 function weirfulldate() {
     return function (date, locale) {
         var result;
@@ -160,15 +161,18 @@ function weirfulldate() {
         return result;
     };
 }
+
 function roundHalfEven(x) {
     return (Math.floor(100 * x + 0.5)) / 100;
 }
+
 function conversion($cookieStore) {
     return function (amt) {
         var rte = $cookieStore.get('rate');
         return (rte) ? roundHalfEven(amt * rte) : amt;
     };
 }
+
 function orderconversion($cookieStore) {
     return function (amt, order) {
         var orderRate = (order.xp && order.xp.Currency && order.xp.Currency.Rate) ? order.xp.Currency.Rate : 0;

@@ -137,20 +137,6 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
     vm.$ocMedia = $ocMedia;
     vm.TotalItems = 0;
 
-    vm.getLI = function() {
-        CurrentOrder.Get()
-        .then(function(data) {
-            vm.Order = data;
-            if (data) {
-                var curr = WeirService.CurrentCurrency(data);
-                vm.currency = curr.symbol;
-                vm.lineItemCall(data);
-            }
-        });
-    };
-
-    vm.getLI();
-
 	var labels = {
 		en: {
 			view: "View ",
@@ -203,6 +189,11 @@ function MiniCartController($q, $sce, $state, $rootScope,$uibModal, $ocMedia, Or
         var dfd = $q.defer();
         var queue = [];
         vm.TotalItems = 0;
+
+        vm.Order = order;
+        var curr = WeirService.CurrentCurrency(vm.Order);
+        vm.currency = curr.symbol;
+
 	    OrderCloudSDK.LineItems.List("Outgoing", order.ID, { 'page':1, 'pageSize':100 })
             .then(function(li) {
                 vm.LineItems = li;

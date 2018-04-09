@@ -61,21 +61,21 @@
                             <span ng-switch-when="ZAR">{{quote.Total | OrderConversion: quote| currency:'R'}}</span>
                             <span ng-switch-default>{{quote.Total | OrderConversion: quote | currency:'&#163;'}}</span>
                         </td>
-
-                        <td>
+                        <td> <!-- Submitted Date -->
                             <span ng-if="quote.DateCreated" ng-bind-html="quotes.dateOf(quote.DateCreated) | weirdate : quotes.WeirGroup"></span>
                             <span ng-if="!quote.DateCreated"></span>
                         </td>
-                        <td>
+                        <td> <!-- Updated Date -->
                             <span ng-if="quote.xp.StatusDate" ng-bind-html="quotes.dateOf(quote.xp.StatusDate) | weirdate : quotes.WeirGroup"></span>
                             <span ng-if="!quote.xp.StatusDate"></span>
                         </td>
-                        <td>
+                        <td> <!-- Valid Until Date -->
                             <span ng-if="quote.DateCreated" ng-bind-html="quotes.dateOfValidity(quote.DateCreated) | weirdate : quotes.WeirGroup"></span>
                             <span ng-if="!quote.DateCreated"></span>
                         </td>
-
-                        <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN',ER:'btn-status btn-quote-EN'}[quote.xp.Status]"></span></td>
+                        <td>
+                            <span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN',ER:'btn-status btn-quote-EN'}[quote.xp.Status]"></span>
+                        </td>
                         <td>
                             <button class="btn btn-primary btn-md btn-review" ng-click="quotes.GoToQuote(quote.ID)" ng-bind-html="saved.labels.View"></button>
                         </td>

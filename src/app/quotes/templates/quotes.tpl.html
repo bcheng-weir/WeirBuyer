@@ -1,7 +1,7 @@
 <article id="COMPONENT_Quotes" class="container-fluid all-quotes">
     <div class="row">
         <div class="col-md-2">
-            <ul class="nav nav-pills nav-stacked" ng-if="['quotes.all', 'quotes.saved', 'quotes.inreview', 'quotes.enquiry', 'quotes.revised', 'quotes.confirmed'].indexOf(application.$state.current.name) > -1">
+            <ul class="nav nav-pills nav-stacked" ng-if="['quotes.all', 'quotes.saved', 'quotes.inreview', 'quotes.enquiry', 'quotes.revised', 'quotes.confirmed', 'quotes.deleted'].indexOf(application.$state.current.name) > -1">
                 <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.all({filters:quotes.FilterActions('quotes.all')})"><a href="#" ng-bind-html='quotes.labels.All'></a></li>
                 <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.saved({filters:quotes.FilterActions('quotes.saved')})"><a href="#" ng-bind-html='quotes.labels.SavedCount'></a></li>
                 <li role="presentation" class="label-quote text-center" ui-sref-active="active" ui-sref="quotes.enquiry({filters:quotes.FilterActions('quotes.enquiry')})"><a href="#" ng-bind-html='quotes.labels.EnquiryCount'></a></li>

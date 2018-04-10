@@ -166,17 +166,22 @@ function roundHalfEven(x) {
     return (Math.floor(100 * x + 0.5)) / 100;
 }
 
-function conversion($cookieStore) {
+function conversion(FxRate) {
     return function (amt) {
-        var rte = $cookieStore.get('rate');
+        var r = FxRate.GetCurrentFxRate();
+        var rte = (r && r.Rate) ? r.Rate : 0;
         return (rte) ? roundHalfEven(amt * rte) : amt;
     };
 }
 
-function orderconversion($cookieStore) {
+function orderconversion(FxRate) {
     return function (amt, order) {
         var orderRate = (order.xp && order.xp.Currency && order.xp.Currency.Rate) ? order.xp.Currency.Rate : 0;
-        var rte = orderRate || $cookieStore.get('rate');
+        if(!orderRate) {
+            var r = FxRate.GetCurrentFxRate();
+            orderRate = (r && r.Rate) ? r.Rate : 0;
+        }
+        var rte = orderRate;// || $cookieStore.get('rate'); //we never set the cookie store, and we alrady have a rate service.
         return (rte) ? roundHalfEven(amt * rte) : amt;
     };
 }

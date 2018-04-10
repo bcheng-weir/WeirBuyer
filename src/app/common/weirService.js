@@ -49,7 +49,8 @@ function UserGroupsService($q, OrderCloudSDK) {
     }
 }
 
-function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, CurrentOrder, SearchTypeService, Me, clientid, LoginService, $window, Underscore) {
+function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, CurrentOrder, SearchTypeService, Me,
+                     clientid, LoginService, $window, Underscore) {
     var orderStatuses = {
         Enquiry: {
             id: "EN",
@@ -1498,9 +1499,9 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
 
         // No need to populate an FX object it is not needed for the buyer. Can alter if design change needed.
         if(enq.FxRate) {
-            data.xp.currency = {};
-            data.xp.currency.ConvertTo = enq.FxRate.ConvertTo;
-            data.xp.currency.Rate = enq.FxRate.Rate;
+            data.xp.Currency = {};
+            data.xp.Currency.ConvertTo = enq.FxRate.ConvertTo;
+            data.xp.Currency.Rate = enq.FxRate.Rate;
         }
 
         if (enq.Quote && enq.Quote.xp) {

@@ -2091,8 +2091,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.ImageBaseUrl = imageRoot;
 	vm.Zero = 0;
 
-    function notUpdated(newObj, oldObj)
-    {
+    function notUpdated(newObj, oldObj) {
         if(typeof newObj !== "undefined" && typeof oldObj !== "undefined" && newObj === oldObj)
         {
             return true;
@@ -2309,7 +2308,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 				exworks:'Carriage - Ex Works',
 				standard:'Carriage Charge'
 			},
-            POAShipping: "POA"
+            POAShipping: "POA",
+            EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -2362,7 +2363,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 				standard:$sce.trustAsHtml('Frais de livraison')
 			},
-            POAShipping: "POA"
+            POAShipping: "POA",
+            EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
+            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -2394,26 +2397,30 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	}
 
 	vm.AddNewComment = function() {
-		var comment = {
-			date: new Date(),
-			by: Me.Profile.FirstName + " " + Me.Profile.LastName,
-			val: vm.CommentToWeir,
-			IsWeirComment: false
-		};
+		if(vm.CommentToWeir) {
+            var comment = {
+                date: new Date(),
+                by: Me.Profile.FirstName + " " + Me.Profile.LastName,
+                val: vm.CommentToWeir,
+                IsWeirComment: false
+            };
 
-		if (!vm.Quote.xp.CommentsToWeir || Object.prototype.toString.call(vm.Quote.xp.CommentsToWeir) !== '[object Array]') {
-			vm.Quote.xp.CommentsToWeir = [];
+            if (!vm.Quote.xp.CommentsToWeir || Object.prototype.toString.call(vm.Quote.xp.CommentsToWeir) !== '[object Array]') {
+                vm.Quote.xp.CommentsToWeir = [];
+            }
+            vm.Quote.xp.CommentsToWeir.push(comment);
+
+            OrderCloudSDK.Orders.Patch("Outgoing", vm.Quote.ID, {xp: {CommentsToWeir: vm.Quote.xp.CommentsToWeir}})
+                .then(function (order) {
+                    vm.CommentToWeir = "";
+                    $state.go($state.current, {}, {reload: true});
+                })
+                .catch(function (ex) {
+                    $exceptionHandler(ex);
+                })
+        } else {
+            toastr.info(vm.labels.EmptyComments,vm.labels.EmptyCommentTitle);
 		}
-		vm.Quote.xp.CommentsToWeir.push(comment);
-
-		OrderCloudSDK.Orders.Patch("Outgoing", vm.Quote.ID, {xp:{CommentsToWeir: vm.Quote.xp.CommentsToWeir}})
-			.then(function(order) {
-				vm.CommentToWeir = "";
-				$state.go($state.current,{}, {reload:true});
-			})
-			.catch(function(ex) {
-				$exceptionHandler(ex);
-			})
 	};
 
 	function download() {
@@ -2594,8 +2601,9 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 	vm.Comments = _comments;
 }
 
-function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems, PreviousLineItems, Payments,
-                                 imageRoot, OCGeography, Underscore, QuoteToCsvService, fileStore, FilesService, FileSaver, Catalog, Me, Countries, $uibModal) {
+function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Quote, ShippingAddress, LineItems,
+								 PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, QuoteToCsvService,
+								 fileStore, FilesService, FileSaver, Catalog, Me, Countries, $uibModal, toastr, OrderCloudSDK) {
     var vm = this;
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;
@@ -2630,7 +2638,9 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	} else {
 		vm.PreviousLineItems = [];
 	}
+
     vm.Payments = Payments.Items;
+
     OCGeography.Countries()
         .then(function(countries) {
             vm.countries = countries;
@@ -2641,10 +2651,12 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
         vm.Quote.CountryName = result ? result.name : '';
         return result ? result.name : '';
     };
+
     vm.dateOfValidity = function (utcDate) {
         var date = new Date(utcDate);
         return date.setDate(date.getDate() + 30);
     };
+
     vm.showUpdateFXRate = function (utcDate) {
         var date = new Date(utcDate);
         date.setDate(date.getDate() + 30);
@@ -2694,7 +2706,11 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
                 exworks:'Carriage - Ex Works',
 		        standard:'Carriage Charge'
 	        },
-            POAShipping: "POA"
+            POAShipping: "POA",
+            Add: "Add",
+            Cancel: "Cancel",
+            EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -2739,10 +2755,38 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		        exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 		        standard:$sce.trustAsHtml('Frais de livraison')
 	        },
-            POAShipping: "POA"
+            POAShipping: "POA",
+            Add: $sce.trustAsHtml("Ajouter"),
+            Cancel: $sce.trustAsHtml("Annule"),
+            EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
+            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
+
+    vm.AddNewComment = function() {
+        if (vm.NewComment) {
+            var comment = {
+                date: new Date(),
+                by: Me.Profile.FirstName + " " + Me.Profile.LastName,
+                val: vm.NewComment,
+                IsWeirComment: false
+            };
+
+            // Take the new comment, push it onto the current comments to weir then patch.
+            if (!vm.Quote.xp.CommentsToWeir || Object.prototype.toString.call(vm.Quote.xp.CommentsToWeir) !== '[object Array]') {
+                vm.Quote.xp.CommentsToWeir = [];
+            }
+            vm.Quote.xp.CommentsToWeir.push(comment);
+            OrderCloudSDK.Orders.Patch("Outgoing", vm.Quote.ID, {xp: {CommentsToWeir: vm.Quote.xp.CommentsToWeir}})
+                .then(function (quote) {
+                    vm.Quote = quote;
+                });
+            vm.NewComment = null; //BE SURE TO DO THIS IN THE CHILD CONTROLLER
+        } else {
+            toastr.info(vm.labels.EmptyComments,vm.labels.EmptyCommentTitle);
+        }
+    };
 
 	vm.GetFile = function(fileName) {
 		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
@@ -2757,16 +2801,21 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	};
 
 	vm.ToCsvJson = toCsv;
+
 	vm.CsvFilename = vm.Quote.ID + ".csv";
+
 	vm.GetImageUrl = function(img) {
 		return vm.ImageBaseUrl + img;
 	};
+
 	function download() {
 		$timeout($window.print,1);
 	}
+
 	function print() {
 		$timeout($window.print,1);
 	}
+
 	function getStatusLabel() {
 		if (vm.Quote.xp.Status) {
 			var status = WeirService.LookupStatus(vm.Quote.xp.Status);
@@ -2777,6 +2826,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 		}
 		return "";
 	}
+
 	function toCsv() {
 		var printLabels = angular.copy(vm.labels);
 		var printQuote = angular.copy(vm.Quote);
@@ -2834,8 +2884,9 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.gotoRevisions = _gotoRevisions;
 }
 
-function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress, LineItems,
-                          PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me, FilesService, FileSaver, Catalog, Countries) {
+function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress,
+						  LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me,
+						  FilesService, FileSaver, Catalog, Countries) {
 	var vm = this;
 	vm.Catalog = Catalog;
     vm.POContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.POContentFR_EN : Catalog.xp.POContent;

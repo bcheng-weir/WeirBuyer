@@ -973,7 +973,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 CurrentOrder.GetCurrentCustomer()
                     .then(function (customer) {
                         return OrderCloudSDK.Orders.Create("Outgoing", {
-                            ID: "E{ORDERID}",
+                            ID: Me.GetBuyerID() + "-E{ORDERID}",
                             xp: {CustomerID: customer.id, CustomerName: customer.name, BuyerID: Me.GetBuyerID()}
                         })
                     })
@@ -1317,7 +1317,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
 
     function tryQuoteSaveWithQuoteNumber(deferred, quote, data, prefix, trycount, buyer) {
         //var newQuoteId = createQuoteNumber(prefix, trycount, buyer);
-        var newQuoteId = "E{ORDERID}";
+        var newQuoteId = Me.GetBuyerID() + "-E{ORDERID}";
         data.ID = newQuoteId;
         OrderCloudSDK.Orders.Patch("Outgoing", quote.ID, data)
             .then(function (quote) {
@@ -1335,19 +1335,6 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 }
             });
     }
-
-    //function createQuoteNumber(prefix, trycount, buyer) {
-    //    // var timeoffset = 1476673277652;
-    //    // var now = new Date();
-    //    var pfx = prefix + "-E";
-    //    var suffix = (buyer.xp.OrderSuffix) ? buyer.xp.OrderSuffix : "";
-    //    var orderNum = ((buyer.xp.NextOrderNumber) ? buyer.xp.NextOrderNumber : 1) + trycount;
-    //    // var testVal = (now.getTime().toString());
-    //    var testVal = "0000" + orderNum.toString();
-    //    testVal = testVal.substring(testVal.length - 5);
-    //    var quoteNum = pfx + testVal + suffix;
-    //    return quoteNum;
-    //}
 
     //ToDo this may need to be udpated.
     function setQuoteAsCurrentOrder(quoteId) {
@@ -1374,15 +1361,6 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
     }
 
     function sortEnquiryCategories(valveType) {
-        /*var items = {
-            "Soupape de sûreté conventionnelle - Type Série P Starflow": 1,
-            "Soupape d'expansion thermique - Type Série 9": 2,
-            "Soupape pilotées - Type Série 76, Série 78 et Stareco": 3,
-            "Soupape vapeur basse/moyenne pression - ASME I - Type Starflow V": 4,
-            "Soupape vapeur haute pression - ASME I - Type Starsteam": 5,
-            "Soupape pilotées basse pression - API2000 - Type Série 74LP": 6
-        };*/
-
         var items = {
             "74LP - API2000 Low pressure piloted safety relief valve":1,
             "Pilot Operated Pressure Relief Valve (POPRV) - 76, 78, 86 & Stareco Type":2,
@@ -1473,7 +1451,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         var deferred = $q.defer();
         var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
-        var newQuoteId = "E{ORDERID}"; //createQuoteNumber(buyerId, 0, Me.Org);
+        var newQuoteId = buyerId + "-E{ORDERID}"; //createQuoteNumber(buyerId, 0, Me.Org);
         var _today = new Date();
         var validUntil = _today.setDate(_today.getDate() + 30);
         var data = {

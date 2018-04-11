@@ -1221,7 +1221,7 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
         $state.go("revised", {quoteID: QuoteShareService.Quote.ID, buyerID: Me.GetBuyerID()});
     }
 	var vm = this;
-    FxRate.SetCurrentFxRate(Me.Org);
+    //FxRate.SetCurrentFxRate(Me.Org);
     vm.FxRate = FxRate.GetCurrentFxRate();
 	vm.Quote = QuoteShareService.Quote;
 	vm.NewComment = null;

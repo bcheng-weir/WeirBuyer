@@ -449,7 +449,9 @@ function rsmFileUploader($sce, WeirService, $q, FileReader, FilesService, OrderC
             // I can expose what i need to the parent controller here.
             var queue = [];
             var deferred = $q.defer();
-            if(!scope.uploader.files) {
+
+            //Bail out if not files exist.
+            if (typeof scope.uploader === 'undefined' || (!scope.uploader && !scope.uploader.files)) {
                 deferred.resolve();
                 return deferred.promise;
             }

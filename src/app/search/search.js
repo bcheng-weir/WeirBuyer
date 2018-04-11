@@ -656,9 +656,9 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
                     //hide the form.
                     vm.RequestQuote = false;
 
-                    var parentElem = angular.element($document[0].querySelector('body'));
                     //TODO get this to work.
-                    /*$uibModal.open({
+                    /*var parentElem = angular.element($document[0].querySelector('body'));
+                    $uibModal.open({
                         animation: true,
                         size: 'md',
                         templateUrl: 'search/templates/rfqthankyou.tpl.html',

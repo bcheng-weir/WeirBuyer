@@ -11,7 +11,7 @@
                         <span style="font-weight:bold;">{{(submit.Quote.DateSubmitted | weirdate)}}</span>
                     </div>
                     <div style="display:inline-block; float:left; margin-left:1em; margin-top:10px;">
-                        <span ng-bind-html="submit.labels.ValidUntil"/>:&nbsp;<span style="font-weight:bold;">{{submit.dateOfValidity(submit.Quote.DateCreated) | weirdate}}</span>
+                        <span ng-bind-html="submit.labels.ValidUntil"/>:&nbsp;<span style="font-weight:bold;">{{submit.Quote.xp.ValidUntil | weirdate}}</span>
                     </div>
                     <div class="panelButton" style="display:inline-block; float:left; margin-left:1em;">
                         <button class="btn btn-default" ng-bind-html='submit.labels.UpdateFXRate' ng-click="submit.updateFXRate()" ng-if="submit.showUpdateFXRate(submit.Quote.DateCreated)"></button>

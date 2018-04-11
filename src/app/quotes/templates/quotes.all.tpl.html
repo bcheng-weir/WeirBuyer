@@ -70,8 +70,8 @@
                             <span ng-if="!quote.xp.StatusDate"></span>
                         </td>
                         <td> <!-- Valid Until Date -->
-                            <span ng-if="quote.DateCreated" ng-bind-html="quotes.dateOfValidity(quote.DateCreated) | weirdate : quotes.WeirGroup"></span>
-                            <span ng-if="!quote.DateCreated"></span>
+                            <span ng-if="quote.xp.ValidUntil" ng-bind-html="quote.xp.ValidUntil | weirdate : quotes.WeirGroup"></span>
+                            <span ng-if="!quote.xp.ValidUntil"></span>
                         </td>
                         <td>
                             <span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',CQ:'btn-status btn-quote-CQ',SB:'btn-status btn-quote-SB',RV:'btn-status btn-quote-RV',RE:'btn-status btn-quote-RE',RQ:'btn-status btn-quote-RQ',EN:'btn-status btn-quote-EN',ER:'btn-status btn-quote-EN'}[quote.xp.Status]"></span>

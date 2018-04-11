@@ -10,7 +10,7 @@
                     <span ng-bind-html="readonly.labels.OrderDate" />&nbsp;<span style="font-weight:bold;" ng-bind-html="(readonly.Quote.DateSubmitted | weirdate)"></span>
                 </div>
                 <div style="display:inline-block; float:left; margin-left:1em; margin-top:10px;">
-                    <span ng-bind-html="readonly.labels.ValidUntil"/>:&nbsp;<span style="font-weight:bold;">{{readonly.dateOfValidity(readonly.Quote.DateCreated) | weirdate}}</span>
+                    <span ng-bind-html="readonly.labels.ValidUntil"/>:&nbsp;<span style="font-weight:bold;">{{readonly.Quote.xp.ValidUntil | weirdate}}</span>
                 </div>
                 <div class="panelButton" style="display:inline-block; float:left; margin-left:1em;">
                     <button class="btn btn-default" ng-bind-html='readonly.labels.UpdateFXRate' ng-click="readonly.updateFXRate()" ng-if="readonly.showUpdateFXRate(readonly.Quote.DateCreated)"></button>

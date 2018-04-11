@@ -70,17 +70,16 @@
                             <span ng-if="!quote.xp.StatusDate"></span>
                         </td>
                         <td>
-                            <span ng-if="quote.DateCreated" ng-bind-html="quotes.dateOfValidity(quote.DateCreated) | weirdate : quotes.WeirGroup"></span>
-                            <span ng-if="!quote.DateCreated"></span>
+                            <span ng-if="quote.xp.ValidUntil" ng-bind-html="quote.xp.ValidUntil | weirdate : quotes.WeirGroup"></span>
+                            <span ng-if="!quote.xp.ValidUntil"></span>
                         </td>
-
                         <td><span ng-bind-html="quotes.getStatusLabel(quote.xp.Status)" ng-class="{SV:'btn-status btn-quote-SV',DR:'btn-status btn-quote-DR',RV:'btn-status btn-quote-RV',RQ:'btn-status btn-quote-RQ'}[quote.xp.Status]"></span></td>
                         <td>
                             <button class="btn btn-primary btn-md" ng-click="saved.ReviewQuote(quote.ID, quote.xp.Status, quote.xp.BuyerID)" ng-bind-html="saved.labels.View"></button>
                             <!--<a ui-sref="revisions({quoteID:quote.xp.OriginalOrderID})" role="button" class="btn btn-primary" ng-bind-html="saved.labels.Revisions" ng-if="quote.xp.Status!='SV'"></a>-->
                         </td>
 			            <td>
-			            <a class="glyphicon glyphicon-trash" href="#" ng-click="quotes.delete(quote.ID, quotes.list.Items, $index);" />
+			                <a class="glyphicon glyphicon-trash" href="#" ng-click="quotes.delete(quote.ID, quotes.list.Items, $index);" />
 			            </td>
                     </tr>
                 </tbody>

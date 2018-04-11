@@ -1511,7 +1511,9 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                     LeadTime: ""
                 }
             };
-            OrderCloudSDK.LineItems.Create("Outgoing", data.ID, li)
+
+            //ToDo pass in the data.ID, this is the enquiry ID and is needed in order to create the line items.
+            OrderCloudSDK.LineItems.Create("Outgoing", Enquiry.ID, li)
                 .then(function (lineItem) {
                     defer.resolve({Order: data, LineItem: lineItem});
                 })

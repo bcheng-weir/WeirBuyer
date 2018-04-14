@@ -666,9 +666,11 @@ function MyQuoteConfig($stateProvider) {
 
 function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toastr, WeirService, Me, Quote, ShippingAddress,
                            Customer, LineItems, Payments, QuoteShareService, imageRoot, QuoteToCsvService, IsBuyer, Underscore,
-                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope, $exceptionHandler, Countries) {
+                           IsShopper, QuoteCommentsService, CurrentOrder, Catalog, OrderCloudSDK, Buyer, UITotal, $rootScope,
+						   $exceptionHandler, Countries, FxRate) {
     var vm = this;
 	QuoteShareService.Quote = Quote;
+    vm.FxRate = FxRate.GetCurrentFxRate();
     vm.currentState = $state.$current.name;
     vm.IsBuyer = IsBuyer;
     vm.IsShopper = IsShopper;
@@ -751,7 +753,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
         date.setDate(date.getDate() + 30);
         return new Date() > date;
     };
-	function save(optionalComment) {
+	function save() {
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.Draft.id) { /*TODO: FAIL if no line items*/ }
 		var mods = {
 		    Comments: vm.Quote.Comments,
@@ -1101,7 +1103,6 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 		);
 	}
 
-	// Moved from Review Controller.
 	function _submitForReview(dirty) {
 		var _today = new Date();
 		var validUntil = _today.setDate(_today.getDate() + 30);
@@ -1111,11 +1112,7 @@ function MyQuoteController($q, $sce, $state, $uibModal, $timeout, $window, toast
 				Status: WeirService.OrderStatus.Submitted.id,
 				StatusDate: _today,
 				Revised: false,
-				ValidUntil: validUntil,
-				Currency: {
-					ConvertTo: null,
-					Rate: null
-				}
+				ValidUntil: validUntil
 			}
 		};
 
@@ -1332,7 +1329,8 @@ function MyQuoteDetailController(WeirService, $state, $sce, $exceptionHandler, $
 	}
 }
 
-function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr, Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me, Catalog) {
+function QuoteDeliveryOptionController($uibModal, WeirService, $state, $sce, $exceptionHandler, Underscore, toastr,
+									   Addresses, OrderCloudSDK, QuoteShareService, OCGeography, $scope, Me, Catalog) {
     var vm = this;
     vm.Comments = QuoteShareService.Comments;
     vm.NewComment = null;
@@ -1738,7 +1736,6 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
 				    Revised: false,
 				    PONumber: vm.PONumber,
                     POEnteredByWeir: false
-
 			    }
 		    };
 	    } else {

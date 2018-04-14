@@ -50,7 +50,14 @@ function UserGroupsService($q, OrderCloudSDK) {
 }
 
 function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, CurrentOrder, SearchTypeService, Me,
-                     clientid, LoginService, $window, Underscore) {
+                     clientid, LoginService, $window, Underscore, FxRate) {
+
+    Date.prototype.addDays = function(days) {
+        var d = new Date(this.valueOf());
+        d.setDate(d.getDate() + days);
+        return d;
+    };
+
     var orderStatuses = {
         Enquiry: {
             id: "EN",
@@ -866,6 +873,15 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                         "Active": true
                     }
                 };
+
+                if(FxRate.GetCurrentFxRate()) {
+                    var RIGHTNOW = new Date();
+                    cart.xp.Currency = {};
+                    cart.xp.Currency.ConvertTo = FxRate.GetCurrentFxRate().ConvertTo;
+                    cart.xp.Currency.Rate = FxRate.GetCurrentFxRate().Rate;
+                    cart.xp.ValidUntil = RIGHTNOW.addDays(30);
+                }
+
                 OrderCloudSDK.Orders.Create("Outgoing", cart)
                     .then(function (order) {
                         CurrentOrder.Set(order.ID);
@@ -920,10 +936,25 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 addLineItems(order);
             })
             .catch(function () {
-                OrderCloudSDK.Orders.Create("Outgoing", {
+
+                var cart = {
                     ID: randomQuoteID(),
-                    xp: {Type: "Quote", Status: "DR", BuyerID: Me.GetBuyerID()}
-                })
+                    xp: {
+                        Type: "Quote",
+                        Status: "DR",
+                        BuyerID: Me.GetBuyerID()
+                    }
+                };
+
+                if(FxRate.GetCurrentFxRate()) {
+                    var RIGHTNOW = new Date();
+                    cart.xp.Currency = {};
+                    cart.xp.Currency.ConvertTo = FxRate.GetCurrentFxRate().ConvertTo;
+                    cart.xp.Currency.Rate = FxRate.GetCurrentFxRate().Rate;
+                    cart.xp.ValidUntil = RIGHTNOW.addDays(30);
+                }
+
+                OrderCloudSDK.Orders.Create("Outgoing", cart)
                     .then(function (order) {
                         CurrentOrder.Set(order.ID);
                         addLineItems(order);
@@ -972,10 +1003,24 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
             .catch(function () {
                 CurrentOrder.GetCurrentCustomer()
                     .then(function (customer) {
-                        return OrderCloudSDK.Orders.Create("Outgoing", {
+                        var cart = {
                             ID: Me.GetBuyerID() + "-E{ORDERID}",
-                            xp: {CustomerID: customer.id, CustomerName: customer.name, BuyerID: Me.GetBuyerID()}
-                        })
+                            xp: {
+                                CustomerID: customer.id,
+                                CustomerName: customer.name,
+                                BuyerID: Me.GetBuyerID()
+                            }
+                        };
+
+                        if(FxRate.GetCurrentFxRate()) {
+                            var RIGHTNOW = new Date();
+                            cart.xp.Currency = {};
+                            cart.xp.Currency.ConvertTo = FxRate.GetCurrentFxRate().ConvertTo;
+                            cart.xp.Currency.Rate = FxRate.GetCurrentFxRate().Rate;
+                            cart.xp.ValidUntil = RIGHTNOW.addDays(30);
+                        }
+
+                        return OrderCloudSDK.Orders.Create("Outgoing", cart)
                     })
                     .then(function (order) {
                         CurrentOrder.Set(order.ID);
@@ -1097,6 +1142,15 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                                     "Active": true
                                 }
                             };
+
+                            if(FxRate.GetCurrentFxRate()) {
+                                var RIGHTNOW = new Date();
+                                cart.xp.Currency = {};
+                                cart.xp.Currency.ConvertTo = FxRate.GetCurrentFxRate().ConvertTo;
+                                cart.xp.Currency.Rate = FxRate.GetCurrentFxRate().Rate;
+                                cart.xp.ValidUntil = RIGHTNOW.addDays(30);
+                            }
+
                             OrderCloudSDK.Orders.Create("Outgoing", cart)
                                 .then(function (ct) {
                                     CurrentOrder.Set(ct.ID);
@@ -1452,8 +1506,6 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
         var newQuoteId = buyerId + "-E{ORDERID}"; //createQuoteNumber(buyerId, 0, Me.Org);
-        var _today = new Date();
-        var validUntil = _today.setDate(_today.getDate() + 30);
         var data = {
             ID: newQuoteId,
             Type: "Standard",
@@ -1470,16 +1522,17 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 "WasEnquiry": true,
                 "SN": enq.SerialNumber,
                 "Brand": (enq.Manufacturer && enq.Manufacturer.Name) ? enq.Manufacturer.Name : "",
-                "ValveType": (enq.ValveType && enq.ValveType.Name) ? enq.ValveType.Name : "",
-                "ValidUntil": validUntil
+                "ValveType": (enq.ValveType && enq.ValveType.Name) ? enq.ValveType.Name : ""
             }
         };
 
         // No need to populate an FX object it is not needed for the buyer. Can alter if design change needed.
         if(enq.FxRate) {
+            var RIGHTNOW = new Date();
             data.xp.Currency = {};
             data.xp.Currency.ConvertTo = enq.FxRate.ConvertTo;
             data.xp.Currency.Rate = enq.FxRate.Rate;
+            data.xp.ValidUntil = RIGHTNOW.addDays(30);
         }
 
         if (enq.Quote && enq.Quote.xp) {

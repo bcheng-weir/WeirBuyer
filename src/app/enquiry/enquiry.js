@@ -253,7 +253,8 @@ function EnquirySelectController($state, $sce, WeirService, PartList, EnquirySer
     };
 }
 
-function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore, toastr, Addresses, OCGeography, Countries, Me) {
+function EnquiryDeliveryController($state, $sce, $uibModal, WeirService, OrderCloudSDK, EnquiryService, Underscore,
+                                   toastr, Addresses, OCGeography, Countries, Me) {
     var vm = this;
     vm.enq = EnquiryService;
     if (vm.enq.Step < 3) vm.enq.Step = 3;
@@ -377,7 +378,8 @@ function NewEnquiryAddressModalController($uibModalInstance, $sce, WeirService) 
     };
 }
 
-function EnquiryReviewController($state, $location, $anchorScroll, $window, $sce, $uibModal, WeirService, EnquiryService, Underscore, OCGeography, FxRate) {
+function EnquiryReviewController($state, $location, $anchorScroll, $window, $sce, $uibModal, WeirService,
+                                 EnquiryService, Underscore, OCGeography, FxRate) {
     var vm = this;
     vm.enq = EnquiryService;
     vm.enq.FxRate = FxRate.GetCurrentFxRate();

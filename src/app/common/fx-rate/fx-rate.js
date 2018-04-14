@@ -25,6 +25,7 @@ function FxRate($q, OrderCloudSDK) {
 
     //Set the Entire Spec Record. This occurs on base.js resolve.
     function setFxSpec(Buyer) {
+        FXSpec = {};
         var deferred = $q.defer();
         var specID;
         if(Buyer.xp.WeirGroup.label === "WPIFR" && Buyer.xp.Curr) {
@@ -56,6 +57,7 @@ function FxRate($q, OrderCloudSDK) {
 
     // Use this before getting the fxRate. Base might as well set it then myquote and enquiry can do the below get().
     function setCurrentFxRate(Buyer) {
+        FXRate = {};
         var today = new Date();
         var Today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         var tmp = [];

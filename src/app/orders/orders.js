@@ -43,7 +43,7 @@ function OrdersConfig($stateProvider) {
                 CountParameters: function ($stateParams, OrderCloudParameters) {
                     return OrderCloudParameters.Get($stateParams);
                 },
-                SubmittedCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
+                DraftCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
                     if(!Me.Profile || !Me.Org){
                         Me.Profile = CurrentUser;
                         Me.Org = CurrentOrg;
@@ -51,41 +51,11 @@ function OrdersConfig($stateProvider) {
                     if(!CountParameters.filters){
                         CountParameters.filters = {};
                     }
-                    CountParameters.filters = {"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true };
-                    CountParameters.filters.FromUserID = Me.Profile.ID;
-                    var opts = {
-                        'pageSize': 10,
-                        'filters': CountParameters.filters,
-                        'buyerID': Me.GetBuyerID()
+                    CountParameters.filters = {
+                        "xp.Type":"Order",
+                        "xp.Status":"!" + WeirService.OrderStatus.ConfirmedOrder.id + "&!" + WeirService.OrderStatus.Deleted.id,
+                        "xp.Active":true
                     };
-                    return OrderCloudSDK.Orders.List("Outgoing", opts);
-                },
-                PendingCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
-                    if(!Me.Profile || !Me.Org){
-                        Me.Profile = CurrentUser;
-                        Me.Org = CurrentOrg;
-                    }
-                    if(!CountParameters.filters){
-                        CountParameters.filters = {};
-                    }
-                    CountParameters.filters = { "xp.Type": "Order", "xp.PendingPO": true, "xp.Active": true , "xp.Status": "!DEL"};
-                    CountParameters.filters.FromUserID = Me.Profile.ID;
-                    var opts = {
-                        'pageSize': 10,
-                        'filters': CountParameters.filters,
-                        'buyerID': Me.GetBuyerID()
-                    };
-                    return OrderCloudSDK.Orders.List("Outgoing", opts);
-                },
-                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters,  Me, CurrentUser, CurrentOrg) {
-                    if(!Me.Profile || !Me.Org){
-                        Me.Profile = CurrentUser;
-                        Me.Org = CurrentOrg;
-                    }
-                    if(!CountParameters.filters){
-                        CountParameters.filters = {};
-                    }
-                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active": true };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
@@ -127,23 +97,6 @@ function OrdersConfig($stateProvider) {
                         'buyerID': Me.GetBuyerID()
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
-                },
-                DespatchedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
-                    if(!Me.Profile || !Me.Org){
-                        Me.Profile = CurrentUser;
-                        Me.Org = CurrentOrg;
-                    }
-                    if(!CountParameters.filters){
-                        CountParameters.filters = {};
-                    }
-                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Despatched.id, "xp.Active": true };
-                    CountParameters.filters.FromUserID = Me.Profile.ID;
-                    var opts = {
-                        'pageSize': 10,
-                        'filters': CountParameters.filters,
-                        'buyerID': Me.GetBuyerID()
-                    };
-                    return OrderCloudSDK.Orders.List("Outgoing", opts);
                 }
             }
         })
@@ -152,29 +105,14 @@ function OrdersConfig($stateProvider) {
             templateUrl: 'orders/templates/orders.all.tpl.html',
             parent: 'orders'
         })
-        .state('orders.submitted', {
-            url: '/submitted',
-            templateUrl: 'orders/templates/orders.submitted.tpl.html',
-	        parent: 'orders'
-        })
-        .state('orders.pending', {
-            url: '/pending',
-            templateUrl: 'orders/templates/orders.pending.tpl.html',
-	        parent: 'orders'
-        })
-	    .state('orders.revised', {
-		    url: '/revised',
-		    templateUrl: 'orders/templates/orders.revised.tpl.html',
+	    .state('orders.draft', {
+		    url: '/draft',
+		    templateUrl: 'orders/templates/orders.draft.tpl.html',
 		    parent: 'orders'
 	    })
 	    .state('orders.confirmed', {
 		    url: '/confirmed',
 		    templateUrl: 'orders/templates/orders.confirmed.tpl.html',
-		    parent: 'orders'
-	    })
-	    .state('orders.despatched', {
-		    url: '/despatched',
-		    templateUrl: 'orders/templates/orders.despatched.tpl.html',
 		    parent: 'orders'
 	    })
 	    .state('orders.deleted', {
@@ -204,7 +142,8 @@ function OrdersConfig($stateProvider) {
     ;
 }
 
-function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibModal, OrderCloudSDK, OrderCloudParameters, Orders, Parameters, Me, WeirService, CurrentCustomer, SubmittedCount, PendingCount, RevisedCount, ConfirmedCount, DespatchedCount, DeletedCount) {
+function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibModal, OrderCloudSDK, OrderCloudParameters,
+                          Orders, Parameters, Me, WeirService, CurrentCustomer, DraftCount, ConfirmedCount, DeletedCount) {
     var vm = this;
     vm.list = Orders;
     vm.parameters = Parameters;
@@ -297,27 +236,17 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
     var labels = {
         en: {
             AllHeader: vm.list.Meta.TotalCount.toString() + " Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-    		SubmittedHeader: vm.list.Meta.TotalCount.toString() + " Submitted Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-		    PendingHeader: vm.list.Meta.TotalCount.toString() + " Pending Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-		    PendingNotice: "Orders submitted pending PO will not be confirmed until Weir have received a Purchase Order",
-		    RevisedHeader: vm.list.Meta.TotalCount.toString() + " Revised Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
+    		DraftHeader: vm.list.Meta.TotalCount.toString() + " Draft Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    ConfirmedHeader: vm.list.Meta.TotalCount.toString() + " Confirmed Order" +  (vm.list.Meta.TotalCount == 1 ? "" : "s"),
-		    DespatchedHeader: vm.list.Meta.TotalCount.toString() + " Despatched Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    DeletedHeader: vm.list.Meta.TotalCount.toString() + " Deleted Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
 		    InvoicedHeader: vm.list.Meta.TotalCount.toString() + " Invoiced Order" + (vm.list.Meta.TotalCount == 1 ? "" : "s"),
             SortText: "You can sort orders by Order No, Total, Date",
             View: "View",
             all: "All Orders",
-            submitted: "Submitted with PO",
-            submittedCount: SubmittedCount.Meta.TotalCount.toString() > 0 ? "Submitted with PO (" + SubmittedCount.Meta.TotalCount.toString() + ")" : "Submitted with PO",
-            pending: "Submitted Pending PO",
-            pendingCount: PendingCount.Meta.TotalCount.toString() > 0 ? "Submitted Pending PO (" + PendingCount.Meta.TotalCount.toString() + ")" : "Submitted Pending PO",
-            revised: "Revised",
-            revisedCount: RevisedCount.Meta.TotalCount.toString() > 0 ? "Revised (" + RevisedCount.Meta.TotalCount.toString() + ")" : "Revised",
+            draft: "Submitted with PO",
+            draftCount: DraftCount.Meta.TotalCount.toString() > 0 ? "Draft (" + DraftCount.Meta.TotalCount.toString() + ")" : "Draft",
             confirmed: "Confirmed",
             confirmedCount: ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmed (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmed",
-            despatched: "Despatched",
-            despatchedCount: DespatchedCount.Meta.TotalCount.toString() > 0 ? "Despatched (" + DespatchedCount.Meta.TotalCount.toString() + ")" : "Despatched",
             deleted: "Deleted",
             deletedCount: DeletedCount.Meta.TotalCount.toString() > 0 ? "Deleted (" + DeletedCount.Meta.TotalCount.toString() + ")" : "Deleted",
             invoiced: "Invoiced",
@@ -350,27 +279,17 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 	    },
         fr: {
             AllHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commande" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-	        SubmittedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes soumise" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-	        PendingHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes en attente" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-		    PendingNotice: $sce.trustAsHtml("Les commandes soumises en attente ne seront pas confirmées tant que Weir n'aura pas reçu de bon de commande"),
-		    RevisedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " cotations révisée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
+	        DraftHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "FR: commandes soumise" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    ConfirmedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes confirmée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
-		    DespatchedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + "  commandes expédiée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    DeletedHeader: $sce.trustAsHtml("FR: " + vm.list.Meta.TotalCount.toString() + "  commandes deleted" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
 		    InvoicedHeader: $sce.trustAsHtml(vm.list.Meta.TotalCount.toString() + " commandes facturée" + (vm.list.Meta.TotalCount == 1 ? "" : "s")),
             SortText: $sce.trustAsHtml("Vous pouvez filtrer par numéro de devis, montant, et date"),
             View: $sce.trustAsHtml("Voir"),
             all: $sce.trustAsHtml("Toutes les commandes"),
-            submitted: $sce.trustAsHtml("Commande avec Bon de Commande"),
-            submittedCount: $sce.trustAsHtml(SubmittedCount.Meta.TotalCount.toString() > 0 ? "Commande avec Bon de Commande (" + SubmittedCount.Meta.TotalCount.toString() + ")" : "Commande avec Bon de Commande"),
-            pending: $sce.trustAsHtml("Commande sans Bon de Commande"),
-            pendingCount: $sce.trustAsHtml(PendingCount.Meta.TotalCount.toString() > 0 ? "Commande sans Bon de Commande (" + PendingCount.Meta.TotalCount.toString() + ")" : "Commande sans Bon de Commande"),
-            revised: $sce.trustAsHtml("Révisé"),
-            revisedCount: $sce.trustAsHtml(RevisedCount.Meta.TotalCount.toString() > 0 ? "Révisé (" + RevisedCount.Meta.TotalCount.toString() + ")" : "Révisé"),
+            draft: $sce.trustAsHtml("FR: Commande avec Bon de Commande"),
+            draftCount: $sce.trustAsHtml(DraftCount.Meta.TotalCount.toString() > 0 ? "FR: Commande avec Bon de Commande (" + DraftCount.Meta.TotalCount.toString() + ")" : "FR: Commande avec Bon de Commande"),
             confirmed: $sce.trustAsHtml("Confirmée"),
             confirmedCount: $sce.trustAsHtml(ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmée (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmée"),
-            despatched: $sce.trustAsHtml("Expédiée"),
-            despatchedCount: $sce.trustAsHtml(DespatchedCount.Meta.TotalCount.toString() > 0 ? "Expédiée (" + DespatchedCount.Meta.TotalCount.toString() + ")" : "Expédiée"),
             deleted: $sce.trustAsHtml("FR: Deleted"),
             deletedCount: $sce.trustAsHtml("FR: " + DeletedCount.Meta.TotalCount.toString() > 0 ? "Deleted (" + DeletedCount.Meta.TotalCount.toString() + ")" : "Deleted"),
             invoiced: $sce.trustAsHtml("Facturée"),
@@ -407,12 +326,13 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 	vm.FilterActions = _filterActions;
 	function _filterActions(action) {
         var filter = {
-            "orders.all": { "xp.Type": "Order", "xp.Active": true },
-			"orders.submitted":{"xp.Type":"Order", "xp.Status":WeirService.OrderStatus.SubmittedWithPO.id, "xp.Active":true},
-			"orders.pending":{"xp.Type":"Order", "xp.PendingPO":true, "xp.Active":true, "xp.Status": "!DEL"},
-			"orders.revised":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.RevisedOrder.id+"|"+WeirService.OrderStatus.RejectedRevisedOrder.id, "xp.Active":true},
+            "orders.all": { "xp.Type":"Order", "xp.Active":true },
+			"orders.draft": {
+                "xp.Type":"Order",
+                "xp.Status":"!" + WeirService.OrderStatus.ConfirmedOrder.id + "&!" + WeirService.OrderStatus.Deleted.id,
+                "xp.Active":true
+            },
 			"orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":true},
-			"orders.despatched": { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Despatched.id, "xp.Active": true },
 			"orders.deleted": { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Deleted.id, "xp.Active": true }
 		};
 		return JSON.stringify(filter[action]);
@@ -514,7 +434,7 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
             errorMsg="Order not found";
         }
         toastr.error(errorMsg);
-        $state.go('orders.submitted');
+        $state.go('orders.draft');
     }
     function reviewOrder(orderId, status, buyerId) {
         if (status === WeirService.OrderStatus.ConfirmedOrder.id || status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.Submitted.id) {

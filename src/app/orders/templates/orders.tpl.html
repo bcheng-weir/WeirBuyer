@@ -1,25 +1,22 @@
 <article id="COMPONENT_Orders" class="container-fluid all-quotes">
     <div class="row">
         <div class="col-md-2">
-            <!--ng-if="['orders.submitted', 'orders.pending', 'orders.revised', 'orders.confirmed', 'orders.despatched', 'orders.invoiced'].indexOf(application.$state.current.name) > -1"-->
             <ul class="nav nav-pills nav-stacked">
-                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.all({filters:orders.FilterActions('orders.all')})"><a href="#" ng-bind-html='orders.labels.all'></a></li>
-                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.submitted({filters:orders.FilterActions('orders.submitted')})"><a href="#" ng-bind-html='orders.labels.submittedCount'></a></li>
-                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.pending({filters:orders.FilterActions('orders.pending')})"><a href="#" ng-bind-html='orders.labels.pendingCount'></a></li>
-                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.revised({filters:orders.FilterActions('orders.revised')})"><a href="#" ng-bind-html='orders.labels.revisedCount'></a></li>
-                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.confirmed({filters:orders.FilterActions('orders.confirmed')})"><a href="#" ng-bind-html='orders.labels.confirmedCount'></a></li>
-                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.despatched({filters:orders.FilterActions('orders.despatched')})"><a href="#" ng-bind-html='orders.labels.despatchedCount'></a></li>
-                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.deleted({filters:orders.FilterActions('orders.deleted')})"><a href="#" ng-bind-html='orders.labels.deletedCount'></a></li>
+                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.all({filters:orders.FilterActions('orders.all')})">
+                    <a href="#" ng-bind-html='orders.labels.all'></a></li>
+                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.draft({filters:orders.FilterActions('orders.draft')})">
+                    <a href="#" ng-bind-html='orders.labels.draftCount'></a></li>
+                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.confirmed({filters:orders.FilterActions('orders.confirmed')})">
+                    <a href="#" ng-bind-html='orders.labels.confirmedCount'></a></li>
+                <li role="presentation" class="label-quote" ui-sref-active="active" ui-sref="orders.deleted({filters:orders.FilterActions('orders.deleted')})">
+                    <a href="#" ng-bind-html='orders.labels.deletedCount'></a></li>
             </ul>
         </div>
         <!--<hr>-->
         <div class="col-md-10" style="padding-right:0px;padding-left:0px;">
             <h2 ng-if="['orders.all'].indexOf(application.$state.current.name) > -1">{{orders.labels.all}}</h2>
-            <h2 ng-if="['orders.submitted'].indexOf(application.$state.current.name) > -1">{{orders.labels.submitted}}</h2>
-            <h2 ng-if="['orders.pending'].indexOf(application.$state.current.name) > -1">{{orders.labels.pending}}</h2>
-            <h2 ng-if="['orders.revised'].indexOf(application.$state.current.name) > -1">{{orders.labels.revised}}</h2>
+            <h2 ng-if="['orders.draft'].indexOf(application.$state.current.name) > -1">{{orders.labels.draft}}</h2>
             <h2 ng-if="['orders.confirmed'].indexOf(application.$state.current.name) > -1">{{orders.labels.confirmed}}</h2>
-            <h2 ng-if="['orders.despatched'].indexOf(application.$state.current.name) > -1">{{orders.labels.despatched}}</h2>
             <h2 ng-if="['orders.deleted'].indexOf(application.$state.current.name) > -1">{{orders.labels.deleted}}</h2>
             <!--====== SEARCH/FILTERS ======-->
             <form name="OrderSearchForm" class="form-inline" ng-submit="orders.search()">
@@ -37,26 +34,6 @@
                     </span>
                 </fieldset>
             </form>
-            <!--<div class="row" uib-collapse="!orders.showFilters">
-                <hr>
-                <div class="col-md-6 col-lg-4">
-                    <div class="form-group" ng-if="application.$ocMedia('max-width:767px')">
-                        <label>Sort By:</label>
-                        <div ng-class="{'input-group':orders.sortSelection}">
-                            <select placeholder="Sort" class="form-control" ng-model="orders.sortSelection" ng-change="orders.updateSort()">
-                                <option value="">None</option>
-                                <option value="ID">ID</option>
-                            </select>
-                            <div ng-if="orders.sortSelection" class="input-group-btn">
-                                <button class="btn btn-default" ng-click="orders.reverseSort()">
-                                    <i class="fa fa-sort"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-            </div>-->
             <div ui-view style="padding-top:10px"></div>
             <div class="text-center" ng-if="application.$ocMedia('min-width:768px') && orders.list.Meta.TotalPages > 1">
                 <uib-pagination boundary-links="orders.list.Meta.TotalPages > 5" max-size="5"

@@ -83,26 +83,7 @@ function QuotesConfig($stateProvider) {
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
                 },
-                DeletedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
-                    if (!Me.Profile || !Me.Org) {
-                        Me.Profile = CurrentUser;
-                        Me.Org = CurrentOrg;
-                    }
-                    if (!CountParameters.filters) {
-                        CountParameters.filters = {};
-                    }
-                    CountParameters.filters = {
-                        'xp.Type': 'Quote',
-                        "xp.Status": WeirService.OrderStatus.Deleted.id
-                    };
-                    CountParameters.filters.FromUserID = Me.Profile.ID;
-                    var opts = {
-                        'pageSize': 10,
-                        'filters': CountParameters.filters
-                    };
-                    return OrderCloudSDK.Orders.List("Outgoing", opts);
-                },
-                EnquiryCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
+                RequestedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
                     if(!Me.Profile || !Me.Org){
                         Me.Profile = CurrentUser;
                         Me.Org = CurrentOrg;
@@ -111,49 +92,9 @@ function QuotesConfig($stateProvider) {
                         CountParameters.filters = {};
                     }
                     CountParameters.filters = {
-                        'xp.Type': 'Quote',
-                        "xp.Status": WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id,
-                        'xp.Active': true
-                    };
-                    CountParameters.filters.FromUserID = Me.Profile.ID;
-                    var opts = {
-                        'pageSize': 10,
-                        'filters': CountParameters.filters
-                    };
-                    return OrderCloudSDK.Orders.List("Outgoing", opts);
-                },
-                InReviewCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
-                    if(!Me.Profile || !Me.Org){
-                        Me.Profile = CurrentUser;
-                        Me.Org = CurrentOrg;
-                    }
-                    if(!CountParameters.filters){
-                        CountParameters.filters = {};
-                    }
-                    CountParameters.filters = {
-                        'xp.Type': 'Quote',
-                        "xp.Status": WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.Review.id,
-                        'xp.Active': true
-                    };
-                    CountParameters.filters.FromUserID = Me.Profile.ID;
-                    var opts = {
-                        'pageSize': 10,
-                        'filters': CountParameters.filters
-                    };
-                    return OrderCloudSDK.Orders.List("Outgoing", opts);
-                },
-                RevisedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
-                    if(!Me.Profile || !Me.Org){
-                        Me.Profile = CurrentUser;
-                        Me.Org = CurrentOrg;
-                    }
-                    if(!CountParameters.filters){
-                        CountParameters.filters = {};
-                    }
-                    CountParameters.filters = {
-                        'xp.Type': 'Quote',
-                        "xp.Status": WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
-                        'xp.Active': true
+                        'xp.Type':'Quote',
+                        "xp.Status":"!"+WeirService.OrderStatus.Saved.id+"&!"+WeirService.OrderStatus.Draft.id+"&!"+WeirService.OrderStatus.ConfirmedQuote.id+"&!"+WeirService.OrderStatus.Deleted.id,
+                        'xp.Active':true
                     };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
@@ -181,6 +122,25 @@ function QuotesConfig($stateProvider) {
                         'filters': CountParameters.filters
                     };
                     return OrderCloudSDK.Orders.List("Outgoing", opts);
+                },
+                DeletedCount: function (OrderCloudSDK, WeirService, CountParameters, Me, CurrentUser, CurrentOrg) {
+                    if (!Me.Profile || !Me.Org) {
+                        Me.Profile = CurrentUser;
+                        Me.Org = CurrentOrg;
+                    }
+                    if (!CountParameters.filters) {
+                        CountParameters.filters = {};
+                    }
+                    CountParameters.filters = {
+                        'xp.Type': 'Quote',
+                        "xp.Status": WeirService.OrderStatus.Deleted.id
+                    };
+                    CountParameters.filters.FromUserID = Me.Profile.ID;
+                    var opts = {
+                        'pageSize': 10,
+                        'filters': CountParameters.filters
+                    };
+                    return OrderCloudSDK.Orders.List("Outgoing", opts);
                 }
 			}
         })
@@ -196,35 +156,23 @@ function QuotesConfig($stateProvider) {
 			controller: 'SavedQuotesCtrl',
 			controllerAs: 'saved'
 		})
+        .state( 'quotes.requested', {
+            url: '/requested',
+            templateUrl: 'quotes/templates/quotes.requested.tpl.html',
+            controller: 'SavedQuotesCtrl',
+            controllerAs: 'saved'
+        })
+        .state( 'quotes.confirmed', {
+            url: '/confirmed',
+            templateUrl: 'quotes/templates/quotes.confirmed.tpl.html',
+            controller: 'SavedQuotesCtrl',
+            controllerAs: 'saved'
+        })
 		.state('quotes.deleted', {
 		    url: '/deleted',
 		    templateUrl: 'quotes/templates/quotes.deleted.tpl.html',
 		    controller: 'DeletedQuotesCtrl',
 		    controllerAs: 'deleted'
-		})
-		.state('quotes.enquiry', {
-			url:'/enquiry',
-			templateUrl:'quotes/templates/quotes.enquiry.tpl.html',
-			controller:'EnquiryQuotesCtrl',
-			controllerAs:'enquiry'
-		})
-		.state( 'quotes.inreview', {
-			url: '/inreview',
-			templateUrl: 'quotes/templates/quotes.inreview.tpl.html',
-			controller: 'InReviewQuotesCtrl',
-			controllerAs: 'inreview'
-		})
-		.state( 'quotes.revised', {
-			url: '/revised',
-			templateUrl: 'quotes/templates/quotes.revised.tpl.html',
-			controller: 'SavedQuotesCtrl',
-			controllerAs: 'saved'
-		})
-		.state( 'quotes.confirmed', {
-			url: '/confirmed',
-			templateUrl: 'quotes/templates/quotes.confirmed.tpl.html',
-			controller: 'SavedQuotesCtrl',
-			controllerAs: 'saved'
 		})
 		.state('quotes.goto', {
 			url:'/:quoteID',
@@ -237,7 +185,9 @@ function QuotesConfig($stateProvider) {
 		});
 }
 
-function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootScope, WeirService, Me, CurrentCustomer, CurrentOrderId, Parameters, Quotes, OrderCloudSDK, OrderCloudParameters, SavedCount, EnquiryCount, InReviewCount, RevisedCount, ConfirmedCount, DeletedCount) {
+function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootScope, WeirService, Me, CurrentCustomer,
+                          CurrentOrderId, Parameters, Quotes, OrderCloudSDK, OrderCloudParameters, SavedCount,
+                          RequestedCount, ConfirmedCount, DeletedCount) {
 	var vm = this;
 	vm.list = Quotes;
     vm.parameters = Parameters;
@@ -342,16 +292,12 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootSco
             All: "All Quotes",
             Saved: "Saved Quotes",
             SavedCount: SavedCount.Meta.TotalCount.toString() > 0 ? "Saved Quotes (" + SavedCount.Meta.TotalCount.toString() + ")" : "Saved Quotes",
-            Deleted: "Deleted Quotes",
-            DeletedCount: DeletedCount.Meta.TotalCount.toString() > 0 ? "Deleted Quotes (" + DeletedCount.Meta.TotalCount.toString() + ")" : "Deleted Quotes",
-            Enquiry: "Enquiry",
-            EnquiryCount: EnquiryCount.Meta.TotalCount.toString() > 0 ? "Enquiry (" + EnquiryCount.Meta.TotalCount.toString() + ")" : "Enquiry",
-            InReview: "Quotes Submitted for Review",
-            InReviewCount: InReviewCount.Meta.TotalCount.toString() > 0 ? "Quotes Submitted for Review (" + InReviewCount.Meta.TotalCount.toString() + ")" : "Quotes Submitted for Review",
-            Revised: "Revised Quotes",
-            RevisedCount: RevisedCount.Meta.TotalCount.toString() > 0 ? "Revised Quotes (" + RevisedCount.Meta.TotalCount.toString() + ")" : "Revised Quotes",
+            Requested: "Requested Quotes",
+            RequestedCount: RequestedCount.Meta.TotalCount.toString() > 0 ? "Requested Quotes (" + RequestedCount.Meta.TotalCount.toString() + ")" : "Requested Quotes",
             Confirmed: "Confirmed Quotes",
             ConfirmedCount: ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Confirmed Quotes (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Confirmed Quotes",
+            Deleted: "Deleted Quotes",
+            DeletedCount: DeletedCount.Meta.TotalCount.toString() > 0 ? "Deleted Quotes (" + DeletedCount.Meta.TotalCount.toString() + ")" : "Deleted Quotes",
 			LoadMore: "Load More",
             Search: "Search",
             SearchPlaceholder: "Search by Weir quote or order number",
@@ -364,16 +310,12 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootSco
             All: $sce.trustAsHtml("Tous les devis"),
             Saved: $sce.trustAsHtml("Enregistrée(s)"),
             SavedCount: $sce.trustAsHtml(SavedCount.Meta.TotalCount.toString() > 0 ? "Enregistrée(s) (" + SavedCount.Meta.TotalCount.toString() + ")" : "Enregistrée(s)"),
-            Deleted: $sce.trustAsHtml("FR: Deleted Quotes"),
-            DeletedCount: $sce.trustAsHtml("FR: " + DeletedCount.Meta.TotalCount.toString() > 0 ? "Deleted Quotes (" + DeletedCount.Meta.TotalCount.toString() + ")" : "Deleted Quotes"),
-            Enquiry: $sce.trustAsHtml("Demande"),
-            EnquiryCount: $sce.trustAsHtml(EnquiryCount.Meta.TotalCount.toString() > 0 ? "Demande (" + EnquiryCount.Meta.TotalCount.toString() + ")" : "Demande"),
-            InReview: $sce.trustAsHtml("Cotation(s) soumise(s) à révision"),
-            InReviewCount: $sce.trustAsHtml(InReviewCount.Meta.TotalCount.toString() > 0 ? "Cotation(s) soumise(s) à révision (" + InReviewCount.Meta.TotalCount.toString() + ")" : "Cotation(s) soumise(s) à révision"),
-            Revised: $sce.trustAsHtml("Cotation(s) révisée(s)"),
-            RevisedCount: $sce.trustAsHtml(RevisedCount.Meta.TotalCount.toString() > 0 ? "Cotation(s) révisée(s) (" + RevisedCount.Meta.TotalCount.toString() + ")" : "Cotation(s) révisée(s)"),
+            Requested: $sce.trustAsHtml("FR: nregistrée(s)"),
+            RequestedCount: $sce.trustAsHtml(SavedCount.Meta.TotalCount.toString() > 0 ? "FR: Enregistrée(s) (" + SavedCount.Meta.TotalCount.toString() + ")" : "FR: Enregistrée(s)"),
             Confirmed: $sce.trustAsHtml("Cotation(s) confirmée(s)"),
             ConfirmedCount: $sce.trustAsHtml(ConfirmedCount.Meta.TotalCount.toString() > 0 ? "Cotation(s) confirmée(s) (" + ConfirmedCount.Meta.TotalCount.toString() + ")" : "Cotation(s) confirmée(s)"),
+            Deleted: $sce.trustAsHtml("FR: Deleted Quotes"),
+            DeletedCount: $sce.trustAsHtml("FR: " + DeletedCount.Meta.TotalCount.toString() > 0 ? "Deleted Quotes (" + DeletedCount.Meta.TotalCount.toString() + ")" : "Deleted Quotes"),
 			LoadMore: $sce.trustAsHtml("Afficher plus"),
             Search: $sce.trustAsHtml("Rechercher"),
             SearchPlaceholder: $sce.trustAsHtml("Rechercher par référence de cotation ou de commande WEIR"),
@@ -397,29 +339,19 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootSco
 				"xp.Status": WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,
 				"xp.Active":true
 			},
-            "quotes.enquiry": {
+            "quotes.requested": {
                 "xp.Type": "Quote",
-                "xp.Status": WeirService.OrderStatus.Enquiry.id+"|"+WeirService.OrderStatus.EnquiryReview.id,
+                "xp.Status": "!"+WeirService.OrderStatus.Saved.id+"&!"+WeirService.OrderStatus.Draft.id+"&!"+WeirService.OrderStatus.ConfirmedQuote.id+"&!"+WeirService.OrderStatus.Deleted.id,
+                "xp.Active": true
+            },
+            "quotes.confirmed": {
+                "xp.Type": "Quote",
+                "xp.Status": WeirService.OrderStatus.ConfirmedQuote.id,
                 "xp.Active":true
             },
 			"quotes.deleted": {
 				"xp.Type": "Quote",
 				"xp.Status": WeirService.OrderStatus.Deleted.id
-			},
-			"quotes.inreview": {
-				"xp.Type": "Quote",
-				"xp.Status": WeirService.OrderStatus.Submitted.id+"|"+WeirService.OrderStatus.Review.id,
-				"xp.Active":true
-			},
-			"quotes.revised": {
-				"xp.Type": "Quote",
-				"xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,
-				"xp.Active":true
-			},
-			"quotes.confirmed": {
-				"xp.Type": "Quote",
-				"xp.Status": WeirService.OrderStatus.ConfirmedQuote.id,
-				"xp.Active":true
 			}
 		};
 		return JSON.stringify(filter[action]);

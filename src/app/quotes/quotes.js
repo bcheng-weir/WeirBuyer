@@ -93,7 +93,7 @@ function QuotesConfig($stateProvider) {
                     }
                     CountParameters.filters = {
                         'xp.Type':'Quote',
-                        "xp.Status":"!"+WeirService.OrderStatus.Saved.id+"&!"+WeirService.OrderStatus.Draft.id+"&!"+WeirService.OrderStatus.ConfirmedQuote.id+"&!"+WeirService.OrderStatus.Deleted.id,
+                        "xp.Status":WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id + "|" + WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
                         'xp.Active':true
                     };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
@@ -341,7 +341,7 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootSco
 			},
             "quotes.requested": {
                 "xp.Type": "Quote",
-                "xp.Status": "!"+WeirService.OrderStatus.Saved.id+"&!"+WeirService.OrderStatus.Draft.id+"&!"+WeirService.OrderStatus.ConfirmedQuote.id+"&!"+WeirService.OrderStatus.Deleted.id,
+                "xp.Status":WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id + "|" + WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
                 "xp.Active": true
             },
             "quotes.confirmed": {
@@ -488,16 +488,6 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             ValidityPeriod: $sce.trustAsHtml("All quotes are valid for 30 days")
 		}
 	};
-	//if ($state.is('quotes.revised')) {
-	//    labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " revised Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-	//    labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation révisée" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-	//} else if ($state.is('quotes.confirmed')) {
-	//    labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " confirmed Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-	//    labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation confirmée" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-    //} else if ($state.is('quotes.all')) {
-    //    labels.en.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Quote" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-    //    labels.fr.Header = $scope.$parent.quotes.list.Meta.TotalCount.toString() + " Cotation" + ($scope.$parent.quotes.list.Meta.TotalCount == 1 ? "" : "s");
-    //}
 	vm.labels = WeirService.LocaleResources(labels);
 	vm.ReviewQuote = _reviewQuote;
 }

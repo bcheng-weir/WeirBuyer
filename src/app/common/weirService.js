@@ -59,25 +59,28 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
     };
 
     var orderStatuses = {
-        Enquiry: {
-            id: "EN",
-            label: {en: "Enquiry Submitted", fr: "Demande envoyée"},
-            desc: "An enquiry for parts not found"
-        },
-        EnquiryReview: {
-            id: "ER",
-            label: {en: "Enquiry Submitted", fr: "Demande envoyée"},
-            desc: "An enquiry under administrator review."
-        },
-        Draft: {id: "DR", label: {en: "Draft", fr: "Brouillon"}, desc: "This is the current quote under construction"},
+        Draft: {
+            id: "DR",
+            label: {en: "Draft", fr: "Brouillon"},
+            desc: "This is the current quote under construction"},
         Saved: {
             id: "SV",
             label: {en: "Saved", fr: "Cotation(s) enregistrée(s)"},
             desc: "Quote has been saved but not yet submitted to weir as quote or order"
         },
+        Enquiry: {
+            id: "EN",
+            label: {en: "Quote Requested", fr: "FR: Quote Requestec"},
+            desc: "An enquiry for parts not found"
+        },
+        EnquiryReview: {
+            id: "ER",
+            label: {en: "Quote Requested", fr: "FR: Quote Requestec"},
+            desc: "An enquiry under administrator review."
+        },
         Submitted: {
             id: "SB",
-            label: {en: "Quote Submitted for Review", fr: "Cotation(s) soumise(s) à révision"},
+            label: {en: "Quote Requested", fr: "FR: Quote Requestec"},
             desc: "Customer has selected to request review OR review status is conditional based on POA items being included in quote"
         },
         RevisedQuote: {
@@ -87,7 +90,7 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         },
         RejectedQuote: {
             id: "RQ",
-            label: {en: "Rejected Quote", fr: "Cotation rejetée"},
+            label: {en: "Quote - revision requested", fr: "FR: Quote - revision requested"},
             desc: "Weir have shared Revised quote with buyer has rejected revision (this would display as a status in the list view of quotes rather than in the navigation)"
         },
         ConfirmedQuote: {
@@ -95,51 +98,51 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
             label: {en: "Confirmed Quote", fr: "Cotation confirmée"},
             desc: "1. Customer has approved revised quote – assumes that if Weir have updated a revised quote the new /revised items are ‘pre-approved’ by Weir. 2. Weir admin has  confirmed a quote submitted for review by the customer."
         },
-        SubmittedWithPO: {
-            id: "SP",
-            label: {en: "Order submitted with PO", fr: "Commande avec Bon de Commande"},
-            desc: "Order has been submitted to Weir with a PO"
-        },
-        SubmittedPendingPO: {
-            id: "SE",
-            label: {en: "Order submitted pending PO", fr: "Commande sans Bon de Commande"},
-            desc: "Order has been submitted to Weir with the expectation of a PO to be sent via email"
-        },
-        RevisedOrder: {
-            id: "RO",
-            label: {en: "Revised Order", fr: "Commande révisée"},
-            desc: "1. Weir have reviewed the order and updated items as required. When the update is saved and ‘shared with the customer this becomes a ‘Revised Order’."
-        },
-        RejectedRevisedOrder: {
-            id: "RR",
-            label: {en: "Rejected Revised Order", fr: "Commande révisée rejetée"},
-            desc: "Weir have shared revised order and customer has rejected revision (this would display as a status in the list view of quotes rather than in the navigation)"
-        },
-        ConfirmedOrder: {
-            id: "CO",
-            label: {en: "Confirmed Order", fr: "Commande confimée"},
-            desc: "1, Weir have reviewed order and confirmed all details are OK 2, Customer has accepted revised order"
-        },
-        Despatched: {id: "DP", label: {en: "Despatched", fr: "Expédiée"}, desc: "Order marked as despatched"},
-        Invoiced: {id: "IV", label: {en: "Invoiced", fr: "Facturée"}, desc: "Order marked as invoiced"},
-        Review: {
-            id: "RE",
-            label: {en: "Under review", fr: "En révision"},
-            desc: "Order or Quote has been submitted to Weir, but a change or additional information is needed"
-        },
         Deleted: {
             id: "DEL",
             label: { en: "Deleted", fr: "FR: Deleted" },
             desc: "Quote has been deleted by Buyer user"
+        },
+        SubmittedPendingPO: {
+            id: "SE",
+            label: {en: "Draft order ", fr: "FR: Draft order "},
+            desc: "Order has been submitted to Weir with the expectation of a PO to be sent via email"
+        },
+        RevisedOrder: {
+            id: "RO",
+            label: {en: "Draft order - revised", fr: "FR: Draft order - revised"},
+            desc: "1. Weir have reviewed the order and updated items as required. When the update is saved and ‘shared with the customer this becomes a ‘Revised Order’."
+        },
+        RejectedRevisedOrder: {
+            id: "RR",
+            label: {en: "Draft order - revision requested", fr: "FR: Draft order - revision requested"},
+            desc: "Weir have shared revised order and customer has rejected revision (this would display as a status in the list view of quotes rather than in the navigation)"
+        },
+        ConfirmedOrder: {
+            id: "CO",
+            label: {en: "Order confirmed - PO pending ", fr: "FR: Order confirmed - PO pending "},
+            desc: "1, Weir have reviewed order and confirmed all details are OK 2, Customer has accepted revised order"
+        },
+        SubmittedWithPO: {
+            id: "SP",
+            label: {en: "Order confirmed - PO added ", fr: "FR: Order confirmed - PO added "},
+            desc: "Order has been submitted to Weir with a PO"
+        },
+        Despatched: {
+            id: "DP",
+            label: {en: "Despatched", fr: "Expédiée"},
+            desc: "Order marked as despatched"
+        },
+        Invoiced: {
+            id: "IV",
+            label: {en: "Invoiced", fr: "Facturée"},
+            desc: "Order marked as invoiced"
+        },
+        Review: {
+            id: "RE",
+            label: {en: "Under review", fr: "En révision"},
+            desc: "Order or Quote has been submitted to Weir, but a change or additional information is needed"
         }
-        /*Shared: {id: "SH", label: "Shared", desc: "Shopper quote has been shared with a buyer"}, //Should this be an XP?
-		 Approved: {id: "AP", label: "Approved", desc: "Shopper quote has been shared with a buyer and approved"},
-		 Rejected: {id: "RJ", label: "Rejected", desc: "Shopper quote has been shared with a buyer and then rejected"},
-		 Submitted: {id: "SB", label: "Submitted", desc: "Customer has selected to request review OR review status is conditional based on POA items being included in quote"},
-		 ConfirmedPending: {id: "CP", label: "Confirmed Quote", desc: "Quote has been submitted and confirmed by Weir, pending addition of PO number"},
-		 Review: {id: "RV", label: "Under review", desc: "Order has been submitted to Weir, but a change or additional information is needed"},
-		 Confirmed: {id: "CF", label: "Confirmed", desc: "Order has been submitted to and confirmed by Weir, and PO number is attached"},
-		 Cancelled: {id: "CX", label: "Cancelled", desc: "Order cancelled after submission"},*/
     };
     var orderStatusList = [
         orderStatuses.Draft, orderStatuses.Saved, orderStatuses.Submitted, orderStatuses.RevisedQuote,

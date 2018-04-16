@@ -53,7 +53,7 @@ function OrdersConfig($stateProvider) {
                     }
                     CountParameters.filters = {
                         "xp.Type":"Order",
-                        "xp.Status":"!" + WeirService.OrderStatus.ConfirmedOrder.id + "&!" + WeirService.OrderStatus.Deleted.id,
+                        "xp.Status":WeirService.OrderStatus.SubmittedPendingPO.id + "|" + WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id + "|" + WeirService.OrderStatus.Despatched.id + "|" + WeirService.OrderStatus.Invoiced.id + "|" + WeirService.OrderStatus.ConfirmedOrder.id,
                         "xp.Active":true
                     };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
@@ -72,7 +72,11 @@ function OrdersConfig($stateProvider) {
                     if(!CountParameters.filters){
                         CountParameters.filters = {};
                     }
-                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active": true };
+                    CountParameters.filters = {
+                        "xp.Type":"Order",
+                        "xp.Status":WeirService.OrderStatus.ConfirmedOrder.id + "|" + WeirService.OrderStatus.SubmittedWithPO.id,
+                        "xp.Active": true
+                    };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
@@ -89,7 +93,10 @@ function OrdersConfig($stateProvider) {
                     if (!CountParameters.filters) {
                         CountParameters.filters = {};
                     }
-                    CountParameters.filters = { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Deleted.id};
+                    CountParameters.filters = {
+                        "xp.Type":"Order",
+                        "xp.Status":WeirService.OrderStatus.Deleted.id
+                    };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
                         'pageSize': 10,
@@ -326,14 +333,24 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 	vm.FilterActions = _filterActions;
 	function _filterActions(action) {
         var filter = {
-            "orders.all": { "xp.Type":"Order", "xp.Active":true },
-			"orders.draft": {
+            "orders.all": {
                 "xp.Type":"Order",
-                "xp.Status":"!" + WeirService.OrderStatus.ConfirmedOrder.id + "&!" + WeirService.OrderStatus.Deleted.id,
                 "xp.Active":true
             },
-			"orders.confirmed":{"xp.Type":"Order","xp.Status":WeirService.OrderStatus.ConfirmedOrder.id, "xp.Active":true},
-			"orders.deleted": { "xp.Type": "Order", "xp.Status": WeirService.OrderStatus.Deleted.id, "xp.Active": true }
+			"orders.draft": {
+                "xp.Type":"Order",
+                "xp.Status":WeirService.OrderStatus.SubmittedPendingPO.id + "|" + WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id + "|" + WeirService.OrderStatus.Despatched.id + "|" + WeirService.OrderStatus.Invoiced.id + "|" + WeirService.OrderStatus.ConfirmedOrder.id,
+                "xp.Active":true
+            },
+			"orders.confirmed":{
+                "xp.Type":"Order",
+                "xp.Status":WeirService.OrderStatus.ConfirmedOrder.id + "|" + WeirService.OrderStatus.SubmittedWithPO.id,
+                "xp.Active": true
+            },
+			"orders.deleted": {
+                "xp.Type":"Order",
+                "xp.Status":WeirService.OrderStatus.Deleted.id
+            }
 		};
 		return JSON.stringify(filter[action]);
 	}

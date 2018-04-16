@@ -42,8 +42,8 @@ function QuotesConfig($stateProvider) {
                         Parameters.filters = {};
                     }
 					//return WeirService.FindOrders(Parameters, false);
-					if(Parameters && Parameters.search && Parameters.search != 'undefined') {
-						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID"; //,FromUserID,Total,xp
+					if(Parameters && Parameters.search && Parameters.search !== 'undefined') {
+						Parameters.searchOn = Parameters.searchOn ? Parameters.searchOn : "ID";
 					}
 					Parameters.filters = Parameters.filters || {};
 					Parameters.filters["xp.Status"] = Parameters.filters["xp.Status"] || "!DEL";

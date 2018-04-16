@@ -331,27 +331,27 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootSco
 	function _filterActions(action) {
         var filter = {
             "quotes.all": {
-                "xp.Type": "Quote",
-                "xp.Active": true
+                "xp.Type":"Quote",
+                "xp.Active":true
             },
 			"quotes.saved": {
-				"xp.Type": "Quote",
-				"xp.Status": WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,
+				"xp.Type":"Quote",
+				"xp.Status":WeirService.OrderStatus.Saved.id+"|"+WeirService.OrderStatus.Draft.id,
 				"xp.Active":true
 			},
             "quotes.requested": {
                 "xp.Type": "Quote",
                 "xp.Status":WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id + "|" + WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
-                "xp.Active": true
+                "xp.Active":true
             },
             "quotes.confirmed": {
-                "xp.Type": "Quote",
-                "xp.Status": WeirService.OrderStatus.ConfirmedQuote.id,
+                "xp.Type":"Quote",
+                "xp.Status":WeirService.OrderStatus.ConfirmedQuote.id,
                 "xp.Active":true
             },
 			"quotes.deleted": {
-				"xp.Type": "Quote",
-				"xp.Status": WeirService.OrderStatus.Deleted.id
+				"xp.Type":"Quote",
+				"xp.Status":WeirService.OrderStatus.Deleted.id
 			}
 		};
 		return JSON.stringify(filter[action]);

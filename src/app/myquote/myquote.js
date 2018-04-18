@@ -1921,6 +1921,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 								$exceptionHandler, Countries) {
 	var vm = this;
 	vm.ImageBaseUrl = imageRoot;
+    vm.imgInformation = "../../../assets/images/Information.svg";
 	vm.Zero = 0;
 
     function notUpdated(newObj, oldObj) {
@@ -1971,8 +1972,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
             return "UPDATED";
         }
     }
-	if(LineItems) { //hopefully an easier way to set labels.
-		// For each line item, does it exist in previous line items?  If NO then NEW, else are the fields different between the two? If YES then updated.
+	if(LineItems) {
 		vm.LineItems = Underscore.filter(LineItems.Items, function(item) {
 			var found = false;
 			if(item.ProductID == "PLACEHOLDER") { //Match a blank line item
@@ -2093,7 +2093,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Customer: "Customer; ",
 			QuoteNumber: "Quote Number; ",
 			QuoteName: "Quote Name; ",
-			BackToQuotes: "Back to your Quotes",
+			BackToQuotes: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quotes",
 			SerialNum: "Serial Number",
 			TagNum: "Tag Number (if available)",
 			PartNum: "Part Number",
@@ -2116,10 +2116,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Download: "Download",
 			Print: "Print",
 			Approve: {
-				Quote:"Approve Quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
-				Order:"Approve Order <i class='fa fa-angle-right' aria-hidden='true'></i>"
+				Quote:"Approve revised quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
+				Order:"Approve revised order <i class='fa fa-angle-right' aria-hidden='true'></i>"
 			},
-			Reject: "Reject",
+			Reject: "Request revision <i class='fa fa-angle-right' aria-hidden='true'></i>",
 			Comments: "Comments",
 			Status: "Status",
 			OrderDate: "Order Date;",
@@ -2142,13 +2142,14 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			},
             POAShipping: "POA",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
-            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+            QuoteTooltip: $sce.trustAsHtml("If you approve this revised quote you will have the following options;<br><br>1. Submit as Draft Order<br>2. Save as Confirmed Quote<br><small>Your order will be confirmed following receipt or upload of your PO.</small>")
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
 			QuoteNumber: $sce.trustAsHtml("Num&eacute;ro de cotation "),
 			QuoteName: $sce.trustAsHtml("Nom de la cotation "),
-			BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos cotations"),
+			BackToQuotes: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; vos cotations"),
 			SerialNum: $sce.trustAsHtml("Num&eacute;ro de S&eacute;rie"),
 			TagNum: $sce.trustAsHtml("Num&eacute;ro de Tag"),
 			PartNum: $sce.trustAsHtml("R&eacute;f&eacute;rence de la pi&egrave;ce"),
@@ -2171,10 +2172,10 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
 			Print: $sce.trustAsHtml("Imprimer"),
             Approve: {
-                Quote:$sce.trustAsHtml("Approuver le devis <i class='fa fa-angle-right' aria-hidden='true'></i>"),
-                Order:$sce.trustAsHtml("Approuver le devis <i class='fa fa-angle-right' aria-hidden='true'></i>")
+                Quote:"FR: Approve revised quote <i class='fa fa-angle-right' aria-hidden='true'></i>",
+                Order:"FR: Approve revised order <i class='fa fa-angle-right' aria-hidden='true'></i>"
             },
-			Reject: $sce.trustAsHtml("Rejeter"),
+            Reject: "FR: Request revision <i class='fa fa-angle-right' aria-hidden='true'></i>",
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande"),
@@ -2197,7 +2198,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 			},
             POAShipping: "POA",
             EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
-            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
+            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+			QuoteTooltip: $sce.trustAsHtml("If you approve this revised quote you will have the following options;<br><br>1. Submit as Draft Order<br>2. Save as Confirmed Quote<br><small>Your order will be confirmed following receipt or upload of your PO.</small>")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -2206,16 +2208,13 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		var orderid = vm.Quote.xp.OriginalOrderID ? vm.Quote.xp.OriginalOrderID : vm.Quote.ID;
 		FilesService.Get(orderid + fileName)
 			.then(function(fileData) {
-				//console.log(fileData);
 				var file = new Blob([fileData.Body], {type: fileData.ContentType});
 				FileSaver.saveAs(file, fileName);
-				//var fileURL = URL.createObjectURL(file);
-				//window.open(fileURL, "_blank");
 			});
 	};
 
 	function _gotoQuotes() {
-		if(vm.Quote.xp.Type == "Quote") {
+		if(vm.Quote.xp.Type === "Quote") {
 			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
 		} else {
 			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
@@ -2281,7 +2280,6 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
         return new Date() > date;
     };
 	function _approve() {
-		// Order skip the modal verification.
 		if (vm.Quote.xp.Status == WeirService.OrderStatus.RevisedOrder.id) {
             var mods = {
                 xp: {
@@ -2308,12 +2306,13 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
                     vm.Quote = Quote;
                     labels = {
                         en: {
-                        	SubmitOrder:"Submit Order",
+                        	SubmitOrder:"Submit as Confirmed order - PO pending",
 							SubmitOrderDetails:$sce.trustAsHtml("<p>If you select Submit Order you will be able to submit your order as follows;<br><br>1. Submit Order with PO – add your PO number or upload your PO document.<br>2. Submit Order & email PO – submit your order and email your PO (we’ll add it to the order for you).</p>"),
 							ReviewTerms:"Review Terms and Conditions",
-							Continue:"Continue to Submit order ",
+							Continue:"Submit as Confirmed Order<br>- PO pending ",
 							SaveQuote:"Save as confirmed quote",
 							SaveQuoteDetails:"Save to your confirmed quotes list - you can submit as an order at a later date.",
+
                             ApprovedMessage: "The Revised Quote has been Accepted",
                             ApprovedTitle: "Quote Updated"
                     	},
@@ -2321,7 +2320,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
                             SubmitOrder:$sce.trustAsHtml("Confirmer la commande"),
                         	SubmitOrderDetails:$sce.trustAsHtml("<p>Si vous sélectionnez 'Soumettre votre commande', vous pourrez confirmer votre commande comme suit: <br><br> 1.Soumettre votre commande avec bon de commande :  ajoutez votre numéro de commande ou téléchargez votre document de commande.  <br><br>2.Soumettre votre commande & envoyer par mail votre bon de commande  (nous l'ajouterons à la commande pour vous)</p>"),
                             ReviewTerms:$sce.trustAsHtml("Termes et conditions"),
-                            Continue:$sce.trustAsHtml("Continuer vers la soumission de la commande "),
+                            Continue:"FR: Submit as Confirmed Order - PO pending ",
                             SaveQuote:$sce.trustAsHtml("Enregistrer sous Cotations Confirmées"),
                             SaveQuoteDetails:$sce.trustAsHtml("Enregistrez dans votre liste de cotations confirmées - vous pouvez soumettre une commande ultérieurement."),
                             ApprovedMessage: $sce.trustAsHtml("La cotation révisée a été acceptée"),
@@ -2393,6 +2392,7 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 		return vm.ImageBaseUrl + img;
 	};
 
+	//TODO update the status to RQ, and coordinate with Tim R. on the new xp property so the correct webhook email is sent.
     vm.updateFXRate = function () {
         $uibModal.open({
             animation: true,

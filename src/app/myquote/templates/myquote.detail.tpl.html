@@ -13,9 +13,9 @@
                         <h2 class="pull-right"></h2>
                     </div>
                     <div class="col-xs-6">
-                        <button class="btn btn-lg btn-success" ng-disabled="myquote.Quote.xp.Status=='DR'" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html="detail.labels.DeliveryOptions"></button>
-                        <br>
-                        <h6 class="pull-left save-to-continue" ng-bind-html="detail.labels.SaveToContinue" ng-if="myquote.Quote.xp.Status=='DR'" ng-click="myquote.Save()"></h6>
+                        <button class="btn btn-lg btn-success" ng-click="myquote.GotoDelivery(myForm.$dirty)" ng-bind-html="detail.labels.DeliveryOptions"></button>
+                        <!--<br>
+                        <h6 class="pull-left save-to-continue" ng-bind-html="detail.labels.SaveToContinue" ng-if="myquote.Quote.xp.Status=='DR'" ng-click="myquote.Save()"></h6>-->
                     </div>
                     <div class="col-xs-2"></div>
                 </div>
@@ -73,20 +73,7 @@
         </div>
         <div class="row">
             <!-- Get the current master upload data in here. -->
-            <div class="col-xs-6">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <h4>
-                            <span ng-if="myquote.Quote.xp.Status!='DR'" ng-bind-html='detail.labels.UploadHeader'></span>
-                            <span ng-if="myquote.Quote.xp.Status=='DR'" ng-bind-html='detail.labels.DragAndDrop'></span>
-                        </h4>
-                        <p><span ng-bind-html='detail.labels.UploadInstruct'></span></p>
-                        <div class="panel panel-default" ng-if="myquote.Quote.xp.Status!='DR'">
-                            <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
-                            <p><ordercloud-file-upload model="myquote.Quote" keyname="Files" label='{{detail.labels.DragAndDrop}}'></ordercloud-file-upload></p> <!-- myquote.Quote or detail.quote? -->
-                        </div>
-                    </div>
-                </div>
+            <div class="col-md-6">
                 <div class="row">
                     <div class="col-xs-12">
                         <p><span ng-bind-html='myquote.SharedContent.ReplacementGuidance'></span></p>
@@ -96,7 +83,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-6"> <!-- Comments to Weir -->
+            <div class="col-md-6">
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="row">

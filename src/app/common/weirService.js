@@ -1508,7 +1508,9 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         var deferred = $q.defer();
         var buyerId = Me.GetBuyerID();
         //var prefix = 'WPIFR';
-        var newQuoteId = buyerId + "-E{ORDERID}"; //createQuoteNumber(buyerId, 0, Me.Org);
+        var newQuoteId = buyerId + "-E{ORDERID}";
+
+        //TODO: The empty brand and valve type are the only way we are able to differentiate standard and valve enquiries.
         var data = {
             ID: newQuoteId,
             Type: "Standard",

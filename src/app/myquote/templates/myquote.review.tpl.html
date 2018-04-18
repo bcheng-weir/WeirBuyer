@@ -15,11 +15,36 @@
             <div class="col-xs-8" ng-show="review.currentState=='myquote.review'">
                 <!-- MyQuote Navigation -->
                 <div class="row" style="margin-left:0px">
-                    <div class="col-md-12 pull-right">
-                        <div class="pull-right nav-buttons">
-                            <button class="btn btn-lg btn-primary" ng-click="review.backToDelivery()" ng-bind-html="review.labels.BackToDelivery"></button>
-                            <button class="btn btn-lg btn-success" ng-click="myquote.proceedToSubmit()" ng-bind-html="review.labels.Submit"></button>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p style="text-align: right;"><img ng-src="{{myquote.imgInformation}}" class="img-info"
+                                   tooltip-placement="left"
+                                   uib-tooltip-html="review.labels.OrderTooltip"
+                                   tooltip-class="img-info-popup"/></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><button class="btn btn-lg btn-success" ng-click="review.SubmitDraftOrder()" ng-bind-html="review.labels.SubmitOrder"></button></p>
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p style="text-align: right;"><img ng-src="{{myquote.imgInformation}}" class="img-info"
+                                     tooltip-placement="left"
+                                     uib-tooltip-html="review.labels.QuoteTooltip"
+                                     tooltip-class="img-info-popup"/></p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><button class="btn btn-lg btn-success" ng-click="review.SubmitQuoteRequest()" ng-bind-html="review.labels.SubmitQuote"></button></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <p><button class="btn btn-lg btn-primary" ng-click="review.backToDelivery()" ng-bind-html="review.labels.BackToDelivery"></button></p>
+                            </div>
+                        </div>
+                        <div class="nav-buttons"></div>
                     </div>
                 </div>
             </div>
@@ -135,67 +160,19 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-6" > <!-- ng-if="!review.SubmittingToReview && !review.SubmittingWithPO" -->
-            <!-- PO Documents and # -->
-            <div class="row" ng-show="review.currentState=='myquote.submitorder'">
+        <div class="col-xs-6" >
+            <div class="row">
                 <div class="col-xs-12">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <h4 ng-bind-html="review.labels.POEntry"></h4>
-                            <p class="form-inline"><input type="text" class="form-control" ng-model="review.PONumber" id="pon" /></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <h4 ng-bind-html="review.labels.PONeededHeader"></h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-9">
-                            <h4 ng-bind-html="review.labels.POUpload"></h4>
-                            <h3><span ng-bind-html='review.labels.UploadHeader'></span></h3>
-                            <p><span ng-bind-html='review.labels.UploadInstruct'></span></p>
-                            <div class="panel panel-default">
-                                <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
-                                <p><ordercloud-po-upload model="myquote.Quote" keyname="PODocument" label='{{review.labels.DragAndDrop}}'></ordercloud-po-upload></p>
-                            </div>
-                        </div>
+                    <h4>
+                        <span ng-if="myquote.Quote.xp.Status!='DR'" ng-bind-html='review.labels.UploadHeader'></span>
+                    </h4>
+                    <p><span ng-bind-html='review.labels.UploadInstruct'></span></p>
+                    <div class="panel panel-default" ng-if="myquote.Quote.xp.Status!='DR'">
+                        <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                        <p><ordercloud-file-upload model="myquote.Quote" keyname="Files" label='{{review.labels.DragAndDrop}}'></ordercloud-file-upload></p>
                     </div>
                 </div>
             </div>
-
-	        <p><b><span ng-bind-html="review.labels.DeliveryAddress"></span></b></p>
-            <div ng-if="myquote.ShippingAddress.Country=='FR'">
-                <span ng-bind-html="myquote.ShippingAddress.FirstName"></span> <span ng-bind-html="myquote.ShippingAddress.LastName"></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.Street2' ng-if="myquote.ShippingAddress.Street2"></span><br ng-if="myquote.ShippingAddress.Street2">
-                <span ng-bind-html='myquote.ShippingAddress.xp.Street3' ng-if="myquote.ShippingAddress.xp.Street3"></span><br ng-if="myquote.ShippingAddress.xp.Street3">
-                <span><span ng-bind-html='myquote.ShippingAddress.Zip'></span> <span ng-bind-html='myquote.ShippingAddress.City'></span></span><br>
-                <span ng-bind-html='review.Quote.CountryName'></span>
-            </div>
-            <div ng-if="myquote.ShippingAddress.Country=='GB'">
-                <span ng-bind-html="myquote.ShippingAddress.FirstName"></span> <span ng-bind-html="myquote.ShippingAddress.LastName"></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.Street2' ng-if="myquote.ShippingAddress.Street2"></span><br ng-if="myquote.ShippingAddress.Street2">
-                <span ng-bind-html='myquote.ShippingAddress.xp.Street3' ng-if="myquote.ShippingAddress.xp.Street3"></span><br ng-if="myquote.ShippingAddress.xp.Street3">
-                <span ng-bind-html='myquote.ShippingAddress.City'></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.Zip'></span><br>
-                <span ng-bind-html='review.Quote.CountryName'></span>
-            </div>
-            <div ng-if="myquote.ShippingAddress.Country!='GB' && myquote.ShippingAddress.Country!='FR'">
-                <span ng-bind-html="myquote.ShippingAddress.FirstName"></span> <span ng-bind-html="myquote.ShippingAddress.LastName"></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.CompanyName'></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.Street1'></span><br>
-                <span ng-bind-html='myquote.ShippingAddress.Street2' ng-if="myquote.ShippingAddress.Street2"></span><br ng-if="myquote.ShippingAddress.Street2">
-                <span ng-bind-html='myquote.ShippingAddress.xp.Street3' ng-if="myquote.ShippingAddress.xp.Street3"></span><br ng-if="myquote.ShippingAddress.xp.Street3">
-                <span><span ng-bind-html='myquote.ShippingAddress.City'></span>, <span ng-bind-html='myquote.ShippingAddress.State'></span> <span ng-bind-html='myquote.ShippingAddress.Zip'></span></span><br>
-                <span ng-bind-html='review.Quote.CountryName'></span>
-            </div>
-            <span ng-if="review.Step=='Review'" ng-click="review.changeAddress()">
-                <a href="#" ng-html-bind="review.labels.ChangeAddr"></a>
-            </span>
             <hr>
             <div class="row">
                 <div class="col-xs-8">
@@ -207,11 +184,6 @@
             </div>
         </div>
         <div class="col-xs-6">
-            <p><b><span ng-bind-html='review.labels.YourAttachments'></span><br></b></p>
-            <p ng-repeat="fileName in review.Quote.xp.Files">
-                <a href="" ng-click="review.GetFile(fileName)" target="_blank" ng-bind-html="fileName"></a>
-            </p>
-            <!--<p><b><span ng-bind-html='review.labels.CommentsHeader'></span></b></p>-->
             <div class="row">
                 <div class="col-xs-12">
                     <p style="padding: 10px 0px 10px 0px"><strong><span ng-bind-html='myquote.labels.CommentNotice' ng-if="myquote.Quote.xp.Status == 'SV' || myquote.Quote.xp.Status == 'DR'"> </span></strong></p>

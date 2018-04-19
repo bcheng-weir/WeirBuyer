@@ -45,7 +45,7 @@
                     <p style="text-align: right;">
                         <img ng-src="{{revised.imgInformation}}" class="img-info"
                            tooltip-placement="left"
-                           uib-tooltip-html="revised.labels.QuoteTooltip"
+                           uib-tooltip-html="revised.labels.QuoteTooltip[revised.Quote.xp.Type]"
                            tooltip-class="img-info-popup"/>
                     </p>
                 </div>
@@ -56,13 +56,18 @@
             <div class="row">
                 <div class="col-md-8"></div>
                 <div class="col-md-4">
-                    <p><button class="btn btn-lg btn-warning btn-100" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"></button></p>
+                    <p>
+                        <button class="btn btn-lg btn-warning btn-100" ng-click="revised.Reject()" ng-bind-html="revised.labels.Reject"
+                            tooltip-placement="left"
+                            uib-tooltip-html="revised.labels.RejectTooltip"
+                            tooltip-class="img-info-popup"></button>
+                    </p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-8"></div>
                 <div class="col-md-4">
-                    <p><button class="btn btn-lg btn-primary btn-100" ng-bind-html='revised.labels.BackToQuotes' ng-click="revised.gotoQuotes()"></button></p>
+                    <p><button class="btn btn-lg btn-primary btn-100" ng-bind-html='revised.labels.BackToQuotes[revised.Quote.xp.Type]' ng-click="revised.gotoQuotes()"></button></p>
                 </div>
             </div>
         </div>

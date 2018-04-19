@@ -1,10 +1,16 @@
 <div id="REVISEDMODAL">
     <div class="modal-header">
         <span ng-click="revisedModal.close()" class="pull-right">X</span>
-        <H3 ng-bind-html="revisedModal.labels.SubmitOrder" class="pull-left"></H3>
     </div>
     <div class="modal-body">
         <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="pull-left">
+                        <b><span ng-bind-html="revisedModal.labels.SubmitOrder"></span></b>
+                    </p>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12" ng-bind-html="revisedModal.labels.SubmitOrderDetails"></div>
             </div>
@@ -15,7 +21,7 @@
                     <input type="checkbox" ng-model="revisedModal.checkbox" id="checkbox_id">
                 </div>
                 <div class="col-md-6">
-                    <button class="btn btn-success pull-right" ng-bind-html="revisedModal.labels.Continue" ng-disabled="revisedModal.checkbox!=true" ng-click="revisedModal.confirmQuote()"></button>
+                    <button class="btn btn-success pull-right" ng-bind-html="revisedModal.labels.Continue" ng-disabled="revisedModal.checkbox!=true" ng-click="revisedModal.confirmQuote('ConfirmedOrder')"></button>
                 </div>
             </div>
             <br>
@@ -32,7 +38,7 @@
             <br>
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-default pull-right" ng-bind-html="revisedModal.labels.SaveQuote" ng-click="revisedModal.confirmQuote()"></button>
+                    <button class="btn btn-default pull-right" ng-bind-html="revisedModal.labels.SaveQuote" ng-click="revisedModal.confirmQuote('ConfirmedQuote')"></button>
                 </div>
             </div>
         </div>

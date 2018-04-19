@@ -2726,6 +2726,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.buyer = Me.Org;
 	vm.NewComment = null;
 	vm.ImageBaseUrl = imageRoot;
+    vm.imgInformation = "../../../assets/images/Information.svg";
 	vm.Zero = 0;
 	vm.PONumber = "";
 	vm.Quote = Quote;
@@ -2792,16 +2793,16 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Download: "Download",
 			Print: "Print",
 			Approve: "Approve",
-			Reject: "Reject",
+			Reject: "Request revision <i class='fa fa-angle-right' aria-hidden='true'></i>",
 			Comments: "Comments",
 			Status: "Status",
 			OrderDate: "Order Date;",
             ValidUntil: "Valid Until",
 			Currency: "Currency",
-			BackToQuotes: "Back to your Quotes",
+			BackToQuotes: "<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quotes",
 			SubmitWithPO: "Submit Order",
-			SubmitOrderAndEmail: "Submit Order & Email PO",
-			SubmitOrderWithPO: "Submit Order",
+			SubmitOrderAndEmail: "Submit as order pending PO <i class='fa fa-angle-right' aria-hidden='true'></i>",
+			SubmitOrderWithPO: "Submit as Order with PO <i class='fa fa-angle-right' aria-hidden='true'></i>",
 			EmailPoMessage: "*Your order will be confirmed<br class='message-break'>following receipt of your PO.",
 			POEntry: "Enter PO Number",
 			DragAndDrop: "Drag and drop Files Here to Upload",
@@ -2819,7 +2820,11 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 				exworks:'Carriage - Ex Works',
 				standard:'Carriage Charge'
 			},
-			POAShipping: "POA"
+			POAShipping: "POA",
+            SubmitWithPOTooltip: $sce.trustAsHtml("You can add your PO to this Confirmed quote and submit as a Confirmed Order - PO added."),
+            SubmitPendingPOTooltip: $sce.trustAsHtml("You can approve this confirmed quote and submit as a Confirmed order - pending PO.<br><br>1. You can upload your PO to the order at a later date<br>2. You can send Weir your PO and we will upload it for you<br><small>Your order will be confirmed following receipt of your PO.</small>"),
+            RejectedMessage: "The Revised Quote has been Rejected.",
+			RejectedTitle: "Quote Updated"
 		},
 		fr: {
 			Customer: $sce.trustAsHtml("Client "),
@@ -2845,16 +2850,16 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 			Download: $sce.trustAsHtml("T&eacute;l&eacute;charger"),
 			Print: $sce.trustAsHtml("Imprimer"),
 			Approve: $sce.trustAsHtml("Approuver"),
-			Reject: $sce.trustAsHtml("Rejeter"),
+			Reject: $sce.trustAsHtml("FR: Request revision <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			Comments: $sce.trustAsHtml("Commentaires"),
 			Status: $sce.trustAsHtml("Statut"),
 			OrderDate: $sce.trustAsHtml("Date de commande;"),
             ValidUntil: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 			Currency: $sce.trustAsHtml("Devise"),
-			BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos devis"),
+            BackToQuotes: $sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; vos devis"),
 			SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
-			SubmitOrderAndEmail: $sce.trustAsHtml("Commander sans bon<br>de commande"),
-			SubmitOrderWithPO: $sce.trustAsHtml("Commander avec bon<br>de commande"),
+			SubmitOrderAndEmail: $sce.trustAsHtml("FR: Submit as order pending PO <i class='fa fa-angle-right' aria-hidden='true'></i>"),
+			SubmitOrderWithPO: $sce.trustAsHtml("FR: Submit as Order with PO <i class='fa fa-angle-right' aria-hidden='true'></i>"),
 			EmailPoMessage: $sce.trustAsHtml("Votre commande sera confirmée<br class='message-break'>après réception de votre bon de commande."),
 			POEntry: $sce.trustAsHtml("Entrer une r&eacute;f&eacute;rence de commande"),
 			DragAndDrop: $sce.trustAsHtml("Faites glisser vos documents ici pour les t&eacute;l&eacute;charger"),
@@ -2872,7 +2877,11 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 				exworks:$sce.trustAsHtml('Livraison Départ-Usine (EXW)'),
 				standard:$sce.trustAsHtml('Frais de livraison')
 			},
-			POAShipping: "POA"
+			POAShipping: "POA",
+            SubmitWithPOTooltip: $sce.trustAsHtml("FR: You can add your PO to this Confirmed quote and submit as a Confirmed Order - PO added."),
+            SubmitPendingPOTooltip: $sce.trustAsHtml("FR: You can approve this confirmed quote and submit as a Confirmed order - pending PO.<br><br>1. You can upload your PO to the order at a later date<br>2. You can send Weir your PO and we will upload it for you<br><small>Your order will be confirmed following receipt of your PO.</small>"),
+            RejectedMessage: $sce.trustAsHtml("La cotation révisée a ét&eacute; rejetée."),
+			RejectedTitle: $sce.trustAsHtml("Cotation mise &agrave; jour")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);
@@ -3042,6 +3051,20 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
             });
         }
 
+        function _reject() {
+			var mods = {
+				xp: {
+					StatusDate: new Date(),
+					Status: vm.Quote.xp.Type == "Quote" ? WeirService.OrderStatus.RejectedQuote.id : WeirService.OrderStatus.RejectedRevisedOrder.id
+				}
+			};
+			WeirService.UpdateQuote(vm.Quote, mods)
+				.then(function (qte) {
+					toastr.success(vm.labels.RejectedMessage, vm.labels.RejectedTitle);
+					$state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
+				});
+	    }
+
         vm.updateFXRate = function () {
             $uibModal.open({
                 animation: true,
@@ -3077,5 +3100,6 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 	vm.GetStatusLabel = getStatusLabel;
 	vm.gotoQuotes = _gotoQuotes;
 	vm.submitOrder = _submitOrder;
+    vm.Reject = _reject;
 }
 

@@ -1432,9 +1432,7 @@ function ReviewQuoteController(WeirService, $state, $sce, $exceptionHandler, $ro
     var allowNextStatuses = [WeirService.OrderStatus.Draft.id, WeirService.OrderStatus.Saved.id];
 	// TODO a user could have multiple rolls or groups. look for the usermembership in the buyers group.
     vm.ShowNextButton = allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1;
-					//(QuoteShareService.Me.xp.Roles && QuoteShareService.Me.xp.Roles.indexOf("Buyer") > -1) &&
-                            //((vm.Quote.xp.Status == WeirService.OrderStatus.ConfirmedQuote.id) ||
-                            //(vm.Quote.FromUserID == QuoteShareService.Me.ID && (allowNextStatuses.indexOf(vm.Quote.xp.Status) > -1)));
+
     vm.fileStore = fileStore;
     vm.SharedContent = Me.Org.xp.WeirGroup.id == 2 && WeirService.Locale() == "en" ? Catalog.xp.SharedContentFR_EN : Catalog.xp.SharedContent;
     var labels = {
@@ -1862,7 +1860,7 @@ function QuoteRevisionsController(WeirService, $state, $sce, QuoteID, Revisions)
     }
     function view(quote) {
     	// Catch orders that are despatched, invoiced, or confirmed. they are read only
-        if (quote.xp.Active && quote.xp.Status != WeirService.OrderStatus.Despatched.id && quote.xp.Status != WeirService.OrderStatus.Invoiced.id && quote.xp.Status != WeirService.OrderStatus.ConfirmedOrder.id) {
+        if (quote.xp.Active && quote.xp.Status != WeirService.OrderStatus.Despatched.id && quote.xp.Status != WeirService.OrderStatus.Invoiced.id) {
             // ToDo TEST: Current order should be this one. No altering revised quotes.
 	        $state.go("revised", {quoteID: quote.ID, buyerID: quote.xp.BuyerID});
         } else {
@@ -2228,9 +2226,18 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
 
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type === "Quote") {
-			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
+			$state.go("quotes.requested", {
+				filters: JSON.stringify({
+                    "xp.Type": "Quote",
+                    "xp.Status":WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id + "|" + WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
+                    "xp.Active":true
+				})}, {reload: true});
 		} else {
-			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
+			$state.go("orders.draft", {filters: JSON.stringify({
+                    "xp.Type":"Order",
+                    "xp.Status":WeirService.OrderStatus.SubmittedPendingPO.id + "|" + WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id + "|" + WeirService.OrderStatus.Despatched.id + "|" + WeirService.OrderStatus.Invoiced.id + "|" + WeirService.OrderStatus.ConfirmedOrder.id,
+                    "xp.Active":true
+			})}, {reload: true});
 		}
 	}
 
@@ -2297,7 +2304,8 @@ function RevisedQuoteController(WeirService, $state, $sce, $timeout, $window, Or
             var mods = {
                 xp: {
                     StatusDate: new Date(),
-                    Status: WeirService.OrderStatus.ConfirmedOrder.id
+                    Status: WeirService.OrderStatus.ConfirmedOrder.id,
+					Type: "Order"
                 }
             };
             WeirService.UpdateQuote(vm.Quote, mods)
@@ -2537,7 +2545,6 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        OrderDate: "Order Date;",
             ValidUntil: "Valid Until",
 	        Currency: "Currency",
-	        BackToQuotes: "Back to your Quotes",
 	        SubmitWithPO: "Submit Order",
 	        ViewRevisions: "View Previous Revisions",
 	        PONumber: "PO Number;",
@@ -2554,7 +2561,11 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
             Add: "Add",
             Cancel: "Cancel",
             EmptyComments: $sce.trustAsHtml("Cannot save an empty comment."),
-            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment")
+            EmptyCommentTitle: $sce.trustAsHtml("Empty Comment"),
+            BackToQuotes: {
+                Quote:"<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Quotes",
+                Order:"<i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Orders"
+            }
         },
         fr: {
             Customer: $sce.trustAsHtml("Client "),
@@ -2586,7 +2597,6 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	        OrderDate: $sce.trustAsHtml("Date de commande;"),
             ValidUntil: $sce.trustAsHtml("Valide jusqu'&agrave;"),
 	        Currency: $sce.trustAsHtml("Devise"),
-	        BackToQuotes: $sce.trustAsHtml("Retour &agrave; vos cotations"),
 	        SubmitWithPO: $sce.trustAsHtml("Soumettre une commande avec bon de commande"),
 	        ViewRevisions: $sce.trustAsHtml("Voir les r&eacute;visions de commande"),
 	        PONumber: $sce.trustAsHtml("Numéro de bon de commande;"),
@@ -2603,7 +2613,11 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
             Add: $sce.trustAsHtml("Ajouter"),
             Cancel: $sce.trustAsHtml("Annule"),
             EmptyComments: $sce.trustAsHtml("Impossible d'enregistrer un commentaire vide."),
-            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide")
+            EmptyCommentTitle: $sce.trustAsHtml("Commentaire vide"),
+            BackToQuotes: {
+                Quote:$sce.trustAsHtml("<i class='fa fa-angle-left' aria-hidden='true'></i> Retour &agrave; vos cotations"),
+                Order:$sce.trustAsHtml("FR: <i class='fa fa-angle-left' aria-hidden='true'></i> Back to your Orders")
+            }
         }
     };
     vm.labels = WeirService.LocaleResources(labels);
@@ -2679,9 +2693,21 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 
 	function _gotoQuotes() {
 		if(vm.Quote.xp.Type == "Quote") {
-			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
+			$state.go("quotes.all", {
+				filters: JSON.stringify(
+					{
+                        "xp.Type":"Quote",
+                        "xp.Active":true
+					})},
+				{reload: true});
 		} else {
-			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
+			$state.go("orders.all", {
+				filters: JSON.stringify(
+					{
+                        "xp.Type":"Order",
+                        "xp.Active":true
+					})},
+				{reload: true});
 		}
 	}
 
@@ -2969,11 +2995,20 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
 		return QuoteToCsvService.ToCsvJson(printQuote, QuoteShareService.LineItems, vm.ShippingAddress, QuoteShareService.Payments, printLabels);
 	}
 	function _gotoQuotes() {
-		if(vm.Quote.xp.Type == "Quote") {
-			$state.go("quotes.revised", {filters: JSON.stringify({"xp.Type": "Quote","xp.Status": WeirService.OrderStatus.RevisedQuote.id+"|"+WeirService.OrderStatus.RejectedQuote.id,"xp.Active": true})}, {reload: true});
-		} else {
-			$state.go("orders.revised", {filters: JSON.stringify({"xp.Type": "Order","xp.Status": WeirService.OrderStatus.RevisedOrder.id,"xp.Active": true})}, {reload: true});
-		}
+        if(vm.Quote.xp.Type === "Quote") {
+            $state.go("quotes.confirmed", {
+                filters: JSON.stringify({
+                    "xp.Type":"Quote",
+                    "xp.Status":WeirService.OrderStatus.ConfirmedQuote.id,
+                    "xp.Active":true
+                })}, {reload: true});
+        } else {
+            $state.go("orders.confirmed", {filters: JSON.stringify({
+                    "xp.Type":"Order",
+                    "xp.Status":WeirService.OrderStatus.ConfirmedOrder.id + "|" + WeirService.OrderStatus.SubmittedWithPO.id,
+                    "xp.Active": true
+                })}, {reload: true});
+        }
 	}
 	// ToDo Accept a parameter withPO. It will be true or false.
 	function _submitOrder(withPO) {
@@ -3030,7 +3065,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
         } else {
             data = {
                 xp: {
-                    Status: WeirService.OrderStatus.SubmittedPendingPO.id,
+                    Status: WeirService.OrderStatus.ConfirmedOrder.id,
                     StatusDate: new Date(),
                     Type: "Order",
                     PendingPO: true,
@@ -3041,7 +3076,12 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
         }
         WeirService.UpdateQuote(vm.Quote, data)
             .then(function (info) {
-                var modalInstance = $uibModal.open({
+            	//TODO PUT IN TOASTr MESSAGES.
+                toastr.success("The item was submitted", "Success");
+                $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
+
+            	//TODO WHY ARE MY MODALS BREAKING?!?!?!?
+                /*var modalInstance = $uibModal.open({
                     animation: true,
                     ariaLabelledBy: 'modal-title',
                     ariaDescribedBy: 'modal-body',
@@ -3059,8 +3099,11 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
                     }
                 }).closed.then(function () {
                     $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
-                });
-            });
+                });*/
+            })
+			.catch(function(ex){
+				console.log(ex);
+			});
         }
 
         function _reject() {

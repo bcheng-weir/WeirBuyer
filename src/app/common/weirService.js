@@ -878,12 +878,12 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 };
 
                 if(FxRate.GetCurrentFxRate()) {
-                    var RIGHTNOW = new Date();
                     cart.xp.Currency = {};
                     cart.xp.Currency.ConvertTo = FxRate.GetCurrentFxRate().ConvertTo;
                     cart.xp.Currency.Rate = FxRate.GetCurrentFxRate().Rate;
-                    cart.xp.ValidUntil = RIGHTNOW.addDays(30);
                 }
+                var RIGHTNOW = new Date();
+                cart.xp.ValidUntil = RIGHTNOW.addDays(30);
 
                 OrderCloudSDK.Orders.Create("Outgoing", cart)
                     .then(function (order) {
@@ -950,12 +950,12 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                 };
 
                 if(FxRate.GetCurrentFxRate()) {
-                    var RIGHTNOW = new Date();
                     cart.xp.Currency = {};
                     cart.xp.Currency.ConvertTo = FxRate.GetCurrentFxRate().ConvertTo;
                     cart.xp.Currency.Rate = FxRate.GetCurrentFxRate().Rate;
-                    cart.xp.ValidUntil = RIGHTNOW.addDays(30);
                 }
+                var RIGHTNOW = new Date();
+                cart.xp.ValidUntil = RIGHTNOW.addDays(30);
 
                 OrderCloudSDK.Orders.Create("Outgoing", cart)
                     .then(function (order) {
@@ -1016,12 +1016,12 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                         };
 
                         if(FxRate.GetCurrentFxRate()) {
-                            var RIGHTNOW = new Date();
                             cart.xp.Currency = {};
                             cart.xp.Currency.ConvertTo = FxRate.GetCurrentFxRate().ConvertTo;
                             cart.xp.Currency.Rate = FxRate.GetCurrentFxRate().Rate;
-                            cart.xp.ValidUntil = RIGHTNOW.addDays(30);
                         }
+                        var RIGHTNOW = new Date();
+                        cart.xp.ValidUntil = RIGHTNOW.addDays(30);
 
                         return OrderCloudSDK.Orders.Create("Outgoing", cart)
                     })
@@ -1147,12 +1147,12 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
                             };
 
                             if(FxRate.GetCurrentFxRate()) {
-                                var RIGHTNOW = new Date();
                                 cart.xp.Currency = {};
                                 cart.xp.Currency.ConvertTo = FxRate.GetCurrentFxRate().ConvertTo;
                                 cart.xp.Currency.Rate = FxRate.GetCurrentFxRate().Rate;
-                                cart.xp.ValidUntil = RIGHTNOW.addDays(30);
                             }
+                            var RIGHTNOW = new Date();
+                            cart.xp.ValidUntil = RIGHTNOW.addDays(30);
 
                             OrderCloudSDK.Orders.Create("Outgoing", cart)
                                 .then(function (ct) {
@@ -1533,12 +1533,12 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
 
         // No need to populate an FX object it is not needed for the buyer. Can alter if design change needed.
         if(enq.FxRate) {
-            var RIGHTNOW = new Date();
             data.xp.Currency = {};
             data.xp.Currency.ConvertTo = enq.FxRate.ConvertTo;
             data.xp.Currency.Rate = enq.FxRate.Rate;
-            data.xp.ValidUntil = RIGHTNOW.addDays(30);
         }
+        var RIGHTNOW = new Date();
+        data.xp.ValidUntil = RIGHTNOW.addDays(30);
 
         if (enq.Quote && enq.Quote.xp) {
             data.xp.Name = enq.Quote.xp.Name;
@@ -1871,20 +1871,6 @@ function WeirService($q, $cookieStore, $cookies, $sce, $state, OrderCloudSDK, Cu
         CurrentOrder.GetCurrentCustomer()
        .then(function (cust) {
            if (cust) {
-               //var opts = {
-               //    'page': 1,
-               //    'pageSize': 50,
-               //    'filters': {
-               //        'ParentID': cust.id
-               //        'ProductID': partID
-               //    },
-               //    'depth': "all",
-               //    'catalogID': Me.Org.xp.WeirGroup.label
-               //};
-               //OrderCloudSDK.Me.ListCategories(opts)
-               // .then(function (results) {
-               //     dfd.resolve(results);
-               // });
                OrderCloudSDK.Categories.ListProductAssignments(Me.Org.xp.WeirGroup.label,
                    { "productID": partID, "page": 1, "pageSize": 50 })
                .then(function (matches) {

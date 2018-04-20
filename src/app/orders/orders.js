@@ -53,7 +53,7 @@ function OrdersConfig($stateProvider) {
                     }
                     CountParameters.filters = {
                         "xp.Type":"Order",
-                        "xp.Status":WeirService.OrderStatus.SubmittedPendingPO.id + "|" + WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id + "|" + WeirService.OrderStatus.Despatched.id + "|" + WeirService.OrderStatus.Invoiced.id + "|" + WeirService.OrderStatus.ConfirmedOrder.id,
+                        "xp.Status":WeirService.OrderStatus.SubmittedPendingPO.id + "|" + WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id + "|" + WeirService.OrderStatus.Despatched.id + "|" + WeirService.OrderStatus.Invoiced.id,
                         "xp.Active":true
                     };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
@@ -339,7 +339,7 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
             },
 			"orders.draft": {
                 "xp.Type":"Order",
-                "xp.Status":WeirService.OrderStatus.SubmittedPendingPO.id + "|" + WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id + "|" + WeirService.OrderStatus.Despatched.id + "|" + WeirService.OrderStatus.Invoiced.id + "|" + WeirService.OrderStatus.ConfirmedOrder.id,
+                "xp.Status":WeirService.OrderStatus.SubmittedPendingPO.id + "|" + WeirService.OrderStatus.RevisedOrder.id + "|" + WeirService.OrderStatus.RejectedRevisedOrder.id + "|" + WeirService.OrderStatus.Despatched.id + "|" + WeirService.OrderStatus.Invoiced.id,
                 "xp.Active":true
             },
 			"orders.confirmed":{
@@ -355,12 +355,15 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 		return JSON.stringify(filter[action]);
 	}
 
+	//TODO this is causing problems
 	vm.ReviewOrder = _reviewOrder;
 	function _reviewOrder(orderId, status, buyerId) {
-	    if (status === WeirService.OrderStatus.ConfirmedOrder.id || status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.RejectedRevisedOrder.id || status === WeirService.OrderStatus.Deleted.id) {
+	    if (status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.RejectedRevisedOrder.id || status === WeirService.OrderStatus.Deleted.id) {
 			$state.transitionTo('readonly', {quoteID: orderId, buyerID: buyerId});
 		} else if(status === WeirService.OrderStatus.RevisedOrder.id) {
-			$state.transitionTo('revised', { quoteID: orderId, buyerID: buyerId });
+            $state.transitionTo('revised', {quoteID: orderId, buyerID: buyerId});
+        } else if(status === WeirService.OrderStatus.ConfirmedOrder.id) {
+            $state.transitionTo('submit', {quoteID: orderId, buyerID: buyerId});
 		} else {
 			var gotoReview = (vm.CurrentOrderId !== orderId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
 			if (gotoReview) {
@@ -453,11 +456,15 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
         toastr.error(errorMsg);
         $state.go('orders.draft');
     }
+
+    //ToDo This is causing problems
     function reviewOrder(orderId, status, buyerId) {
-        if (status === WeirService.OrderStatus.ConfirmedOrder.id || status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.Submitted.id) {
+        if (status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.Submitted.id) {
             $state.transitionTo('readonly', { quoteID: orderId, buyerID: buyerId });
         } else if (status === WeirService.OrderStatus.RevisedOrder.id) {
             $state.transitionTo('revised', {quoteID: orderId, buyerID: buyerId});
+        } else if(status === WeirService.OrderStatus.ConfirmedOrder.id) {
+            $state.transitionTo('submit', {quoteID: orderId, buyerID: buyerId});
         } else {
             WeirService.SetQuoteAsCurrentOrder(orderId)
                 .then(function () {

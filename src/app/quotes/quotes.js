@@ -73,7 +73,7 @@ function QuotesConfig($stateProvider) {
                     }
                     CountParameters.filters = {
                         'xp.Type': 'Quote',
-                        "xp.Status": WeirService.OrderStatus.Saved.id + "|" + WeirService.OrderStatus.Draft.id,
+                        'xp.Status': WeirService.OrderStatus.Saved.id + "|" + WeirService.OrderStatus.Draft.id,
                         'xp.Active': true
                     };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
@@ -93,7 +93,7 @@ function QuotesConfig($stateProvider) {
                     }
                     CountParameters.filters = {
                         'xp.Type':'Quote',
-                        "xp.Status":WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id + "|" + WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
+                        'xp.Status':WeirService.OrderStatus.Enquiry.id + "|" + WeirService.OrderStatus.EnquiryReview.id + "|" + WeirService.OrderStatus.Submitted.id + "|" + WeirService.OrderStatus.RevisedQuote.id + "|" + WeirService.OrderStatus.RejectedQuote.id,
                         'xp.Active':true
                     };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
@@ -113,7 +113,7 @@ function QuotesConfig($stateProvider) {
                     }
                     CountParameters.filters = {
                         'xp.Type': 'Quote',
-                        "xp.Status": WeirService.OrderStatus.ConfirmedQuote.id,
+                        'xp.Status': WeirService.OrderStatus.ConfirmedQuote.id,
                         'xp.Active': true
                     };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
@@ -133,7 +133,7 @@ function QuotesConfig($stateProvider) {
                     }
                     CountParameters.filters = {
                         'xp.Type': 'Quote',
-                        "xp.Status": WeirService.OrderStatus.Deleted.id
+                        'xp.Status': WeirService.OrderStatus.Deleted.id
                     };
                     CountParameters.filters.FromUserID = Me.Profile.ID;
                     var opts = {
@@ -424,7 +424,13 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
     vm.locale = WeirService.Locale;
 	
 	function _reviewQuote(quoteId, status, buyerId) {
-	    if (status === WeirService.OrderStatus.RejectedQuote.id) {
+	    if (status === WeirService.OrderStatus.RejectedQuote.id ||
+            status === WeirService.OrderStatus.Enquiry.id ||
+            status === WeirService.OrderStatus.EnquiryReview.id ||
+            status === WeirService.OrderStatus.Submitted.id ||
+            status === WeirService.OrderStatus.Review.id ||
+            status === WeirService.OrderStatus.Deleted.id
+        ) {
             $state.go('readonly', {quoteID: quoteId, buyerID: buyerId});
         } else if(status === WeirService.OrderStatus.ConfirmedQuote.id) {
 	    	$state.go('submit', {quoteID: quoteId, buyerID: buyerId})
@@ -632,10 +638,17 @@ function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote, 
             } else {
                 $state.go('readonly', { quoteID: Quote.ID });
             }
-        } else if ([WeirService.OrderStatus.Submitted.id, WeirService.OrderStatus.Review.id, WeirService.OrderStatus.RejectedQuote.id, WeirService.OrderStatus.Enquiry.id, WeirService.OrderStatus.EnquiryReview.id].indexOf(status) > -1) {
+        } else if ([WeirService.OrderStatus.Submitted.id,
+                    WeirService.OrderStatus.Review.id,
+                    WeirService.OrderStatus.RejectedQuote.id,
+                    WeirService.OrderStatus.Enquiry.id,
+                    WeirService.OrderStatus.EnquiryReview.id,
+                    WeirService.OrderStatus.Deleted.id].indexOf(status) > -1) {
             $state.go('readonly', {quoteID: Quote.ID});
         } else if ([WeirService.OrderStatus.ConfirmedQuote.id].indexOf(status) > -1) {
             $state.go('submit', {quoteID: Quote.ID});
+        } else if([WeirService.OrderStatus.RevisedQuote.id].indexOf(status) > -1) {
+            $state.go('revised', { quoteID: Quote.ID });
         } else { // DR, SV
             WeirService.SetQuoteAsCurrentOrder(Quote.ID)
             .then(function () {

@@ -12,9 +12,9 @@
                 <div style="display:inline-block; float:left; margin-left:1em; margin-top:10px;">
                     <span ng-bind-html="readonly.labels.ValidUntil"/>:&nbsp;<span style="font-weight:bold;">{{readonly.Quote.xp.ValidUntil | weirdate}}</span>
                 </div>
-                <div class="panelButton" style="display:inline-block; float:left; margin-left:1em;">
+                <!--<div class="panelButton" style="display:inline-block; float:left; margin-left:1em;">
                     <button class="btn btn-default" ng-bind-html='readonly.labels.UpdateFXRate' ng-click="readonly.updateFXRate()" ng-if="readonly.showUpdateFXRate(readonly.Quote.DateCreated)"></button>
-                </div>
+                </div>-->
                 <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;">
                     <print-order-button catalog="readonly.Catalog" buyer="readonly.buyer" order="readonly.Quote" items="readonly.LineItems" address="readonly.ShippingAddress" pocontent="readonly.POContent" uitotal="1"></print-order-button>
                 </div>
@@ -34,13 +34,21 @@
     </div>
     <!--</div>-->
     <div class="row" style="padding-top:20px;">
-        <div class="col-md-8">
+        <div class="col-md-4">
             <h4><span ng-bind-html='readonly.labels.Customer'></span><span class="text-blue" style="margin-left: 1em;" ng-bind-html="readonly.Quote.xp.CustomerName"></span></h4>
             <h4><span ng-bind-html='readonly.labels.QuoteNumber'></span><span class="text-blue" style="margin-left: 1em;" ng-bind-html="readonly.Quote.ID | MaskedQuoteID"></span></h4>
             <h4 ng-if="readonly.Quote.xp.Status != 'EN' && readonly.Quote.xp.Status != 'ER'"><span ng-bind-html='readonly.labels.QuoteName'></span><span class='text-blue' style="margin-left:1em;" maxlength="20" ng-bind-html="readonly.Quote.xp.Name"></span></h4>
             <h4 ng-if="readonly.Quote.xp.Status != 'EN' && readonly.Quote.xp.Status != 'ER'"><span ng-bind-html='readonly.labels.YourReference'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="readonly.Quote.xp.RefNum"></span></h4>
             <h4 ng-if="readonly.Quote.xp.Type=='Order'"><span ng-bind-html='readonly.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="readonly.Quote.xp.PONumber"></span></h4>
             <h4 ng-if="readonly.Quote.xp.Status != 'EN' && readonly.Quote.xp.Status != 'ER'"><a href="#" ng-click="readonly.gotoRevisions()" ng-bind-html="readonly.labels.ViewRevisions"></a></h4>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                    <p><button class="btn btn-lg btn-primary btn-100" ng-bind-html='readonly.labels.BackToQuotes[readonly.Quote.xp.Type]' ng-click="readonly.gotoQuotes()"></button></p>
+                </div>
+            </div>
         </div>
     </div>
     <!--<br>-->

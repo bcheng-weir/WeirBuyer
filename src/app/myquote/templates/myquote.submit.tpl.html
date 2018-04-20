@@ -44,7 +44,7 @@
                     <p><button class="btn btn-lg btn-success btn-100" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button></p>
                 </div>
             </div>
-            <div class="row" ng-hide="submit.Quote.xp.PendingPO==true">
+            <div class="row" ng-if="!submit.Quote.xp.PendingPO">
                 <div class="col-md-8">
                     <p style="text-align: right;">
                         <img ng-src="{{submit.imgInformation}}" class="img-info"

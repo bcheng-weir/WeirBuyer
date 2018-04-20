@@ -16,6 +16,7 @@
         </div>
         <!--<hr>-->
         <div class="col-md-10" style="padding-right:0px;padding-left:0px;">
+            <div class="col-md-8">
             <h2 ng-if="['quotes.all'].indexOf(application.$state.current.name) > -1">{{quotes.labels.All}}</h2>
             <h2 ng-if="['quotes.saved'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Saved}}</h2>
             <h2 ng-if="['quotes.requested'].indexOf(application.$state.current.name) > -1">{{quotes.labels.Requested}}</h2>
@@ -39,6 +40,12 @@
                     </span>
                 </fieldset>
             </form>
+            </div>
+            <div class="col-md-4">
+                <div ng-if="['quotes.saved'].indexOf(application.$state.current.name) > -1" class="pull-right saved-notice">{{quotes.labels.SavedNotice}}</div>
+                <div ng-if="['quotes.confirmed'].indexOf(application.$state.current.name) > -1" class="pull-right saved-notice">{{quotes.labels.ConfirmedNotice}}</div>
+                <div ng-if="['quotes.deleted'].indexOf(application.$state.current.name) > -1" class="pull-right saved-notice">{{quotes.labels.DeletedNotice}}</div>
+            </div>
             <div ui-view style="padding-top:10px"></div>
             <div class="text-center" ng-if="application.$ocMedia('min-width:768px') && quotes.list.Meta.TotalPages > 1">
                 <uib-pagination boundary-links="quotes.list.Meta.TotalPages > 5" max-size="5"

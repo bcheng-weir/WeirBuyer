@@ -304,7 +304,10 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootSco
             Clear: "Clear Search",
 			statusDate: "Date Updated",
 			submittedDate: "Submitted Date",
-            validUntil: "Valid Until"
+            validUntil: "Valid Until",
+            SavedNotice: "Saved quotes cannot be reviewed by Weir until you submit as a Quote Request or Draft Order",
+            ConfirmedNotice: "You can convert confirmed quotes to orders. View the confirmed quote and select; Submit Order.",
+            DeletedNotice: "Deleted quotes will remain in your deleted quotes list for 6 months"
 		},
         fr: {
             All: $sce.trustAsHtml("Tous les devis"),
@@ -322,7 +325,10 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootSco
             Clear: $sce.trustAsHtml("Effacer le rechercher"),
             statusDate: $sce.trustAsHtml("Date de mise à jour"),
             submittedDate: $sce.trustAsHtml("Date d’envoi"),
-            validUntil: $sce.trustAsHtml("Valide jusqu'&agrave;")
+            validUntil: $sce.trustAsHtml("Valide jusqu'&agrave;"),
+            SavedNotice: $sce.trustAsHtml("FR: Saved quotes cannot be reviewed by Weir until you submit as a Quote Request or Draft Order"),
+            ConfirmedNotice: $sce.trustAsHtml("FR: You can convert confirmed quotes to orders. View the confirmed quote and select; Submit Order."),
+            DeletedNotice: $sce.trustAsHtml("FR: Deleted quotes will remain in your deleted quotes list for 6 months")
 		}
 	};
 	vm.labels = WeirService.LocaleResources(labels);

@@ -7,14 +7,14 @@ angular.module('orderCloud')
 	.controller('MyQuoteDetailCtrl', MyQuoteDetailController)
 	.controller('QuoteDeliveryOptionCtrl', QuoteDeliveryOptionController )
 	.controller('ReviewQuoteCtrl', ReviewQuoteController)
-	.controller('RevisedQuoteCtrl', RevisedQuoteController)
-	.controller('ReadonlyQuoteCtrl', ReadonlyQuoteController)
 	.controller('QuoteRevisionsCtrl', QuoteRevisionsController)
 	.controller('NewAddressModalCtrl', NewAddressModalController)
 	.controller('SubmitConfirmCtrl', SubmitConfirmController)
 	.controller('SubmitConfirmOrderCtrl', SubmitConfirmOrderController)
-	.controller('SubmitDraftCtrl', SubmitDraftController)
+    .controller('RevisedQuoteCtrl', RevisedQuoteController)
+    .controller('ReadonlyQuoteCtrl', ReadonlyQuoteController)
 	.controller('SubmitCtrl',SubmitController)
+	.controller('SubmitDraftCtrl', SubmitDraftController)
 	.controller('CarriageModalCtrl', MissingCarriageDetailController);
 
 function QuoteShareService() {

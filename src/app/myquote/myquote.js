@@ -3081,7 +3081,7 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
                 $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
 
             	//TODO WHY ARE MY MODALS BREAKING?!?!?!?
-                /*var modalInstance = $uibModal.open({
+                var modalInstance = $uibModal.open({
                     animation: true,
                     ariaLabelledBy: 'modal-title',
                     ariaDescribedBy: 'modal-body',
@@ -3090,16 +3090,13 @@ function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModa
                     controller: 'SubmitConfirmCtrl',
                     controllerAs: 'submitconfirm',
                     resolve: {
-                        Quote: function () {
-                            return vm.Quote;
-                        },
-                        WithPO: function() {
-                            return withPO;
+                        orderType: function () {
+                            return "order";
                         }
                     }
                 }).closed.then(function () {
                     $state.go('readonly', { quoteID: vm.Quote.ID, buyerID: Me.GetBuyerID() });
-                });*/
+                });
             })
 			.catch(function(ex){
 				console.log(ex);

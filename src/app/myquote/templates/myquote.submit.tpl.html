@@ -41,7 +41,7 @@
                     </p>
                 </div>
                 <div class="col-md-4">
-                    <p><button class="btn btn-lg btn-success btn-100" ng-click="submit.submitOrder(true)" ng-bind-html='submit.labels.SubmitOrderWithPO' ng-disabled="!submit.PONumber"></button></p>
+                    <p><a class="btn btn-lg btn-success btn-100" style="text-decoration:none;cursor:pointer;" ng-href="{{!submit.PONumber ? '#pon' : ''}}" ng-click="submit.PONumber ? submit.submitOrder(true) : null" ng-bind-html='submit.labels.SubmitOrderWithPO'></a></p>
                 </div>
             </div>
             <div class="row" ng-if="!submit.Quote.xp.PendingPO">

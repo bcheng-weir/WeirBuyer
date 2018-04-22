@@ -657,7 +657,7 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
                     vm.RequestQuote = false;
 
                     //TODO get this to work.
-                    /*var parentElem = angular.element($document[0].querySelector('body'));
+                    var parentElem = angular.element($document[0].querySelector('body'));
                     $uibModal.open({
                         animation: true,
                         size: 'md',
@@ -668,13 +668,13 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
                                 en: {
                                     Line1: "Thank you. Your request has been submitted",
                                     Line2: "We have sent you a confirmation email.",
-                                    Line3: "Request for quote number; " + val,
+                                    Line3: "Request for quote number; ", //+ val,
                                     Line4: "We will respond with an estimate for the replacement valve as soon as possible."
                                 },
                                 fr: {
                                     Line1: $sce.trustAsHtml("FR: Thank you. Your request has been submitted"),
                                     Line2: $sce.trustAsHtml("FR: We have sent you a confirmation email."),
-                                    Line3: $sce.trustAsHtml("FR: Request for quote number; " + val),
+                                    Line3: $sce.trustAsHtml("FR: Request for quote number; "), //+ val),
                                     Line4: $sce.trustAsHtml("FR: We will respond with an estimate for the replacement valve as soon as possible.")
                                 }
                             };
@@ -685,7 +685,7 @@ function SerialDetailController($stateParams, $rootScope, $state, $sce, $uibModa
                         },
                         controllerAs: 'rfqthanks',
                         appendTo: parentElem
-                    });*/
+                    });
 				})
 				.catch(function (ex) {
 					$exceptionHandler(ex);

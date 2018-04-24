@@ -143,8 +143,8 @@ function Interceptor($httpProvider) {
 }
 
 /*
-This directive allows us to pass a function in on an enter key to do what we want.
- */
+* This directive allows us to pass a function in on an enter key to do what we want.
+*/
 function NgEnter() {
     return function (scope, element, attrs) {
         element.bind("keydown keypress", function (event) {

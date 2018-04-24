@@ -1,0 +1,339 @@
+<article id="COMPONENT_Finalize" class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel-heading">
+                <div style="display:inline-block; float:left; text-align:left;margin-top: 10px;">
+                    <span ng-bind-html="finalize.labels.Status"/>: <span style="font-weight:bold;">{{finalize.GetStatusLabel() + " " + (finalize.Order.xp.StatusDate | weirdate)}}</span>
+                </div>
+                <div ng-if="application.$state.current.name=='finalized.revised'" style="display:inline-block; float:left; margin-left:1em;">
+                    <span ng-bind-html="finalize.labels.OrderDate" /><br />
+                    <span style="font-weight:bold;">{{(finalize.Order.DateSubmitted | weirdate)}}</span>
+                </div>
+                <div style="display:inline-block; float:left; margin-left:1em; margin-top:10px;">
+                    <span ng-bind-html="finalize.labels.ValidUntil"/>:&nbsp;<span style="font-weight:bold;">{{finalize.Order.xp.ValidUntil | weirdate}}</span>
+                </div>
+                <div class="panelButton" style="display:inline-block; float:left; margin-left:1em;" ng-if="application.$state.current.name=='finalized.revised'">
+                    <button class="btn btn-default" ng-bind-html='finalize.labels.UpdateFXRate' ng-click="finalize.updateFXRate()" ng-if="finalize.showUpdateFXRate(finalize.Order.DateCreated)"></button>
+                </div>
+                <div class="panelButton">
+                    <print-order-button buyer="finalize.buyer" order="finalize.Order" items="finalize.LineItems" address="finalize.ShippingAddress" pocontent="finalize.POContent"></print-order-button>
+                </div>
+                <div style="display:inline-block; float:right; margin-left: 1em; padding-left: 1%;" ng-csv="finalize.ToCsvJson" add-bom="true" filename="{{finalize.CsvFilename}}">
+                    <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{finalize.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='finalize.labels.Download'></span></a>
+                </div>
+                <div style="float:right;">
+                    <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="finalize.labels.Comments"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="padding-top:20px;">
+        <div class="col-md-4">
+            <h4><span ng-bind-html='finalize.labels.Customer'></span><span class="text-blue" style="margin-left: 1em;">{{finalize.Order.xp.CustomerName}}</span></h4>
+            <h4><span ng-bind-html='finalize.labels.QuoteNumber'></span><span class="text-blue" style="margin-left: 1em;">{{finalize.Order.ID | MaskedQuoteID}}</span></h4>
+            <h4><span ng-bind-html='finalize.labels.QuoteName'></span><span class='text-blue' style="margin-left:1em;" maxlength="20">{{finalize.Order.xp.Name}}</span></h4>
+            <h4><span ng-bind-html='finalize.labels.YourReference'></span><span class='text-blue' style="margin-left:1em;" maxlength="50">{{finalize.Order.xp.RefNum}}</span></h4>
+            <h4 ng-if="revised.Quote.xp.Type=='Order'"><span ng-bind-html='revised.labels.PONumber'></span><span class='text-blue' style="margin-left:1em;" maxlength="50" ng-bind-html="revised.Quote.xp.PONumber"></span></h4>
+            <h4><a href="#" ng-click="finalize.gotoRevisions()" ng-bind-html="revised.labels.ViewRevisions"></a></h4>
+        </div>
+        <div class="col-md-8">
+            <!-- SUBMIT WITH PO -->
+            <div class="row"
+                 ng-if="['finalize.submit'].indexOf(application.$state.current.name) > -1">
+                <div class="col-md-8">
+                    <p style="text-align: right;">
+                        <img ng-src="{{finalize.imgInformation}}" class="img-info"
+                             tooltip-placement="left"
+                             uib-tooltip-html="finalize.labels.SubmitWithPOTooltip"
+                             tooltip-class="img-info-popup"/>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p><a class="btn btn-lg btn-success btn-100" style="text-decoration:none;cursor:pointer;" ng-href="{{!finalize.PONumber ? '#pon' : ''}}" ng-click="finalize.PONumber ? finalize.submitOrder(true) : null" ng-bind-html='finalize.labels.SubmitOrderWithPO'></a></p>
+                </div>
+            </div>
+            <!-- SUBMIT PENDING PO -->
+            <div class="row"
+                 ng-if="!finalize.Order.xp.PendingPO && ['finalize.submit'].indexOf(application.$state.current.name) > -1">
+                <div class="col-md-8">
+                    <p style="text-align: right;">
+                        <img ng-src="{{finalize.imgInformation}}" class="img-info"
+                             tooltip-placement="left"
+                             uib-tooltip-html="finalize.labels.SubmitPendingPOTooltip"
+                             tooltip-class="img-info-popup"/>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p>
+                        <button class="btn btn-lg btn-success btn-100"
+                                ng-click="finalize.submitOrder(false)"
+                                ng-bind-html='finalize.labels.SubmitOrderAndEmail'></button>
+                    </p>
+                </div>
+            </div>
+            <!-- REVISED - Approve -->
+            <div class="row"
+                 ng-if="['finalize.revised'].indexOf(application.$state.current.name) > -1">
+                <div class="col-md-8">
+                    <p style="text-align: right;">
+                        <img ng-src="{{finalize.imgInformation}}" class="img-info"
+                             tooltip-placement="left"
+                             uib-tooltip-html="finalize.labels.QuoteTooltip[finalize.Order.xp.Type]"
+                             tooltip-class="img-info-popup"/>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p><button class="btn btn-lg btn-success btn-100" ng-click="finalize.Approve()" ng-bind-html="finalize.labels.Approve[finalize.Order.xp.Type]"></button></p>
+                </div>
+            </div>
+            <!-- REVISED - REQEST REVISION - -->
+            <div class="row"
+                 ng-if="['finalize.revised'].indexOf(application.$state.current.name) > -1">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                    <p>
+                        <button class="btn btn-lg btn-warning btn-100" ng-click="finalize.Reject()" ng-bind-html="finalize.labels.Reject"
+                                tooltip-placement="left"
+                                uib-tooltip-html="finalize.labels.RejectTooltip"
+                                tooltip-class="img-info-popup"></button>
+                    </p>
+                </div>
+            </div>
+            <!-- Back to Quotes/Orders -->
+            <div class="row">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                    <p><button class="btn btn-lg btn-primary btn-100" ng-bind-html='finalize.labels.BackToQuotes[finalize.Order.xp.Type]' ng-click="finalize.gotoOrder()"></button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-bordered oc-table-responsive weir-results-table">
+                <thead class="header-cell">
+                <tr>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='finalize.labels.SerialNum'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='finalize.labels.TagNum'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='finalize.labels.PartNum'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='finalize.labels.PartDesc'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='finalize.labels.RecRepl'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='finalize.labels.LeadTime'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='finalize.labels.PricePer'></h4></th>
+                    <th><h4 class="list-group-item-heading" ng-bind-html='finalize.labels.Quantity'></h4></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="line in finalize.LineItems">
+                    <td ng-bind-html="line.xp.SN" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                    <td ng-bind-html="line.xp.TagNumber" ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'"></td>
+                    <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                        <span ng-if="!line.xp.ProductName" ng-bind-html="line.Product.Name"></span>
+                    </td>
+                    <td>
+                        <span ng-if="!line.xp.Description" ng-bind-html="line.Product.Description"></span>
+                        <span ng-if="line.xp.Description" ng-bind-html="line.xp.Description"></span>
+                    </td>
+                    <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                        <span ng-if="!line.xp.ReplacementSchedule" ng-bind-html="line.Product.xp.ReplacementSchedule"></span>
+                        <span ng-if="line.xp.ReplacementSchedule" ng-bind-html="line.xp.ReplacementSchedule"></span>
+                    </td>
+                    <td ng-if="readonly.Quote.xp.Status != 'EN' || readonly.Quote.xp.Status != 'ER'">
+                        <span ng-show="line.xp.LeadTime==null" ng-bind-html="line.Product.xp.LeadTime"></span>
+                        <span ng-show="line.xp.LeadTime!=null" ng-bind-html="line.xp.LeadTime"></span>
+                    </td>
+                    <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="readonly.labels.POA"></td>
+                    <td ng-if="line.UnitPrice>0">
+                        <span ng-bind-html="line.UnitPrice | OrderConversion: finalize.Order | currency:finalize.currency"></span>
+                    </td>
+                    <td class="text-right" ng-bind-html="line.Quantity"></td>
+                    <td style="border:0;width:100px;" ng-if="['finalize.revised'].indexOf(application.$state.current.name) > -1">
+                        <h4>
+                            <span class="label label-warning" ng-show="line.displayStatus=='UPDATED'" ng-bind-html="finalize.labels.Updated"></span>
+                            <span class="label label-success" ng-show="line.displayStatus=='NEW'" ng-bind-html="finalize.labels.New"></span>
+                        </h4>
+                    </td>
+                </tr>
+                <!-- Show deleted items -->
+                <tr ng-repeat="line in finalize.PreviousLineItems" ng-if="['finalize.revised'].indexOf(application.$state.current.name) > -1">
+                    <td ng-bind-html="line.xp.SN"></td>
+                    <td ng-bind-html="line.xp.TagNumber"></td>
+                    <td>
+                        <span ng-if="!line.xp.ProductName" ng-bind-html="line.Product.Name"></span>
+                        <span ng-if="line.xp.ProductName" ng-bind-html="line.xp.ProductName"></span>
+                    </td>
+                    <td>
+                        <span ng-if="!line.xp.Description" ng-bind-html="line.Product.Description"></span>
+                        <span ng-if="line.xp.Description" ng-bind-html="line.xp.Description"></span>
+                    </td>
+                    <td>
+                        <span ng-if="!line.xp.ReplacementSchedule" ng-bind-html="line.Product.xp.ReplacementSchedule"></span>
+                        <span ng-if="line.xp.ReplacementSchedule" ng-bind-html="line.xp.ReplacementSchedule"></span>
+                    </td>
+                    <td ng-if="finalize.Order.xp.Status!='RE'" ng-bind-html="line.Product.xp.LeadTime"></td>
+                    <td ng-if="!line.UnitPrice||line.UnitPrice=='0'" ng-bind-html="finalize.labels.POA"></td>
+                    <td ng-if="line.UnitPrice">
+                        <span ng-bind-html="line.UnitPrice  | OrderConversion: finalize.Order | currency:finalize.currency"></span>
+                    </td>
+                    <td ng-if="finalize.Order.xp.Status!='RE'" ng-bind-html="finalize.Zero"></td>
+                    <td ng-if="finalize.Order.xp.Status=='RE'">
+                        <input type="text" class="form-control" ng-model="line.Product.xp.LeadTime" />
+                    </td>
+                    <td ng-if="finalize.Order.xp.Status=='RE'">
+                        <input type="number" class="form-control" ng-model="line.UnitPrice" />
+                    </td>
+                    <td ng-if="finalize.Order.xp.Status=='RE'">
+                        <input type="number" class="form-control" ng-min="0" ng-pattern="/^[0-9]{1,5}$/" pattern-err-type="wholenumber" style="width:50%" ng-model="finalize.Zero" />
+                    </td>
+                    <td style="border:0;width:100px;">
+                        <h4>
+                            <span class="label label-danger" ng-bind-html="finalize.labels.Removed"></span>
+                        </h4>
+                    </td>
+                </tr>
+                <tr ng-if="finalize.Order.xp.ShippingDescription != null">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td ng-bind-html="finalize.Order.xp.ShippingDescription"></td>
+                    <td></td>
+                    <td></td>
+                    <td ng-if="finalize.Order.ShippingCost != 0">
+                        <span ng-bind-html="finalize.Order.ShippingCost | OrderConversion: finalize.Order | currency:finalize.currency"></span>
+                    </td>
+                    <td ng-if="finalize.Order.ShippingCost == 0" ng-bind="finalize.labels.POAShipping"></td>
+                    <td></td>
+                </tr>
+                <tr ng-if="finalize.LineItems.length > 0">
+                    <td class="button-th" colspan="5"></td>
+                    <td style="font-weight:bold;" ng-bind-html='finalize.labels.Total'></td>
+                    <td class='text-right' style="font-weight:bold;">
+                        <span>{{finalize.Order.Total | OrderConversion: finalize.Order | currency:finalize.currency}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row" >
+        <div class="col-xs-6" >
+            <div class="row" ng-if="['finalize.submit'].indexOf(application.$state.current.name) > -1">
+                <div class="col-xs-12">
+                    <div class="col-xs-12 po-entry">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p><b><span ng-bind-html="finalize.labels.POEntry"></span></b></p>
+                                <p class="form-inline"><input type="text" class="form-control" ng-model="finalize.PONumber" id="pon" /></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <b><span ng-bind-html="finalize.labels.PONeededHeader"></span></b>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h3><span ng-bind-html='finalize.labels.UploadHeader'></span></h3>
+                                <p><span ng-bind-html='finalize.labels.UploadInstruct'></span></p>
+                                <div class="panel panel-default">
+                                    <p><i class="fa fa-upload fa-5" aria-hidden="true"></i></p>
+                                    <p><ordercloud-po-upload model="finalize.Order" keyname="PODocument" label='{{finalize.labels.POUpload}}'></ordercloud-po-upload></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div style="margin-top:-5px;margin-bottom:10px;">
+                                    <button class="btn btn-lg btn-success btn-100"
+                                            ng-click="finalize.submitOrder(true)"
+                                            ng-bind-html='finalize.labels.SubmitOrderWithPO'
+                                            ng-disabled="!finalize.PONumber"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p><b><span ng-bind-html="finalize.labels.DeliveryAddress"></span></b></p>
+            <div ng-if="finalize.ShippingAddress.Country=='FR'">
+                <span ng-bind-html="finalize.ShippingAddress.FirstName"></span> <span ng-bind-html="finalize.ShippingAddress.LastName"></span><br>
+                {{finalize.ShippingAddress.CompanyName}}<br>
+                {{finalize.ShippingAddress.Street1}}<br>
+                {{finalize.ShippingAddress.Street2}}<br>
+                {{finalize.ShippingAddress.xp.Street3}}<br>
+                {{finalize.ShippingAddress.Zip}} {{finalize.ShippingAddress.City}}<br>
+                {{finalize.Order.CountryName}}
+            </div>
+            <div ng-if="finalize.ShippingAddress.Country=='GB'">
+                <span ng-bind-html="finalize.ShippingAddress.FirstName"></span> <span ng-bind-html="finalize.ShippingAddress.LastName"></span><br>
+                {{finalize.ShippingAddress.CompanyName}}<br>
+                {{finalize.ShippingAddress.Street1}}<br>
+                {{finalize.ShippingAddress.Street2}}<br>
+                {{finalize.ShippingAddress.xp.Street3}}<br>
+                {{finalize.ShippingAddress.City}}<br>
+                {{finalize.ShippingAddress.Zip}}<br>
+                {{finalize.Order.CountryName}}
+            </div>
+            <div ng-if="finalize.ShippingAddress.Country!='GB' && finalize.ShippingAddress.Country!='FR'">
+                <span ng-bind-html="finalize.ShippingAddress.FirstName"></span> <span ng-bind-html="finalize.ShippingAddress.LastName"></span><br>
+                {{finalize.ShippingAddress.CompanyName}}<br>
+                {{finalize.ShippingAddress.Street1}}<br>
+                {{finalize.ShippingAddress.Street2}}<br>
+                {{finalize.ShippingAddress.xp.Street3}}<br>
+                {{finalize.ShippingAddress.City}}, {{finalize.ShippingAddress.State}} {{finalize.ShippingAddress.Zip}}<br>
+                {{finalize.Order.CountryName}}
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-8">
+                    <p><span ng-bind-html='finalize.SharedContent.ReplacementGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='finalize.SharedContent.POAGuidance'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='finalize.SharedContent.LeadTimeNotice'></span></p>
+                    <p><span style="font-style:italic;" ng-bind-html='finalize.SharedContent.PriceDisclaimer'></span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <p><b><span ng-bind-html='finalize.labels.YourAttachments'></span><br></b></p>
+            <p ng-repeat="fileName in finalize.Order.xp.Files">
+                <a href="" ng-click="finalize.GetFile(fileName)" target="_blank">{{fileName}}</a>
+            </p>
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="nav nav-tabs">
+                        <li class="active comments"><a href="#" id="Comments" ng-bind-html="finalize.labels.Comments"></a></li>
+                    </ul>
+                </div>
+            </div>
+            <br>
+            <div class="row" ng-repeat="comment in finalize.Order.xp.CommentsToWeir | reverseComments">
+                <div class="col-xs-12">
+                    <div>
+                        <span ng-bind-html="comment.by"></span>
+                        <span ng-bind-html="detail.labels.AddedComment"></span>
+                        <span ng-bind-html="comment.date | weirdate"></span>
+                    </div>
+                    <br>
+                    <div>
+                        <span ng-bind-html="comment.val"></span>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <textarea cols="50" rows="6" ng-model="finalize.NewComment"></textarea>
+                    <br>
+                    <button class="btn btn-lg btn-primary" ng-bind-html="finalize.labels.Add" ng-click="finalize.AddNewComment()"></button>
+                    <button class="btn btn-lg btn-default" ng-bind-html="finalize.labels.Cancel" ng-click="finalize.NewComment=null"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div rsm-footer></div>
+    </footer>
+</article>

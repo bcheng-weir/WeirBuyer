@@ -355,15 +355,14 @@ function OrdersController($rootScope, $state, $ocMedia, $sce, $document, $uibMod
 		return JSON.stringify(filter[action]);
 	}
 
-	//TODO this is causing problems
 	vm.ReviewOrder = _reviewOrder;
 	function _reviewOrder(orderId, status, buyerId) {
 	    if (status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.RejectedRevisedOrder.id || status === WeirService.OrderStatus.Deleted.id) {
-			$state.transitionTo('readonly', {quoteID: orderId, buyerID: buyerId});
+			$state.transitionTo('finalize.readonly', {orderID: orderId, buyerID: buyerId});
 		} else if(status === WeirService.OrderStatus.RevisedOrder.id) {
-            $state.transitionTo('revised', {quoteID: orderId, buyerID: buyerId});
+            $state.transitionTo('finalize.revised', {orderID: orderId, buyerID: buyerId});
         } else if(status === WeirService.OrderStatus.ConfirmedOrder.id) {
-            $state.transitionTo('submit', {quoteID: orderId, buyerID: buyerId});
+            $state.transitionTo('finalize.submit', {orderID: orderId, buyerID: buyerId});
 		} else {
 			var gotoReview = (vm.CurrentOrderId !== orderId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
 			if (gotoReview) {
@@ -460,11 +459,11 @@ function RouteToOrderController($rootScope, $state, WeirService, toastr, Order, 
     //ToDo This is causing problems
     function reviewOrder(orderId, status, buyerId) {
         if (status === WeirService.OrderStatus.Despatched.id || status === WeirService.OrderStatus.Invoiced.id || status === WeirService.OrderStatus.SubmittedWithPO.id || status === WeirService.OrderStatus.SubmittedPendingPO.id || status === WeirService.OrderStatus.Review.id || status === WeirService.OrderStatus.Submitted.id || status === WeirService.OrderStatus.Deleted.id) {
-            $state.transitionTo('readonly', { quoteID: orderId, buyerID: buyerId });
+            $state.transitionTo('finalize.readonly', { orderID: orderId, buyerID: buyerId });
         } else if (status === WeirService.OrderStatus.RevisedOrder.id) {
-            $state.transitionTo('revised', {quoteID: orderId, buyerID: buyerId});
+            $state.transitionTo('finalize.revised', {orderID: orderId, buyerID: buyerId});
         } else if(status === WeirService.OrderStatus.ConfirmedOrder.id) {
-            $state.transitionTo('submit', {quoteID: orderId, buyerID: buyerId});
+            $state.transitionTo('finalize.submit', {orderID: orderId, buyerID: buyerId});
         } else {
             WeirService.SetQuoteAsCurrentOrder(orderId)
                 .then(function () {

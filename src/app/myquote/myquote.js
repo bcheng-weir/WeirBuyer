@@ -11,9 +11,6 @@ angular.module('orderCloud')
 	.controller('NewAddressModalCtrl', NewAddressModalController)
 	.controller('SubmitConfirmCtrl', SubmitConfirmController)
 	.controller('SubmitConfirmOrderCtrl', SubmitConfirmOrderController)
-    .controller('RevisedQuoteCtrl', RevisedQuoteController)
-    .controller('ReadonlyQuoteCtrl', ReadonlyQuoteController)
-	.controller('SubmitCtrl',SubmitController)
 	.controller('SubmitDraftCtrl', SubmitDraftController)
 	.controller('CarriageModalCtrl', MissingCarriageDetailController);
 
@@ -299,7 +296,7 @@ function MyQuoteConfig($stateProvider) {
 		        }
 		    }
 		})
-		.state('revised', {
+		.state('revisedOld', {
 			parent: 'base',
 			url: '/revised?quoteID',
 			templateUrl: 'myquote/templates/myquote.revised.tpl.html',
@@ -419,7 +416,7 @@ function MyQuoteConfig($stateProvider) {
                 }
 			}
 		})
-		.state('readonly', {
+		.state('readonlyOld', {
 			parent: 'base',
 		    url: '/readonly?quoteID',
 		    templateUrl: 'myquote/templates/myquote.readonly.tpl.html',
@@ -539,7 +536,7 @@ function MyQuoteConfig($stateProvider) {
                 }
 			}
 		})
-		.state('submit', {
+		.state('submitOld', {
 			parent: 'base',
 			url: '/submit?quoteID',
 			templateUrl: 'myquote/templates/myquote.submit.tpl.html',
@@ -1771,15 +1768,15 @@ function SubmitConfirmController($sce, WeirService, $uibModalInstance, orderType
 		en: {
             MessageText1: "Thank you. Your draft order has been submitted",
 		    MessageText2: "We have sent you a confirmation email.",
-		    MessageText3: "We will eb in touch with you to discuss teh items you have requested.",
-		    MessageText4: "If your order needs to be revised we will updated your draft order.",
+		    MessageText3: "We will be in touch with you to discuss the items you have requested.",
+		    MessageText4: "If your order needs to be revised we will update your draft order.",
 			Close: "Close"
 		},
 		fr: {
-            MessageText1: "FR: Thank you. Your draft order has been submitted",
-            MessageText2: "FR: We have sent you a confirmation email.",
-            MessageText3: "FR: We will eb in touch with you to discuss teh items you have requested.",
-            MessageText4: "FR: If your order needs to be revised we will updated your draft order.",
+            MessageText1: "Thank you. Your draft order has been submitted",
+            MessageText2: "We have sent you a confirmation email.",
+            MessageText3: "We will be in touch with you to discuss the items you have requested.",
+            MessageText4: "If your order needs to be revised we will update your draft order.",
             Close: $sce.trustAsHtml("Fermer")
 		}
 	};
@@ -2754,7 +2751,7 @@ function ReadonlyQuoteController($sce, $state, WeirService, $timeout, $window, Q
 	vm.gotoRevisions = _gotoRevisions;
 }
 
-function SubmitController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress,
+function SubmitQuoteController($sce, toastr, WeirService, $timeout, $window, $uibModal, $state, Quote, ShippingAddress,
 						  LineItems, PreviousLineItems, Payments, imageRoot, OCGeography, Underscore, OrderCloudSDK, Me,
 						  FilesService, FileSaver, Catalog, Countries) {
 	var vm = this;

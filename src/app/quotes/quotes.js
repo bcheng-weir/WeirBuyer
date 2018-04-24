@@ -175,11 +175,11 @@ function QuotesConfig($stateProvider) {
 		    controllerAs: 'deleted'
 		})
 		.state('quotes.goto', {
-			url:'/:quoteID',
+			url:'/:orderID',
 			controller: 'RouteToQuoteCtrl',
 			resolve: {
 			    Quote: function ($q, appname, $localForage, $stateParams, OrderCloudSDK) {
-			        return OrderCloudSDK.Orders.Get("Outgoing", $stateParams.quoteID);
+			        return OrderCloudSDK.Orders.Get("Outgoing", $stateParams.orderID);
 			    }
 			}
 		});
@@ -364,7 +364,7 @@ function QuotesController($sce, $state, $ocMedia, $document, $uibModal, $rootSco
     }
 
     vm.GoToQuote = function (orderId) {
-        $state.go("quotes.goto", { quoteID: orderId });
+        $state.go("quotes.goto", { orderID: orderId });
     };
 
     vm.delete = function (id, quoteList, indx) {
@@ -437,11 +437,11 @@ function SavedQuotesController(WeirService, $state, $sce, $rootScope, $scope, Cu
             status === WeirService.OrderStatus.Review.id ||
             status === WeirService.OrderStatus.Deleted.id
         ) {
-            $state.go('readonly', {quoteID: quoteId, buyerID: buyerId});
+            $state.go('finalize.readonly', {orderID: quoteId, buyerID: buyerId});
         } else if(status === WeirService.OrderStatus.ConfirmedQuote.id) {
-	    	$state.go('submit', {quoteID: quoteId, buyerID: buyerId})
+	    	$state.go('finalize.submit', {orderID: quoteId, buyerID: buyerId})
 	    } else if(status === WeirService.OrderStatus.RevisedQuote.id) {
-		    $state.go('revised', { quoteID: quoteId, buyerID: buyerId });
+		    $state.go('finalize.revised', { orderID: quoteId, buyerID: buyerId });
 		} else {
 	        var gotoReview = (vm.CurrentOrderId !== quoteId) && (WeirService.CartHasItems()) ? confirm(vm.labels.ReplaceCartMessage) : true;
 	        if (gotoReview) {
@@ -511,7 +511,7 @@ function DeletedQuotesController(WeirService, $state, $sce, $rootScope, $scope, 
     vm.locale = WeirService.Locale;
 
     function _reviewQuote(quoteId, status, buyerId) {
-            $state.go('readonly', { quoteID: quoteId, buyerID: buyerId });
+            $state.go('finalize.readonly', { orderID: quoteId, buyerID: buyerId });
     }
 
     var labels = {
@@ -640,9 +640,9 @@ function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote, 
             $state.go('orders.goto', { orderID: Quote.ID });
         } else if (status === WeirService.OrderStatus.RevisedQuote.id) {
             if (Quote.xp.Active) {
-                $state.go('revised', { quoteID: Quote.ID });
+                $state.go('finalize.revised', { orderID: Quote.ID });
             } else {
-                $state.go('readonly', { quoteID: Quote.ID });
+                $state.go('finalize.readonly', { orderID: Quote.ID });
             }
         } else if ([WeirService.OrderStatus.Submitted.id,
                     WeirService.OrderStatus.Review.id,
@@ -650,11 +650,11 @@ function RouteToQuoteController($rootScope, $state, WeirService, toastr, Quote, 
                     WeirService.OrderStatus.Enquiry.id,
                     WeirService.OrderStatus.EnquiryReview.id,
                     WeirService.OrderStatus.Deleted.id].indexOf(status) > -1) {
-            $state.go('readonly', {quoteID: Quote.ID});
+            $state.go('finalize.readonly', {orderID: Quote.ID});
         } else if ([WeirService.OrderStatus.ConfirmedQuote.id].indexOf(status) > -1) {
-            $state.go('submit', {quoteID: Quote.ID});
+            $state.go('finalize.submit', {orderID: Quote.ID});
         } else if([WeirService.OrderStatus.RevisedQuote.id].indexOf(status) > -1) {
-            $state.go('revised', { quoteID: Quote.ID });
+            $state.go('finalize.revised', { orderID: Quote.ID });
         } else { // DR, SV
             WeirService.SetQuoteAsCurrentOrder(Quote.ID)
             .then(function () {

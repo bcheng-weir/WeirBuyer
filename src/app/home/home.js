@@ -241,6 +241,6 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
     };
 
     vm.GoToQuote = function(orderId) {
-        $state.go("quotes.goto", { quoteID: orderId } );
+        $state.go("quotes.goto", { orderID: orderId } );
     };
 }

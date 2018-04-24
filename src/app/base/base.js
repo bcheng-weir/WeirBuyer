@@ -377,18 +377,6 @@ function BaseController($q, $document, $state, $rootScope, $uibModal, CurrentOrd
             });
     };
 
-    /*vm.selectBrand = function() { //deprecated TODO delete
-        //var parentElem = angular.element($document[0].querySelector('body'));
-        $uibModal.open({
-            animation:true,
-            size:'lg',
-            templateUrl:'brands/templates/brands.select.tpl.html',
-            controller: 'DivisionCtrl',
-            controllerAs: 'division'
-            //appendTo: parentElem
-        });
-    };*/
-
     var brandTemplate = {
         'WPIFR':'base/templates/base.brandspopoverFR.tpl.html',
         'WVCUK':'base/templates/base.brandspopoverUK.tpl.html'

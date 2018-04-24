@@ -23,7 +23,6 @@
                         <a role="button" class="btn btn-default" href=""><img aria-hidden="true" class="imageSize" ng-src="{{revised.GetImageUrl('download.png')}}" /><span class="imageText" ng-bind-html='revised.labels.Download'></span></a>
                     </div>
 
-                    <!--<div ng-if="application.$state.current.name=='revised'" style="float:right;padding-top: 0.5em;">-->
                     <div ng-if="revised.Quote.xp.Status=='RV'||revised.Quote.xp.Status=='RO'" style="float:right;">
                         <a href="#Comments" role="button" class="btn btn-md btn-default" style="margin-left:0.5em;" ng-bind-html="revised.labels.Comments"></a>
                     </div>

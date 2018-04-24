@@ -75,7 +75,6 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 	    return WeirService.CurrentCurrency(qte).curr;
 	};
 
-
     vm.OrderAction = _actions;
     function _actions(action) {
         var filter = {
@@ -247,5 +246,14 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 
     vm.GoToQuote = function(orderId) {
         $state.go("quotes.goto", { orderID: orderId } );
+    };
+
+    vm.ValveText = vm.labels.YourValves;
+    vm.EnterValveText = function() {
+        vm.ValveText = $sce.trustAsHtml("<p>Filter Your valves</p><p>Buy spares</p><p>Download documents</p>");
+    };
+
+    vm.ExitValveText = function() {
+        vm.ValveText = vm.labels.YourValves;
     };
 }

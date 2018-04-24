@@ -3,13 +3,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="intro-message">
-                        <h1 ng-bind-html="home.labels.Search"></h1>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-8 col-md-offset-2">
                     <form name="homeSearch" ng-submit="home.Search(home.selectedItem.label, home.SearchParams);" class="form-group">
                         <div class="input-group">
                             <div class="input-group-btn">
@@ -52,17 +45,37 @@
                                 type="text"
                                 typeahead-min-length="3"
                                 uib-typeahead="cat.xp.TagNumber as (cat.xp.TagNumber + ' - ' + cat.Description) for cat in home.SearchProducts($viewValue)">
-                            <!-- uib-typeahead="searchNumber for searchNumber in home.SearchProducts($viewValue)" -->
                             <div class="input-group-addon">
                                 <button class="btn search action-btn" name="ss" type="submit"><i class="icon-search white"></i></button>
                             </div>
-                        </div><!-- /input-group -->
+                        </div>
                     </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item navbox">
+                            <a href="#" ng-bind-html="home.labels.YourValves"></a>
+                        </li>
+                        <li class="nav-item navbox" ng-click="home.OrderAction('quotes.all')">
+                            <a href="#" ng-bind-html="home.labels.YourQuotes"></a>
+                        </li>
+                        <li class="nav-item navbox" ng-click="home.OrderAction('orders.all')">
+                            <a href="#" ng-bind-html="home.labels.YourOrders"></a>
+                        </li>
+                        <li class="nav-item navbox">
+                            <a href="#" ng-bind-html="home.labels.YourContacts"></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-<hr ng-hide="home.quotes.Meta.TotalCount == 0 && home.orders.Meta.TotalCount == 0">
+
+    <hr ng-hide="home.quotes.Meta.TotalCount == 0 && home.orders.Meta.TotalCount == 0">
+
     <section class="dashboard" ng-hide="home.quotes.Meta.TotalCount == 0 && home.orders.Meta.TotalCount == 0">
         <div class="container">
             <div class="row">

@@ -2,10 +2,35 @@
     padding-top:15px;
     background-color:@component-home-bg;
     .homeImage{
-        background-size: cover;
         //TODO: From Four51: This is how you will link from your LESS styles, be sure to update any other url references in your less
-        background-image: url('../images/hero-image.jpg') ;
-        background-repeat: no-repeat;
+        //background-image: url('../images/hero-image.jpg') ;
+        border: 2px solid #425563;
+        background-color: #425563;
+    }
+
+    .home .container {
+        margin-left: 15px;
+        margin-bottom: 15px;
+    }
+
+    .home .container .navbox {
+        width: 220px;
+        height: 220px;
+        background-color: #005eb8;
+        border: 2px solid #425563;
+        margin-right: 30px;
+    }
+
+    .home .container .navbox a {
+        height: 100%;
+        width: 100%;
+        color: #ffffff;
+        font-size: 24px;
+    }
+
+    .home .container .navbox a:hover {
+        background-color:#398439;
+        border: 2px solid #398439;
     }
 
     .home-search,.home-search::-webkit-input-placeholder { /* Chrome/Opera/Safari */

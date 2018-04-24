@@ -116,9 +116,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             HopkinsonsMsg: "Established over 160 years ago, the Hopkinsons® brand is renowned for long and dependable service life, generation after generation.",
             SarasinRSBD: "Sarasin RSBD™",
             SarasinRSBDMsg: "Sarasin-RSBD™ spring and pilot operated pressure relief valves are designed to provide optimum performance, safety and reliability.",
-            SerialNumber: "Serial number",
-            PartNumber: "Part number",
-            TagNumber: "Tag number",
+            SerialNumber: $sce.trustAsHtml("Serial number"),
+            PartNumber: $sce.trustAsHtml("Part number"),
+            TagNumber: $sce.trustAsHtml("Tag number"),
 	        PlaceHolder: "Enter serial, part, or tag number.",
             YourDashboard: "Your Dashboard",
             YourQuotes: "Your Quotes",
@@ -132,7 +132,10 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             AllQuotes: "View All Quotes",
             AllOrders: "View All Orders",
             NoQuotes: "No quotes currently in progress",
-            NoOrders: "No orders currently in progress"
+            NoOrders: "No orders currently in progress",
+            YourValves: "Your Valves",
+            YourContacts: "Your Contacts"
+
         },
         fr: {
             Search : $sce.trustAsHtml("Centre de recherche"),
@@ -168,7 +171,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             AllQuotes: $sce.trustAsHtml("Voir tous les devis"),
             AllOrders: $sce.trustAsHtml("Voir toutes les commandes"),
             NoQuotes: $sce.trustAsHtml("Pas de cotation en cours"),
-            NoOrders: $sce.trustAsHtml("Pas de commande en cours")
+            NoOrders: $sce.trustAsHtml("Pas de commande en cours"),
+            YourValves: $sce.trustAsHtml("Your Valves"),
+            YourContacts: $sce.trustAsHtml("Your Contacts")
         }
     };
     vm.LanguageUsed = WeirService.Locale();

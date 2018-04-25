@@ -56,7 +56,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <ul class="nav navbar-nav">
-                        <li class="nav-item navbox valves">
+                        <li class="nav-item navbox valves" ng-if="home.CurrentUserOrg.xp.WeirGroup.label=='WPIFR'"> <!-- TODO change to WVCUK, WPIFR is for testing-->
                             <a href="#" ng-bind-html="home.ValveText" ng-mouseover="home.EnterValveText()" ng-mouseleave="home.ExitValveText()"></a>
                         </li>
                         <li class="nav-item navbox" ng-click="home.OrderAction('quotes.all')">
@@ -86,7 +86,7 @@
                 <div class="col-md-6 text-center" style="padding-left:0px;padding-right:4px;">
                     <div class="col-md-12 borderbox">
                         <div class="col-md-12 text-center home-header">
-                            <span ng-bind-html="home.labels.YourQuotes" class="subheader"></span>
+                            <span ng-bind-html="home.labels.YourQuotesTitle" class="subheader"></span>
                         </div>
                         <table class="table table-hover table-condensed oc-table-responsive">
                             <thead>
@@ -123,7 +123,7 @@
                 <div class="col-md-6 text-center" style="padding-right:0px;padding-left:4px;">
                     <div class="col-md-12 borderbox">
                         <div class="col-md-12 text-center home-header">
-                            <span ng-bind-html="home.labels.YourOrders" class="subheader"></span>
+                            <span ng-bind-html="home.labels.YourOrdersTitle" class="subheader"></span>
                         </div>
                         <table class="table table-hover table-condensed oc-table-responsive">
                             <thead>
@@ -173,16 +173,6 @@
 
         <section class="platform">
             <div class="container">
-                <!--Shut off per POC - Change Requests Sprint 3
-                <div class="row">
-                    <div class="panel blue">
-                        <div class="row">
-                            <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
-                                <p ng-bind-html="home.labels.PlatformMsg1"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
                 <div class="row">
                     <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
                         <div class="h-t-u">

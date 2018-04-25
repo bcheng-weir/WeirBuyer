@@ -56,6 +56,27 @@ function HomeConfig($stateProvider) {
 
 function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTypeService, orders, quotes) {
     var vm = this;
+    vm.localImages = {
+        base:"../../../assets/images/",
+        valve: function() {
+            return this.base + "valve-1.png";
+        },
+        filter: function() {
+            return this.base + "filter.png";
+        },
+        download: function() {
+            return this.base + "pdf.png";
+        },
+        quote: function() {
+            return this.base + "shopping.png";
+        },
+        order: function() {
+            return this.base + "document.png";
+        },
+        contact: function() {
+            return this.base + "contact.png";
+        }
+    };
 	if(WeirService.Locale() == 'fr') {
 		SearchTypeService.SetGlobalSearchFlag(true);
 	} else {
@@ -120,8 +141,10 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             TagNumber: $sce.trustAsHtml("Tag number"),
 	        PlaceHolder: "Enter serial, part, or tag number.",
             YourDashboard: "Your Dashboard",
-            YourQuotes: "Your Quotes",
-            YourOrders: "Your Orders",
+            YourQuotesTitle: "Your Quotes",
+            YourOrdersTitle: "Your Orders",
+            YourQuotes: $sce.trustAsHtml("<img src=\"" + vm.localImages.quote() + "\" class=\"img-quote\" /><br>Your Quotes"),
+            YourOrders: $sce.trustAsHtml("<img src=\" " + vm.localImages.order() + " \" class=\"img-order\" /><br>Your Orders"),
             QuoteNumber: "Weir Quote No.",
             QuoteReference: "Your Quote Ref:",
             OrderNumber: "Weir Order No.",
@@ -132,9 +155,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             AllOrders: "View All Orders",
             NoQuotes: "No quotes currently in progress",
             NoOrders: "No orders currently in progress",
-            YourValves: "Your Valves",
-            YourContacts: "Your Contacts"
-
+            YourValves: $sce.trustAsHtml("<img src=\"" + vm.localImages.valve() + "\" class=\"img-valve\" /><br>Your Valves"),
+            YourContacts: $sce.trustAsHtml("<img src=\"" + vm.localImages.contact() + "\" class=\"img-contact\" /><br>Your Contacts"),
+            HoverValve: $sce.trustAsHtml("<div class='mini-container'><div class='row mouseover'><div class='col-md-3'><img src='" + vm.localImages.filter() + "' class='img-filter' /></div><div class='col-md-9'>Filter your valves</div></div><div class='row mouseover'><div class='col-md-3'><img src='" + vm.localImages.quote() + "' class='img-spare' /></div><div class='col-md-9'>Buy spares</div></div><div class='row mouseover'><div class='col-md-3'><img src='" + vm.localImages.download() + "' class='img-download' /></div><div class='col-md-9'>Download documents</div></div></div>")
         },
         fr: {
             Search : $sce.trustAsHtml("Centre de recherche"),
@@ -159,8 +182,10 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             SarasinRSBDMsg: $sce.trustAsHtml("Les soupapes de sûreté à ressort et pilotées Sarasin-RSBD™ sont conçues pour garantir des performances, une sécurité et une fiabilité optimales."),
 	        PlaceHolder: $sce.trustAsHtml("Renseigner un numéro de série, de pièce ou de repère soupape."),
             YourDashboard: $sce.trustAsHtml("Votre tableau de bord"),
-            YourQuotes: $sce.trustAsHtml("Vos cotations"),
-            YourOrders: $sce.trustAsHtml("Vos commandes"),
+            YourQuotesTitle: "Vos cotations",
+            YourOrdersTitle: "Vos commandes",
+            YourQuotes: $sce.trustAsHtml("<img src=\"" + vm.localImages.quote() + "\" class=\"img-quote\" /><br>Vos cotations"),
+            YourOrders: $sce.trustAsHtml("<img src=\" " + vm.localImages.order() + " \" class=\"img-order\" /><br>Vos commandes"),
             QuoteNumber: $sce.trustAsHtml("Référence de cotation chez WEIR"),
             QuoteReference: $sce.trustAsHtml("Votre Référence de cotation"),
             OrderNumber: $sce.trustAsHtml("Numéro de commande WEIR"),
@@ -171,8 +196,9 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
             AllOrders: $sce.trustAsHtml("Voir toutes les commandes"),
             NoQuotes: $sce.trustAsHtml("Pas de cotation en cours"),
             NoOrders: $sce.trustAsHtml("Pas de commande en cours"),
-            YourValves: $sce.trustAsHtml("Your Valves"),
-            YourContacts: $sce.trustAsHtml("Your Contacts")
+            YourValves: $sce.trustAsHtml("<img src=\"" + vm.localImages.valve() + "\" class=\"img-valve\" /><br> FR: Your Valves"),
+            YourContacts: $sce.trustAsHtml("<img src=\"" + vm.localImages.contact() + "\" class=\"img-contact\" /><br> FR: Your Contacts"),
+            HoverValve: $sce.trustAsHtml("<div class='row'><div class='col-md-4'><img src='" + vm.localImages.filter() + "' class='img-filter' /></div><div class='col-md-8'>FR: Filter your valves</div></div><div class='row'><div class='col-md-4'><img src='" + vm.localImages.quote() + "' class='img-spare' /></div><div class='col-md-8'>FR: Buy spares</div></div><div class='row'><div class='col-md-4'><img src='" + vm.localImages.download() + "' class='img-download' /></div><div class='col-md-8'>FR: Download documents</div></div>")
         }
     };
     vm.LanguageUsed = WeirService.Locale();
@@ -250,7 +276,7 @@ function HomeController($sce, $state, WeirService, SearchProducts, Me, SearchTyp
 
     vm.ValveText = vm.labels.YourValves;
     vm.EnterValveText = function() {
-        vm.ValveText = $sce.trustAsHtml("<p>Filter Your valves</p><p>Buy spares</p><p>Download documents</p>");
+        vm.ValveText = vm.labels.HoverValve;
     };
 
     vm.ExitValveText = function() {
